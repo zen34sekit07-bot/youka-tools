@@ -1,0 +1,2318 @@
+<!DOCTYPE html>  
+<html lang="ja">  
+<head>  
+ <meta charset="UTF-8">  
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">  
+ <title>写真重ねてチェッカー</title>  
+   
+ <!-- PWA / モバイル対応タグ -->  
+ <meta name="theme-color" content="#0f172a">  
+ <meta name="application-name" content="写真重ねてチェッカー">  
+ <meta name="apple-mobile-web-app-capable" content="yes">  
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
+ <meta name="apple-mobile-web-app-title" content="重ねてチェッカー">  
+   
+ <!-- アプリアイコン & マニフェスト -->  
+ <link rel="icon" id="app-favicon" type="image/svg+xml">  
+ <link rel="apple-touch-icon" id="app-apple-icon">  
+ <link rel="manifest" id="manifest-link">  
+
+ <!-- Google Fonts (日本語フォント) -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">  
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
+ <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&family=Noto+Sans+JP:wght@700&family=Noto+Serif+JP:wght@700&family=Yuji+Boku&display=swap" rel="stylesheet">  
+  
+ <script src="https://cdn.tailwindcss.com"></script>  
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  
+   
+ <script>  
+ tailwind.config = {  
+ theme: {  
+ extend: {  
+ colors: {  
+ gray: { 850: '#1f2937', 900: '#111827', 950: '#030712' },  
+ blue: { 500: '#3b82f6', 600: '#2563eb' }  
+ }  
+ }  
+ }  
+ }  
+ </script>  
+ <style>  
+ body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }  
+ canvas { display: block; touch-action: none; outline: none; }  
+ .hide-scrollbar::-webkit-scrollbar { display: none; }  
+ .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }  
+   
+ input[type="range"] { accent-color: #3b82f6; -webkit-appearance: none; width: 100%; background: transparent; }  
+ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; cursor: pointer; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }  
+ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }  
+  
+ /* Layout */  
+ #app-header { flex-shrink: 0; background: #0f172a; border-bottom: 1px solid #1e293b; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
+ #workspace { flex: 1; position: relative; background: #000; overflow: hidden; }  
+ #bottom-toolbar { flex-shrink: 0; background: #0f172a; border-top: 1px solid #1e293b; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
+  
+ /* Bottom Sheets */  
+ .bottom-sheet {  
+ position: fixed; bottom: 0; left: 0; width: 100%;  
+ background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(16px);  
+ border-top: 1px solid #1e293b; border-radius: 20px 20px 0 0;  
+ transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);  
+ z-index: 60; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);  
+ max-height: 75vh; display: flex; flex-direction: column;  
+ }  
+ .bottom-sheet.active { transform: translateY(0); }  
+ .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.3s; }  
+ .sheet-overlay.active { opacity: 1; pointer-events: auto; }  
+  
+ .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-weight: bold; gap: 4px; width: 64px; border-radius: 12px; padding: 8px 0; transition: all 0.2s; }  
+ .toolbar-btn.active { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }  
+ .toolbar-btn svg { width: 24px; height: 24px; margin: 0 auto; }  
+ .toolbar-btn.disabled-btn { opacity: 0.25; pointer-events: none; }
+  
+ /* Video / Canvas */  
+ #camera-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none; }  
+ #main-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 10; }  
+  
+ /* Modals */  
+ .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; }  
+ .modal.active { display: flex; }  
+   
+ .tab-btn { border-bottom: 2px solid transparent; color: #94a3b8; padding-bottom: 8px; transition: color 0.2s; }  
+ .tab-btn.active { color: #fff; border-bottom-color: #3b82f6; }  
+ .tab-content { display: none; }  
+ .tab-content.active { display: block; }  
+  
+ /* Eye Toggle Button */  
+ #toggle-ui-btn {   
+ position: absolute; bottom: calc(80px + max(env(safe-area-inset-bottom, 0px), 28px)); right: 20px;   
+ width: 48px; height: 48px; background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; border-radius: 24px;   
+ z-index: 40; display: none; align-items: center; justify-content: center; color: #fff;   
+ backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.5);   
+ transition: transform 0.1s, background-color 0.1s; user-select: none; -webkit-touch-callout: none;  
+ }  
+ #toggle-ui-btn:active { transform: scale(0.9); background: rgba(59, 130, 246, 0.8); border-color: #3b82f6; }  
+ </style>  
+</head>  
+<body class="bg-slate-950 text-slate-100 flex flex-col h-[100dvh] overflow-hidden font-sans">  
+  
+ <!-- Top Navigation Bar -->  
+ <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-4 pt-[max(env(safe-area-inset-top,8px),8px)] pb-1.5 shrink-0 z-50 border-b border-slate-800">
+ <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">
+ ← ツール一覧へ
+ </a>
+ <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-slate-300 font-bold bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700 max-w-[190px] sm:max-w-[260px]">
+ <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+ <span id="current-project-name-text" class="truncate text-[10px]">新規比較</span>
+ </div>
+ </div>
+
+ <!-- Header -->  
+ <header id="app-header">  
+ <!-- Start Screen Header -->  
+ <div id="header-start" class="flex w-full justify-between items-center">  
+ <div>  
+ <h1 class="text-base font-bold text-white tracking-wide">写真重ねてチェッカー</h1>  
+ <p class="text-[10px] text-gray-400 mt-0.5">写真の選択または履歴</p>  
+ </div>  
+ <div class='flex items-center gap-2'>
+ <button class='settings-btn px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700 text-xs text-white font-bold flex items-center gap-1.5 shadow'>
+ <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+ 設定
+ </button>
+ </div>
+ </div>  
+  
+ <!-- Editor Header -->  
+ <div id="header-editor" class="hidden flex w-full justify-between items-center">  
+ <div class="flex items-center gap-1.5">  
+ <button id="header-history-btn" class="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-[10px] text-white font-bold shadow flex items-center gap-1 transition">
+ <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+ 📁 プロジェクト・履歴
+ </button>
+ </div>  
+ <div class="flex items-center gap-2">  
+ <button id="camera-toggle-btn" class="px-3 py-2 bg-green-600/20 text-green-400 border border-green-500/30 rounded-lg text-[10px] font-bold shadow flex items-center gap-1 transition">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>  
+ カメラ比較  
+ </button>  
+ <button class="settings-btn px-3 py-2 bg-gray-800 rounded-lg border border-gray-700 text-[10px] text-gray-300 font-bold shadow flex items-center gap-1">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>  
+ 設定  
+ </button>  
+ </div>  
+ </div>  
+ </header>  
+  
+ <!-- Workspace -->  
+ <section id="workspace">  
+ <video id="camera-video" autoplay playsinline></video>  
+ <canvas id="main-canvas"></canvas>  
+   
+ <!-- ペン用フローティングボタン (Undo / Redo) -->  
+ <div id="pen-floating-buttons" class="hidden absolute top-4 left-4 z-40 flex flex-col gap-3">  
+ <button id="float-undo" class="w-10 h-10 bg-gray-800/90 border border-gray-600 rounded-full flex items-center justify-center text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition" disabled>  
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>  
+ </button>  
+ <button id="float-redo" class="w-10 h-10 bg-gray-800/90 border border-gray-600 rounded-full flex items-center justify-center text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition" disabled>  
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"></path></svg>  
+ </button>  
+ </div>  
+  
+ <!-- Eye Toggle Button -->  
+ <button id="toggle-ui-btn" title="押している間対象画像を非表示">  
+ <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>  
+ </button>  
+  
+ <!-- Start Screen Overlay -->  
+ <div id="start-overlay" class="absolute inset-0 bg-gray-950 flex flex-col z-40 overflow-y-auto pb-[max(36px,env(safe-area-inset-bottom))]">  
+ <div class="px-6 pt-10 pb-6 text-center shrink-0">  
+ <div class='bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-300 shadow-sm text-left mb-3'>
+   <p class='text-xs font-black text-blue-400 mb-2'>📐 写真重ねてチェッカーの使い方</p>
+   <ul class='text-[11px] leading-relaxed space-y-1.5 text-slate-300'>
+     <li>・<strong class='text-white'>2枚写真の比較:</strong> 基準画像(1)と比較画像(2)を選択し、透過度や差分抽出でズレを確認します。</li>
+     <li>・<strong class='text-white'>カメラ比較:</strong> 基準画像(1)のみ設定時に利用可能。現場の実物に設計図・基準写真を重ねて位置合わせします（2枚選択時は非表示）。</li>
+     <li>・<strong class='text-white'>グリッドカメラ:</strong> 写真なしですぐ起動。画面上に基準グリッド・センター線を表示して現場を撮影・確認できます。</li>
+   </ul>
+ </div>
+ <div class='grid grid-cols-2 gap-2 mb-3'>
+   <button id='top-history-btn-sub' onclick='openModal("history-modal")' class='bg-slate-900 hover:bg-slate-850 border border-slate-700 text-white font-bold py-3 rounded-xl shadow flex items-center justify-center gap-1.5 text-xs transition active:scale-95'>
+     📁 プロジェクト・履歴
+   </button>
+   <button onclick='startGridCamera()' class='bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow flex items-center justify-center gap-1.5 text-xs transition active:scale-95'>
+     📷 グリッドカメラ起動
+   </button>
+ </div>  
+ </div>  
+  
+ <div class="px-6 flex-1 max-w-md mx-auto w-full flex flex-col gap-4 pb-6">  
+ <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 relative transition" id="upload-box-1">  
+ <div class="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center text-blue-500 mb-1"><span class="font-bold text-xl">1</span></div>  
+ <p class="text-sm font-bold text-white">基準となる画像をアップロード</p>  
+ <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full max-w-[200px] mt-2 load-img-btn" data-target="1">画像を選択</button>  
+ </div>  
+  
+ <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 relative transition opacity-50 pointer-events-none" id="upload-box-2">  
+ <div class="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center text-blue-500 mb-1"><span class="font-bold text-xl">2</span></div>  
+ <p class="text-sm font-bold text-white">比較する画像をアップロード</p>  
+ <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full max-w-[200px] mt-2 load-img-btn" data-target="2">画像を選択</button>  
+ </div>  
+   
+ <button id="start-editor-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg mt-2 hidden opacity-0 transition-opacity duration-300">  
+ 調整画面へ進む  
+ </button>  
+ </div>  
+ </div>  
+ </section>  
+  
+ <!-- Hidden File Inputs -->  
+ <input type="file" id="file-input-1" accept="image/*" class="hidden">  
+ <input type="file" id="file-input-2" accept="image/*" class="hidden">  
+ <canvas id="edge-canvas" class="hidden"></canvas>  
+  
+ <!-- Bottom Toolbar (Editor only) -->  
+ <footer id="bottom-toolbar" class="hidden">  
+ <button class="toolbar-btn" data-sheet="sheet-image" id="tool-btn-image">  
+ <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>  
+ 画像操作  
+ </button>  
+ <button class="toolbar-btn" data-sheet="sheet-text" id="tool-btn-text">  
+ <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>  
+ テキスト  
+ </button>  
+ <button class="toolbar-btn" data-sheet="sheet-grid" id="tool-btn-grid">
+ <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M6 4v16M12 4v16M18 4v16"></path></svg>
+ グリッド
+ </button>
+ <button class="toolbar-btn" data-sheet="sheet-pen" id="tool-btn-pen">
+ <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+ ペン
+ </button>
+ <button class="toolbar-btn" id="toolbar-export-btn">
+ <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+ 保存・共有
+ </button>  
+ </footer>  
+  
+ <!-- Sub UI Overlays -->  
+ <div class="sheet-overlay" id="sheet-overlay"></div>  
+  
+ <!-- 1. 画像操作 Sheet (画像変更ボタンをファイル名横に移設) -->  
+ <div class="bottom-sheet" id="sheet-image">  
+ <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>  
+ <div class="px-4 pb-2 border-b border-gray-800 shrink-0 flex text-xs font-medium text-gray-400">  
+ <button class="tab-btn active flex-1 py-2" data-target="tab-img1">1枚目(基準)</button>  
+ <button class="tab-btn flex-1 py-2" data-target="tab-img2">2枚目(比較)</button>  
+ <button class="tab-btn flex-1 py-2" data-target="tab-blend">重ね方</button>  
+ </div>  
+ <div class="overflow-y-auto px-4 py-4 hide-scrollbar flex-1 space-y-4">  
+   
+ <!-- Img1 Tab -->  
+ <div id="tab-img1" class="tab-content active space-y-4">  
+ <div class="flex items-center justify-between bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 gap-2">  
+ <div class="overflow-hidden flex-1 min-w-0">  
+ <span class="text-[10px] text-gray-400 block mb-0.5">ファイル名</span>  
+ <span id="name-img1" class="text-xs font-bold text-white truncate block">未設定</span>  
+ </div>  
+ <button class="load-img-btn px-3 py-1.5 bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-bold shrink-0 transition" data-target="1">
+ 画像変更
+ </button>
+ </div>  
+ <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-4">  
+ <div class="flex justify-between items-center border-b border-gray-700/50 pb-3">  
+ <label class="text-xs font-bold text-gray-200">表示する</label>  
+ <input type="checkbox" id="vis-img1" checked class="accent-blue-500 w-5 h-5">  
+ </div>  
+ <div>  
+ <div class="flex justify-between text-[10px] text-gray-400 mb-2"><span>透明度</span><span id="val-alpha1">100%</span></div>  
+ <input type="range" id="alpha-img1" min="0" max="1" step="0.01" value="1">  
+ </div>  
+ <div class="flex gap-2 pt-2 border-t border-gray-700/50">  
+ <button id="flip-img1" class="flex-1 bg-gray-700 border border-transparent py-2.5 rounded-lg text-xs font-bold transition active:scale-95">左右反転</button>  
+ <button id="reset-img1" class="flex-1 bg-gray-700 border border-transparent py-2.5 rounded-lg text-xs font-bold transition active:scale-95">位置リセット</button>  
+ </div>  
+ </div>  
+ <div class="flex items-center justify-between bg-blue-900/20 border border-blue-500/30 p-3 rounded-xl">  
+ <span class="text-xs font-bold text-blue-200">画面スワイプで操作する対象</span>  
+ <label class="flex items-center gap-2 cursor-pointer">  
+ <input type="radio" name="target-img" value="1" checked class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">1枚目</span>  
+ </label>  
+ </div>  
+ <div id="eye-box-tab1" class="flex items-center justify-between bg-blue-900/20 border border-blue-500/30 p-3 rounded-xl hidden">  
+ <span class="text-xs font-bold text-blue-200">目のボタンで非表示にする対象</span>  
+ <label class="flex items-center gap-2 cursor-pointer">  
+ <input type="radio" name="eye-target-img" value="2" checked class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">2枚目</span>  
+ </label>  
+ </div>  
+ </div>  
+  
+ <!-- Img2 Tab -->  
+ <div id="tab-img2" class="tab-content space-y-4">  
+ <div class="flex items-center justify-between bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 gap-2">  
+ <div class="overflow-hidden flex-1 min-w-0">  
+ <span class="text-[10px] text-gray-400 block mb-0.5">ファイル名</span>  
+ <span id="name-img2" class="text-xs font-bold text-white truncate block">未設定</span>  
+ </div>  
+ <button class="load-img-btn px-3 py-1.5 bg-green-600/30 border border-green-500/50 hover:bg-green-600/50 text-green-300 rounded-lg text-xs font-bold shrink-0 transition" data-target="2">
+ 画像変更
+ </button>
+ </div>  
+ <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-4 opacity-50 pointer-events-none transition-opacity" id="panel-img2">  
+ <div class="flex justify-between items-center mb-1 border-b border-gray-700/50 pb-3">  
+ <label class="text-xs font-bold text-gray-200">表示する</label>  
+ <input type="checkbox" id="vis-img2" checked class="accent-blue-500 w-5 h-5">  
+ </div>  
+ <div>  
+ <div class="flex justify-between text-[10px] text-gray-400 mb-2"><span>透明度</span><span id="val-alpha2">50%</span></div>  
+ <input type="range" id="alpha-img2" min="0" max="1" step="0.01" value="0.5">  
+ </div>  
+ <div class="flex gap-2 pt-2 border-t border-gray-700/50">  
+ <button id="flip-img2" class="flex-1 bg-gray-700 border border-transparent py-2.5 rounded-lg text-xs font-bold transition active:scale-95">左右反転</button>  
+ <button id="reset-img2" class="flex-1 bg-gray-700 border border-transparent py-2.5 rounded-lg text-xs font-bold transition active:scale-95">位置リセット</button>  
+ </div>  
+ </div>  
+ <div class="flex items-center justify-between bg-blue-900/20 border border-blue-500/30 p-3 rounded-xl">  
+ <span class="text-xs font-bold text-blue-200">画面スワイプで操作する対象</span>  
+ <label class="flex items-center gap-2 cursor-pointer">  
+ <input type="radio" name="target-img" value="2" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">2枚目</span>  
+ </label>  
+ </div>  
+ <div id="eye-box-tab2" class="flex items-center justify-between bg-blue-900/20 border border-blue-500/30 p-3 rounded-xl hidden">  
+ <span class="text-xs font-bold text-blue-200">目のボタンで非表示にする対象</span>  
+ <label class="flex items-center gap-2 cursor-pointer">  
+ <input type="radio" name="eye-target-img" value="1" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">1枚目</span>  
+ </label>  
+ </div>  
+ </div>  
+  
+ <!-- Blend Tab -->  
+ <div id="tab-blend" class="tab-content space-y-2">  
+ <p class="text-[10px] text-gray-400 mb-2">2つの画像をどのように重ねて比較するかを選択します。</p>  
+ <div class="grid grid-cols-1 gap-2">  
+ <label class="flex items-center gap-3 bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 cursor-pointer">  
+ <input type="radio" name="blend-mode" value="normal" checked class="accent-blue-500 w-4 h-4">  
+ <div>  
+ <span class="text-sm font-bold text-white block">通常 (半透明)</span>  
+ <span class="text-[10px] text-gray-400 block mt-0.5">上の画像の透明度を下げて透かします。</span>  
+ </div>  
+ </label>  
+ <label class="flex items-center gap-3 bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 cursor-pointer">  
+ <input type="radio" name="blend-mode" value="difference" class="accent-blue-500 w-4 h-4">  
+ <div>  
+ <span class="text-sm font-bold text-white block">差分抽出 (Difference)</span>  
+ <span class="text-[10px] text-gray-400 block mt-0.5">一致する部分が黒くなり、ズレている箇所が浮き出ます。</span>  
+ </div>  
+ </label>  
+ <label class="flex items-center gap-3 bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 cursor-pointer">  
+ <input type="radio" name="blend-mode" value="flicker" class="accent-blue-500 w-4 h-4">  
+ <div>  
+ <span class="text-sm font-bold text-white block">フリッカー (交互点滅)</span>  
+ <span class="text-[10px] text-gray-400 block mt-0.5">2枚の画像を高速で切り替え、変化した部分を見つけます。</span>  
+ </div>  
+ </label>  
+ </div>  
+ <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 mt-2">  
+ <label class="flex items-center justify-between cursor-pointer">  
+ <span class="text-xs font-bold text-gray-200">輪郭線(エッジ)を抽出して重ねる</span>  
+ <input type="checkbox" id="edge-mode" class="accent-blue-500 w-5 h-5">  
+ </label>  
+ <p class="text-[9px] text-gray-400 mt-1">※画像1の輪郭線を抽出し、緑色の線として重ねます。</p>  
+ </div>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- 2. テキスト Sheet (フォーカス時コンパクト化対策) -->  
+ <div class="bottom-sheet" id="sheet-text">  
+ <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>  
+ <div class="px-4 pb-2 border-b border-gray-800 shrink-0 flex items-center justify-between">  
+ <h3 class="text-sm font-bold text-white">テキスト入れ</h3>  
+ <span class="text-[10px] text-gray-400">文字を直接ドラッグ移動可能</span>  
+ </div>  
+ <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-2.5 relative">  
+ <button id="add-text-btn" class="w-full bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600/50 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2 mb-2 text-xs">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>  
+ 新しいテキストを追加  
+ </button>  
+   
+ <div id="text-list-box" class="mb-2">  
+ <div class="flex items-center justify-between mb-1 px-1">  
+ <span class="text-[10px] text-slate-400 font-bold">配置済みテキスト一覧</span>  
+ <button id="text-deselect-btn" class="text-[9px] text-blue-400 hover:text-white">選択解除</button>  
+ </div>  
+ <div id="text-layer-list" class="flex flex-col gap-1 max-h-24 overflow-y-auto hide-scrollbar p-1 bg-slate-900/90 rounded-lg border border-slate-800">  
+ <p id="text-layer-empty" class="text-[10px] text-slate-500 text-center py-2">テキストはありません</p>  
+ </div>  
+ </div>  
+   
+ <div id="text-edit-panel" class="hidden bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 space-y-2.5 shadow-lg">  
+ <div>  
+ <input type="text" id="text-input" placeholder="テキスト内容" enterkeyhint="done" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs focus:border-blue-500 outline-none">  
+ </div>  
+   
+ <!-- キーボード表示時に自動折りたたみされる詳細オプション -->
+ <div id="text-details-container" class="space-y-2.5">
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400 w-12">フォント</label>  
+ <select id="text-font" class="flex-1 bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
+ <option value="'Noto Sans JP', sans-serif">角ゴシック体 (標準)</option>  
+ <option value="'Noto Serif JP', serif">明朝体 (格式)</option>  
+ <option value="'M PLUS Rounded 1c', sans-serif">丸ゴシック体 (柔らか)</option>  
+ <option value="'Yuji Boku', serif">毛筆・筆文字風 (札・和風)</option>  
+ </select>  
+ </div>  
+  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400 w-12">サイズ</label>  
+ <input type="range" id="text-size" min="10" max="300" step="1" value="40" class="flex-1">  
+ <span id="text-size-val" class="text-xs font-mono text-blue-400 w-9 text-right">40</span>  
+ </div>  
+  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400 w-12">縁取り幅</label>  
+ <input type="range" id="text-stroke-width" min="0" max="50" step="1" value="4" class="flex-1">  
+ <span id="text-stroke-val" class="text-xs font-mono text-blue-400 w-9 text-right">4</span>  
+ </div>  
+  
+ <div class="flex justify-between items-center pt-1">  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400">文字色</label>  
+ <input type="color" id="text-color" value="#ffffff" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
+ </div>  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400">縁取り色</label>  
+ <input type="color" id="text-stroke" value="#000000" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
+ </div>  
+ <button id="text-delete-btn" class="bg-red-600/20 text-red-500 hover:bg-red-600/40 px-2.5 py-1 rounded-lg text-xs font-bold border border-red-500/30 transition">削除</button>  
+ </div>  
+ </div>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- 3. グリッド Sheet -->
+ <div class="bottom-sheet" id="sheet-grid">
+   <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
+   <div class="px-4 pb-2 border-b border-gray-800 shrink-0 flex items-center justify-between">
+     <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+       <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M6 4v16M12 4v16M18 4v16"></path></svg>
+       グリッド・センター線設定
+     </h3>
+   </div>
+   <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-3">
+     <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded-xl border border-gray-700/50">
+       <span class="text-xs font-bold text-white">グリッド線を表示</span>
+       <input type="checkbox" id="grid-enable-toggle" class="accent-cyan-500 w-5 h-5">
+     </div>
+     <div class="bg-gray-800/50 p-3.5 rounded-xl border border-gray-700/50 space-y-3">
+       <div class="flex items-center justify-between gap-2">
+         <span class="text-xs font-bold text-gray-300 shrink-0">グリッド間隔</span>
+         <select id="grid-size-select" class="bg-gray-950 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs outline-none font-bold">
+           <option value="small" selected>小</option>
+           <option value="medium">中</option>
+           <option value="large">大</option>
+         </select>
+       </div>
+       <div class="flex items-center justify-between gap-2">
+         <span class="text-xs font-bold text-gray-300 shrink-0">グリッド線色</span>
+         <select id="grid-color-select" class="bg-gray-950 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs outline-none font-bold">
+           <option value="#38bdf8" selected>シアン（水色）</option>
+           <option value="#ffffff">白（ホワイト）</option>
+           <option value="#ef4444">赤（レッド）</option>
+           <option value="#eab308">黄（イエロー）</option>
+           <option value="#22c55e">緑（グリーン）</option>
+           <option value="#000000">黒（ブラック）</option>
+         </select>
+       </div>
+       <div class="flex items-center justify-between gap-2">
+         <span class="text-xs font-bold text-gray-300 shrink-0">グリッド線の太さ</span>
+         <select id="grid-width-select" class="bg-gray-950 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs outline-none font-bold">
+           <option value="1">細め (1px)</option>
+           <option value="1.5" selected>標準 (1.5px)</option>
+           <option value="2.5">太め (2.5px)</option>
+           <option value="4">極太 (4px)</option>
+         </select>
+       </div>
+       <div class="pt-2 border-t border-gray-700/50 flex justify-between items-center">
+         <span class="text-xs font-bold text-cyan-300">細分割補助線を表示</span>
+         <input type="checkbox" id="grid-subline-toggle" class="accent-cyan-500 w-5 h-5">
+       </div>
+       <div class="pt-2 border-t border-gray-700/50 flex justify-between items-center">
+         <span class="text-xs font-bold text-rose-300">センター十字線（赤実線）</span>
+         <input type="checkbox" id="grid-center-toggle" class="accent-rose-500 w-5 h-5">
+       </div>
+       <div class="flex items-center justify-between gap-2">
+         <span class="text-xs font-bold text-gray-300 shrink-0">センター線の太さ</span>
+         <select id="grid-center-width-select" class="bg-gray-950 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs outline-none font-bold">
+           <option value="1.5">極細 (1.5px)</option>
+           <option value="2.5" selected>細め (2.5px)</option>
+           <option value="3.5">標準 (3.5px)</option>
+           <option value="5">太め (5px)</option>
+         </select>
+       </div>
+     </div>
+   </div>
+ </div>
+
+ <!-- 4. ペン Sheet -->  
+ <div class="bottom-sheet" id="sheet-pen">  
+ <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>  
+ <div class="px-4 pb-2 border-b border-gray-800 shrink-0"><h3 class="text-sm font-bold text-white">ペンツール (フリーハンド)</h3></div>  
+ <div class="overflow-y-auto px-4 py-4 hide-scrollbar flex-1 space-y-4">  
+   
+ <label class="flex items-center justify-between bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 cursor-pointer">  
+ <span class="text-sm font-bold text-gray-200">ペン入力モード</span>  
+ <div class="relative inline-flex items-center">  
+ <input type="checkbox" id="pen-mode-toggle" class="sr-only peer">  
+ <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>  
+ </div>  
+ </label>  
+  
+ <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-3 opacity-50 pointer-events-none transition-opacity" id="pen-controls">
+   <div class="flex items-center justify-between gap-2">
+     <span class="text-xs font-bold text-gray-300">ペンの色 / 消しゴム</span>
+     <select id="pen-color-select" class="bg-gray-950 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs outline-none font-bold">
+       <option value="#ef4444" selected>赤色 (Red)</option>
+       <option value="#eab308">黄色 (Yellow)</option>
+       <option value="#22c55e">緑色 (Green)</option>
+       <option value="#3b82f6">青色 (Blue)</option>
+       <option value="#ffffff">白色 (White)</option>
+       <option value="eraser">消しゴム (Eraser)</option>
+     </select>
+   </div>
+   <div class="flex items-center justify-between gap-2">
+     <span class="text-xs font-bold text-gray-300">線の太さ</span>
+     <select id="pen-size-select" class="bg-gray-950 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs outline-none font-bold">
+       <option value="2">細 (2px)</option>
+       <option value="5" selected>標準 (5px)</option>
+       <option value="10">太 (10px)</option>
+       <option value="20">極太 (20px)</option>
+     </select>
+   </div>
+   <div class="flex justify-end pt-1">
+     <button id="pen-clear" class="bg-red-900/40 px-4 py-2 rounded-lg text-xs font-bold text-red-400 border border-red-500/30 transition active:bg-red-800/50">すべて消去</button>
+   </div>
+ </div>  
+ <p class="text-[10px] text-gray-400 leading-relaxed px-1">※ペン入力中は画像の移動や拡大ができません。書き終わったらオフにしてください。</p>  
+ </div>  
+ </div>  
+  
+ <!-- History / Images Modal -->  
+ <div id="history-modal" class="modal">  
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 flex flex-col max-h-[85vh] my-auto shadow-2xl relative">  
+ <div class="flex justify-between items-center mb-4 shrink-0">  
+ <h3 class="text-lg font-bold text-white">📁 プロジェクト・履歴</h3>  
+ <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>  
+ </div>  
+   
+ <div class="flex flex-col gap-2.5 mb-4 shrink-0">  
+ <button id="history-start-btn" class="w-full bg-gray-800/80 hover:bg-gray-700 text-gray-200 font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition flex items-center justify-center gap-2">  
+ <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>  
+ スタート画面へ戻る  
+ </button>  
+ </div> 
+ <div class="flex gap-2 mb-2 bg-slate-950 p-1 rounded-xl border border-slate-800 shrink-0 text-xs font-bold">
+   <button id="tab-btn-saved" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white">⭐ 保存プロジェクト</button>
+   <button id="tab-btn-recent" class="flex-1 py-1.5 rounded-lg text-slate-400">🕒 最近の履歴</button>
+ </div>
+ <div id="modal-saved-list" class="overflow-y-auto hide-scrollbar flex-1 space-y-2 min-h-[180px]"></div>
+ <div id="modal-recent-list" class="hidden overflow-y-auto hide-scrollbar flex-1 space-y-2 min-h-[180px]"></div>  
+ </div>  
+ </div>  
+  
+ <!-- Settings Menu Modal -->  
+ <div id="settings-menu-modal" class="modal">  
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative my-auto">  
+ <button class="close-modal-btn absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>  
+ <h3 class="text-lg font-bold text-white mb-6">設定</h3>  
+ <div class="space-y-2">  
+ <button id="menu-start-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3.5 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white">  
+ <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>  
+ スタート画面へ戻る  
+ </button>  
+ <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3.5 rounded-xl text-sm font-medium transition flex items-center gap-3" data-target="updates-modal">  
+ <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>  
+ 更新履歴  
+ </button>  
+ <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3.5 rounded-xl text-sm font-medium transition flex items-center gap-3" data-target="credit-modal">  
+ <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>  
+ クレジット・バージョン情報  
+ </button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- Export Modal -->  
+ <div id="export-modal" class="modal">  
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-4 shadow-2xl flex flex-col max-h-[92vh] my-auto">  
+ <h3 class="text-base font-bold text-white mb-2 text-center">保存・プロジェクト</h3>
+ <button id="modal-save-project-btn" class="w-full mb-2.5 py-2.5 bg-amber-500/20 border border-amber-500/40 hover:bg-amber-500/30 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition active:scale-95">
+ <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+ ⭐ 名前をつけてプロジェクト保存
+ </button>  
+ <div class="w-full bg-black rounded-xl overflow-hidden mb-2.5 flex items-center justify-center flex-1 relative border border-gray-800 min-h-[180px]">  
+ <img id="preview-img" src="" alt="Preview" class="max-w-full max-h-[36vh] object-contain block">  
+ </div>  
+   
+ <div class="flex justify-center gap-4 mb-2 bg-gray-800/60 p-2 rounded-xl border border-gray-700/60 shrink-0">  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="radio" name="export-format" value="jpeg" checked class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">JPG</span>  
+ </label>  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="radio" name="export-format" value="png" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">PNG</span>  
+ </label>  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="radio" name="export-format" value="pdf" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">PDF</span>  
+ </label>  
+ </div>  
+  
+ <div class="flex items-center justify-between bg-gray-800/60 px-3 py-2 rounded-xl border border-gray-700/60 mb-2.5 shrink-0">  
+ <span class="text-xs font-bold text-gray-200">透かし（ウォーターマーク）</span>  
+ <label class="flex items-center gap-2 cursor-pointer">  
+ <input type="checkbox" id="export-watermark-toggle" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs text-gray-300 font-bold">右下に入れる</span>  
+ </label>  
+ </div>  
+  
+ <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>  
+ 他アプリへ共有（LINE・フォト等）  
+ </button>  
+ <div class="grid grid-cols-2 gap-2 mb-2 shrink-0">  
+ <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>  
+ ファイル保存  
+ </button> <button class='close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs active:scale-95'>
+ 戻る
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <div id="save-project-modal" class="modal" style="z-index: 125;" onclick="event.stopPropagation();">
+ <div class="bg-slate-900 border border-slate-700 rounded-3xl p-5 w-full max-w-xs shadow-2xl text-center space-y-3 my-auto">
+   <h3 class="text-sm font-bold text-white">プロジェクト名をつけて保存</h3>
+   <input type="text" id="proj-name-input" placeholder="例: 祭壇チェック1" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white text-center font-bold outline-none focus:border-indigo-500">
+   <div class="grid grid-cols-2 gap-2 pt-1">
+     <button id="btn-proj-cancel" class="bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold active:scale-95 transition">キャンセル</button>
+     <button id="btn-proj-ok" class="bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold active:scale-95 transition">保存</button>
+   </div>
+ </div>
+ </div>  
+
+ <!-- 共通通知モーダル -->
+ <div id="alert-modal" class="modal" style="z-index: 120;">
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">
+ <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>
+ <p id="alert-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>
+ <button onclick="if(alertModalResolve){alertModalResolve(); alertModalResolve=null;} closeModal('alert-modal');" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>
+ </div>
+ </div>
+
+ <!-- 共通確認モーダル -->
+ <div id="confirm-modal" class="modal" style="z-index: 120;">
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">
+ <h3 id="confirm-modal-title" class="text-sm font-bold text-white">確認</h3>
+ <p id="confirm-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>
+ <div class="grid grid-cols-2 gap-2 pt-2">
+ <button onclick="if(confirmModalResolve){confirmModalResolve(false); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition active:scale-95">キャンセル</button>
+ <button onclick="if(confirmModalResolve){confirmModalResolve(true); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow active:scale-95">削除</button>
+ </div>
+ </div>
+ </div>  
+  
+ <!-- 終了確認モーダル -->  
+ <div id="exit-modal" class="modal">  
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center my-auto">  
+ <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>  
+ <p class="text-xs text-gray-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>  
+ <div class="grid grid-cols-2 gap-2">  
+ <button id="exit-cancel-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition">  
+ キャンセル  
+ </button>  
+ <button id="exit-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">  
+ OK  
+ </button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- Info Modals -->  
+ <div id="updates-modal" class="modal">  
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 shadow-2xl my-auto">  
+ <h3 class="text-lg font-bold text-white mb-4">更新履歴</h3>  
+ <div class="space-y-4 max-h-[50vh] overflow-y-auto text-sm text-gray-300 pr-2 hide-scrollbar">  
+ <div>  
+ <p class="font-bold text-blue-400">v1.2.5</p>  
+ <p class="text-xs mt-1">カメラ比較終了時の挙動改善、2枚目画像表示・オリジナル比率維持の完全対応、画像変更コマンドのシート内移設、文字入力時の画像被り防止</p>  
+ </div>  
+ </div>  
+ <button class="close-modal-btn w-full mt-6 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 rounded-xl transition border border-gray-700">閉じる</button>  
+ </div>  
+ </div>  
+ <div id="credit-modal" class="modal">  
+ <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 shadow-2xl text-center my-auto">  
+ <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg transform rotate-3">  
+ <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>  
+ </div>  
+ <h3 class="text-xl font-bold text-white mb-1">写真重ねてチェッカー</h3>  
+ <p class="text-xs text-blue-400 font-mono mb-4">v1.2.5</p>  
+ <div class="text-xs text-gray-300 space-y-2 mb-6 border-t border-gray-700/50 pt-4 text-left bg-gray-950/60 p-4 rounded-xl">  
+ <p><span class="text-gray-400">製作者:</span> <span class="font-bold text-white">関貴文</span></p>  
+ <p><span class="text-gray-400">AIアシスタント:</span> <span class="font-bold text-blue-400">Gemini (Google)</span></p>  
+ <p><span class="text-gray-400">技術スタック:</span> <span class="text-gray-200">HTML5 Canvas / Vanilla JavaScript / Tailwind CSS / WebRTC / IndexedDB / jsPDF</span></p>  
+ </div>  
+ <button class="close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 rounded-xl transition border border-gray-700">閉じる</button>  
+ </div>  
+ </div>  
+  
+ <script>  
+ // --- PWA Setup ---  
+ (function setupPWA() {  
+ const appSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">  
+ <rect width="512" height="512" rx="110" fill="#0f172a"/>  
+ <defs>  
+ <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>  
+ <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>  
+ </defs>  
+ <rect x="96" y="80" width="250" height="250" rx="24" fill="url(#g1)" opacity="0.85"/>  
+ <rect x="166" y="150" width="250" height="250" rx="24" fill="url(#g2)" opacity="0.85"/>  
+ <rect x="166" y="150" width="250" height="250" rx="24" fill="none" stroke="#ffffff" stroke-width="12" opacity="0.9"/>  
+ <circle cx="270" cy="255" r="40" fill="none" stroke="#ffffff" stroke-width="12"/>  
+ <path d="M270 195 L270 215 M270 295 L270 315 M210 255 L230 255 M310 255 L330 255" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>  
+ </svg>`;  
+  
+ const iconDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(appSvg);  
+ const fav = document.getElementById('app-favicon'); if (fav) fav.href = iconDataUrl;  
+ const appleIcon = document.getElementById('app-apple-icon'); if (appleIcon) appleIcon.href = iconDataUrl;  
+  
+ const manifest = {  
+ name: "写真重ねてチェッカー", short_name: "重ねてチェッカー", description: "2枚の写真を重ねて比較・位置合わせできる現場向けチェックツール",  
+ start_url: "./", scope: "./", display: "standalone", orientation: "portrait", background_color: "#0f172a", theme_color: "#0f172a",  
+ icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]  
+ };  
+ const mLink = document.getElementById('manifest-link');  
+ if (mLink) mLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));  
+  
+ if ('serviceWorker' in navigator) {
+   window.addEventListener('load', () => {
+     navigator.serviceWorker.register('sw.js').then(reg => {
+       reg.update().catch(() => {});
+     }).catch(() => {});
+   });
+ }  
+ })();  
+  
+ // --- App State ---  
+ const state = {  
+ step: 'start', historyId: null, fileName: '',  
+ img1: { obj: null, loaded: false, name: '', panX: 0, panY: 0, zoom: 1, vis: true, alpha: 1, flip: false, edges: null, tempVisOff: false },  
+ img2: { obj: null, loaded: false, name: '', panX: 0, panY: 0, zoom: 1, vis: true, alpha: 0.5, flip: false, tempVisOff: false },  
+ mode: 'photo', isGridCameraMode: false, blend: 'normal', edgeMode: false, flickerState: 0, target: 1,  
+ texts: [], selectedTextId: null,
+ draws: [], redoDraws: [], isDrawing: false, currentPath: null, penColor: '#ef4444', penSize: 5, penMode: false, penType: 'pen',
+ eyeTarget: 2,
+ grid: { enabled: false, sizeType: 'small', showSublines: false, color: '#38bdf8', lineWidth: 1.5, showCenter: false, centerWidth: 2.5, centerColor: '#ef4444' }
+ };  
+  
+ const canvas = document.getElementById('main-canvas');  
+ const ctx = canvas ? canvas.getContext('2d', { willReadFrequently: true }) : null;  
+ const video = document.getElementById('camera-video');  
+ let cameraStream = null;  
+  
+ const penCanvas = document.createElement('canvas');  
+ const pCtx = penCanvas.getContext('2d');  
+  
+ // Utilities  
+ const bindClick = (id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('click', handler); };
+ const bindInput = (id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('input', handler); };
+ const bindChange = (id, handler) => { const el = document.getElementById(id); if (el) el.addEventListener('change', handler); };
+
+ let alertModalResolve = null;
+ function showAlertModal(desc, title = '通知') {
+   return new Promise(resolve => {
+     alertModalResolve = resolve;
+     const tEl = document.getElementById('alert-modal-title');
+     const dEl = document.getElementById('alert-modal-desc');
+     if (tEl) tEl.textContent = title;
+     if (dEl) dEl.textContent = desc;
+     openModal('alert-modal');
+   });
+ }
+
+ let confirmModalResolve = null;
+ function showConfirmModal(desc, title = '確認') {
+   return new Promise(resolve => {
+     confirmModalResolve = resolve;
+     const tEl = document.getElementById('confirm-modal-title');
+     const dEl = document.getElementById('confirm-modal-desc');
+     if (tEl) tEl.textContent = title;
+     if (dEl) dEl.textContent = desc;
+     openModal('confirm-modal');
+   });
+ }
+
+ function updateProjectBadge(name) {
+   const txt = document.getElementById('current-project-name-text');
+   if (txt) txt.textContent = name || '新規比較';
+ }
+
+ function getNextExportSeq(cleanBase, dateStr) {
+   const storageKey = 'check_seq_' + cleanBase + '_' + dateStr;
+   let seq = parseInt(localStorage.getItem(storageKey) || '0', 10) + 1;
+   localStorage.setItem(storageKey, String(seq));
+   return String(seq).padStart(3, '0');
+ }
+
+ function getExportFileName(ext) {
+   const defaultName = (state.isGridCameraMode || (state.mode === 'camera' && !state.img1.name)) ? 'グリッドカメラ' : '比較';
+   const rawName = (state.img1.name || defaultName).trim();
+   let cleanBase = rawName.replace(/\.[^.]+$/, '');
+   const badChars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|'];
+   badChars.forEach(c => { cleanBase = cleanBase.split(c).join('_'); });
+   const now = new Date();
+   const y = now.getFullYear();
+   const m = String(now.getMonth() + 1).padStart(2, '0');
+   const d = String(now.getDate()).padStart(2, '0');
+   const dateStr = '' + y + m + d;
+   const seqStr = getNextExportSeq(cleanBase, dateStr);
+   return 'check_' + cleanBase + '_' + dateStr + '_' + seqStr + '.' + ext;
+ }  
+  
+ function updateEyeTargetBoxes() {
+   const hasBoth = state.img1.loaded && state.img2.loaded;
+   document.getElementById('eye-box-tab1')?.classList.toggle('hidden', !hasBoth);
+   document.getElementById('eye-box-tab2')?.classList.toggle('hidden', !hasBoth);
+   document.querySelectorAll('input[name="eye-target-img"]').forEach(r => {
+     r.checked = (parseInt(r.value) === state.eyeTarget);
+   });
+   const cameraBtn = document.getElementById('camera-toggle-btn');
+   if (cameraBtn) {
+     cameraBtn.style.display = (state.isGridCameraMode || (state.img1.loaded && !state.img2.loaded)) ? 'flex' : 'none';
+   }
+ }  
+
+ function updateToolbarAccessForGridCamera() {
+   const isLocked = state.isGridCameraMode;
+   ['tool-btn-image', 'tool-btn-text', 'tool-btn-pen'].forEach(id => {
+     const el = document.getElementById(id);
+     if (el) el.classList.toggle('disabled-btn', isLocked);
+   });
+ }
+  
+ function resize() {  
+ const workspace = document.getElementById('workspace');  
+ if (canvas && workspace) {  
+ canvas.width = workspace.clientWidth || window.innerWidth;  
+ canvas.height = workspace.clientHeight || window.innerHeight;  
+ penCanvas.width = canvas.width;  
+ penCanvas.height = canvas.height;  
+ render();  
+ }  
+ }  
+ window.addEventListener('resize', resize);  
+ setTimeout(resize, 100);  
+  
+ // ------------------ DB & History ------------------  
+ let db;  
+ const initDB = () => new Promise((res) => {  
+ if (!window.indexedDB) { res(); return; }  
+ const req = indexedDB.open('BlendMatchDB', 1);  
+ req.onupgradeneeded = e => {  
+ db = e.target.result;  
+ if(!db.objectStoreNames.contains('history')) db.createObjectStore('history', { keyPath: 'id' });  
+ };  
+ req.onsuccess = e => { db = e.target.result; res(); renderHistoryList(); };  
+ req.onerror = () => { res(); };  
+ });  
+ initDB();  
+  
+ function generateThumbnail() {  
+ if(!state.img1.obj) return '';  
+ const c = document.createElement('canvas');  
+ const s = Math.min(200/state.img1.obj.width, 200/state.img1.obj.height);  
+ c.width = state.img1.obj.width * s; c.height = state.img1.obj.height * s;  
+ c.getContext('2d').drawImage(state.img1.obj, 0, 0, c.width, c.height);  
+ return c.toDataURL('image/jpeg', 0.5);  
+ }  
+  
+ async function saveHistory() {  
+ if(!db || !state.img1.loaded) return;  
+ state.historyId = state.historyId || Date.now();  
+   
+ const toDataURL = (img) => {  
+ if(!img) return null;  
+ const c = document.createElement('canvas');  
+ c.width = img.width; c.height = img.height;  
+ c.getContext('2d').drawImage(img,0,0);  
+ return c.toDataURL('image/jpeg', 0.8);  
+ };  
+  
+ const record = {  
+ id: state.historyId, timestamp: Date.now(),  
+ img1Name: state.img1.name, img2Name: state.img2.name,  
+ thumbnail: generateThumbnail(),  
+ state: {  
+ img1Data: toDataURL(state.img1.obj), img2Data: toDataURL(state.img2.obj),  
+ i1: { panX: state.img1.panX, panY: state.img1.panY, zoom: state.img1.zoom, vis: state.img1.vis, alpha: state.img1.alpha, flip: state.img1.flip },  
+ i2: { panX: state.img2.panX, panY: state.img2.panY, zoom: state.img2.zoom, vis: state.img2.vis, alpha: state.img2.alpha, flip: state.img2.flip },  
+ blend: state.blend, edgeMode: state.edgeMode, target: state.target, eyeTarget: state.eyeTarget,  
+ texts: state.texts, draws: state.draws  
+ }  
+ };  
+ db.transaction('history', 'readwrite').objectStore('history').put(record);  
+ renderHistoryList();  
+ }  
+  
+ function loadHistory(id) {  
+ if(!db) return;  
+ db.transaction('history', 'readonly').objectStore('history').get(isNaN(Number(id)) ? id : Number(id)).onsuccess = e => {  
+ const rec = e.target.result; if(!rec) return;  
+ state.historyId = rec.id; const n1 = document.getElementById('name-img1'); if (n1) n1.textContent = rec.img1Name;
+ state.img1.name = rec.img1Name;
+ updateProjectBadge(rec.name || rec.img1Name); closeModal('history-modal');  
+ const n2 = document.getElementById('name-img2'); if (n2) n2.textContent = rec.img2Name || '未設定';  
+ state.img2.name = rec.img2Name;   
+  
+ const s = rec.state;  
+ Object.assign(state.img1, s.i1); Object.assign(state.img2, s.i2);  
+ state.blend = s.blend; state.edgeMode = s.edgeMode; state.target = s.target;  
+ state.eyeTarget = s.eyeTarget !== undefined ? s.eyeTarget : 2;  
+ state.texts = s.texts || []; state.draws = s.draws || [];  
+ state.redoDraws = [];  
+ updateUndoRedoButtons();  
+ updateTextPanel();
+   
+ const v1 = document.getElementById('vis-img1'); if (v1) v1.checked = s.i1.vis;  
+ const alpha1El = document.getElementById('alpha-img1');   
+ if (alpha1El) { alpha1El.value = s.i1.alpha; const vA1 = document.getElementById('val-alpha1'); if (vA1) vA1.textContent = Math.round(s.i1.alpha*100)+'%'; }  
+   
+ const v2 = document.getElementById('vis-img2'); if (v2) v2.checked = s.i2.vis;  
+ const alpha2El = document.getElementById('alpha-img2');   
+ if (alpha2El) { alpha2El.value = s.i2.alpha; const vA2 = document.getElementById('val-alpha2'); if (vA2) vA2.textContent = Math.round(s.i2.alpha*100)+'%'; }  
+   
+ const blendRadio = document.querySelector(`input[name="blend-mode"][value="${s.blend}"]`); if (blendRadio) blendRadio.checked = true;  
+ const edgeEl = document.getElementById('edge-mode'); if(edgeEl) edgeEl.checked = s.edgeMode;  
+ const tgtRadio = document.querySelector(`input[name="target-img"][value="${s.target}"]`); if(tgtRadio) tgtRadio.checked = true;  
+  
+ updateFlipBtn(1);  
+ updateFlipBtn(2);  
+  
+ const l1 = new Promise(r => {  
+ const img = new Image(); img.onload = () => { state.img1.obj = img; state.img1.loaded = true; processEdges(img, state.img1); r(); }; img.src = s.img1Data;  
+ });  
+ const l2 = new Promise(r => {  
+ if(!s.img2Data) return r();  
+ const img = new Image(); img.onload = () => {   
+ state.img2.obj = img; state.img2.loaded = true;   
+ const p2 = document.getElementById('panel-img2');  
+ if (p2) p2.classList.remove('opacity-50','pointer-events-none');   
+ r();   
+ };   
+ img.src = s.img2Data;  
+ });  
+   
+ Promise.all([l1, l2]).then(() => {  
+ state.isGridCameraMode = false;
+ updateToolbarAccessForGridCamera();
+ updateEyeTargetBoxes();  
+ const o = document.getElementById('start-overlay'); if(o) o.classList.add('hidden');  
+ const h1 = document.getElementById('header-start'); if(h1) h1.classList.add('hidden');  
+ const h2 = document.getElementById('header-editor'); if(h2) h2.classList.remove('hidden');  
+ const bt = document.getElementById('bottom-toolbar'); if(bt) bt.classList.remove('hidden');  
+ document.getElementById('toggle-ui-btn').style.display = 'flex';  
+ resize();  
+ });  
+ const hm = document.getElementById('history-modal'); if(hm) hm.classList.remove('active');  
+ };  
+ }  
+  
+ function renderHistoryList() {
+   if (!db) return;
+   db.transaction('history', 'readonly').objectStore('history').getAll().onsuccess = e => {
+     const all = e.target.result.sort((a,b) => b.timestamp - a.timestamp);
+     const savedList = document.getElementById('modal-saved-list');
+     const recentList = document.getElementById('modal-recent-list');
+     if (!savedList || !recentList) return;
+     const favs = all.filter(x => x.isFavorite);
+     const recents = all.filter(x => !x.isFavorite);
+     const createItem = (r) => `
+       <div class='flex items-center justify-between bg-slate-800 border border-slate-700 p-2 rounded-xl'>
+         <div class='flex items-center gap-2 flex-1 min-w-0 cursor-pointer' onclick='loadHistory("${r.id}")'>
+           <img src='${r.thumbnail}' class='w-11 h-11 rounded-lg object-cover bg-black shrink-0'>
+           <div class='min-w-0 flex-1'>
+             <p class='text-xs font-bold text-white truncate'>${r.name || r.img1Name}</p>
+             <p class='text-[10px] text-slate-400'>${new Date(r.timestamp).toLocaleDateString('ja-JP')} ${new Date(r.timestamp).toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})}</p>
+           </div>
+         </div>
+         <div class='flex gap-1.5 ml-2 shrink-0'>
+           <button onclick='loadHistory("${r.id}")' class='px-2.5 py-1 bg-indigo-900/60 border border-indigo-500/40 text-indigo-300 rounded-lg text-xs font-bold'>呼出</button>
+           <button class='delete-history-btn w-7 h-7 bg-red-950/60 border border-red-500/40 text-red-400 rounded-lg flex items-center justify-center text-xs' data-id='${r.id}'>×</button>
+         </div>
+       </div>
+     `;
+     savedList.innerHTML = favs.length > 0 ? favs.map(createItem).join('') : '<p class="text-center text-xs text-slate-500 py-6">保存プロジェクトはありません</p>';
+     recentList.innerHTML = recents.length > 0 ? recents.map(createItem).join('') : '<p class="text-center text-xs text-slate-500 py-6">最近の履歴はありません</p>';
+   };
+ } 
+ 
+ document.addEventListener('click', async e => {  
+ const btnDelete = e.target.closest('.delete-history-btn');  
+ if (btnDelete) {  
+ e.stopPropagation();  
+ const ok = await showConfirmModal('このプロジェクト履歴を削除しますか？', '履歴の削除');  
+ if (ok) {  
+ const rawId = btnDelete.getAttribute('data-id'); const id = isNaN(Number(rawId)) ? rawId : Number(rawId);  
+ db.transaction('history', 'readwrite').objectStore('history').delete(id).oncomplete = () => renderHistoryList();  
+ }  
+ return;  
+ }  
+   
+ const btnLoadImg = e.target.closest('.load-img-btn');  
+ if (btnLoadImg) {  
+ const target = btnLoadImg.getAttribute('data-target');  
+ const fileInput = document.getElementById(`file-input-${target}`);  
+ if (fileInput) fileInput.click();  
+ return;  
+ }  
+ });  
+  
+ // ------------------ Loading & Edge (オリジナル比率保持・確実描画) ------------------  
+ [1, 2].forEach(num => {  
+ const fileInput = document.getElementById(`file-input-${num}`);  
+ if (fileInput) {  
+ fileInput.addEventListener('change', e => {  
+ const file = e.target.files[0]; if (!file) return;  
+ const imgState = state[`img${num}`];  
+ imgState.name = file.name;
+ const nameEl = document.getElementById(`name-img${num}`);
+ if (nameEl) nameEl.textContent = file.name;
+ if (num === 1) updateProjectBadge(file.name);  
+   
+ const reader = new FileReader();  
+ reader.onload = ev => {  
+ if (imgState.obj && imgState.obj.src && imgState.obj.src.startsWith('blob:')) {
+   URL.revokeObjectURL(imgState.obj.src);
+ }
+ const img = new Image();
+ img.onload = () => {
+ imgState.obj = img; imgState.loaded = true;  
+ imgState.vis = true;
+ 
+ // 各画像ごとのオリジナル縦横比率を完全に保持して初期配置
+ const workspace = document.getElementById('workspace');
+ const cw = (workspace && workspace.clientWidth) ? workspace.clientWidth : (canvas ? canvas.width : window.innerWidth);
+ const ch = (workspace && workspace.clientHeight) ? workspace.clientHeight : (canvas ? canvas.height : window.innerHeight);
+ const scale = Math.min((cw * 0.9) / img.width, (ch * 0.8) / img.height);
+ imgState.zoom = (scale > 0 && isFinite(scale)) ? scale : 1;
+ imgState.panX = 0; 
+ imgState.panY = 0;  
+   
+ if(num === 1) {  
+ processEdges(img, imgState);  
+ const ub1 = document.getElementById('upload-box-1');  
+ if (ub1) ub1.innerHTML = `  
+ <img src="${ev.target.result}" class="w-full h-full object-cover rounded-2xl opacity-50 absolute inset-0">  
+ <div class="relative z-10 flex flex-col items-center">  
+ <span class="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-2">基準画像セット完了</span>  
+ <button class="bg-gray-800 border border-gray-600 text-white text-xs px-3 py-1 rounded-lg load-img-btn" data-target="1">変更</button>  
+ </div>`;  
+ document.getElementById('upload-box-2')?.classList.remove('opacity-50', 'pointer-events-none');  
+ document.getElementById('start-editor-btn')?.classList.remove('hidden', 'opacity-0');  
+ }  
+ if(num === 2) {  
+ const ub2 = document.getElementById('upload-box-2');  
+ if (ub2) ub2.innerHTML = `  
+ <img src="${ev.target.result}" class="w-full h-full object-cover rounded-2xl opacity-50 absolute inset-0">  
+ <div class="relative z-10 flex flex-col items-center">  
+ <span class="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-2">比較画像セット完了</span>  
+ <button class="bg-gray-800 border border-gray-600 text-white text-xs px-3 py-1 rounded-lg load-img-btn" data-target="2">変更</button>  
+ </div>`;  
+ const p2 = document.getElementById('panel-img2');  
+ if (p2) p2.classList.remove('opacity-50', 'pointer-events-none');  
+ const v2 = document.getElementById('vis-img2'); if (v2) v2.checked = true;
+ state.target = 2;
+ const tgt = document.querySelector(`input[name="target-img"][value="2"]`);  
+ if (tgt) tgt.click();  
+ }  
+ state.isGridCameraMode = false;
+ updateToolbarAccessForGridCamera();
+ updateEyeTargetBoxes();  
+ const hm = document.getElementById('history-modal');  
+ if (hm) hm.classList.remove('active');  
+ saveHistory();  
+ resize();  
+ render();  
+ };  
+ img.src = ev.target.result;  
+ };  
+ reader.readAsDataURL(file);  
+ });  
+ }  
+ });  
+  
+ bindClick('start-editor-btn', () => {  
+ state.grid.enabled = false;
+ state.grid.showCenter = false;
+ const gChk = document.getElementById('grid-enable-toggle'); if (gChk) gChk.checked = false;
+ const cChk = document.getElementById('grid-center-toggle'); if (cChk) cChk.checked = false;
+ const o = document.getElementById('start-overlay'); if (o) o.classList.add('hidden');  
+ const hs = document.getElementById('header-start'); if (hs) hs.classList.add('hidden');  
+ const he = document.getElementById('header-editor'); if (he) he.classList.remove('hidden');  
+ const bt = document.getElementById('bottom-toolbar'); if (bt) bt.classList.remove('hidden');  
+ document.getElementById('toggle-ui-btn').style.display = 'flex';  
+ state.isGridCameraMode = false;
+ updateToolbarAccessForGridCamera();
+ updateEyeTargetBoxes();  
+ history.pushState({ inEditor: true }, '');
+ resize();  
+ }); 
+ 
+ bindClick('top-history-btn', () => openModal('history-modal'));
+ bindClick('header-history-btn', () => openModal('history-modal'));
+ bindClick('tab-btn-saved', () => {
+   document.getElementById('tab-btn-saved')?.classList.replace('bg-slate-800', 'bg-indigo-600');
+   document.getElementById('tab-btn-saved')?.classList.replace('text-slate-400', 'text-white');
+   document.getElementById('tab-btn-recent')?.classList.replace('bg-indigo-600', 'bg-slate-800');
+   document.getElementById('tab-btn-recent')?.classList.replace('text-white', 'text-slate-400');
+   document.getElementById('modal-saved-list')?.classList.remove('hidden');
+   document.getElementById('modal-recent-list')?.classList.add('hidden');
+ });
+ bindClick('tab-btn-recent', () => {
+   document.getElementById('tab-btn-recent')?.classList.replace('bg-slate-800', 'bg-indigo-600');
+   document.getElementById('tab-btn-recent')?.classList.replace('text-slate-400', 'text-white');
+   document.getElementById('tab-btn-saved')?.classList.replace('bg-indigo-600', 'bg-slate-800');
+   document.getElementById('tab-btn-saved')?.classList.replace('text-white', 'text-slate-400');
+   document.getElementById('modal-recent-list')?.classList.remove('hidden');
+   document.getElementById('modal-saved-list')?.classList.add('hidden');
+ });
+ 
+ // スタート画面へ戻る関数
+ function goToStartScreen() {  
+ closeModal('settings-menu-modal');  
+ closeModal('history-modal');  
+ document.querySelectorAll('.bottom-sheet, .sheet-overlay, .toolbar-btn').forEach(el => el.classList.remove('active'));  
+   
+ if (cameraStream) {  
+   cameraStream.getTracks().forEach(t => t.stop());  
+   cameraStream = null;  
+   video.srcObject = null;  
+   video.style.display = 'none';  
+ }
+ state.mode = 'photo';  
+ state.isGridCameraMode = false;
+ updateToolbarAccessForGridCamera();
+ 
+ const b = document.getElementById('camera-toggle-btn');  
+ if (b) {  
+   b.classList.replace('bg-red-600/20', 'bg-green-600/20');  
+   b.classList.replace('text-red-400', 'text-green-400');  
+   b.classList.replace('border-green-500/30', 'border-green-500/30');  
+   b.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>カメラ比較';  
+ }  
+   
+ document.getElementById('start-overlay')?.classList.remove('hidden');  
+ document.getElementById('header-start')?.classList.remove('hidden');  
+ document.getElementById('header-editor')?.classList.add('hidden');  
+ document.getElementById('bottom-toolbar')?.classList.add('hidden');  
+ const toggleBtn = document.getElementById('toggle-ui-btn');  
+ if (toggleBtn) toggleBtn.style.display = 'none';  
+
+ render();
+ }  
+ bindClick('menu-start-btn', goToStartScreen);  
+ bindClick('history-start-btn', goToStartScreen);  
+  
+ function processEdges(img, tState) {  
+ const eCvs = document.getElementById('edge-canvas');   
+ if (!eCvs) return;  
+ const eCtx = eCvs.getContext('2d');  
+ eCvs.width = img.width; eCvs.height = img.height;   
+ eCtx.drawImage(img, 0, 0);  
+   
+ try {  
+ const imgData = eCtx.getImageData(0,0, eCvs.width, eCvs.height);  
+ const data = imgData.data; const out = eCtx.createImageData(eCvs.width, eCvs.height);  
+ const oData = out.data; const w = eCvs.width;  
+   
+ for (let y = 1; y < eCvs.height-1; y++) {  
+ for (let x = 1; x < w-1; x++) {  
+ const idx = (y * w + x) * 4;  
+ const lum = (data[idx] + data[idx+1] + data[idx+2])/3;  
+ const idxR = (y * w + (x+1)) * 4; const lumR = (data[idxR] + data[idxR+1] + data[idxR+2])/3;  
+ const idxB = ((y+1) * w + x) * 4; const lumB = (data[idxB] + data[idxB+1] + data[idxB+2])/3;  
+ if (Math.abs(lum - lumR) + Math.abs(lum - lumB) > 40) {  
+ oData[idx] = 0; oData[idx+1] = 255; oData[idx+2] = 0; oData[idx+3] = 255;  
+ }  
+ }  
+ }  
+ eCtx.putImageData(out, 0, 0);  
+ const edgeImg = new Image();   
+ edgeImg.onload = () => { tState.edges = edgeImg; render(); };   
+ edgeImg.src = eCvs.toDataURL();  
+ } catch (err) {  
+ console.warn('Edge processing skipped', err);  
+ }  
+ }  
+  
+ // ------------------ Undo / Redo Updater ------------------  
+ function updateUndoRedoButtons() {  
+ const btnUndo = document.getElementById('float-undo');  
+ const btnRedo = document.getElementById('float-redo');  
+ if (btnUndo) btnUndo.disabled = state.draws.length === 0;  
+ if (btnRedo) btnRedo.disabled = state.redoDraws.length === 0;  
+ }  
+  
+ bindClick('float-undo', () => {   
+ if(state.draws.length > 0) { state.redoDraws.push(state.draws.pop()); updateUndoRedoButtons(); render(); }  
+ });  
+ bindClick('float-redo', () => {   
+ if(state.redoDraws.length > 0) { state.draws.push(state.redoDraws.pop()); updateUndoRedoButtons(); render(); }  
+ });  
+ bindClick('pen-clear', async () => {   
+ const ok = await showConfirmModal('ペンの描画を全て消去しますか？', '描画消去');  
+ if (ok) { state.draws = []; state.redoDraws = []; updateUndoRedoButtons(); render(); }   
+ });  
+  
+ // ------------------ Interaction (Pan & Zoom & Draw) ------------------  
+ let pointers = new Map();  
+ let initDist = null;  
+  
+ function getTargetState() { return state.target === 1 ? state.img1 : state.img2; }  
+  
+ canvas?.addEventListener('pointerdown', e => {  
+ pointers.set(e.pointerId, e); canvas.setPointerCapture(e.pointerId);  
+ const rect = canvas.getBoundingClientRect();
+ const canvasX = e.clientX - rect.left;
+ const canvasY = e.clientY - rect.top;
+ const rx = canvasX - canvas.width / 2;
+ const ry = canvasY - canvas.height / 2;
+   
+ // Text selection  
+ if (!state.penMode && state.texts.length > 0 && pointers.size === 1) {  
+ let hit = null;  
+ const ctx = canvas.getContext('2d');  
+ for (let i = state.texts.length - 1; i >= 0; i--) {  
+ let t = state.texts[i];  
+ ctx.font = `bold ${t.size}px ${t.font}`;  
+ if (Math.abs(rx - t.x) < ctx.measureText(t.text).width/2 + 20 && Math.abs(ry - t.y) < t.size/2 + 20) { hit = t.id; break; }  
+ }  
+ if (hit) {  
+ state.selectedTextId = hit;  
+ document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));  
+ document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('active'));  
+ const btnText = document.querySelector('[data-sheet="sheet-text"]');  
+ if (btnText) btnText.classList.add('active');  
+ const sheetText = document.getElementById('sheet-text');  
+ if (sheetText) {  
+ sheetText.classList.add('active');  
+ pushWindowHistory();  
+ }  
+ const overlay = document.getElementById('sheet-overlay');  
+ if (overlay) overlay.classList.add('active');  
+ document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');  
+ updateTextPanel();  
+ render();  
+ return;
+ }  
+ }  
+  
+ // Drawing  
+ if (state.penMode && pointers.size === 1) {  
+ state.isDrawing = true;  
+ state.currentPath = { type: state.penType, color: state.penColor, size: state.penSize, points: [{x: rx, y: ry}] };  
+ state.draws.push(state.currentPath);  
+ state.redoDraws = [];  
+ updateUndoRedoButtons();  
+ render();
+ }  
+ });  
+  
+ canvas?.addEventListener('pointermove', e => {  
+ if (!pointers.has(e.pointerId)) return;  
+ let prev = Array.from(pointers.values()); pointers.set(e.pointerId, e); let curr = Array.from(pointers.values());  
+ const rect = canvas.getBoundingClientRect();
+ const canvasX = e.clientX - rect.left;
+ const canvasY = e.clientY - rect.top;
+ const rx = canvasX - canvas.width / 2;
+ const ry = canvasY - canvas.height / 2;
+  
+ if (state.penMode && state.isDrawing && curr.length === 1) {  
+ state.currentPath.points.push({x: rx, y: ry});  
+ render();  
+ return;  
+ }  
+  
+ if (state.penMode) return;   
+  
+ if (state.selectedTextId && curr.length === 1) {  
+ let p = prev.find(p => p.pointerId === e.pointerId);  
+ if (p) {  
+ let t = state.texts.find(x => x.id === state.selectedTextId);  
+ if(t) { t.x += e.clientX - p.clientX; t.y += e.clientY - p.clientY; render(); }  
+ }  
+ return;  
+ }  
+  
+ const tState = getTargetState();  
+ if (!tState.loaded) return;  
+  
+ if (curr.length === 1) {  
+ let p = prev.find(p => p.pointerId === e.pointerId);  
+ if (p) { tState.panX += e.clientX - p.clientX; tState.panY += e.clientY - p.clientY; render(); }  
+ } else if (curr.length === 2) {  
+ let p1 = curr[0], p2 = curr[1];  
+ let pp1 = prev.find(p => p.pointerId === p1.pointerId) || p1; let pp2 = prev.find(p => p.pointerId === p2.pointerId) || p2;  
+ let distCurr = Math.hypot(p1.clientX - p2.clientX, p1.clientY - p2.clientY);  
+ let distPrev = Math.hypot(pp1.clientX - pp2.clientX, pp1.clientY - pp2.clientY);  
+ let cx = (p1.clientX + p2.clientX)/2; let cy = (p1.clientY + p2.clientY)/2;  
+  
+ if (initDist === null) initDist = distCurr;  
+ else {  
+ let factor = distCurr / (distPrev || 1);  
+ let rx = cx - canvas.width/2; let ry = cy - canvas.height/2;  
+ let ix = (rx - tState.panX) / tState.zoom; let iy = (ry - tState.panY) / tState.zoom;  
+ tState.zoom = Math.max(0.01, Math.min(100, tState.zoom * factor));  
+ tState.panX = rx - ix * tState.zoom; tState.panY = ry - iy * tState.zoom;  
+ tState.panX += cx - (pp1.clientX + pp2.clientX)/2; tState.panY += cy - (pp1.clientY + pp2.clientY)/2;  
+ render();  
+ }  
+ }  
+ });  
+ const endPointer = e => { pointers.delete(e.pointerId); if (pointers.size < 2) initDist = null; state.isDrawing = false; };  
+ canvas?.addEventListener('pointerup', endPointer); canvas?.addEventListener('pointercancel', endPointer);  
+   
+ canvas?.addEventListener('wheel', e => {  
+ e.preventDefault();  
+ if (state.penMode) return;  
+ const tState = getTargetState(); if (!tState.loaded) return;  
+ let factor = e.deltaY < 0 ? 1.05 : 0.95;  
+ let rx = e.clientX - canvas.width/2; let ry = e.clientY - canvas.height/2;  
+ let ix = (rx - tState.panX) / tState.zoom; let iy = (ry - tState.panY) / tState.zoom;  
+ tState.zoom = Math.max(0.01, Math.min(100, tState.zoom * factor));  
+ tState.panX = rx - ix * tState.zoom; tState.panY = ry - iy * tState.zoom;  
+ render();  
+ }, { passive: false });  
+  
+ // ------------------ Rendering ------------------  
+ function drawImageState(s) {  
+ if (!s.loaded || !ctx) return;  
+ ctx.save();  
+ ctx.translate(canvas.width/2 + s.panX, canvas.height/2 + s.panY);  
+ ctx.scale(s.zoom, s.zoom);  
+ if (s.flip) ctx.scale(-1, 1);  
+ ctx.globalAlpha = s.alpha;  
+ ctx.drawImage(s.obj, -s.obj.width/2, -s.obj.height/2);  
+ ctx.restore();  
+ }  
+  
+ function drawEdges(s) {  
+ if (!s.loaded || !s.edges || !ctx) return;  
+ ctx.save();  
+ ctx.translate(canvas.width/2 + s.panX, canvas.height/2 + s.panY);  
+ ctx.scale(s.zoom, s.zoom);  
+ if (s.flip) ctx.scale(-1, 1);  
+ ctx.globalAlpha = s.alpha;  
+ ctx.drawImage(s.edges, -s.obj.width/2, -s.obj.height/2);  
+ ctx.restore();  
+ }  
+  
+ function render() {  
+ if (!ctx) return;  
+ ctx.clearRect(0, 0, canvas.width, canvas.height);  
+  
+ const isImg1Vis = state.img1.loaded && state.img1.vis && !state.img1.tempVisOff;  
+ const isImg2Vis = state.img2.loaded && state.img2.vis && !state.img2.tempVisOff;  
+  
+ if (state.edgeMode) {  
+ if (isImg2Vis && state.mode !== 'camera') drawImageState(state.img2);  
+ if (isImg1Vis) drawEdges(state.img1);  
+ } else {  
+ if (state.blend === 'flicker') {  
+ if (state.flickerState === 0) {   
+ ctx.globalCompositeOperation = 'source-over';   
+ if (isImg1Vis) drawImageState(state.img1);   
+ } else {   
+ if(isImg2Vis) drawImageState(state.img2);   
+ else if (isImg1Vis) drawImageState(state.img1);   
+ }  
+ } else if (state.blend === 'difference') {  
+ ctx.globalCompositeOperation = 'source-over';   
+ if (isImg1Vis) drawImageState(state.img1);  
+ if (isImg2Vis) {  
+ ctx.globalCompositeOperation = 'difference';  
+ const oldA = state.img2.alpha; state.img2.alpha = 1;  
+ drawImageState(state.img2); state.img2.alpha = oldA;  
+ }  
+ ctx.globalCompositeOperation = 'source-over';  
+ } else {  
+ ctx.globalCompositeOperation = 'source-over';  
+ if (isImg1Vis) drawImageState(state.img1);   
+ if (isImg2Vis) drawImageState(state.img2);  
+ }  
+ }  
+  
+ // Drawings  
+ pCtx.clearRect(0, 0, penCanvas.width, penCanvas.height);  
+ pCtx.save(); pCtx.translate(penCanvas.width/2, penCanvas.height/2);  
+ state.draws.forEach(path => {  
+ if (path.points.length < 2) return;  
+ pCtx.lineWidth = path.size;  
+ pCtx.lineCap = 'round'; pCtx.lineJoin = 'round';  
+ if (path.type === 'eraser') {  
+ pCtx.globalCompositeOperation = 'destination-out';  
+ pCtx.strokeStyle = 'rgba(0,0,0,1)';  
+ } else {  
+ pCtx.globalCompositeOperation = 'source-over';  
+ pCtx.strokeStyle = path.color;  
+ }  
+ pCtx.beginPath();  
+ pCtx.moveTo(path.points[0].x, path.points[0].y);  
+ for(let i=1; i<path.points.length; i++) pCtx.lineTo(path.points[i].x, path.points[i].y);  
+ pCtx.stroke();  
+ });  
+ pCtx.restore();  
+ ctx.drawImage(penCanvas, 0, 0);
+
+ // Grid Lines
+ if (state.grid && (state.grid.enabled || state.grid.showCenter)) {
+   ctx.save();
+   ctx.globalCompositeOperation = 'source-over';
+   ctx.globalAlpha = 1.0;
+   const w = canvas.width, h = canvas.height;
+   const cx = w / 2, cy = h / 2;
+   
+   let basePitch = 35;
+   if (state.grid.sizeType === 'medium') basePitch = 70;
+   else if (state.grid.sizeType === 'large') basePitch = 130;
+
+   const pxMain = basePitch;
+   const pxSub = pxMain / 5;
+
+   if (state.grid.enabled) {
+     if (state.grid.showSublines && pxSub >= 6) {
+       ctx.beginPath();
+       ctx.lineWidth = Math.max(0.5, state.grid.lineWidth * 0.4);
+       ctx.strokeStyle = state.grid.color;
+       ctx.globalAlpha = 0.35;
+       for (let x = cx + pxSub; x < w; x += pxSub) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+       for (let x = cx - pxSub; x > 0; x -= pxSub) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+       for (let y = cy + pxSub; y < h; y += pxSub) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+       for (let y = cy - pxSub; y > 0; y -= pxSub) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+       ctx.stroke();
+     }
+
+     if (pxMain >= 15) {
+       ctx.beginPath();
+       ctx.lineWidth = state.grid.lineWidth;
+       ctx.strokeStyle = state.grid.color;
+       ctx.globalAlpha = 0.85;
+       for (let x = cx; x < w; x += pxMain) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+       for (let x = cx - pxMain; x > 0; x -= pxMain) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+       for (let y = cy; y < h; y += pxMain) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+       for (let y = cy - pxMain; y > 0; y -= pxMain) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+       ctx.stroke();
+     }
+   }
+
+   if (state.grid.showCenter) {
+     ctx.globalAlpha = 1.0;
+     const cW = state.grid.centerWidth || 2.5;
+     ctx.beginPath();
+     ctx.lineWidth = cW + 2;
+     ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+     ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+     ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+     ctx.stroke();
+
+     ctx.beginPath();
+     ctx.lineWidth = cW;
+     ctx.strokeStyle = state.grid.centerColor || '#ef4444';
+     ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+     ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+     ctx.stroke();
+   }
+   ctx.restore();
+ }  
+  
+ // Texts  
+ ctx.save(); ctx.translate(canvas.width/2, canvas.height/2);  
+ state.texts.forEach(t => {  
+ ctx.save();  
+ if (t.id === state.selectedTextId) {  
+ ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = `bold ${t.size}px ${t.font}`;  
+ let w = ctx.measureText(t.text).width;  
+ ctx.fillRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
+ ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2;  
+ ctx.strokeRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
+ }  
+ ctx.translate(t.x, t.y); ctx.font = `bold ${t.size}px ${t.font}`;  
+ ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';  
+ if (t.strokeWidth > 0) { ctx.strokeStyle = t.strokeColor; ctx.lineWidth = t.strokeWidth; ctx.strokeText(t.text, 0, 0); }  
+ ctx.fillStyle = t.color; ctx.fillText(t.text, 0, 0);  
+ ctx.restore();  
+ });  
+ ctx.restore();  
+ }  
+  
+ setInterval(() => { if (state.blend === 'flicker' && !state.edgeMode) { state.flickerState = state.flickerState === 0 ? 1 : 0; render(); } }, 300);  
+  
+ // ------------------ UI Binding ------------------  
+ document.querySelectorAll('input[name="eye-target-img"]').forEach(r => {  
+ r.addEventListener('change', e => {  
+ state.eyeTarget = parseInt(e.target.value);  
+ updateEyeTargetBoxes();  
+ saveHistory();  
+ });  
+ });  
+  
+ const toggleUIBtn = document.getElementById('toggle-ui-btn');  
+ if (toggleUIBtn) {  
+ const pressAction = (e) => {   
+ e.preventDefault();  
+ const hasBoth = state.img1.loaded && state.img2.loaded;  
+ if (!hasBoth) {  
+ if (state.img1.loaded) state.img1.tempVisOff = true;  
+ } else {  
+ if (state.eyeTarget === 1) state.img1.tempVisOff = true;  
+ else state.img2.tempVisOff = true;  
+ }  
+ render();   
+ };  
+ const releaseAction = (e) => {   
+ e.preventDefault();  
+ state.img1.tempVisOff = false;  
+ state.img2.tempVisOff = false;  
+ render();   
+ };  
+ toggleUIBtn.addEventListener('pointerdown', pressAction);  
+ toggleUIBtn.addEventListener('pointerup', releaseAction);  
+ toggleUIBtn.addEventListener('pointerleave', releaseAction);  
+ toggleUIBtn.addEventListener('pointercancel', releaseAction);  
+ }  
+  
+ function updateFlipBtn(num) {  
+ const btn = document.getElementById(`flip-img${num}`);  
+ if(!btn) return;  
+ if(state[`img${num}`].flip) {  
+ btn.classList.add('bg-blue-600', 'border-blue-500');  
+ btn.classList.remove('bg-gray-700', 'border-transparent');  
+ } else {  
+ btn.classList.add('bg-gray-700', 'border-transparent');  
+ btn.classList.remove('bg-blue-600', 'border-blue-500');  
+ }  
+ }  
+  
+ const bindCheck = (id, prop, sObj) => {   
+ const el = document.getElementById(id);   
+ if(el) el.addEventListener('change', e => { sObj[prop] = e.target.checked; render(); });   
+ };  
+ const bindRange = (id, prop, sObj) => {  
+ const el = document.getElementById(id);  
+ if(el) el.addEventListener('input', e => {  
+ sObj[prop] = parseFloat(e.target.value);  
+ if(id.startsWith('alpha')) {  
+ const valEl = document.getElementById(`val-${id}`);  
+ if(valEl) valEl.textContent = Math.round(sObj[prop]*100)+'%';  
+ }  
+ render();  
+ });  
+ };  
+  
+ bindCheck('vis-img1', 'vis', state.img1);   
+ bindRange('alpha-img1', 'alpha', state.img1);  
+ bindClick('flip-img1', () => { state.img1.flip = !state.img1.flip; updateFlipBtn(1); render(); });  
+ bindClick('reset-img1', () => {   
+ state.img1.panX = 0; state.img1.panY = 0;   
+ if(state.img1.obj && canvas) state.img1.zoom = Math.min((canvas.width*0.9)/state.img1.obj.width, (canvas.height*0.8)/state.img1.obj.height);   
+ render();   
+ });  
+  
+ bindCheck('vis-img2', 'vis', state.img2);   
+ bindRange('alpha-img2', 'alpha', state.img2);  
+ bindClick('flip-img2', () => { state.img2.flip = !state.img2.flip; updateFlipBtn(2); render(); });  
+ bindClick('reset-img2', () => {   
+ state.img2.panX = 0; state.img2.panY = 0;   
+ if(state.img2.obj && canvas) state.img2.zoom = Math.min((canvas.width*0.9)/state.img2.obj.width, (canvas.height*0.8)/state.img2.obj.height);   
+ render();   
+ });  
+  
+ document.getElementsByName('target-img').forEach(r => r.addEventListener('change', e => state.target = parseInt(e.target.value)));  
+ document.getElementsByName('blend-mode').forEach(r => r.addEventListener('change', e => { state.blend = e.target.value; render(); }));  
+ bindChange('edge-mode', e => { state.edgeMode = e.target.checked; render(); });  
+  
+ // Pen Sheet  
+ bindChange('pen-mode-toggle', e => {  
+ state.penMode = e.target.checked;  
+ const pControls = document.getElementById('pen-controls');  
+ if(pControls) {  
+ pControls.classList.toggle('opacity-50', !state.penMode);  
+ pControls.classList.toggle('pointer-events-none', !state.penMode);  
+ }  
+ });  
+ bindChange('pen-size-select', e => state.penSize = parseInt(e.target.value));
+ bindChange('pen-color-select', e => {
+   const val = e.target.value;
+   if (val === 'eraser') {
+     state.penType = 'eraser';
+   } else {
+     state.penType = 'pen';
+     state.penColor = val;
+   }
+ });  
+   
+ // ------------------ Text UI (キーボード被り防止機能搭載) ------------------  
+ bindClick('add-text-btn', () => {  
+ const newId = Date.now();  
+ state.texts.push({ id: newId, text: '新規テキスト', x: 0, y: 0, size: 40, font: "'Noto Sans JP', sans-serif", color: '#ffffff', strokeColor: '#000000', strokeWidth: 4 });  
+ state.selectedTextId = newId;   
+ updateTextPanel();   
+ render();  
+ setTimeout(() => document.getElementById('text-input')?.focus(), 100);  
+ });  
+   
+ function renderTextList() {  
+ const list = document.getElementById('text-layer-list');  
+ if (!list) return;  
+ list.innerHTML = '';  
+ if (!state.texts || state.texts.length === 0) {  
+ list.innerHTML = '<p id="text-layer-empty" class="text-[10px] text-slate-500 text-center py-2">テキストはありません</p>';  
+ return;  
+ }  
+ state.texts.forEach((t, idx) => {  
+ const isSel = t.id === state.selectedTextId;  
+ const item = document.createElement('div');  
+ item.className = `flex items-center justify-between px-2 py-1.5 rounded text-xs transition cursor-pointer ${isSel ? 'bg-blue-600/30 border border-blue-500 text-white font-bold' : 'bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-800'}`;  
+ item.onclick = () => { state.selectedTextId = t.id; updateTextPanel(); render(); };  
+ item.innerHTML = `  
+ <span class="truncate max-w-[170px]">T${idx + 1}: ${t.text || '(空)'}</span>  
+ <button class="del-single-text text-slate-400 hover:text-red-400 p-1" data-id="${t.id}">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
+ </button>  
+ `;  
+ list.appendChild(item);  
+ });  
+ list.querySelectorAll('.del-single-text').forEach(btn => {  
+ btn.addEventListener('click', async e => {  
+ e.preventDefault();  
+ e.stopPropagation();  
+ const id = parseInt(e.currentTarget.getAttribute('data-id'));  
+ const targetItem = state.texts.find(x => x.id === id);  
+ const ok = await showConfirmModal(`テキスト「${targetItem?.text || ''}」を削除しますか？`, 'テキスト削除');  
+ if (ok) {  
+ state.texts = state.texts.filter(x => x.id !== id);  
+ if (state.selectedTextId === id) state.selectedTextId = null;  
+ updateTextPanel();  
+ render();  
+ }  
+ });  
+ });  
+ }  
+
+ function updateTextPanel() {  
+ renderTextList();
+ const p = document.getElementById('text-edit-panel');  
+ if(!p) return;  
+ if(!state.selectedTextId) { p.classList.add('hidden'); return; }  
+ const t = state.texts.find(x => x.id === state.selectedTextId); if(!t) return;  
+ p.classList.remove('hidden');  
+   
+ const ti = document.getElementById('text-input'); if(ti) ti.value = t.text;   
+ const ts = document.getElementById('text-size'); if(ts) ts.value = t.size;   
+ const valTs = document.getElementById('text-size-val'); if(valTs) valTs.textContent = t.size;  
+ const tf = document.getElementById('text-font'); if(tf) tf.value = t.font;  
+ const tc = document.getElementById('text-color'); if(tc) tc.value = t.color;   
+ const tst = document.getElementById('text-stroke'); if(tst) tst.value = t.strokeColor;   
+ const tsw = document.getElementById('text-stroke-width'); if(tsw) tsw.value = t.strokeWidth;  
+ const valTsw = document.getElementById('text-stroke-val'); if(valTsw) valTsw.textContent = t.strokeWidth;  
+ }  
+   
+ const updateSelectedText = (key, val) => { let t = state.texts.find(x => x.id === state.selectedTextId); if(t) { t[key] = val; render(); } };  
+ bindInput('text-input', e => updateSelectedText('text', e.target.value));  
+
+ // 入力中の画像視認性確保（キーボード被り防止対策）
+ const textInputEl = document.getElementById('text-input');
+ if (textInputEl) {
+   textInputEl.addEventListener('focus', () => {
+     document.getElementById('text-list-box')?.classList.add('hidden');
+     document.getElementById('add-text-btn')?.classList.add('hidden');
+     document.getElementById('text-details-container')?.classList.add('hidden');
+   });
+   textInputEl.addEventListener('blur', () => {
+     document.getElementById('text-list-box')?.classList.remove('hidden');
+     document.getElementById('add-text-btn')?.classList.remove('hidden');
+     document.getElementById('text-details-container')?.classList.remove('hidden');
+   });
+   textInputEl.addEventListener('keydown', e => { if (e.key === 'Enter') textInputEl.blur(); });
+ }
+
+ bindInput('text-size', e => {  
+ const v = parseInt(e.target.value);  
+ document.getElementById('text-size-val').textContent = v;  
+ updateSelectedText('size', v);  
+ });  
+ bindChange('text-font', e => {
+   updateSelectedText('font', e.target.value);
+   if (document.fonts && document.fonts.ready) {
+     document.fonts.ready.then(() => render());
+   }
+ });  
+ bindInput('text-color', e => updateSelectedText('color', e.target.value));  
+ bindInput('text-stroke', e => updateSelectedText('strokeColor', e.target.value));  
+ bindInput('text-stroke-width', e => {  
+ const v = parseInt(e.target.value);  
+ document.getElementById('text-stroke-val').textContent = v;  
+ updateSelectedText('strokeWidth', v);  
+ });  
+  
+ bindClick('text-deselect-btn', () => {  
+ state.selectedTextId = null;  
+ updateTextPanel();  
+ render();  
+ });  
+
+ bindClick('text-delete-btn', async () => {   
+ if (!state.selectedTextId) return;   
+ const targetItem = state.texts.find(x => x.id === state.selectedTextId);
+ const ok = await showConfirmModal(`テキスト「${targetItem?.text || ''}」を削除しますか？`, 'テキスト削除');
+ if (ok) {
+   state.texts = state.texts.filter(x => x.id !== state.selectedTextId);   
+   state.selectedTextId = null;   
+   updateTextPanel();   
+   render();   
+ }
+ });  
+  
+ // --- ウィンドウ開閉とスマホ戻るボタン連動 ---  
+ history.replaceState({ appBase: true }, '');  
+ let isClosingByCode = false;  
+  
+ function pushWindowHistory() {  
+ if (!history.state || !history.state.windowOpen) {  
+ history.pushState({ windowOpen: true }, '');  
+ }  
+ }  
+  
+ function closeAllActiveWindows(triggerHistoryBack = true) {  
+ const activeElements = document.querySelectorAll('.bottom-sheet.active, .modal.active');  
+ if (activeElements.length === 0) return false;  
+  
+ document.querySelectorAll('.bottom-sheet, .sheet-overlay, .toolbar-btn').forEach(el => el.classList.remove('active'));  
+ document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));  
+ document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');  
+ if (state.selectedTextId) { state.selectedTextId = null; updateTextPanel(); render(); }  
+  
+ if (alertModalResolve) { const res = alertModalResolve; alertModalResolve = null; res(); }
+ if (confirmModalResolve) { const res = confirmModalResolve; confirmModalResolve = null; res(false); }
+
+ if (triggerHistoryBack && history.state && history.state.windowOpen) {  
+ isClosingByCode = true;  
+ history.back();  
+ }  
+ return true;  
+ }  
+  
+ window.addEventListener('popstate', (e) => {  
+ if (isClosingByCode) {  
+ isClosingByCode = false;  
+ return;  
+ }  
+ const exitModal = document.getElementById('exit-modal');  
+ if (exitModal && exitModal.classList.contains('active')) {  
+ exitModal.classList.remove('active');  
+ return;  
+ }  
+ const hasOtherWindow = document.querySelector('.bottom-sheet.active, .modal.active');  
+ if (hasOtherWindow) {  
+ closeAllActiveWindows(false);  
+ return;  
+ }  
+ if (state.mode === 'camera' && !state.isGridCameraMode) {  
+ const camBtn = document.getElementById('camera-toggle-btn');  
+ if (camBtn) camBtn.click();  
+ history.pushState({ inEditor: true }, '');  
+ return;  
+ }  
+ const isStartVisible = !document.getElementById('start-overlay')?.classList.contains('hidden');  
+ if (!isStartVisible) {  
+ goToStartScreen();  
+ } else {  
+ history.pushState({ appBase: true }, '');  
+ if (exitModal) exitModal.classList.add('active');  
+ }  
+ });  
+  
+ bindClick('exit-ok-btn', () => { window.location.href = 'index.html'; });  
+ bindClick('exit-cancel-btn', () => {  
+ const exitModal = document.getElementById('exit-modal');  
+ if (exitModal) exitModal.classList.remove('active');  
+ });  
+  
+ // Toolbar Logic  
+ document.querySelectorAll('.toolbar-btn').forEach(btn => {  
+ btn.addEventListener('click', e => {  
+ const target = e.currentTarget.getAttribute('data-sheet');  
+ if (!target) return;  
+   
+ if (state.isGridCameraMode && target !== 'sheet-grid') {
+   return;
+ }
+
+ if (e.currentTarget.classList.contains('active')) {  
+ closeAllActiveWindows(true);  
+ } else {  
+ document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));  
+ document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('active'));  
+ e.currentTarget.classList.add('active');  
+ const tEl = document.getElementById(target);   
+ if(tEl) {  
+ tEl.classList.add('active');  
+ pushWindowHistory();  
+ }  
+ const so = document.getElementById('sheet-overlay');   
+ if(so) so.classList.add('active');  
+   
+ if (target === 'sheet-pen') document.getElementById('pen-floating-buttons')?.classList.replace('hidden', 'flex');  
+ else document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');  
+ }  
+ });  
+ });  
+   
+ bindClick('sheet-overlay', () => closeAllActiveWindows(true));  
+   
+ document.querySelectorAll('.bottom-sheet .tab-btn').forEach(btn => {  
+ btn.addEventListener('click', e => {  
+ const parent = e.target.closest('.bottom-sheet');  
+ parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));  
+ parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));  
+ e.target.classList.add('active');  
+ const tEl = document.getElementById(e.target.getAttribute('data-target'));  
+ if(tEl) tEl.classList.add('active');  
+ });  
+ });  
+  
+ // ------------------ Grid Camera ------------------
+ async function startGridCamera() {
+   try {
+     cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 3840, min: 1920 }, height: { ideal: 2160, min: 1080 } } });
+     video.srcObject = cameraStream; video.style.display = 'block';
+     state.mode = 'camera';
+     state.isGridCameraMode = true;
+     state.grid.enabled = false;
+     state.grid.showCenter = false;
+     const gChk = document.getElementById('grid-enable-toggle'); if (gChk) gChk.checked = false;
+     const cChk = document.getElementById('grid-center-toggle'); if (cChk) cChk.checked = false;
+     const b = document.getElementById('camera-toggle-btn');
+     if (b) {
+       b.classList.replace('bg-green-600/20', 'bg-red-600/20'); b.classList.replace('text-green-400', 'text-red-400'); b.classList.replace('border-green-500/30', 'border-red-500/30');
+       b.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>カメラ終了';
+     }
+     if (canvas) canvas.style.backgroundColor = 'transparent';
+     state.img2.vis = false;
+     document.getElementById('start-overlay')?.classList.add('hidden');
+     document.getElementById('header-start')?.classList.add('hidden');
+     document.getElementById('header-editor')?.classList.remove('hidden');
+     document.getElementById('bottom-toolbar')?.classList.remove('hidden');
+     updateToolbarAccessForGridCamera();
+     updateProjectBadge('グリッドカメラ');
+     history.pushState({ inEditor: true }, '');
+     resize();
+   } catch(err) { showAlertModal('カメラの起動に失敗しました。カメラへのアクセスを許可してください。', 'カメラエラー'); }
+ }
+
+ bindChange('grid-enable-toggle', e => { state.grid.enabled = e.target.checked; render(); });
+ bindChange('grid-center-toggle', e => { state.grid.showCenter = e.target.checked; render(); });
+ bindChange('grid-center-width-select', e => { state.grid.centerWidth = parseFloat(e.target.value); render(); });
+ bindChange('grid-subline-toggle', e => { state.grid.showSublines = e.target.checked; render(); });
+ bindChange('grid-size-select', e => { state.grid.sizeType = e.target.value; render(); });
+ bindChange('grid-color-select', e => { state.grid.color = e.target.value; render(); });
+ bindChange('grid-width-select', e => { state.grid.lineWidth = parseFloat(e.target.value); render(); });
+
+ bindClick('modal-save-project-btn', () => {
+   if (!state.img1.loaded && !state.isGridCameraMode) return showAlertModal('保存する画像がありません。', '注意');
+   const defName = state.img1.name ? state.img1.name.replace(/\.[^.]+$/, '') : (state.isGridCameraMode ? 'グリッドカメラ' : 'プロジェクト');
+   const inp = document.getElementById('proj-name-input');
+   if (inp) inp.value = defName;
+   openModal('save-project-modal');
+ });
+ bindClick('btn-proj-cancel', () => closeModal('save-project-modal'));
+ bindClick('btn-proj-ok', () => {
+   const name = document.getElementById('proj-name-input')?.value.trim();
+   if (!name) return showAlertModal('名前を入力してください。', '入力エラー');
+   const cleanName = name;
+   closeModal('save-project-modal');
+   const toDataURL = (img) => {
+     if(!img) return null;
+     const c = document.createElement('canvas');
+     c.width = img.width; c.height = img.height;
+     c.getContext('2d').drawImage(img,0,0);
+     return c.toDataURL('image/jpeg', 0.8);
+   };
+   const record = {
+     id: 'proj_' + Date.now(),
+     name: cleanName,
+     isFavorite: true,
+     timestamp: Date.now(),
+     img1Name: state.img1.name || cleanName,
+     img2Name: state.img2.name,
+     thumbnail: generateThumbnail(),
+     state: {
+       img1Data: toDataURL(state.img1.obj),
+       img2Data: toDataURL(state.img2.obj),
+       i1: { panX: state.img1.panX, panY: state.img1.panY, zoom: state.img1.zoom, vis: state.img1.vis, alpha: state.img1.alpha, flip: state.img1.flip },
+       i2: { panX: state.img2.panX, panY: state.img2.panY, zoom: state.img2.zoom, vis: state.img2.vis, alpha: state.img2.alpha, flip: state.img2.flip },
+       blend: state.blend, edgeMode: state.edgeMode, target: state.target, eyeTarget: state.eyeTarget,
+       texts: state.texts, draws: state.draws
+     }
+   };
+   db.transaction('history', 'readwrite').objectStore('history').put(record).oncomplete = () => {
+     updateProjectBadge(cleanName);
+     renderHistoryList();
+     closeModal('export-modal');
+     showAlertModal('「' + cleanName + '」をプロジェクトに保存しました。', '保存完了');
+   };
+ });
+
+ // Camera Toggle Button (グリッドカメラ時と画像比較時で分岐)
+ bindClick('camera-toggle-btn', async () => {  
+ if (state.mode === 'photo') {  
+ try {  
+ cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 3840, min: 1920 }, height: { ideal: 2160, min: 1080 } } });  
+ video.srcObject = cameraStream; video.style.display = 'block';  
+ state.mode = 'camera';  
+ const b = document.getElementById('camera-toggle-btn');  
+ if (b) {  
+ b.classList.replace('bg-green-600/20', 'bg-red-600/20'); b.classList.replace('text-green-400', 'text-red-400'); b.classList.replace('border-green-500/30', 'border-red-500/30');  
+ b.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>カメラ終了';  
+ }  
+ if (canvas) canvas.style.backgroundColor = 'transparent';  
+ state.img2.vis = false;   
+ const vEl = document.getElementById('vis-img2'); if(vEl) vEl.checked = false;  
+ state.target = 1;   
+ const tgtEl = document.querySelector(`input[name="target-img"][value="1"]`); if(tgtEl) tgtEl.click();  
+ } catch(err) { showAlertModal('カメラへのアクセスが拒否されたか、エラーが発生しました。', 'カメラエラー'); }  
+ } else {  
+   // カメラ終了時
+   if (state.isGridCameraMode) {
+     // グリッドカメラ直接起動時はスタート画面へ戻る
+     goToStartScreen();
+   } else {
+     // 画像比較からのカメラ起動時はカメラをオフにするだけ
+     if (cameraStream) {
+       cameraStream.getTracks().forEach(t => t.stop());
+       cameraStream = null;
+     }
+     video.srcObject = null;
+     video.style.display = 'none';
+     state.mode = 'photo';
+     const b = document.getElementById('camera-toggle-btn');
+     if (b) {
+       b.classList.replace('bg-red-600/20', 'bg-green-600/20');
+       b.classList.replace('text-red-400', 'text-green-400');
+       b.classList.replace('border-green-500/30', 'border-green-500/30');
+       b.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>カメラ比較';
+     }
+     if (canvas) canvas.style.backgroundColor = '';
+     if (state.img2.loaded) {
+       state.img2.vis = true;
+       const vEl = document.getElementById('vis-img2'); if(vEl) vEl.checked = true;
+     }
+     render();
+   }
+ }  
+ render();  
+ });  
+  
+ // Modals  
+ const openModal = id => {   
+ document.querySelectorAll('.bottom-sheet, .sheet-overlay, .toolbar-btn').forEach(el => el.classList.remove('active'));   
+ const m = document.getElementById(id);   
+ if(m) {  
+ m.classList.add('active');  
+ pushWindowHistory();  
+ }  
+ document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');  
+ };  
+  
+ const closeModal = id => {  
+ const m = document.getElementById(id);   
+ if(m && m.classList.contains('active')) {  
+ m.classList.remove('active');  
+ if (history.state && history.state.windowOpen) {  
+ isClosingByCode = true;  
+ history.back();  
+ }  
+ }  
+ };  
+   
+ document.querySelectorAll('.settings-btn').forEach(btn => btn.addEventListener('click', () => openModal('settings-menu-modal')));  
+   
+ document.querySelectorAll('.open-modal-btn').forEach(btn => {  
+ btn.addEventListener('click', e => {   
+ const prev = document.getElementById('settings-menu-modal');  
+ if (prev) prev.classList.remove('active');  
+ openModal(e.currentTarget.getAttribute('data-target'));   
+ });  
+ });  
+   
+ document.querySelectorAll('.close-modal-btn').forEach(btn => {  
+ btn.addEventListener('click', e => closeModal(e.target.closest('.modal').id));  
+ });  
+  
+ // Export Actions (高解像度保持 & スマホ画面比率レンダリング)  
+ function buildExportCanvas(withWatermark = false) {
+   if (!canvas) return null;
+   const screenW = canvas.width;
+   const screenH = canvas.height;
+   const screenRatio = screenW / screenH;
+
+   // 解像度基準の決定 (1枚/2枚/カメラ)
+   let maxRes = 2160;
+   if (state.mode === 'camera' && video && video.videoWidth) {
+     maxRes = Math.max(video.videoWidth, video.videoHeight, 2160);
+   } else if (state.img1.loaded && state.img2.loaded) {
+     const max1 = Math.max(state.img1.obj.width, state.img1.obj.height);
+     const max2 = Math.max(state.img2.obj.width, state.img2.obj.height);
+     maxRes = Math.max(max1, max2, 2160);
+   } else if (state.img1.loaded) {
+     maxRes = Math.max(state.img1.obj.width, state.img1.obj.height, 2160);
+   }
+
+   let exportW, exportH;
+   if (screenRatio >= 1) {
+     exportW = Math.round(maxRes);
+     exportH = Math.round(maxRes / screenRatio);
+   } else {
+     exportH = Math.round(maxRes);
+     exportW = Math.round(maxRes * screenRatio);
+   }
+
+   const scaleFactor = exportW / screenW;
+   const eCanvas = document.createElement('canvas');
+   eCanvas.width = exportW;
+   eCanvas.height = exportH;
+   const eCtx = eCanvas.getContext('2d', { willReadFrequently: true });
+
+   eCtx.fillStyle = '#000000';
+   eCtx.fillRect(0, 0, exportW, exportH);
+
+   // カメラ映像を高解像度描画
+   if (state.mode === 'camera' && video && video.videoWidth) {
+     const vw = video.videoWidth, vh = video.videoHeight;
+     const scale = Math.max(exportW / vw, exportH / vh);
+     const dw = vw * scale, dh = vh * scale;
+     const dx = (exportW - dw) / 2, dy = (exportH - dh) / 2;
+     eCtx.drawImage(video, dx, dy, dw, dh);
+   }
+
+   // 各画像を高解像度直接描画
+   const drawHiResImage = (s) => {
+     if (!s.loaded) return;
+     eCtx.save();
+     eCtx.translate(exportW / 2 + s.panX * scaleFactor, exportH / 2 + s.panY * scaleFactor);
+     eCtx.scale(s.zoom * scaleFactor, s.zoom * scaleFactor);
+     if (s.flip) eCtx.scale(-1, 1);
+     eCtx.globalAlpha = s.alpha;
+     eCtx.drawImage(s.obj, -s.obj.width / 2, -s.obj.height / 2);
+     eCtx.restore();
+   };
+
+   const drawHiResEdges = (s) => {
+     if (!s.loaded || !s.edges) return;
+     eCtx.save();
+     eCtx.translate(exportW / 2 + s.panX * scaleFactor, exportH / 2 + s.panY * scaleFactor);
+     eCtx.scale(s.zoom * scaleFactor, s.zoom * scaleFactor);
+     if (s.flip) eCtx.scale(-1, 1);
+     eCtx.globalAlpha = s.alpha;
+     eCtx.drawImage(s.edges, -s.obj.width / 2, -s.obj.height / 2);
+     eCtx.restore();
+   };
+
+   const isImg1Vis = state.img1.loaded && state.img1.vis && !state.img1.tempVisOff;
+   const isImg2Vis = state.img2.loaded && state.img2.vis && !state.img2.tempVisOff;
+
+   if (state.edgeMode) {
+     if (isImg2Vis && state.mode !== 'camera') drawHiResImage(state.img2);
+     if (isImg1Vis) drawHiResEdges(state.img1);
+   } else if (state.blend === 'difference') {
+     eCtx.globalCompositeOperation = 'source-over';
+     if (isImg1Vis) drawHiResImage(state.img1);
+     if (isImg2Vis) {
+       eCtx.globalCompositeOperation = 'difference';
+       const oldA = state.img2.alpha; state.img2.alpha = 1;
+       drawHiResImage(state.img2); state.img2.alpha = oldA;
+     }
+     eCtx.globalCompositeOperation = 'source-over';
+   } else {
+     eCtx.globalCompositeOperation = 'source-over';
+     if (isImg1Vis) drawHiResImage(state.img1);
+     if (isImg2Vis) drawHiResImage(state.img2);
+   }
+
+   // ペン描画
+   if (state.draws && state.draws.length > 0) {
+     const hiPenCanvas = document.createElement('canvas');
+     hiPenCanvas.width = exportW;
+     hiPenCanvas.height = exportH;
+     const hpCtx = hiPenCanvas.getContext('2d');
+     hpCtx.save();
+     hpCtx.translate(exportW / 2, exportH / 2);
+     state.draws.forEach(path => {
+       if (path.points.length < 2) return;
+       hpCtx.lineWidth = path.size * scaleFactor;
+       hpCtx.lineCap = 'round';
+       hpCtx.lineJoin = 'round';
+       if (path.type === 'eraser') {
+         hpCtx.globalCompositeOperation = 'destination-out';
+         hpCtx.strokeStyle = 'rgba(0,0,0,1)';
+       } else {
+         hpCtx.globalCompositeOperation = 'source-over';
+         hpCtx.strokeStyle = path.color;
+       }
+       hpCtx.beginPath();
+       hpCtx.moveTo(path.points[0].x * scaleFactor, path.points[0].y * scaleFactor);
+       for (let i = 1; i < path.points.length; i++) {
+         hpCtx.lineTo(path.points[i].x * scaleFactor, path.points[i].y * scaleFactor);
+       }
+       hpCtx.stroke();
+     });
+     hpCtx.restore();
+     eCtx.drawImage(hiPenCanvas, 0, 0);
+   }
+
+   // グリッド線
+   if (state.grid && (state.grid.enabled || state.grid.showCenter)) {
+     eCtx.save();
+     eCtx.globalCompositeOperation = 'source-over';
+     const cx = exportW / 2, cy = exportH / 2;
+     let basePitch = 35;
+     if (state.grid.sizeType === 'medium') basePitch = 70;
+     else if (state.grid.sizeType === 'large') basePitch = 130;
+     const pxMain = basePitch * scaleFactor;
+     const pxSub = pxMain / 5;
+
+     if (state.grid.enabled) {
+       if (state.grid.showSublines && pxSub >= 6) {
+         eCtx.beginPath();
+         eCtx.lineWidth = Math.max(0.8, state.grid.lineWidth * 0.4 * scaleFactor);
+         eCtx.strokeStyle = state.grid.color;
+         eCtx.globalAlpha = 0.35;
+         for (let x = cx + pxSub; x < exportW; x += pxSub) { eCtx.moveTo(x, 0); eCtx.lineTo(x, exportH); }
+         for (let x = cx - pxSub; x > 0; x -= pxSub) { eCtx.moveTo(x, 0); eCtx.lineTo(x, exportH); }
+         for (let y = cy + pxSub; y < exportH; y += pxSub) { eCtx.moveTo(0, y); eCtx.lineTo(exportW, y); }
+         for (let y = cy - pxSub; y > 0; y -= pxSub) { eCtx.moveTo(0, y); eCtx.lineTo(exportW, y); }
+         eCtx.stroke();
+       }
+       if (pxMain >= 15) {
+         eCtx.beginPath();
+         eCtx.lineWidth = state.grid.lineWidth * scaleFactor;
+         eCtx.strokeStyle = state.grid.color;
+         eCtx.globalAlpha = 0.85;
+         for (let x = cx; x < exportW; x += pxMain) { eCtx.moveTo(x, 0); eCtx.lineTo(x, exportH); }
+         for (let x = cx - pxMain; x > 0; x -= pxMain) { eCtx.moveTo(x, 0); eCtx.lineTo(x, exportH); }
+         for (let y = cy; y < exportH; y += pxMain) { eCtx.moveTo(0, y); eCtx.lineTo(exportW, y); }
+         for (let y = cy - pxMain; y > 0; y -= pxMain) { eCtx.moveTo(0, y); eCtx.lineTo(exportW, y); }
+         eCtx.stroke();
+       }
+     }
+     if (state.grid.showCenter) {
+       eCtx.globalAlpha = 1.0;
+       const cW = (state.grid.centerWidth || 2.5) * scaleFactor;
+       eCtx.beginPath();
+       eCtx.lineWidth = cW + 2 * scaleFactor;
+       eCtx.strokeStyle = 'rgba(0,0,0,0.4)';
+       eCtx.moveTo(cx, 0); eCtx.lineTo(cx, exportH);
+       eCtx.moveTo(0, cy); eCtx.lineTo(exportW, cy);
+       eCtx.stroke();
+       eCtx.beginPath();
+       eCtx.lineWidth = cW;
+       eCtx.strokeStyle = state.grid.centerColor || '#ef4444';
+       eCtx.moveTo(cx, 0); eCtx.lineTo(cx, exportH);
+       eCtx.moveTo(0, cy); eCtx.lineTo(exportW, cy);
+       eCtx.stroke();
+     }
+     eCtx.restore();
+   }
+
+   // テキスト
+   eCtx.save();
+   eCtx.translate(exportW / 2, exportH / 2);
+   state.texts.forEach(t => {
+     eCtx.save();
+     eCtx.translate(t.x * scaleFactor, t.y * scaleFactor);
+     eCtx.font = `bold ${Math.round(t.size * scaleFactor)}px ${t.font}`;
+     eCtx.textAlign = 'center';
+     eCtx.textBaseline = 'middle';
+     eCtx.lineJoin = 'round';
+     if (t.strokeWidth > 0) {
+       eCtx.strokeStyle = t.strokeColor;
+       eCtx.lineWidth = t.strokeWidth * scaleFactor;
+       eCtx.strokeText(t.text, 0, 0);
+     }
+     eCtx.fillStyle = t.color;
+     eCtx.fillText(t.text, 0, 0);
+     eCtx.restore();
+   });
+   eCtx.restore();
+
+   // 透かし（ウォーターマーク）
+   if (withWatermark) {
+     eCtx.save();
+     const wmText = '写真重ねてチェッカー';
+     const wmFontSize = Math.max(16, Math.round(18 * scaleFactor));
+     eCtx.font = `bold ${wmFontSize}px sans-serif`;
+     eCtx.textAlign = 'right';
+     eCtx.textBaseline = 'bottom';
+     const padX = Math.round(20 * scaleFactor);
+     const padY = Math.round(20 * scaleFactor);
+     eCtx.shadowColor = 'rgba(0,0,0,0.8)';
+     eCtx.shadowBlur = 4 * scaleFactor;
+     eCtx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+     eCtx.fillText(wmText, exportW - padX, exportH - padY);
+     eCtx.restore();
+   }
+
+   return eCanvas;
+ }
+
+ function updateExportPreview() {
+   const wm = document.getElementById('export-watermark-toggle')?.checked || false;
+   const c = buildExportCanvas(wm);
+   if (!c) return;
+   window.__exportCanvasTemp = c;
+   const previewEl = document.getElementById('preview-img');
+   if (previewEl) previewEl.src = c.toDataURL('image/jpeg', 0.85);
+ }
+
+ function triggerExport() {
+   if (!canvas) return;
+   updateExportPreview();
+   openModal('export-modal');
+ }
+ bindClick('toolbar-export-btn', triggerExport);
+ bindChange('export-watermark-toggle', updateExportPreview);  
+  
+ if (navigator.share) {  
+ const shareBtn = document.getElementById('share-file-btn');  
+ if(shareBtn) shareBtn.classList.remove('hidden');  
+ } 
+ 
+ bindClick('download-file-btn', () => {  
+ const formatEl = document.querySelector('input[name="export-format"]:checked');  
+ if (!formatEl || !window.__exportCanvasTemp) return;  
+ const format = formatEl.value;  
+ const c = window.__exportCanvasTemp;  
+ const ext = format === 'pdf' ? 'pdf' : (format === 'jpeg' ? 'jpg' : 'png');  
+ const outName = getExportFileName(ext);  
+   
+ if (format === 'pdf') {  
+ if (!window.jspdf || !window.jspdf.jsPDF) return;  
+ const jsPDF = window.jspdf.jsPDF;  
+ const pdf = new jsPDF({ orientation: c.width > c.height ? 'l' : 'p', unit: 'px', format: [c.width, c.height] });  
+ pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, c.width, c.height);  
+ pdf.save(outName);  
+ closeModal('export-modal');  
+ showAlertModal('「' + outName + '」を保存しました', 'ファイル保存完了');  
+ } else {  
+ const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';  
+ c.toBlob(blob => {  
+ if (!blob) return;  
+ const url = URL.createObjectURL(blob);  
+ const a = document.createElement('a');  
+ a.href = url;  
+ a.download = outName;  
+ document.body.appendChild(a);  
+ a.click();  
+ setTimeout(() => {  
+ document.body.removeChild(a);  
+ URL.revokeObjectURL(url);  
+ }, 300);  
+ closeModal('export-modal');  
+ showAlertModal('「' + outName + '」を保存しました', 'ファイル保存完了');  
+ }, mime, 0.95);  
+ }  
+ });  
+   
+ bindClick('share-file-btn', async () => {  
+ const formatEl = document.querySelector('input[name="export-format"]:checked');  
+ if (!formatEl || !window.__exportCanvasTemp) return;  
+ const format = formatEl.value;  
+ const c = window.__exportCanvasTemp;  
+ const ext = format === 'pdf' ? 'pdf' : (format === 'jpeg' ? 'jpg' : 'png');  
+ const outName = getExportFileName(ext);  
+   
+ let fileObj = null;  
+ if (format === 'pdf') {  
+ if (!window.jspdf || !window.jspdf.jsPDF) return;  
+ const jsPDF = window.jspdf.jsPDF;  
+ const pdf = new jsPDF({ orientation: c.width > c.height ? 'l' : 'p', unit: 'px', format: [c.width, c.height] });  
+ pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, c.width, c.height);  
+ const blob = pdf.output('blob');  
+ fileObj = new File([blob], outName, { type: 'application/pdf' });  
+ } else {  
+ const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';  
+ const blob = await new Promise(res => c.toBlob(res, mime, 0.95));  
+ if (blob) fileObj = new File([blob], outName, { type: mime });  
+ }  
+   
+ if (fileObj && navigator.canShare && navigator.canShare({ files: [fileObj] })) {  
+ try {  
+ await navigator.share({ files: [fileObj], title: outName });  
+ closeModal('export-modal');  
+ } catch (err) {  
+ if (err.name !== 'AbortError') console.warn(err);  
+ }  
+ } else {  
+ document.getElementById('download-file-btn')?.click();  
+ }  
+ });  
+ </script>  
+</body>  
+</html>

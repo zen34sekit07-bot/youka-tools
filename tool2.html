@@ -1,0 +1,2314 @@
+<!DOCTYPE html>  
+<html lang="ja">  
+<head>  
+ <meta charset="UTF-8">  
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">  
+ <title>グリッドメーカー</title>  
+   
+ <!-- PWA Manifest & Meta -->  
+ <link rel="manifest" id="manifest-link">  
+ <meta name="theme-color" content="#0f172a">  
+ <meta name="apple-mobile-web-app-capable" content="yes">  
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
+ <meta name="apple-mobile-web-app-title" content="グリッドメーカー">  
+ <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230f172a'/%3E%3Cpath d='M40 40h112v112H40z' stroke='%233b82f6' stroke-width='8' fill='none'/%3E%3Cpath d='M96 40v112M40 96h112' stroke='%233b82f6' stroke-width='4'/%3E%3C/svg%3E">  
+  
+ <!-- Google Fonts (日本語フォント: 角ゴシック/明朝/丸ゴシック/毛筆風) -->  
+ <link rel="preconnect" href="https://fonts.googleapis.com">  
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
+ <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&family=Noto+Sans+JP:wght@700&family=Noto+Serif+JP:wght@700&family=Yuji+Boku&display=swap" rel="stylesheet">  
+  
+ <!-- Tailwind CSS -->  
+ <script src="https://cdn.tailwindcss.com"></script>  
+ <!-- jsPDF for PDF export -->  
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  
+  
+ <script>  
+ tailwind.config = {  
+ theme: {  
+ extend: {  
+ colors: {  
+ gray: { 850: '#1f2937', 900: '#111827', 950: '#030712' },  
+ blue: { 500: '#3b82f6', 600: '#2563eb' }  
+ }  
+ }  
+ }  
+ }  
+ </script>  
+ <style>  
+ body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; background: #0f172a; }  
+ canvas { display: block; touch-action: none; outline: none; }  
+ .hide-scrollbar::-webkit-scrollbar { display: none; }  
+ .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }  
+ button { touch-action: manipulation; }  
+   
+ input[type="range"] {  
+ accent-color: #3b82f6;  
+ -webkit-appearance: none;  
+ width: 100%;  
+ background: transparent;  
+ height: 26px;  
+ }  
+ input[type=range]::-webkit-slider-thumb {  
+ -webkit-appearance: none;  
+ height: 20px;  
+ width: 20px;  
+ border-radius: 50%;  
+ background: #ffffff;  
+ cursor: pointer;  
+ margin-top: -7px;  
+ box-shadow: 0 2px 6px rgba(0,0,0,0.8), 0 0 0 2px #3b82f6;  
+ }  
+ input[type=range]::-webkit-slider-runnable-track {  
+ width: 100%;  
+ height: 6px;  
+ cursor: pointer;  
+ background: #334155;  
+ border-radius: 3px;  
+ border: 1px solid #475569;  
+ }  
+   
+ .tab-btn.active { color: #38bdf8; background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.4); font-weight: 700; }  
+ .tab-content { display: none; }  
+ .tab-content.active { display: block; }  
+  
+ .color-dot { transition: all 0.1s ease; border: 1px solid #475569; }  
+ .color-dot.selected { box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #38bdf8; border-color: transparent; }  
+   
+ .step-view {  
+ display: none;  
+ position: absolute;  
+ inset: 0;  
+ flex-direction: column;  
+ width: 100%;  
+ height: 100%;  
+ }  
+ .step-view.active { display: flex; }  
+  
+ .canvas-container {  
+ flex: 1;  
+ position: relative;  
+ width: 100%;  
+ height: 100%;  
+ overflow: hidden;  
+ background: #000;  
+ }  
+   
+ .controls-panel {  
+ position: relative;  
+ z-index: 40;  
+ background: rgba(15, 23, 42, 0.96);  
+ backdrop-filter: blur(16px);  
+ border-top: 1px solid #334155;  
+ border-radius: 20px 20px 0 0;  
+ box-shadow: 0 -10px 40px rgba(0,0,0,0.6);  
+ padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 8px);  
+ max-height: 54vh;  
+ display: flex;  
+ flex-direction: column;  
+ }  
+ </style>  
+</head>  
+<body class="bg-slate-950 text-slate-100 flex flex-col h-[100dvh] overflow-hidden font-sans">  
+  
+ <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-4 pt-[max(env(safe-area-inset-top,8px),8px)] pb-1.5 shrink-0">  
+ <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">  
+ ← ツール一覧へ  
+ </a>  
+ <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-slate-300 font-bold bg-slate-800/90 px-2.5 py-0.5 rounded-full border border-slate-700 max-w-[190px] sm:max-w-[260px]">  
+ <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>  
+ <span id="current-project-name-text" class="truncate text-[10px]">新規プロジェクト</span>  
+ </div>  
+ </div>  
+  
+ <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0 z-50">  
+ <div class="flex items-center gap-2 min-w-0 pr-1">  
+ <button id="back-btn" class="hidden text-slate-300 hover:text-white transition w-7 h-7 flex items-center justify-center bg-slate-800 rounded-full border border-slate-700 shadow-sm shrink-0">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>  
+ </button>  
+ <div class="min-w-0">  
+ <h1 id="app-title" class="text-sm sm:text-base font-bold text-white tracking-tight truncate">グリッドメーカー</h1>  
+ <p id="step-desc" class="text-[10px] text-slate-400 truncate">写真の選択または履歴</p>  
+ </div>  
+ </div>  
+ <div class="flex items-center gap-1.5 shrink-0">  
+ <button id="guide-btn" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-xs text-blue-400 font-bold flex items-center gap-1 shadow transition">  
+ <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>  
+ <span>説明</span>  
+ </button>  
+ <button id="menu-btn" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-xs text-white font-bold flex items-center gap-1 shadow transition">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>  
+ <span>メニュー</span>  
+ </button>  
+ </div>  
+ </header>  
+  
+ <main class="flex-1 relative overflow-hidden bg-black w-full h-full" id="main-container">  
+   
+ <!-- STEP 1 -->  
+ <div id="step-1" class="step-view active overflow-y-auto hide-scrollbar pb-[env(safe-area-inset-bottom,20px)] bg-slate-950">  
+ <div class="p-6 mt-4">  
+ <div id="drop-zone" class="w-full max-w-sm mx-auto border-2 border-dashed border-slate-700 rounded-2xl p-10 bg-slate-900/50 hover:bg-slate-900/80 cursor-pointer transition flex flex-col items-center shadow-lg">  
+ <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">  
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>  
+ </svg>  
+ <p class="text-lg font-bold text-white mb-1">新しい写真を読み込む</p>  
+ <p class="text-sm text-slate-400">タップしてギャラリーから選択</p>  
+ </div>  
+ <input type="file" id="file-input" accept="image/*" class="hidden">  
+ </div>  
+  
+ <div class="px-6 pb-6 max-w-xl mx-auto w-full">  
+ <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">  
+ <h2 class="text-sm font-bold text-slate-300">最近のプロジェクト (履歴)</h2>  
+ <span class="text-[10px] text-slate-500">タップして再開</span>  
+ </div>  
+ <div id="history-list" class="grid grid-cols-2 sm:grid-cols-3 gap-3">  
+ <p id="history-empty" class="col-span-full text-center text-xs text-slate-500 py-6">保存された履歴はありません。</p>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- STEP 1.5 -->  
+ <div id="step-1-5" class="step-view hidden">  
+ <div class="canvas-container" id="container-1-5">  
+ <canvas id="canvas-step1-5" class="absolute inset-0"></canvas>  
+ <div class="absolute inset-0 pointer-events-none flex items-center justify-center z-10 p-4">  
+ <div id="crop-frame" class="border-2 border-white shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] box-content relative w-full max-w-[80vw] max-h-[55vh]" style="aspect-ratio: 1 / 1;">  
+ <div class="absolute inset-0 border border-white/30 border-dashed m-4"></div>  
+ </div>  
+ </div>  
+ </div>  
+ <div class="controls-panel shrink-0 px-4 pt-5">  
+ <div class="flex gap-2 mb-3 max-w-sm mx-auto w-full">  
+ <select id="crop-ratio" class="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-2 py-2 text-xs outline-none">  
+ <option value="1">1:1 (正方形)</option>  
+ <option value="1.33333">4:3 (標準)</option>  
+ <option value="1.77778">16:9 (ワイド)</option>  
+ <option value="1.41421">A4/B5比率</option>  
+ </select>  
+ <button id="crop-rotate-btn" class="bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg px-3 py-2 text-white text-xs font-bold transition flex items-center gap-1">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>  
+ 縦/横  
+ </button>  
+ </div>  
+ <div class="flex gap-2 max-w-sm mx-auto w-full">  
+ <button id="crop-skip-btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3.5 rounded-xl border border-slate-700 text-[11px] transition">オリジナルのまま使用</button>  
+ <button id="crop-exec-btn" class="flex-[1.5] bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg text-sm transition">切り抜いて次へ</button>  
+ </div>  
+ <div class="flex justify-center mt-2">  
+ <button id="crop-reset-btn" class="text-[10px] text-slate-400 hover:text-white px-4 py-1">位置をリセット</button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- STEP 2: 実寸合わせ -->  
+ <div id="step-2" class="step-view hidden">  
+ <div class="canvas-container" id="container-2">  
+ <canvas id="canvas-step2" class="absolute inset-0"></canvas>  
+ </div>  
+   
+ <div class="controls-panel shrink-0 flex flex-col">  
+ <div class="overflow-y-auto px-4 py-3 hide-scrollbar w-full max-w-md mx-auto flex-1">  
+ <div class="space-y-2">  
+ <!-- 枠の実寸 -->  
+ <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800">  
+ <div class="flex items-center justify-between mb-1.5">  
+ <span class="text-[11px] font-bold text-slate-300">枠の実寸</span>  
+ <div class="flex items-center gap-1">  
+ <input type="number" id="base-size-input" value="30" step="any" min="1" inputmode="decimal" class="w-16 bg-slate-950 border border-slate-700 text-white rounded px-1.5 py-0.5 text-center text-xs font-bold focus:border-blue-500 outline-none">  
+ <span class="text-[10px] text-slate-400 font-mono">cm</span>  
+ </div>  
+ </div>  
+ <div class="grid grid-cols-3 gap-1">  
+ <button type="button" class="preset-base-btn py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 transition text-center" data-val="30">1尺</button>  
+ <button type="button" class="preset-base-btn py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 transition text-center" data-val="60">2尺</button>  
+ <button type="button" class="preset-base-btn py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 transition text-center" data-val="90">3尺</button>  
+ </div>  
+ </div>  
+  
+ <!-- 基準枠の設定（色・太さ・パターン） -->  
+ <div class="grid grid-cols-3 gap-1.5 bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 text-[11px]">  
+ <div>  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">枠の色</label>  
+ <select id="base-color-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
+ <option value="#22c55e" selected>緑</option>  
+ <option value="#ef4444">赤</option>  
+ <option value="#0ea5e9">水色</option>  
+ <option value="#eab308">黄</option>  
+ <option value="#ffffff">白</option>  
+ <option value="#000000">黒</option>  
+ </select>  
+ </div>  
+ <div>  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">線の太さ</label>  
+ <select id="base-width-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
+ <option value="normal" selected>標準</option>  
+ <option value="thin">細線</option>  
+ <option value="thick">太線</option>  
+ </select>  
+ </div>  
+ <div>  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">パターン</label>  
+ <select id="base-pattern-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
+ <option value="dashed" selected>点線</option>  
+ <option value="solid">実線</option>  
+ <option value="corners">角のみ</option>  
+ </select>  
+ </div>  
+ </div>  
+  
+ <div class="flex items-center justify-center gap-2 pt-0.5">  
+ <button id="s2-reset" class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded text-slate-300 transition active:scale-95">初期位置に戻す</button>  
+ <button id="s2-dim-btn" class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded text-slate-300 transition active:scale-95 flex items-center gap-1">  
+ <span>画像透過</span>  
+ <span id="s2-dim-val" class="font-mono text-cyan-400">100%</span>  
+ </button>  
+ </div>  
+ <div id="s2-dim-bar" class="hidden p-2 bg-slate-950/90 rounded-lg border border-slate-800 flex items-center gap-2">  
+ <input type="range" id="s2-dim-slider" min="0.1" max="1.0" step="0.05" value="1.0" class="flex-1">  
+ <button id="s2-dim-reset" class="text-[9px] bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded text-slate-300 border border-slate-700 shrink-0">100%</button>  
+ </div>  
+ </div>  
+  
+ </div>  
+ <div class="px-4 pb-2 pt-1 w-full max-w-md mx-auto shrink-0">  
+ <button id="to-step3-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] block">  
+ 寸法を決定して次へ  
+ </button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- STEP 3: グリッド調整・出力 -->  
+ <div id="step-3" class="step-view hidden">  
+ <div class="canvas-container" id="container-3">  
+ <canvas id="canvas-step3" class="absolute inset-0"></canvas>  
+ </div>  
+   
+ <div class="controls-panel shrink-0 flex flex-col">  
+ <div class="overflow-y-auto px-4 py-2.5 hide-scrollbar w-full max-w-md mx-auto flex-1 min-h-[160px]">  
+  
+ <!-- タブ: グリッド -->  
+ <div id="tab-grid" class="tab-content active space-y-2">  
+ <!-- 1マスのサイズ -->  
+ <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800">  
+ <div class="flex items-center justify-between mb-1.5">  
+ <span class="text-[11px] font-bold text-slate-300">1マスのサイズ</span>  
+ <div class="flex items-center gap-1">  
+ <input type="number" id="grid-size-input" value="30" step="any" min="1" inputmode="decimal" class="w-16 bg-slate-950 border border-slate-700 text-white rounded px-1.5 py-0.5 text-center text-xs font-bold focus:border-blue-500 outline-none">  
+ <span class="text-[10px] text-slate-400 font-mono">cm</span>  
+ </div>  
+ </div>  
+ <div class="grid grid-cols-3 gap-1">  
+ <button type="button" class="preset-grid-btn py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 transition text-center" data-val="30">1尺</button>  
+ <button type="button" class="preset-grid-btn py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 transition text-center" data-val="60">2尺</button>  
+ <button type="button" class="preset-grid-btn py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 transition text-center" data-val="90">3尺</button>  
+ </div>  
+ </div>  
+  
+ <!-- グリッド外観設定（色・太さ・補助線） -->  
+ <div class="grid grid-cols-3 gap-1.5 bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 text-[11px]">  
+ <div>  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">線の色</label>  
+ <select id="grid-color-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
+ <option value="#ef4444" selected>赤</option>  
+ <option value="#22c55e">緑</option>  
+ <option value="#0ea5e9">水色</option>  
+ <option value="#eab308">黄</option>  
+ <option value="#ffffff">白</option>  
+ <option value="#000000">黒</option>  
+ </select>  
+ </div>  
+ <div>  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">線の太さ</label>  
+ <select id="grid-width-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
+ <option value="normal" selected>標準</option>  
+ <option value="thin">細線</option>  
+ <option value="thick">太線</option>  
+ </select>  
+ </div>  
+ <div>  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">分割補助線</label>  
+ <select id="grid-subdiv-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
+ <option value="0" selected>なし</option>  
+ <option value="2">2等分</option>  
+ <option value="3">3等分</option>  
+ <option value="4">4等分</option>  
+ <option value="5">5等分</option>  
+ <option value="10">10等分</option>  
+ </select>  
+ </div>  
+ </div>  
+  
+ <!-- 連動 / 中心線 / 画像透過 / 位置リセット -->  
+ <div class="bg-slate-900/80 rounded-xl p-2 border border-slate-800 flex items-center justify-between text-[11px] gap-1">  
+ <label class="flex items-center gap-1 cursor-pointer">  
+ <input type="checkbox" id="link-checkbox" class="accent-blue-500 w-3.5 h-3.5 rounded">  
+ <span class="font-bold text-slate-200 text-[10px]">連動</span>  
+ </label>  
+ <label class="flex items-center gap-1 cursor-pointer">  
+ <input type="checkbox" id="center-line-checkbox" class="accent-red-500 w-3.5 h-3.5 rounded">  
+ <span class="font-bold text-red-400 text-[10px]">中心線</span>  
+ </label>  
+ <button id="s3-dim-btn" class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-0.5 rounded text-slate-300 transition active:scale-95 flex items-center gap-1">  
+ <span>透過</span>  
+ <span id="s3-dim-val" class="font-mono text-cyan-400">100%</span>  
+ </button>  
+ <button id="s3-reset-pos" class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-0.5 rounded text-slate-300 transition active:scale-95">リセット</button>  
+ </div>  
+ <div id="s3-dim-bar" class="hidden p-2 bg-slate-950/90 rounded-lg border border-slate-800 flex items-center gap-2">  
+ <input type="range" id="s3-dim-slider" min="0.1" max="1.0" step="0.05" value="1.0" class="flex-1">  
+ <button id="s3-dim-reset" class="text-[9px] bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded text-slate-300 border border-slate-700 shrink-0">100%</button>  
+ </div>  
+ </div>  
+  
+ <!-- タブ: 画像調整（回転のみ） -->  
+ <div id="tab-adjust" class="tab-content">  
+ <div class="bg-slate-900/80 rounded-xl p-4 mb-3 border border-slate-800">  
+ <div class="flex justify-between items-center mb-4">  
+ <label class="text-[11px] text-slate-400">画像の回転 (水平出し)</label>  
+ <span id="rot-value" class="text-sm font-bold font-mono text-blue-400">0.0°</span>  
+ </div>  
+ <div class="flex items-center gap-4">  
+ <button id="rot-ccw" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 active:bg-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg></button>  
+ <input type="range" id="rot-slider" min="-45" max="45" step="0.1" value="0" class="flex-1">  
+ <button id="rot-cw" class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 active:bg-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: scaleX(-1);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg></button>  
+ </div>  
+ <div class="flex justify-center mt-4">  
+ <button id="rot-reset" class="text-[10px] bg-slate-800 px-4 py-1.5 rounded text-slate-300 hover:bg-slate-700 transition">回転をリセット</button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- タブ: 文字入れ -->  
+ <div id="tab-text" class="tab-content relative">  
+ <button id="add-text-btn" class="w-full bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600/50 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2 mb-2 text-xs">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>  
+ 新しいテキストを追加  
+ </button>  
+   
+ <div id="text-list-box" class="mb-3">  
+ <div class="flex items-center justify-between mb-1 px-1">  
+ <span class="text-[10px] text-slate-400 font-bold">配置済みテキスト一覧</span>  
+ <button id="text-deselect-btn" class="text-[9px] text-blue-400 hover:text-white">選択解除</button>  
+ </div>  
+ <div id="text-layer-list" class="flex flex-col gap-1 max-h-24 overflow-y-auto hide-scrollbar p-1 bg-slate-900/90 rounded-lg border border-slate-800">  
+ <p id="text-layer-empty" class="text-[10px] text-slate-500 text-center py-2">テキストはありません</p>  
+ </div>  
+ </div>  
+   
+ <div id="text-edit-panel" class="hidden bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 space-y-2.5 shadow-lg">  
+ <div>  
+ <input type="text" id="text-input" placeholder="テキスト内容" enterkeyhint="done" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs focus:border-blue-500 outline-none">  
+ </div>  
+   
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400 w-12">フォント</label>  
+ <select id="text-font" class="flex-1 bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
+ <option value="'Noto Sans JP', sans-serif">角ゴシック体 (標準)</option>  
+ <option value="'Noto Serif JP', serif">明朝体 (格式)</option>  
+ <option value="'M PLUS Rounded 1c', sans-serif">丸ゴシック体 (柔らか)</option>  
+ <option value="'Yuji Boku', serif">毛筆・筆文字風 (札・和風)</option>  
+ </select>  
+ </div>  
+  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400 w-12">サイズ</label>  
+ <input type="range" id="text-size" min="10" max="500" step="1" class="flex-1">  
+ <span id="text-size-val" class="text-xs font-mono text-blue-400 w-9 text-right">40</span>  
+ </div>  
+  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400 w-12">縁取り幅</label>  
+ <input type="range" id="text-stroke-width" min="0" max="100" step="1" value="4" class="flex-1">  
+ <span id="text-stroke-val" class="text-xs font-mono text-blue-400 w-9 text-right">4</span>  
+ </div>  
+  
+ <div class="flex justify-between items-center pt-1">  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400">文字色</label>  
+ <input type="color" id="text-color" value="#ffffff" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
+ </div>  
+ <div class="flex items-center gap-2">  
+ <label class="text-[10px] text-slate-400">縁取り色</label>  
+ <input type="color" id="text-stroke" value="#000000" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
+ </div>  
+ <button id="text-delete-btn" class="bg-red-600/20 text-red-500 hover:bg-red-600/40 px-2.5 py-1 rounded-lg text-xs font-bold border border-red-500/30 transition">削除</button>  
+ </div>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- 最下段: タブ切替＆保存ボタン群 -->  
+ <div class="border-t border-slate-800 bg-slate-900/95 p-1.5 flex gap-1.5 text-xs font-bold text-slate-400 shrink-0">  
+ <button class="tab-btn active flex-1 py-2.5 rounded-xl border border-transparent text-center transition flex items-center justify-center gap-1.5" data-target="tab-grid">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>  
+ <span>グリッド</span>  
+ </button>  
+ <button class="tab-btn flex-1 py-2.5 rounded-xl border border-transparent text-center transition flex items-center justify-center gap-1.5" data-target="tab-adjust">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>  
+ <span>回転</span>  
+ </button>  
+ <button class="tab-btn flex-1 py-2.5 rounded-xl border border-transparent text-center transition flex items-center justify-center gap-1.5" data-target="tab-text">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>  
+ <span>文字入れ</span>  
+ </button>  
+ <button id="export-menu-btn" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition flex items-center justify-center gap-1.5 shadow active:scale-95">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>  
+ <span>保存</span>  
+ </button>  
+ </div>  
+ </div>  
+ </div>  
+ </main>  
+  
+ <!-- ガイド・説明モーダル -->  
+ <div id="guide-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">  
+ <div class="flex justify-between items-center mb-3 shrink-0 border-b border-slate-800 pb-2">  
+ <h3 class="text-sm font-bold text-white flex items-center gap-1.5">  
+ <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>  
+ <span id="guide-modal-title">操作ガイド</span>  
+ </h3>  
+ <button id="close-guide-btn" class="text-slate-400 hover:text-white p-1">  
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
+ </button>  
+ </div>  
+ <div id="guide-modal-content" class="overflow-y-auto hide-scrollbar space-y-2.5 text-xs text-slate-300 flex-1 leading-relaxed">  
+ </div>  
+ <button id="close-guide-ok-btn" class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl transition border border-slate-700 text-xs shrink-0">閉じる</button>  
+ </div>  
+ </div>  
+  
+ <!-- メニュー モーダル -->  
+ <div id="main-menu-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">  
+ <button id="close-menu-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2">  
+ <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
+ </button>  
+ <h3 class="text-lg font-bold text-white mb-6">メニュー</h3>  
+ <div class="space-y-3">  
+ <button id="menu-history-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-left px-5 py-4 rounded-xl text-sm font-medium transition flex items-center gap-3">  
+ スタート画面へ戻る  
+ </button>  
+ <button id="menu-updates-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-left px-5 py-4 rounded-xl text-sm font-medium transition flex items-center gap-3">  
+ 更新履歴  
+ </button>  
+ <button id="menu-credit-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-left px-5 py-4 rounded-xl text-sm font-medium transition flex items-center gap-3">  
+ クレジット・バージョン情報  
+ </button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- 更新履歴モーダル -->  
+ <div id="updates-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl">  
+ <h3 class="text-lg font-bold text-white mb-4">更新履歴</h3>  
+ <div class="space-y-4 max-h-[50vh] overflow-y-auto text-sm text-slate-300 pr-2 hide-scrollbar">  
+ <div>  
+ <p class="font-bold text-blue-400">v1.3.1（通番保存・完全ダークUI安定版）</p>  
+ <ul class="list-disc pl-5 mt-1 space-y-1 text-xs">  
+ <li>ファイル保存時の命名規則を統一（grid_プロジェクト名_YYYYMMDD_通番）</li>  
+ <li>Androidでの日本語ファイル名化けをBlob方式により完全解消</li>  
+ <li>確認・通知・名前変更ウィンドウをすべて専用ダークモーダルに統一</li>  
+ <li>施工情報帯（下端占有・自由入力3枠・透かし印字）を搭載</li>  
+ <li>文字入力時の超高速プレビュー＆元画像比率100%保持出力</li>  
+ </ul>  
+ </div>  
+ </div>  
+ <button class="modal-close-btn w-full mt-6 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl transition border border-slate-700">閉じる</button>  
+ </div>  
+ </div>  
+  
+ <!-- クレジットモーダル -->  
+ <div id="credit-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl">  
+ <div class="text-center mb-5">  
+ <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 mb-3">  
+ <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">  
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z M9 4v16 M4 9h16 M14 4v16 M4 14h16"/>  
+ </svg>  
+ </div>  
+ <h3 class="text-xl font-bold text-white tracking-tight">グリッドメーカー</h3>  
+ <div class="inline-block px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[11px] font-mono text-blue-400 font-semibold mt-2">  
+ v1.3.1  
+ </div>  
+ </div>  
+   
+ <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-3 mb-6 text-xs text-slate-300">  
+ <div class="flex justify-between items-center py-1 border-b border-slate-800/50">  
+ <span class="text-slate-400">製作者</span>  
+ <span class="font-bold text-slate-100">関貴文</span>  
+ </div>  
+ <div class="flex justify-between items-center py-1 border-b border-slate-800/50">  
+ <span class="text-slate-400">AIアシスタント</span>  
+ <span class="font-bold text-slate-100">Gemini (Google)</span>  
+ </div>  
+ <div class="flex flex-col py-1 gap-1">  
+ <span class="text-slate-400">技術スタック</span>  
+ <span class="font-medium text-slate-200">HTML5 Canvas / Vanilla JavaScript / Tailwind CSS / IndexedDB / jsPDF</span>  
+ </div>  
+ </div>  
+  
+ <p class="text-[11px] text-slate-400 text-center mb-6 leading-relaxed">  
+ 現場施工における生花装飾・グリッド割出しの効率化と<br>精度向上のために開発された施工支援ツールです。  
+ </p>  
+  
+ <button class="modal-close-btn w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow-lg text-sm">閉じる</button>  
+ </div>  
+ </div>  
+  
+ <!-- 保存モーダル -->  
+ <div id="export-modal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-3">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-4 shadow-2xl flex flex-col max-h-[94vh] overflow-y-auto hide-scrollbar">  
+ <h3 class="text-base font-bold text-white mb-2 text-center shrink-0">画像を保存</h3>  
+  
+ <div class="mb-2 shrink-0">  
+ <label class="block text-[10px] font-bold text-slate-400 mb-1">プロジェクト名（ファイル名）</label>  
+ <input type="text" id="export-project-name" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:border-blue-500 outline-none" placeholder="プロジェクト名を入力">  
+ </div>  
+  
+ <div class="w-full bg-black rounded-xl overflow-hidden mb-2.5 flex items-center justify-center border border-slate-800 h-44 shrink-0">  
+ <img id="preview-img" src="" alt="Preview" class="max-w-full max-h-full object-contain block">  
+ </div>  
+  
+ <!-- 保存形式（JPG / PNG / PDF）を常時表示 -->  
+ <div class="flex justify-center gap-4 mb-2.5 bg-slate-800/80 p-2 rounded-xl border border-slate-700 shrink-0">  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="radio" name="export-format" value="jpeg" checked class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">JPG</span>  
+ </label>  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="radio" name="export-format" value="png" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">PNG</span>  
+ </label>  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="radio" name="export-format" value="pdf" class="accent-blue-500 w-4 h-4">  
+ <span class="text-xs font-bold text-white">PDF</span>  
+ </label>  
+ </div>  
+  
+ <!-- 施工情報帯設定 -->  
+ <div class="mb-3 bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/60 space-y-2 shrink-0">  
+ <div class="flex items-center justify-between">  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="checkbox" id="export-include-footer" checked class="accent-blue-500 w-4 h-4 rounded">  
+ <span class="text-[11px] font-bold text-slate-200">施工情報帯を印字</span>  
+ </label>  
+ <label class="flex items-center gap-1.5 cursor-pointer">  
+ <input type="checkbox" id="footer-include-watermark" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">  
+ <span class="text-slate-300 text-[10px] font-bold">透かし印字</span>  
+ </label>  
+ </div>  
+ <div id="footer-options-panel" class="space-y-1.5 pt-1.5 border-t border-slate-700/80 text-[11px]">  
+ <input type="text" id="footer-custom-1" placeholder="枠1: (例) 施工担当: 関" class="w-full bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
+ <input type="text" id="footer-custom-2" placeholder="枠2: (例) 祭壇グリッド 30cm割出し" class="w-full bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
+ <input type="text" id="footer-custom-3" placeholder="枠3: (例) 現場確認済" class="w-full bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
+ </div>  
+ </div>  
+  
+ <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>  
+ 他アプリへ共有（LINE・フォト等）  
+ </button>  
+ <div class="grid grid-cols-2 gap-2 mb-2 shrink-0">  
+ <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>  
+ ファイル保存  
+ </button>  
+ <button id="save-project-btn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+ <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>  
+ プロジェクト保存  
+ </button>  
+ </div>  
+ <button id="close-export-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 rounded-xl transition border border-slate-700 text-xs shrink-0">  
+ 編集に戻る  
+ </button>  
+ </div>  
+ </div>  
+  
+ <!-- 名前変更モーダル -->  
+ <div id="rename-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[130] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">  
+ <h3 id="rename-modal-title" class="text-sm font-bold text-white">プロジェクト名を入力</h3>  
+ <input type="text" id="rename-input" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg p-2.5 text-xs font-bold outline-none text-center focus:border-blue-500">  
+ <div class="grid grid-cols-2 gap-2">  
+ <button id="rename-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 rounded-xl border border-slate-700 text-xs transition">キャンセル</button>  
+ <button id="rename-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl text-xs transition shadow">決定</button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- 共通通知モーダル（ダークモード） -->  
+ <div id="alert-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[140] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">  
+ <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>  
+ <p id="alert-modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>  
+ <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>  
+ </div>  
+ </div>  
+  
+ <!-- 共通確認モーダル（ダークモード） -->  
+ <div id="confirm-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[130] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">  
+ <h3 id="confirm-modal-title" class="text-sm font-bold text-white">確認</h3>  
+ <p id="confirm-modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>  
+ <div class="grid grid-cols-2 gap-2 pt-2">  
+ <button id="confirm-modal-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition">キャンセル</button>  
+ <button id="confirm-modal-ok-btn" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">削除</button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <!-- 終了確認モーダル -->  
+ <div id="exit-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[120] hidden flex-col items-center justify-center p-4">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center">  
+ <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>  
+ <p class="text-xs text-slate-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>  
+ <div class="grid grid-cols-2 gap-2">  
+ <button id="exit-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition">  
+ キャンセル  
+ </button>  
+ <button id="exit-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">  
+ OK  
+ </button>  
+ </div>  
+ </div>  
+ </div>  
+  
+ <script>  
+ // PWA Service Worker 登録（共通sw.jsへの一本化）  
+ if ('serviceWorker' in navigator) {  
+   window.addEventListener('load', () => {  
+     navigator.serviceWorker.register('sw.js').catch(() => {});  
+   });  
+ }  
+  
+ const manifest = {  
+ name: "グリッドメーカー",  
+ short_name: "グリッドメーカー",  
+ start_url: ".",  
+ display: "standalone",  
+ background_color: "#0f172a",  
+ theme_color: "#0f172a",  
+ icons: [  
+ {  
+ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230f172a'/%3E%3Cpath d='M40 40h112v112H40z' stroke='%233b82f6' stroke-width='8' fill='none'/%3E%3Cpath d='M96 40v112M40 96h112' stroke='%233b82f6' stroke-width='4'/%3E%3C/svg%3E",  
+ sizes: "192x192",  
+ type: "image/svg+xml",  
+ purpose: "any"  
+ },  
+ {  
+ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230f172a'/%3E%3Cpath d='M100 100h312v312H100z' stroke='%233b82f6' stroke-width='20' fill='none'/%3E%3Cpath d='M256 100v312M100 256h312' stroke='%233b82f6' stroke-width='12'/%3E%3C/svg%3E",  
+ sizes: "512x512",  
+ type: "image/svg+xml",  
+ purpose: "any maskable"  
+ }  
+ ]  
+ };  
+ const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});  
+ document.getElementById('manifest-link').href = URL.createObjectURL(blob);  
+  
+ const el = id => document.getElementById(id);  
+ const on = (id, event, handler) => { const elem = el(id); if (elem) elem.addEventListener(event, handler); };  
+  
+ let alertResolve = null;  
+ function showAlertModal(desc, title = '保存完了') {  
+ return new Promise(resolve => {  
+ alertResolve = resolve;  
+ const tEl = el('alert-modal-title');  
+ const dEl = el('alert-modal-desc');  
+ if (tEl) tEl.textContent = title;  
+ if (dEl) dEl.textContent = desc;  
+ openModal('alert-modal');  
+ });  
+ }  
+  
+ let confirmResolve = null;  
+ function showConfirmModal(title, desc) {  
+ return new Promise(resolve => {  
+ confirmResolve = resolve;  
+ const tEl = el('confirm-modal-title');  
+ const dEl = el('confirm-modal-desc');  
+ if (tEl) tEl.textContent = title;  
+ if (dEl) dEl.textContent = desc;  
+ openModal('confirm-modal');  
+ });  
+ }  
+  
+ function showPromptModal(title, defaultVal = '') {  
+ return new Promise(resolve => {  
+ const tEl = el('rename-modal-title') || document.querySelector('#rename-modal h3');  
+ const inputEl = el('rename-input');  
+ if (tEl) tEl.textContent = title;  
+ if (inputEl) inputEl.value = defaultVal;  
+ openModal('rename-modal');  
+ setTimeout(() => { inputEl?.focus(); inputEl?.select(); }, 50);  
+ const onOk = () => { cleanup(); closeModal('rename-modal'); resolve(inputEl?.value.trim() || null); };  
+ const onCancel = () => { cleanup(); closeModal('rename-modal'); resolve(null); };  
+ const onKey = e => { if (e.key === 'Enter') onOk(); };  
+ function cleanup() {  
+ el('rename-ok-btn')?.removeEventListener('click', onOk);  
+ el('rename-cancel-btn')?.removeEventListener('click', onCancel);  
+ inputEl?.removeEventListener('keydown', onKey);  
+ }  
+ el('rename-ok-btn')?.addEventListener('click', onOk);  
+ el('rename-cancel-btn')?.addEventListener('click', onCancel);  
+ inputEl?.addEventListener('keydown', onKey);  
+ });  
+ }  
+  
+ function getNextExportSeq(cleanBase, dateStr) {  
+ const storageKey = `grid_maker_seq_${cleanBase}_${dateStr}`;  
+ let seq = parseInt(localStorage.getItem(storageKey) || '0', 10) + 1;  
+ localStorage.setItem(storageKey, String(seq));  
+ return String(seq).padStart(3, '0');  
+ }  
+  
+ function getExportFileName(ext) {  
+ const rawName = (el('export-project-name')?.value || '').trim() || appState.fileName || 'project';  
+ let cleanBase = rawName.replace(/\.[^.]+$/, '');  
+ const badChars = ['/', String.fromCharCode(92), ':', '*', '?', '"', '<', '>', '|'];  
+ badChars.forEach(c => { cleanBase = cleanBase.split(c).join('_'); });  
+ const now = new Date();  
+ const y = now.getFullYear();  
+ const m = String(now.getMonth() + 1).padStart(2, '0');  
+ const d = String(now.getDate()).padStart(2, '0');  
+ const dateStr = `${y}${m}${d}`;  
+ const seqStr = getNextExportSeq(cleanBase, dateStr);  
+ return `grid_${cleanBase}_${dateStr}_${seqStr}.${ext}`;  
+ }  
+  
+ let appState = {  
+ step: 1, historyId: null, fileName: '',  
+ img: null, imgLoaded: false,  
+ cropPanX: 0, cropPanY: 0, cropZoom: 1,  
+ cropRatioVal: 1, cropIsPortrait: false,  
+ panX: 0, panY: 0, zoom: 1,   
+ s2SquareSize: 150, baseCm: 30, basePixelsPerCm: 10, baseColor: '#22c55e', baseLineWidth: 'normal', basePattern: 'dashed', imageOpacity: 1.0,  
+ imgOffsetX: 0, imgOffsetY: 0, step2InitialOffsetX: 0, step2InitialOffsetY: 0, step2BaseZoom: 1,  
+ gridSizeCm: 30, gridColor: '#ef4444', linkGrid: false, centerLine: false,  
+ rotation: 0, texts: [], selectedTextId: null,  
+ settings: { subGridDivisions: 0, gridLineWidth: 'normal', thinGridLine: false }  
+ };  
+  
+ const canvases = { 1.5: el('canvas-step1-5'), 2: el('canvas-step2'), 3: el('canvas-step3') };  
+ const containers = { 1.5: el('container-1-5'), 2: el('container-2'), 3: el('container-3') };  
+  
+ const DB_NAME = 'GridPhotoDB';  
+ const DB_VERSION = 1;  
+ let db = null;  
+ let dbInitPromise = null;  
+  
+ function initDB() {  
+ if (dbInitPromise) return dbInitPromise;  
+ dbInitPromise = new Promise((resolve, reject) => {  
+ const req = indexedDB.open(DB_NAME, DB_VERSION);  
+ req.onupgradeneeded = e => {  
+ const database = e.target.result;  
+ if (!database.objectStoreNames.contains('history')) {  
+ database.createObjectStore('history', { keyPath: 'id' });  
+ }  
+ };  
+ req.onsuccess = e => {  
+ db = e.target.result;  
+ resolve(db);  
+ renderHistoryList();  
+ };  
+ req.onerror = e => {  
+ reject(e);  
+ };  
+ });  
+ return dbInitPromise;  
+ }  
+ initDB();  
+  
+ function generateThumbnail() {  
+ if(!appState.img) return '';  
+ const c = document.createElement('canvas');  
+ const MAX = 200;  
+ let w = appState.img.width, h = appState.img.height;  
+ if(w > h) { h = Math.round(h * MAX / w); w = MAX; }   
+ else { w = Math.round(w * MAX / h); h = MAX; }  
+ c.width = w; c.height = h;  
+ c.getContext('2d').drawImage(appState.img, 0, 0, w, h);  
+ return c.toDataURL('image/jpeg', 0.7);  
+ }  
+  
+ async function saveHistory(stageName) {  
+ try {  
+ const database = await initDB().catch(() => null);  
+ if(!database || !appState.imgLoaded) return;  
+ const id = appState.historyId || Date.now();  
+ appState.historyId = id;  
+   
+ const c = document.createElement('canvas');  
+ c.width = appState.img.width; c.height = appState.img.height;  
+ c.getContext('2d').drawImage(appState.img, 0, 0);  
+ const imgData = c.toDataURL('image/jpeg', 0.85);  
+  
+ const record = {  
+ id: id, timestamp: Date.now(),  
+ fileName: appState.fileName || ('GridProject_' + id),  
+ stage: stageName, thumbnail: generateThumbnail(),  
+ state: {  
+ imgData, panX: appState.panX, panY: appState.panY, zoom: appState.zoom,  
+ baseCm: appState.baseCm, basePixelsPerCm: appState.basePixelsPerCm, baseColor: appState.baseColor, baseLineWidth: appState.baseLineWidth, basePattern: appState.basePattern,  
+ imageOpacity: appState.imageOpacity !== undefined ? appState.imageOpacity : 1.0,  
+ gridLineWidth: appState.settings.gridLineWidth || 'normal',  
+ subGridDivisions: appState.settings.subGridDivisions || 0,  
+ footerSettings: {  
+ includeFooter: el('export-include-footer')?.checked ?? true,  
+ includeWatermark: el('footer-include-watermark')?.checked ?? true,  
+ c1: el('footer-custom-1')?.value || '',  
+ c2: el('footer-custom-2')?.value || '',  
+ c3: el('footer-custom-3')?.value || ''  
+ },  
+ step2InitialOffsetX: appState.step2InitialOffsetX, step2InitialOffsetY: appState.step2InitialOffsetY, step2BaseZoom: appState.step2BaseZoom,  
+ imgOffsetX: appState.imgOffsetX, imgOffsetY: appState.imgOffsetY,  
+ gridSizeCm: appState.gridSizeCm, gridColor: appState.gridColor, linkGrid: appState.linkGrid, centerLine: appState.centerLine,  
+ rotation: appState.rotation, texts: JSON.parse(JSON.stringify(appState.texts || []))  
+ }  
+ };  
+ const tx = database.transaction('history', 'readwrite');  
+ tx.objectStore('history').put(record);  
+ tx.oncomplete = () => renderHistoryList();  
+ } catch(err) {  
+ console.warn('History save notice:', err);  
+ }  
+ }  
+  
+ async function loadHistory(id) {  
+ try {  
+ const database = await initDB().catch(() => null);  
+ if(!database) return;  
+ const tx = database.transaction('history', 'readonly');  
+ const req = tx.objectStore('history').get(id);  
+ req.onsuccess = e => {  
+ try {  
+ const record = e.target.result;  
+ if(!record) return;  
+ const s = record.state || {};  
+   
+ appState.historyId = record.id;  
+ appState.fileName = record.fileName || ('GridProject_' + record.id);  
+ updateProjectBadge(appState.fileName);  
+ appState.panX = typeof s.panX === 'number' ? s.panX : 0;  
+ appState.panY = typeof s.panY === 'number' ? s.panY : 0;  
+ appState.zoom = (typeof s.zoom === 'number' && s.zoom > 0) ? s.zoom : 1;  
+ appState.baseCm = s.baseCm || s.baseMm || 30;  
+ appState.basePixelsPerCm = s.basePixelsPerCm || s.basePixelsPerMm || 10;  
+ appState.baseColor = s.baseColor || '#22c55e';  
+ appState.baseLineWidth = s.baseLineWidth || 'normal';  
+ appState.basePattern = s.basePattern || 'dashed';  
+ appState.imageOpacity = typeof s.imageOpacity === 'number' ? s.imageOpacity : 1.0;  
+ if (s.gridLineWidth) appState.settings.gridLineWidth = s.gridLineWidth;  
+ if (typeof s.subGridDivisions === 'number') appState.settings.subGridDivisions = s.subGridDivisions;  
+ if (s.footerSettings) {  
+ if (el('export-include-footer')) el('export-include-footer').checked = !!s.footerSettings.includeFooter;  
+ if (el('footer-include-watermark')) el('footer-include-watermark').checked = !!s.footerSettings.includeWatermark;  
+ if (el('footer-custom-1')) el('footer-custom-1').value = s.footerSettings.c1 || '';  
+ if (el('footer-custom-2')) el('footer-custom-2').value = s.footerSettings.c2 || '';  
+ if (el('footer-custom-3')) el('footer-custom-3').value = s.footerSettings.c3 || '';  
+ }  
+ appState.step2InitialOffsetX = s.step2InitialOffsetX !== undefined ? s.step2InitialOffsetX : s.imgOffsetX;  
+ appState.step2InitialOffsetY = s.step2InitialOffsetY !== undefined ? s.step2InitialOffsetY : s.imgOffsetY;  
+ appState.step2BaseZoom = s.step2BaseZoom || s.zoom;  
+ appState.imgOffsetX = s.imgOffsetX || 0;  
+ appState.imgOffsetY = s.imgOffsetY || 0;  
+ appState.gridSizeCm = s.gridSizeCm || s.gridSizeMm || 30;  
+ appState.gridColor = s.gridColor || '#ef4444';  
+ appState.linkGrid = !!s.linkGrid;  
+ appState.centerLine = !!s.centerLine;  
+ appState.rotation = s.rotation || 0;  
+ appState.texts = Array.isArray(s.texts) ? s.texts : [];  
+ appState.selectedTextId = null;  
+  
+ if (!s.imgData) return;  
+ const img = new Image();  
+ img.onload = () => {  
+ appState.img = img;  
+ appState.imgLoaded = true;  
+ resizeCanvases();  
+ const st = String(record.stage || '');  
+ if(st.includes('アップロード') || st.includes('トリミング')) {  
+ appState.s2SquareSize = Math.min(canvases[2]?.width || 300, canvases[2]?.height || 300) * 0.4;  
+ if(appState.s2SquareSize <= 0) appState.s2SquareSize = 150;  
+ appState.panX = 0; appState.panY = 0;  
+ appState.zoom = Math.min(((canvases[2]?.width || 300) * 0.9) / appState.img.width, ((canvases[2]?.height || 300) * 0.5) / appState.img.height);  
+ syncUIFromState();  
+ goToStep(2);  
+ } else {  
+ if (record.stage === '寸法設定時' && !s.linkGrid && (s.panX || s.panY) && !s.imgOffsetX && !s.imgOffsetY) {  
+ appState.imgOffsetX = s.panX / appState.zoom;  
+ appState.imgOffsetY = s.panY / appState.zoom;  
+ appState.panX = 0;  
+ appState.panY = 0;  
+ }  
+ syncUIFromState();  
+ goToStep(3);  
+ }  
+ };  
+ img.src = s.imgData;  
+ closeModal('main-menu-modal');  
+ } catch(innerErr) {  
+ console.warn('History parse notice:', innerErr);  
+ }  
+ };  
+ } catch(err) {  
+ console.warn('loadHistory notice:', err);  
+ }  
+ }  
+  
+ async function renderHistoryList() {  
+ const database = await initDB().catch(() => null);  
+ if(!database) return;  
+ const list = el('history-list');  
+ if (!list) return;  
+ list.innerHTML = '';  
+ const tx = database.transaction('history', 'readonly');  
+ const req = tx.objectStore('history').getAll();  
+ req.onsuccess = e => {  
+ const records = (e.target.result || []).sort((a,b) => b.timestamp - a.timestamp);  
+ if(records.length === 0) {  
+ list.innerHTML = `<p id="history-empty" class="col-span-full text-center text-xs text-slate-500 py-6">保存された履歴はありません。</p>`;  
+ return;  
+ }  
+ records.forEach(r => {  
+ const d = new Date(r.timestamp);  
+ const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;  
+ const elDiv = document.createElement('div');  
+ elDiv.className = "bg-slate-900 rounded-xl overflow-hidden border border-slate-800 cursor-pointer hover:border-blue-500 transition shadow relative";  
+ elDiv.onclick = () => loadHistory(r.id);  
+ elDiv.innerHTML = `  
+ <div class="h-24 bg-black flex items-center justify-center relative">  
+ <img src="${r.thumbnail || ''}" class="max-h-full object-contain">  
+ <div class="absolute top-1 right-1 flex gap-1">  
+ <button class="rename-history-btn bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-full p-1.5 shadow border border-slate-600" data-id="${r.id}" title="名前変更">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>  
+ </button>  
+ <button class="delete-history-btn bg-red-600 hover:bg-red-500 text-white rounded-full p-1.5 shadow-lg border border-red-400" data-id="${r.id}" title="削除">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
+ </button>  
+ </div>  
+ </div>  
+ <div class="p-2">  
+ <p class="text-[10px] font-bold text-white truncate" title="${r.fileName}">${r.fileName}</p>  
+ <p class="text-[9px] text-slate-400">${dateStr}</p>  
+ <p class="text-[9px] text-blue-400 font-medium mt-1 bg-blue-900/30 px-1 py-0.5 rounded inline-block">${r.stage}</p>  
+ </div>  
+ `;  
+ list.appendChild(elDiv);  
+ });  
+ document.querySelectorAll('.rename-history-btn').forEach(btn => {  
+ btn.addEventListener('click', (ev) => {  
+ ev.stopPropagation();  
+ const id = parseInt(ev.currentTarget.getAttribute('data-id'));  
+ const dtx = database.transaction('history', 'readonly');  
+ const store = dtx.objectStore('history');  
+ const getReq = store.get(id);  
+ getReq.onsuccess = () => {  
+ const record = getReq.result;  
+ if (!record) return;  
+ const inputEl = el('rename-input');  
+ if (inputEl) inputEl.value = record.fileName || '';  
+ openModal('rename-modal');  
+ setTimeout(() => { inputEl?.focus(); inputEl?.select(); }, 50);  
+   
+ const onKey = e => { if (e.key === 'Enter') onOk(); };  
+ inputEl?.addEventListener('keydown', onKey);  
+   
+ const onOk = () => {  
+ inputEl?.removeEventListener('keydown', onKey);  
+ cleanup();  
+ const val = inputEl.value.trim();  
+ if (val) {  
+ const writeTx = database.transaction('history', 'readwrite');  
+ record.fileName = val;  
+ writeTx.objectStore('history').put(record);  
+ writeTx.oncomplete = () => {  
+ if (appState.historyId === id) {  
+ appState.fileName = val;  
+ updateProjectBadge(val);  
+ }  
+ renderHistoryList();  
+ };  
+ }  
+ closeModal('rename-modal');  
+ };  
+ const onCancel = () => { cleanup(); closeModal('rename-modal'); };  
+ function cleanup() {  
+ el('rename-ok-btn')?.removeEventListener('click', onOk);  
+ el('rename-cancel-btn')?.removeEventListener('click', onCancel);  
+ }  
+ el('rename-ok-btn')?.addEventListener('click', onOk);  
+ el('rename-cancel-btn')?.addEventListener('click', onCancel);  
+ };  
+ });  
+ });  
+ document.querySelectorAll('.delete-history-btn').forEach(btn => {  
+ btn.addEventListener('click', async (ev) => {  
+ ev.preventDefault();  
+ ev.stopPropagation();  
+ ev.stopImmediatePropagation();  
+ const id = parseInt(ev.currentTarget.getAttribute('data-id'));  
+ const ok = await showConfirmModal('履歴の削除', 'このプロジェクト履歴を削除しますか？');  
+ if (ok) {  
+ const dtx = database.transaction('history', 'readwrite');  
+ dtx.objectStore('history').delete(id);  
+ dtx.oncomplete = () => renderHistoryList();  
+ }  
+ });  
+ });  
+ };  
+ }  
+  
+ function resizeCanvases() {  
+ Object.keys(canvases).forEach(key => {  
+ const c = canvases[key];  
+ const container = containers[key];  
+ if (!c) return;  
+ if (container && container.clientWidth > 0 && container.clientHeight > 0) {  
+ c.width = container.clientWidth;  
+ c.height = container.clientHeight;  
+ } else {  
+ c.width = window.innerWidth;  
+ c.height = window.innerHeight;  
+ }  
+ });  
+ render();  
+ }  
+ window.addEventListener('resize', resizeCanvases);  
+ setTimeout(resizeCanvases, 100);  
+  
+ function zoomAt(factor, cx, cy, c_id) {  
+ const canvas = canvases[c_id];  
+ if (!canvas) return;  
+ let rx = cx - canvas.width / 2;  
+ let ry = cy - canvas.height / 2;  
+   
+ if (c_id === 1.5) {  
+ let ix = (rx - appState.cropPanX) / appState.cropZoom;  
+ let iy = (ry - appState.cropPanY) / appState.cropZoom;  
+ appState.cropZoom = Math.max(0.01, Math.min(100, appState.cropZoom * factor));  
+ appState.cropPanX = rx - ix * appState.cropZoom;  
+ appState.cropPanY = ry - iy * appState.cropZoom;  
+ } else {  
+ let ix = (rx - appState.panX) / appState.zoom;  
+ let iy = (ry - appState.panY) / appState.zoom;  
+ appState.zoom = Math.max(0.01, Math.min(100, appState.zoom * factor));  
+ appState.panX = rx - ix * appState.zoom;  
+ appState.panY = ry - iy * appState.zoom;  
+ }  
+ }  
+  
+ function pan(dx, dy, c_id) {  
+ if(c_id === 1.5) {   
+ appState.cropPanX += dx; appState.cropPanY += dy;   
+ } else if (c_id === 2) {  
+ appState.panX += dx; appState.panY += dy;  
+ } else if (c_id === 3) {  
+ const isLinked = el('link-checkbox') ? el('link-checkbox').checked : appState.linkGrid;  
+ if (isLinked) {  
+ appState.panX += dx;  
+ appState.panY += dy;  
+ } else {  
+ appState.imgOffsetX += dx / appState.zoom;  
+ appState.imgOffsetY += dy / appState.zoom;  
+ }  
+ }  
+ }  
+  
+ function getImgCoords(clientX, clientY, canvas, step) {  
+ const rect = canvas.getBoundingClientRect();  
+ let rx = clientX - rect.left - canvas.width / 2;  
+ let ry = clientY - rect.top - canvas.height / 2;  
+ let x = (rx - appState.panX) / appState.zoom;  
+ let y = (ry - appState.panY) / appState.zoom;  
+ if (step === 3) {  
+ x -= appState.imgOffsetX;  
+ y -= appState.imgOffsetY;  
+ }  
+ return { x, y };  
+ }  
+  
+ function setupInteraction(c_id) {  
+ const canvas = canvases[c_id];  
+ if (!canvas) return;  
+ let pointers = new Map();  
+ let initialPinchDist = null;  
+ let isDraggingText = false;  
+ let dragTargetId = null;  
+   
+ canvas.addEventListener('pointerdown', e => {  
+ pointers.set(e.pointerId, e);  
+ canvas.setPointerCapture(e.pointerId);  
+  
+ const isTextTabActive = el('tab-text') && el('tab-text').classList.contains('active');  
+ if (c_id === 3 && isTextTabActive && appState.texts.length > 0 && pointers.size === 1) {  
+ const coords = getImgCoords(e.clientX, e.clientY, canvas, 3);  
+ let hit = null;  
+ const ctx = canvas.getContext('2d');  
+ for (let i = appState.texts.length - 1; i >= 0; i--) {  
+ let t = appState.texts[i];  
+ ctx.font = `bold ${t.size}px ${t.font}`;  
+ let w = ctx.measureText(t.text).width;  
+ let hitMargin = Math.max(20, 24 / appState.zoom);  
+ if (Math.abs(coords.x - t.x) < w/2 + hitMargin && Math.abs(coords.y - t.y) < t.size/2 + hitMargin) { hit = t.id; break; }  
+ }  
+ if (hit) {  
+ appState.selectedTextId = hit;  
+ isDraggingText = true; dragTargetId = hit;  
+ updateTextPanel();  
+ } else {  
+ appState.selectedTextId = null;  
+ if (el('text-edit-panel')) el('text-edit-panel').classList.add('hidden');  
+ }  
+ render();  
+ }  
+ });  
+   
+ canvas.addEventListener('pointermove', e => {  
+ if (!pointers.has(e.pointerId)) return;  
+ let prevPointers = Array.from(pointers.values());  
+ pointers.set(e.pointerId, e);  
+ let currPointers = Array.from(pointers.values());  
+   
+ if (currPointers.length === 1) {  
+ let prev = prevPointers.find(p => p.pointerId === e.pointerId);  
+ if (prev) {  
+ if (isDraggingText && dragTargetId && c_id === 3) {  
+ let dx = (e.clientX - prev.clientX) / appState.zoom;  
+ let dy = (e.clientY - prev.clientY) / appState.zoom;  
+ let t = appState.texts.find(x => x.id === dragTargetId);  
+ if(t) { t.x += dx; t.y += dy; }  
+ } else {  
+ pan(e.clientX - prev.clientX, e.clientY - prev.clientY, c_id);  
+ }  
+ render();  
+ }  
+ } else if (currPointers.length === 2 && !isDraggingText) {  
+ let p1 = currPointers[0], p2 = currPointers[1];  
+ let pp1 = prevPointers.find(p => p.pointerId === p1.pointerId) || p1;  
+ let distCurr = Math.hypot(p1.clientX - p2.clientX, p1.clientY - p2.clientY);  
+ let distPrev = Math.hypot(pp1.clientX - (prevPointers.find(p => p.pointerId === p2.pointerId) || p2).clientX, pp1.clientY - (prevPointers.find(p => p.pointerId === p2.pointerId) || p2).clientY);  
+ let cx = (p1.clientX + p2.clientX) / 2;  
+ let cy = (p1.clientY + p2.clientY) / 2;  
+   
+ if (initialPinchDist === null) initialPinchDist = distCurr;  
+ else {  
+ let rect = canvas.getBoundingClientRect();  
+ zoomAt(distCurr / (distPrev || 1), cx - rect.left, cy - rect.top, c_id);  
+ pan(cx - (pp1.clientX + (prevPointers.find(p => p.pointerId === p2.pointerId) || p2).clientX)/2, cy - (pp1.clientY + (prevPointers.find(p => p.pointerId === p2.pointerId) || p2).clientY)/2, c_id);  
+ render();  
+ }  
+ }  
+ });  
+   
+ const endPointer = e => {  
+ pointers.delete(e.pointerId);  
+ if (pointers.size < 2) initialPinchDist = null;  
+ if (pointers.size === 0) { isDraggingText = false; dragTargetId = null; }  
+ };  
+ canvas.addEventListener('pointerup', endPointer);  
+ canvas.addEventListener('pointercancel', endPointer);  
+ canvas.addEventListener('wheel', e => {  
+ e.preventDefault();  
+ let rect = canvas.getBoundingClientRect();  
+ zoomAt(e.deltaY < 0 ? 1.05 : 0.95, e.clientX - rect.left, e.clientY - rect.top, c_id);  
+ render();  
+ }, { passive: false });  
+ }  
+ [1.5, 2, 3].forEach(id => setupInteraction(id));  
+  
+ function render() {  
+ if (!appState.imgLoaded || !appState.img) return;  
+ if (appState.step === 1.5) drawStep1_5();  
+ else if (appState.step === 2) drawStep2();  
+ else if (appState.step === 3) drawStep3();  
+ }  
+  
+ function drawStep1_5() {  
+ const cvs = canvases[1.5];  
+ if (!cvs) return;  
+ const ctx = cvs.getContext('2d');  
+ ctx.clearRect(0, 0, cvs.width, cvs.height);  
+ ctx.save();  
+ ctx.translate(cvs.width/2 + appState.cropPanX, cvs.height/2 + appState.cropPanY);  
+ ctx.scale(appState.cropZoom, appState.cropZoom);  
+ ctx.drawImage(appState.img, -appState.img.width/2, -appState.img.height/2);  
+ ctx.restore();  
+ }  
+  
+ function drawStep2() {  
+ const cvs = canvases[2];  
+ if (!cvs) return;  
+ const ctx = cvs.getContext('2d');  
+ ctx.clearRect(0, 0, cvs.width, cvs.height);  
+ ctx.save();  
+ ctx.translate(cvs.width/2 + appState.panX, cvs.height/2 + appState.panY);  
+ ctx.scale(appState.zoom, appState.zoom);  
+ if (appState.imageOpacity !== undefined) ctx.globalAlpha = appState.imageOpacity;  
+ ctx.drawImage(appState.img, -appState.img.width/2, -appState.img.height/2);  
+ ctx.restore();  
+   
+ let sqSize = appState.s2SquareSize;  
+ if(sqSize > 0) {  
+ ctx.save();  
+ const col = appState.baseColor || '#22c55e';  
+ ctx.strokeStyle = col;  
+ let lw = 3;  
+ if (appState.baseLineWidth === 'thin') lw = 1.5;  
+ else if (appState.baseLineWidth === 'thick') lw = 5;  
+ ctx.lineWidth = lw;  
+  
+ const pattern = appState.basePattern || 'dashed';  
+ if (pattern === 'dashed') {  
+ ctx.setLineDash([8, 8]);  
+ ctx.strokeRect(cvs.width/2 - sqSize/2, cvs.height/2 - sqSize/2, sqSize, sqSize);  
+ } else if (pattern === 'solid') {  
+ ctx.setLineDash([]);  
+ ctx.strokeRect(cvs.width/2 - sqSize/2, cvs.height/2 - sqSize/2, sqSize, sqSize);  
+ } else if (pattern === 'corners') {  
+ ctx.setLineDash([]);  
+ const half = sqSize / 2;  
+ const x1 = cvs.width / 2 - half;  
+ const y1 = cvs.height / 2 - half;  
+ const x2 = cvs.width / 2 + half;  
+ const y2 = cvs.height / 2 + half;  
+ const cLen = Math.max(12, Math.min(30, sqSize * 0.25));  
+ ctx.beginPath();  
+ ctx.moveTo(x1, y1 + cLen); ctx.lineTo(x1, y1); ctx.lineTo(x1 + cLen, y1);  
+ ctx.moveTo(x2 - cLen, y1); ctx.lineTo(x2, y1); ctx.lineTo(x2, y1 + cLen);  
+ ctx.moveTo(x2, y2 - cLen); ctx.lineTo(x2, y2); ctx.lineTo(x2 - cLen, y2);  
+ ctx.moveTo(x1 + cLen, y2); ctx.lineTo(x1, y2); ctx.lineTo(x1, y2 - cLen);  
+ ctx.stroke();  
+ }  
+  
+ const baseVal = el('base-size-input')?.value || 30;  
+ ctx.font = 'bold 11px sans-serif';  
+ ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';  
+ const labelText = `画像内の${baseVal}cmのものにぴったり合わせる`;  
+ const tw = ctx.measureText(labelText).width;  
+ const labelY = cvs.height/2 - sqSize/2 - 40;  
+ ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';  
+ ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';  
+ ctx.lineWidth = 1;  
+ ctx.fillRect(cvs.width/2 - tw/2 - 10, labelY - 15, tw + 20, 24);  
+ ctx.strokeRect(cvs.width/2 - tw/2 - 10, labelY - 15, tw + 20, 24);  
+ ctx.fillStyle = '#38bdf8';  
+ ctx.fillText(labelText, cvs.width/2, labelY + 2);  
+ ctx.restore();  
+ }  
+ }  
+  
+ function drawStep3(ctx = canvases[3]?.getContext('2d'), cvs = canvases[3], isExport = false) {  
+ if (!ctx || !cvs) return;  
+ ctx.clearRect(0, 0, cvs.width, cvs.height);  
+ const cx = cvs.width / 2;  
+ const cy = cvs.height / 2;  
+  
+ ctx.save();  
+ if (isExport) {  
+ ctx.translate(cx, cy);   
+ } else {  
+ ctx.translate(cx + appState.panX, cy + appState.panY);  
+ ctx.scale(appState.zoom, appState.zoom);  
+ }  
+  
+ // 1. 画像レイヤー（連動オフ時はこのオフセットのみ動く）  
+ ctx.save();  
+ ctx.translate(appState.imgOffsetX, appState.imgOffsetY);  
+ ctx.rotate(appState.rotation * Math.PI / 180);  
+ if (!isExport && appState.imageOpacity !== undefined) ctx.globalAlpha = appState.imageOpacity;  
+ ctx.drawImage(appState.img, -appState.img.width/2, -appState.img.height/2);  
+ ctx.restore();  
+  
+ // 2. グリッドレイヤー（画面中央基準で固定）  
+ ctx.save();  
+ let drawZoom = isExport ? 1 : appState.zoom;  
+ const stepPx = appState.gridSizeCm * appState.basePixelsPerCm;  
+   
+ if (isFinite(stepPx) && stepPx > 5) {  
+ let halfD = Math.hypot(Math.max(cvs.width, appState.img.width), Math.max(cvs.height, appState.img.height)) * 3 / drawZoom;  
+ if (isExport) halfD = Math.hypot(appState.img.width, appState.img.height) * 2;  
+   
+ if (appState.settings.subGridDivisions > 1) {  
+ ctx.strokeStyle = appState.gridColor;  
+ ctx.globalAlpha = 0.6;  
+ ctx.lineWidth = Math.max(1.0, (isExport ? 2.0 : 1.2) / drawZoom);  
+ ctx.beginPath();  
+ let subStepPx = stepPx / appState.settings.subGridDivisions;  
+ let subCount = Math.ceil(halfD / subStepPx);  
+ for (let i = -subCount; i <= subCount; i++) {  
+ if (i % appState.settings.subGridDivisions !== 0) {  
+ let x = i * subStepPx;  
+ ctx.moveTo(x, -halfD); ctx.lineTo(x, halfD);  
+ }  
+ }  
+ for (let i = -subCount; i <= subCount; i++) {  
+ if (i % appState.settings.subGridDivisions !== 0) {  
+ let y = i * subStepPx;  
+ ctx.moveTo(-halfD, y); ctx.lineTo(halfD, y);  
+ }  
+ }  
+ ctx.stroke();  
+ ctx.globalAlpha = 1.0;  
+ }  
+  
+ ctx.strokeStyle = appState.gridColor;  
+ let baseLineWidth = isExport ? 2.5 : 1.5;  
+ if (appState.settings.gridLineWidth === 'thin' || appState.settings.thinGridLine) baseLineWidth = isExport ? 1.0 : 0.8;  
+ else if (appState.settings.gridLineWidth === 'thick') baseLineWidth = isExport ? 4.0 : 2.5;  
+ ctx.lineWidth = Math.max(0.5, baseLineWidth / drawZoom);  
+   
+ ctx.beginPath();  
+ let mainCount = Math.ceil(halfD / stepPx);  
+ for (let i = -mainCount; i <= mainCount; i++) {  
+ let x = i * stepPx;  
+ ctx.moveTo(x, -halfD); ctx.lineTo(x, halfD);  
+ }  
+ for (let i = -mainCount; i <= mainCount; i++) {  
+ let y = i * stepPx;  
+ ctx.moveTo(-halfD, y); ctx.lineTo(halfD, y);  
+ }  
+ ctx.stroke();  
+  
+ if (appState.centerLine) {  
+ ctx.save();  
+ ctx.strokeStyle = '#ef4444';  
+ ctx.lineWidth = Math.max(2.5, (isExport ? 5.0 : 3.5) / drawZoom);  
+ ctx.beginPath();  
+ ctx.moveTo(0, -halfD); ctx.lineTo(0, halfD);  
+ ctx.moveTo(-halfD, 0); ctx.lineTo(halfD, 0);  
+ ctx.stroke();  
+ ctx.restore();  
+ }  
+ }  
+ ctx.restore();  
+  
+ // 3. テキストレイヤー  
+ ctx.save();  
+ ctx.translate(appState.imgOffsetX, appState.imgOffsetY);  
+   
+ appState.texts.forEach(t => {  
+ ctx.save();  
+ if (!isExport && t.id === appState.selectedTextId) {  
+ ctx.fillStyle = 'rgba(255,255,255,0.2)';  
+ ctx.font = `bold ${t.size}px ${t.font}`;  
+ let w = ctx.measureText(t.text).width;  
+ ctx.fillRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
+ ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2/drawZoom;  
+ ctx.strokeRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
+ }  
+   
+ ctx.translate(t.x, t.y);  
+ ctx.font = `bold ${t.size}px ${t.font}`;  
+ ctx.textAlign = 'center'; ctx.textBaseline = 'middle';  
+ ctx.lineJoin = 'round';  
+   
+ if (t.strokeWidth > 0) {  
+ ctx.strokeStyle = t.strokeColor;  
+ ctx.lineWidth = t.strokeWidth;  
+ ctx.strokeText(t.text, 0, 0);  
+ }  
+ ctx.fillStyle = t.color;  
+ ctx.fillText(t.text, 0, 0);  
+ ctx.restore();  
+ });  
+ ctx.restore();  
+  
+ ctx.restore();  
+ }  
+  
+ function goToStep(step) {  
+ appState.step = step;  
+ [1, 1.5, 2, 3].forEach(s => {  
+ const elem = el(`step-${String(s).replace('.','-')}`);  
+ if (!elem) return;  
+ if (s === step) { elem.classList.remove('hidden'); elem.classList.add('active'); }  
+ else { elem.classList.add('hidden'); elem.classList.remove('active'); }  
+ });  
+ const t = {  
+ 1: ["グリッドメーカー", "写真の選択または履歴"],  
+ 1.5: ["トリミング", "使用する部分を切り抜き"],  
+ 2: ["実寸合わせ", "枠を基準物に合わせる"],  
+ 3: ["グリッド調整", "グリッド・回転・文字入れ"]  
+ };  
+ if (el('app-title')) el('app-title').textContent = t[step][0];  
+ if (el('step-desc')) el('step-desc').textContent = t[step][1];  
+ if (el('back-btn')) el('back-btn').style.display = (step > 1) ? 'flex' : 'none';  
+ setTimeout(resizeCanvases, 20);  
+ }  
+  
+ on('back-btn', 'click', () => {  
+ if (appState.step === 1.5) goToStep(1);  
+ else if (appState.step === 2) goToStep(1.5);  
+ else if (appState.step === 3) {  
+ appState.panX = (appState.imgOffsetX || 0) * appState.zoom;  
+ appState.panY = (appState.imgOffsetY || 0) * appState.zoom;  
+ goToStep(2);  
+ }  
+ });  
+  
+ on('drop-zone', 'click', () => el('file-input')?.click());  
+ on('file-input', 'change', e => {  
+ const file = e.target.files[0];  
+ if (file) {  
+ appState.fileName = file.name;  
+ updateProjectBadge(file.name);  
+ appState.historyId = null;  
+ const reader = new FileReader();  
+ reader.onload = ev => {  
+ const img = new Image();  
+ img.onload = () => {  
+ appState.img = img; appState.imgLoaded = true;  
+ goToStep(1.5);  
+ setTimeout(() => el('crop-reset-btn')?.click(), 50);  
+ };  
+ img.src = ev.target.result;  
+ };  
+ reader.readAsDataURL(file);  
+ }  
+ });  
+  
+ function updateCropFrameRatio() {  
+ let ratio = appState.cropRatioVal;  
+ if (appState.cropIsPortrait) ratio = 1 / ratio;  
+ if (el('crop-frame')) el('crop-frame').style.aspectRatio = ratio.toString();  
+ setTimeout(render, 10);  
+ }  
+ on('crop-ratio', 'change', e => {  
+ appState.cropRatioVal = parseFloat(e.target.value);  
+ updateCropFrameRatio();  
+ });  
+ on('crop-rotate-btn', 'click', () => {  
+ appState.cropIsPortrait = !appState.cropIsPortrait;  
+ updateCropFrameRatio();  
+ });  
+  
+ on('crop-reset-btn', 'click', () => {  
+ resizeCanvases();  
+ const cvs = canvases[1.5];  
+ appState.cropPanX = 0; appState.cropPanY = 0;  
+ if (appState.img && cvs && cvs.width > 0 && cvs.height > 0) {  
+ appState.cropZoom = Math.min(cvs.width*0.9 / appState.img.width, cvs.height*0.5 / appState.img.height);  
+ } else {  
+ appState.cropZoom = 1;  
+ }  
+ render();  
+ });  
+  
+ on('crop-skip-btn', 'click', () => {  
+ saveHistory('アップロード時(原画)');  
+ resizeCanvases();  
+ appState.panX = 0; appState.panY = 0;  
+ const cvs = canvases[2];  
+ if (cvs && appState.img) {  
+ appState.zoom = Math.min((cvs.width * 0.9) / appState.img.width, (cvs.height * 0.5) / appState.img.height);  
+ appState.s2SquareSize = Math.min(cvs.width, cvs.height) * 0.4;  
+ if(appState.s2SquareSize <= 0) appState.s2SquareSize = 150;  
+ }  
+ syncUIFromState();  
+ goToStep(2);  
+ });  
+  
+ on('crop-exec-btn', 'click', () => {  
+ const frame = el('crop-frame');  
+ if (!frame || !appState.img) return;  
+ const fw = frame.clientWidth, fh = frame.clientHeight;  
+ const zoom = appState.cropZoom;  
+ const panX = appState.cropPanX;  
+ const panY = appState.cropPanY;  
+ const iw = appState.img.width;  
+ const ih = appState.img.height;  
+   
+ const frameLeftScreen = -fw/2;  
+ const frameTopScreen = -fh/2;  
+ const imgLeft = (frameLeftScreen - panX) / zoom;  
+ const imgTop = (frameTopScreen - panY) / zoom;  
+ const cropWidth = fw / zoom;  
+ const cropHeight = fh / zoom;  
+ const sx = imgLeft + iw/2;  
+ const sy = imgTop + ih/2;  
+   
+ const outCvs = document.createElement('canvas');  
+ outCvs.width = cropWidth;  
+ outCvs.height = cropHeight;  
+ const oCtx = outCvs.getContext('2d');  
+ oCtx.imageSmoothingQuality = 'high';  
+ oCtx.drawImage(appState.img, sx, sy, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);  
+   
+ const newImg = new Image();  
+ newImg.onload = () => {  
+ appState.img = newImg;  
+ saveHistory('トリミング完了');  
+ resizeCanvases();  
+ appState.panX = 0; appState.panY = 0;  
+ const cvs = canvases[2];  
+ if (cvs) {  
+ appState.zoom = Math.min((cvs.width * 0.9) / appState.img.width, (cvs.height * 0.5) / appState.img.height);  
+ appState.s2SquareSize = Math.min(cvs.width, cvs.height) * 0.4;  
+ if(appState.s2SquareSize <= 0) appState.s2SquareSize = 150;  
+ }  
+ syncUIFromState();  
+ goToStep(2);  
+ };  
+ newImg.src = outCvs.toDataURL('image/jpeg', 1.0);   
+ });  
+  
+ on('base-size-input', 'input', render);  
+  
+ document.querySelectorAll('.preset-base-btn').forEach(btn => {  
+ btn.addEventListener('click', e => {  
+ const v = e.currentTarget.getAttribute('data-val');  
+ const inp = el('base-size-input');  
+ if (inp) { inp.value = v; render(); }  
+ });  
+ });  
+  
+ document.querySelectorAll('.preset-grid-btn').forEach(btn => {  
+ btn.addEventListener('click', e => {  
+ const v = parseFloat(e.currentTarget.getAttribute('data-val'));  
+ const inp = el('grid-size-input');  
+ if (inp) { inp.value = v; appState.gridSizeCm = v; render(); }  
+ });  
+ });  
+  
+ on('s2-reset', 'click', () => {  
+ resizeCanvases();  
+ appState.panX = 0; appState.panY = 0;  
+ const cvs = canvases[2];  
+ if (appState.img && cvs && cvs.width > 0 && cvs.height > 0) {  
+ appState.zoom = Math.min((cvs.width * 0.9) / appState.img.width, (cvs.height * 0.5) / appState.img.height);  
+ }  
+ render();  
+ });  
+  
+ on('s3-reset-pos', 'click', () => {  
+ appState.imgOffsetX = appState.step2InitialOffsetX !== undefined ? appState.step2InitialOffsetX : 0;  
+ appState.imgOffsetY = appState.step2InitialOffsetY !== undefined ? appState.step2InitialOffsetY : 0;  
+ if (appState.step2BaseZoom) appState.zoom = appState.step2BaseZoom;  
+ appState.panX = 0;  
+ appState.panY = 0;  
+ render();  
+ });  
+  
+ on('base-color-select', 'change', e => {  
+ appState.baseColor = e.target.value;  
+ render();  
+ });  
+ on('base-width-select', 'change', e => {  
+ appState.baseLineWidth = e.target.value;  
+ render();  
+ });  
+ on('base-pattern-select', 'change', e => {  
+ appState.basePattern = e.target.value;  
+ render();  
+ });  
+  
+ function setImgOpacity(val) {  
+ appState.imageOpacity = Math.max(0.1, Math.min(1.0, parseFloat(val) || 1.0));  
+ const pct = Math.round(appState.imageOpacity * 100) + '%';  
+ ['s2-dim-slider', 's3-dim-slider'].forEach(id => { const elem = el(id); if (elem) elem.value = appState.imageOpacity; });  
+ ['s2-dim-val', 's3-dim-val'].forEach(id => { const elem = el(id); if (elem) elem.textContent = pct; });  
+ render();  
+ }  
+ on('s2-dim-btn', 'click', () => { const b = el('s2-dim-bar'); if (b) b.classList.toggle('hidden'); });  
+ on('s3-dim-btn', 'click', () => { const b = el('s3-dim-bar'); if (b) b.classList.toggle('hidden'); });  
+ on('s2-dim-slider', 'input', e => setImgOpacity(e.target.value));  
+ on('s3-dim-slider', 'input', e => setImgOpacity(e.target.value));  
+ on('s2-dim-reset', 'click', () => setImgOpacity(1.0));  
+ on('s3-dim-reset', 'click', () => setImgOpacity(1.0));  
+  
+ on('to-step3-btn', 'click', () => {  
+ const bInp = el('base-size-input');  
+ appState.baseCm = bInp ? (parseFloat(bInp.value) || 30) : 30;  
+ let ppcm = (appState.s2SquareSize / appState.zoom) / appState.baseCm;  
+ appState.basePixelsPerCm = isFinite(ppcm) ? ppcm : 10;  
+ if (!appState.gridSizeCm || appState.gridSizeCm === 30) {  
+ appState.gridSizeCm = appState.baseCm;  
+ }  
+ appState.imgOffsetX = appState.panX / appState.zoom;  
+ appState.imgOffsetY = appState.panY / appState.zoom;  
+ appState.step2InitialOffsetX = appState.imgOffsetX;  
+ appState.step2InitialOffsetY = appState.imgOffsetY;  
+ appState.step2BaseZoom = appState.zoom;  
+ appState.panX = 0;  
+ appState.panY = 0;  
+ syncUIFromState();  
+ saveHistory('寸法設定時');  
+ goToStep(3);  
+ });  
+  
+ document.querySelectorAll('.tab-btn').forEach(btn => {  
+ btn.addEventListener('click', e => {  
+ document.querySelectorAll('.tab-btn').forEach(b => {  
+ b.classList.remove('active', 'border-blue-500', 'text-white', 'font-bold');  
+ b.classList.add('border-transparent');  
+ });  
+ document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));  
+ const target = e.currentTarget;  
+ target.classList.add('active', 'border-blue-500', 'text-white', 'font-bold');  
+ target.classList.remove('border-transparent');  
+ const tc = el(target.getAttribute('data-target'));  
+ if (tc) tc.classList.add('active');  
+ });  
+ });  
+  
+ on('center-line-checkbox', 'change', e => {  
+ appState.centerLine = e.target.checked;  
+ render();  
+ });  
+  
+ function syncUIFromState() {  
+ try {  
+ setImgOpacity(appState.imageOpacity !== undefined ? appState.imageOpacity : 1.0);  
+ const bCol = el('base-color-select'); if (bCol) bCol.value = appState.baseColor || '#22c55e';  
+ const bWid = el('base-width-select'); if (bWid) bWid.value = appState.baseLineWidth || 'normal';  
+ const bPat = el('base-pattern-select'); if (bPat) bPat.value = appState.basePattern || 'dashed';  
+ const gInp = el('grid-size-input'); if (gInp) gInp.value = appState.gridSizeCm;  
+ const lChk = el('link-checkbox'); if (lChk) lChk.checked = !!appState.linkGrid;  
+ const cChk = el('center-line-checkbox'); if (cChk) cChk.checked = !!appState.centerLine;  
+ const rSld = el('rot-slider'); if (rSld) rSld.value = appState.rotation || 0;  
+ const rVal = el('rot-value'); if (rVal) rVal.textContent = (appState.rotation || 0).toFixed(1) + '°';  
+ const gCol = el('grid-color-select'); if (gCol) gCol.value = appState.gridColor || '#ef4444';  
+ const gWid = el('grid-width-select'); if (gWid) gWid.value = appState.settings.gridLineWidth || 'normal';  
+ const gSub = el('grid-subdiv-select'); if (gSub) gSub.value = String(appState.settings.subGridDivisions || 0);  
+ } catch(e) {}  
+ }  
+  
+ on('grid-size-input', 'input', e => {  
+ if(e.target.value > 0) { appState.gridSizeCm = parseFloat(e.target.value); render(); }  
+ });  
+ on('grid-color-select', 'change', e => {  
+ appState.gridColor = e.target.value;  
+ render();  
+ });  
+ on('grid-width-select', 'change', e => {  
+ appState.settings.gridLineWidth = e.target.value;  
+ appState.settings.thinGridLine = (e.target.value === 'thin');  
+ render();  
+ });  
+ on('grid-subdiv-select', 'change', e => {  
+ appState.settings.subGridDivisions = parseInt(e.target.value) || 0;  
+ render();  
+ });  
+ on('link-checkbox', 'change', e => {  
+ appState.linkGrid = e.target.checked;  
+ render();  
+ });  
+  
+ function updateProjectBadge(name) {  
+ const badge = el('current-project-name-text');  
+ if (badge) badge.textContent = name || '新規プロジェクト';  
+ }  
+  
+ const updateRot = val => {  
+ appState.rotation = parseFloat(val) || 0;  
+ const rv = el('rot-value'); if (rv) rv.textContent = appState.rotation.toFixed(1) + '°';  
+ render();  
+ };  
+ on('rot-slider', 'input', e => updateRot(e.target.value));  
+ on('rot-ccw', 'click', () => { const rs = el('rot-slider'); const v = (appState.rotation || 0) - 0.5; if (rs) rs.value = v; updateRot(v); });  
+ on('rot-cw', 'click', () => { const rs = el('rot-slider'); const v = (appState.rotation || 0) + 0.5; if (rs) rs.value = v; updateRot(v); });  
+ on('rot-reset', 'click', () => { const rs = el('rot-slider'); if (rs) rs.value = 0; updateRot(0); });  
+  
+ on('add-text-btn', 'click', () => {  
+ const newId = Date.now();  
+ let startX = -appState.panX / appState.zoom - appState.imgOffsetX;  
+ let startY = -appState.panY / appState.zoom - appState.imgOffsetY;  
+ const autoSize = appState.img ? Math.max(30, Math.min(200, Math.round(appState.img.width / 25))) : 40;  
+ appState.texts.push({  
+ id: newId, text: '新規テキスト', x: startX, y: startY, size: autoSize, font: "'Noto Sans JP', sans-serif",  
+ color: '#ffffff', strokeColor: '#000000', strokeWidth: Math.max(3, Math.round(autoSize * 0.1))  
+ });  
+ appState.selectedTextId = newId;  
+ updateTextPanel();  
+ render();  
+ });  
+  
+ function updateTextPanel() {  
+ renderTextList();  
+ const p = el('text-edit-panel');  
+ if (!p) return;  
+ if (!appState.selectedTextId) { p.classList.add('hidden'); return; }  
+ const t = appState.texts.find(x => x.id === appState.selectedTextId);  
+ if (!t) { p.classList.add('hidden'); return; }  
+ p.classList.remove('hidden');  
+ const ti = el('text-input'); if (ti) ti.value = t.text;  
+ const ts = el('text-size'); if (ts) ts.value = t.size;  
+ const tsv = el('text-size-val'); if (tsv) tsv.textContent = t.size;  
+ const tf = el('text-font'); if (tf) tf.value = t.font;  
+ const tc = el('text-color'); if (tc) tc.value = t.color;  
+ const tsc = el('text-stroke'); if (tsc) tsc.value = t.strokeColor;  
+ const tsw = el('text-stroke-width'); if (tsw) tsw.value = t.strokeWidth;  
+ const tswv = el('text-stroke-val'); if (tswv) tswv.textContent = t.strokeWidth;  
+ }  
+  
+ function renderTextList() {  
+ const list = el('text-layer-list');  
+ if (!list) return;  
+ list.innerHTML = '';  
+ if (!appState.texts || appState.texts.length === 0) {  
+ list.innerHTML = '<p class="text-[10px] text-slate-500 text-center py-2">テキストはありません</p>';  
+ return;  
+ }  
+ appState.texts.forEach((t, idx) => {  
+ const isSel = t.id === appState.selectedTextId;  
+ const item = document.createElement('div');  
+ item.className = `flex items-center justify-between px-2 py-1.5 rounded text-xs transition cursor-pointer ${isSel ? 'bg-blue-600/30 border border-blue-500 text-white font-bold' : 'bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-800'}`;  
+ item.onclick = () => { appState.selectedTextId = t.id; updateTextPanel(); render(); };  
+ item.innerHTML = `  
+ <span class="truncate max-w-[170px]">T${idx + 1}: ${t.text || '(空)'}</span>  
+ <button class="del-single-text text-slate-400 hover:text-red-400 p-1" data-id="${t.id}">  
+ <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
+ </button>  
+ `;  
+ list.appendChild(item);  
+ });  
+ list.querySelectorAll('.del-single-text').forEach(btn => {  
+ btn.addEventListener('click', async e => {  
+ e.preventDefault();  
+ e.stopPropagation();  
+ e.stopImmediatePropagation();  
+ const id = parseInt(e.currentTarget.getAttribute('data-id'));  
+ const targetItem = appState.texts.find(x => x.id === id);  
+ const ok = await showConfirmModal('テキスト削除', `テキスト「${targetItem?.text || ''}」を削除しますか？`);  
+ if (ok) {  
+ appState.texts = appState.texts.filter(x => x.id !== id);  
+ if (appState.selectedTextId === id) appState.selectedTextId = null;  
+ updateTextPanel();  
+ render();  
+ }  
+ });  
+ });  
+ }  
+  
+ on('text-deselect-btn', 'click', () => {  
+ appState.selectedTextId = null;  
+ updateTextPanel();  
+ render();  
+ });  
+  
+ const updateSelectedText = (key, val) => {  
+ let t = appState.texts.find(x => x.id === appState.selectedTextId);  
+ if(t) { t[key] = val; render(); }  
+ };  
+ on('text-input', 'input', e => updateSelectedText('text', e.target.value));  
+ on('text-input', 'keydown', e => { if (e.key === 'Enter') e.target.blur(); });  
+ on('text-size', 'input', e => {  
+ const tsv = el('text-size-val'); if (tsv) tsv.textContent = e.target.value;  
+ updateSelectedText('size', parseInt(e.target.value));  
+ });  
+ on('text-font', 'change', e => {  
+ updateSelectedText('font', e.target.value);  
+ if (document.fonts && document.fonts.ready) {  
+ document.fonts.ready.then(() => render());  
+ }  
+ });  
+ on('text-color', 'input', e => updateSelectedText('color', e.target.value));  
+ on('text-stroke', 'input', e => updateSelectedText('strokeColor', e.target.value));  
+ on('text-stroke-width', 'input', e => {  
+ const val = parseInt(e.target.value) || 0;  
+ const tswv = el('text-stroke-val'); if (tswv) tswv.textContent = val;  
+ updateSelectedText('strokeWidth', val);  
+ });  
+  
+ on('text-delete-btn', 'click', async () => {  
+ const targetId = appState.selectedTextId;  
+ if (!targetId) return;  
+ const targetItem = appState.texts.find(x => x.id === targetId);  
+ const ok = await showConfirmModal('テキスト削除', `選択中のテキスト「${targetItem?.text || ''}」を削除しますか？`);  
+ if (ok) {  
+ appState.texts = appState.texts.filter(x => x.id !== targetId);  
+ if (appState.selectedTextId === targetId) appState.selectedTextId = null;  
+ updateTextPanel();  
+ render();  
+ }  
+ });  
+  
+ // 高速プレビュー＆原寸エクスポート共通キャンバスビルダー  
+ function buildExportCanvas(scaleFactor = 1.0) {  
+ if (!appState.img) return null;  
+ const origW = appState.img.width;  
+ const origH = appState.img.height;  
+ const outW = Math.round(origW * scaleFactor);  
+ const outH = Math.round(origH * scaleFactor);  
+  
+ const exportCanvas = document.createElement('canvas');  
+ exportCanvas.width = outW;  
+ exportCanvas.height = outH;  
+ const eCtx = exportCanvas.getContext('2d');  
+ eCtx.fillStyle = '#ffffff';  
+ eCtx.fillRect(0, 0, outW, outH);  
+  
+ const cx = outW / 2;  
+ const cy = outH / 2;  
+  
+ eCtx.save();  
+ eCtx.translate(cx, cy);  
+ eCtx.scale(scaleFactor, scaleFactor);  
+  
+ // 1. 画像描画（元画像サイズ100%完全保持・余計なオフセットによる切り落とし防止）  
+ eCtx.save();  
+ eCtx.rotate((appState.rotation || 0) * Math.PI / 180);  
+ eCtx.drawImage(appState.img, -origW / 2, -origH / 2, origW, origH);  
+ eCtx.restore();  
+  
+ // 2. グリッド描画（画像中心に対する相対位置へ完全同期）  
+ eCtx.save();  
+ const gShiftX = -appState.imgOffsetX;  
+ const gShiftY = -appState.imgOffsetY;  
+ eCtx.translate(gShiftX, gShiftY);  
+  
+ const stepPx = appState.gridSizeCm * appState.basePixelsPerCm;  
+ if (isFinite(stepPx) && stepPx > 5) {  
+ let halfD = Math.hypot(origW, origH) * 2;  
+ if (appState.settings.subGridDivisions > 1) {  
+ eCtx.save();  
+ eCtx.strokeStyle = appState.gridColor;  
+ eCtx.globalAlpha = 0.6;  
+ eCtx.lineWidth = Math.max(1.8, origW / 500);  
+ eCtx.beginPath();  
+ let subStepPx = stepPx / appState.settings.subGridDivisions;  
+ let subCount = Math.ceil(halfD / subStepPx);  
+ for (let i = -subCount; i <= subCount; i++) {  
+ if (i % appState.settings.subGridDivisions !== 0) {  
+ let x = i * subStepPx;  
+ eCtx.moveTo(x, -halfD); eCtx.lineTo(x, halfD);  
+ }  
+ }  
+ for (let i = -subCount; i <= subCount; i++) {  
+ if (i % appState.settings.subGridDivisions !== 0) {  
+ let y = i * subStepPx;  
+ eCtx.moveTo(-halfD, y); eCtx.lineTo(halfD, y);  
+ }  
+ }  
+ eCtx.stroke();  
+ eCtx.restore();  
+ }  
+  
+ eCtx.strokeStyle = appState.gridColor;  
+ let baseLineWidth = Math.max(2.5, origW / 400);  
+ if (appState.settings.gridLineWidth === 'thin' || appState.settings.thinGridLine) baseLineWidth = Math.max(1.0, origW / 800);  
+ else if (appState.settings.gridLineWidth === 'thick') baseLineWidth = Math.max(4.0, origW / 260);  
+ eCtx.lineWidth = baseLineWidth;  
+ eCtx.beginPath();  
+ let mainCount = Math.ceil(halfD / stepPx);  
+ for (let i = -mainCount; i <= mainCount; i++) {  
+ let x = i * stepPx;  
+ eCtx.moveTo(x, -halfD); eCtx.lineTo(x, halfD);  
+ }  
+ for (let i = -mainCount; i <= mainCount; i++) {  
+ let y = i * stepPx;  
+ eCtx.moveTo(-halfD, y); eCtx.lineTo(halfD, y);  
+ }  
+ eCtx.stroke();  
+  
+ if (appState.centerLine) {  
+ eCtx.save();  
+ eCtx.strokeStyle = '#ef4444';  
+ eCtx.lineWidth = Math.max(4.0, origW / 200);  
+ eCtx.beginPath();  
+ eCtx.moveTo(0, -halfD); eCtx.lineTo(0, halfD);  
+ eCtx.moveTo(-halfD, 0); eCtx.lineTo(halfD, 0);  
+ eCtx.stroke();  
+ eCtx.restore();  
+ }  
+ }  
+ eCtx.restore();  
+  
+ // 3. テキスト描画  
+ eCtx.save();  
+ appState.texts.forEach(t => {  
+ eCtx.save();  
+ eCtx.translate(t.x, t.y);  
+ eCtx.font = `bold ${t.size}px ${t.font}`;  
+ eCtx.textAlign = 'center'; eCtx.textBaseline = 'middle';  
+ eCtx.lineJoin = 'round';  
+ if (t.strokeWidth > 0) {  
+ eCtx.strokeStyle = t.strokeColor;  
+ eCtx.lineWidth = t.strokeWidth;  
+ eCtx.strokeText(t.text, 0, 0);  
+ }  
+ eCtx.fillStyle = t.color;  
+ eCtx.fillText(t.text, 0, 0);  
+ eCtx.restore();  
+ });  
+ eCtx.restore();  
+  
+ eCtx.restore();  
+  
+ // 4. 施工情報帯（画像下部を占有して描画）  
+ const incFooter = el('export-include-footer')?.checked ?? true;  
+ const c1 = el('footer-custom-1')?.value.trim() || '';  
+ const c2 = el('footer-custom-2')?.value.trim() || '';  
+ const c3 = el('footer-custom-3')?.value.trim() || '';  
+ const customTexts = [c1, c2, c3].filter(Boolean);  
+ const incWatermark = el('footer-include-watermark')?.checked ?? true;  
+  
+ if (incFooter) {  
+ const bandH = Math.max(28, Math.round(outH * 0.055));  
+ const fy = outH - bandH;  
+ eCtx.fillStyle = 'rgba(9, 13, 22, 0.88)';  
+ eCtx.fillRect(0, fy, outW, bandH);  
+ eCtx.strokeStyle = 'rgba(37, 99, 235, 0.7)';  
+ eCtx.lineWidth = Math.max(2, Math.round(outW * 0.002));  
+ eCtx.beginPath();  
+ eCtx.moveTo(0, fy); eCtx.lineTo(outW, fy);  
+ eCtx.stroke();  
+  
+ if (customTexts.length > 0) {  
+ const padX = outW * 0.03;  
+ const textY = fy + bandH / 2;  
+ const maxTextW = outW - (padX * 2);  
+ eCtx.fillStyle = '#ffffff';  
+ eCtx.font = `bold ${Math.round(bandH * 0.38)}px 'Noto Sans JP', sans-serif`;  
+ eCtx.textAlign = 'left';  
+ eCtx.textBaseline = 'middle';  
+ eCtx.fillText(customTexts.join('   |   '), padX, textY, maxTextW);  
+ }  
+ }  
+  
+ if (incWatermark) {  
+ eCtx.save();  
+ const wmSize = Math.max(11, Math.round(outW * 0.016));  
+ eCtx.font = `bold ${wmSize}px 'Noto Sans JP', sans-serif`;  
+ eCtx.fillStyle = 'rgba(255, 255, 255, 0.45)';  
+ eCtx.textAlign = 'right';  
+ eCtx.textBaseline = 'bottom';  
+ const pad = Math.round(outW * 0.02);  
+ const wmY = incFooter ? (outH - Math.max(28, Math.round(outH * 0.055)) - 6) : (outH - pad);  
+ eCtx.shadowColor = 'rgba(0, 0, 0, 0.8)';  
+ eCtx.shadowBlur = 4;  
+ eCtx.fillText('ユー花園グリッドメーカー', outW - pad, wmY);  
+ eCtx.restore();  
+ }  
+  
+ return exportCanvas;  
+ }  
+  
+ function refreshExportPreview() {  
+ const inc = el('export-include-footer')?.checked ?? true;  
+ const p = el('footer-options-panel');  
+ if (p) p.style.display = inc ? 'block' : 'none';  
+ if (!appState.img) return;  
+ const previewScale = Math.min(1.0, 750 / appState.img.width);  
+ const pCvs = buildExportCanvas(previewScale);  
+ if (el('preview-img') && pCvs) el('preview-img').src = pCvs.toDataURL('image/jpeg', 0.8);  
+ }  
+  
+ on('export-menu-btn', 'click', async () => {  
+ appState.selectedTextId = null;  
+ updateTextPanel();  
+ render();  
+ if (document.fonts && document.fonts.ready) {  
+ await document.fonts.ready;  
+ }  
+ const nameInput = el('export-project-name');  
+ if (nameInput) {  
+ nameInput.value = appState.fileName || ('GridProject_' + (appState.historyId || Date.now()));  
+ }  
+ refreshExportPreview();  
+ openModal('export-modal');  
+ });  
+  
+ on('export-include-footer', 'change', refreshExportPreview);  
+ on('footer-include-watermark', 'change', refreshExportPreview);  
+ ['footer-custom-1', 'footer-custom-2', 'footer-custom-3'].forEach(id => {  
+ on(id, 'input', refreshExportPreview);  
+ on(id, 'change', refreshExportPreview);  
+ });  
+  
+ on('save-project-btn', 'click', async () => {  
+ const nameInput = el('export-project-name');  
+ const curName = (nameInput?.value || '').trim() || appState.fileName || ('GridProject_' + Date.now());  
+ const chosenName = await showPromptModal('プロジェクト名を入力して保存', curName);  
+ if (!chosenName) return;  
+ appState.fileName = chosenName;  
+ if (nameInput) nameInput.value = chosenName;  
+ updateProjectBadge(chosenName);  
+ saveHistory('保存時');  
+ closeModal('export-modal');  
+ await showAlertModal(`プロジェクト「${chosenName}」を履歴に保存しました`, '保存完了');  
+ });  
+  
+ on('close-export-btn', 'click', () => {  
+ closeModal('export-modal');  
+ render();  
+ });  
+  
+ on('share-file-btn', 'click', async () => {  
+ const format = document.querySelector('input[name="export-format"]:checked')?.value || 'jpeg';  
+ const fullCanvas = buildExportCanvas(1.0);  
+ if (!fullCanvas) { showAlertModal('画像の生成に失敗しました', 'エラー'); return; }  
+ const projectName = (el('export-project-name')?.value || '').trim() || appState.fileName || ('GridProject_' + Date.now());  
+ appState.fileName = projectName;  
+ updateProjectBadge(projectName);  
+ saveHistory('保存時');  
+   
+ const ext = format === 'pdf' ? 'pdf' : (format === 'jpeg' ? 'jpg' : 'png');  
+ const mime = format === 'pdf' ? 'application/pdf' : (format === 'jpeg' ? 'image/jpeg' : 'image/png');  
+ const outName = getExportFileName(ext);  
+   
+ let fileObj = null;  
+ if (format === 'pdf') {  
+ const { jsPDF } = window.jspdf;  
+ const isLand = fullCanvas.width > fullCanvas.height;  
+ const maxDim = Math.max(fullCanvas.width, fullCanvas.height);  
+ const scale = maxDim > 3000 ? 3000 / maxDim : 1.0;  
+ const pdfW = (fullCanvas.width * scale) * 0.264583;  
+ const pdfH = (fullCanvas.height * scale) * 0.264583;  
+ const pdf = new jsPDF({  
+ orientation: isLand ? 'landscape' : 'portrait',  
+ unit: 'mm',  
+ format: [pdfW, pdfH]  
+ });  
+ pdf.addImage(fullCanvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pdfW, pdfH, undefined, 'FAST');  
+ const pdfBlob = pdf.output('blob');  
+ fileObj = new File([pdfBlob], outName, { type: 'application/pdf' });  
+ } else {  
+ const blob = await new Promise(res => fullCanvas.toBlob(res, mime, 0.95));  
+ if (blob) fileObj = new File([blob], outName, { type: mime });  
+ }  
+   
+ if (fileObj && navigator.canShare && navigator.canShare({ files: [fileObj] })) {  
+ try {  
+ await navigator.share({  
+ files: [fileObj],  
+ title: outName  
+ });  
+ closeModal('export-modal');  
+ return;  
+ } catch (err) {  
+ if (err.name !== 'AbortError') console.warn(err);  
+ }  
+ } else {  
+ el('download-file-btn')?.click();  
+ }  
+ });  
+  
+ on('download-file-btn', 'click', () => {  
+ const format = document.querySelector('input[name="export-format"]:checked')?.value || 'jpeg';  
+ const fullCanvas = buildExportCanvas(1.0);  
+ if (!fullCanvas) { showAlertModal('画像の生成に失敗しました', 'エラー'); return; }  
+ const projectName = (el('export-project-name')?.value || '').trim() || appState.fileName || ('GridProject_' + Date.now());  
+ appState.fileName = projectName;  
+ updateProjectBadge(projectName);  
+ saveHistory('保存時');  
+  
+ const ext = format === 'pdf' ? 'pdf' : (format === 'jpeg' ? 'jpg' : 'png');  
+ const outName = getExportFileName(ext);  
+   
+ if (format === 'pdf') {  
+ const { jsPDF } = window.jspdf;  
+ const isLand = fullCanvas.width > fullCanvas.height;  
+ const maxDim = Math.max(fullCanvas.width, fullCanvas.height);  
+ const scale = maxDim > 3000 ? 3000 / maxDim : 1.0;  
+ const pdfW = (fullCanvas.width * scale) * 0.264583;  
+ const pdfH = (fullCanvas.height * scale) * 0.264583;  
+ const pdf = new jsPDF({  
+ orientation: isLand ? 'landscape' : 'portrait',  
+ unit: 'mm',  
+ format: [pdfW, pdfH]  
+ });  
+ pdf.addImage(fullCanvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pdfW, pdfH, undefined, 'FAST');  
+ pdf.save(outName);  
+ closeModal('export-modal');  
+ showAlertModal(`「${outName}」を保存しました`, 'ファイル保存完了');  
+ } else {  
+ const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';  
+ fullCanvas.toBlob(blob => {  
+ if (!blob) return;  
+ const url = URL.createObjectURL(blob);  
+ const a = document.createElement('a');  
+ a.href = url;  
+ a.download = outName;  
+ document.body.appendChild(a);  
+ a.click();  
+ setTimeout(() => {  
+ document.body.removeChild(a);  
+ URL.revokeObjectURL(url);  
+ }, 300);  
+ closeModal('export-modal');  
+ showAlertModal(`「${outName}」を保存しました`, 'ファイル保存完了');  
+ }, mime, 0.95);  
+ }  
+ });  
+  
+ history.replaceState({ appBase: true }, '');  
+ const modalIds = ['main-menu-modal', 'updates-modal', 'credit-modal', 'export-modal', 'guide-modal', 'rename-modal', 'confirm-modal', 'alert-modal'];  
+ let isClosingModalByCode = false;  
+  
+ function hasOpenModal() {  
+ return modalIds.some(id => {  
+ const elem = el(id);  
+ return elem && !elem.classList.contains('hidden');  
+ });  
+ }  
+  
+ function pushModalHistory() {  
+ if (!history.state || !history.state.modalOpen) {  
+ history.pushState({ modalOpen: true }, '');  
+ }  
+ }  
+  
+ function closeAllModals(triggerHistoryBack = true) {  
+ if (!hasOpenModal()) return false;  
+ modalIds.forEach(id => {  
+ const elem = el(id);  
+ if (elem) {  
+ elem.classList.remove('flex');  
+ elem.classList.add('hidden');  
+ }  
+ });  
+ if (triggerHistoryBack && history.state && history.state.modalOpen) {  
+ isClosingModalByCode = true;  
+ history.back();  
+ }  
+ return true;  
+ }  
+  
+ window.addEventListener('popstate', () => {  
+ if (isClosingModalByCode) {  
+ isClosingModalByCode = false;  
+ return;  
+ }  
+ const exitModal = el('exit-modal');  
+ if (exitModal && !exitModal.classList.contains('hidden')) {  
+ exitModal.classList.remove('flex');  
+ exitModal.classList.add('hidden');  
+ history.pushState({ appBase: true }, '');  
+ return;  
+ }  
+ if (hasOpenModal()) {  
+ closeAllModals(false);  
+ } else {  
+ history.pushState({ appBase: true }, '');  
+ if (exitModal) {  
+ exitModal.classList.remove('hidden');  
+ exitModal.classList.add('flex');  
+ }  
+ }  
+ });  
+  
+ on('exit-ok-btn', 'click', () => { window.location.href = 'index.html'; });  
+ on('exit-cancel-btn', 'click', () => {  
+ const exitModal = el('exit-modal');  
+ if (exitModal) {  
+ exitModal.classList.remove('flex');  
+ exitModal.classList.add('hidden');  
+ }  
+ });  
+  
+ const openModal = id => {  
+ pushModalHistory();  
+ const elem = el(id);  
+ if (elem) {  
+ elem.classList.remove('hidden');  
+ elem.classList.add('flex');  
+ }  
+ };  
+  
+ const closeModal = id => {  
+ const elem = el(id);  
+ if (elem) {  
+ elem.classList.remove('flex');  
+ elem.classList.add('hidden');  
+ }  
+ if (id === 'confirm-modal' && confirmResolve) {  
+ const res = confirmResolve;  
+ confirmResolve = null;  
+ res(false);  
+ }  
+ if (id === 'alert-modal' && alertResolve) {  
+ const res = alertResolve;  
+ alertResolve = null;  
+ res();  
+ }  
+ setTimeout(() => {  
+ if (!hasOpenModal() && history.state && history.state.modalOpen) {  
+ isClosingModalByCode = true;  
+ history.back();  
+ }  
+ }, 10);  
+ };  
+  
+ on('confirm-modal-ok-btn', 'click', () => {  
+ if (confirmResolve) {  
+ const res = confirmResolve;  
+ confirmResolve = null;  
+ res(true);  
+ }  
+ closeModal('confirm-modal');  
+ });  
+ on('confirm-modal-cancel-btn', 'click', () => {  
+ closeModal('confirm-modal');  
+ });  
+  
+ on('alert-modal-ok-btn', 'click', () => {  
+ if (alertResolve) {  
+ const res = alertResolve;  
+ alertResolve = null;  
+ res();  
+ }  
+ closeModal('alert-modal');  
+ });  
+  
+ function showGuideForCurrentStep() {  
+ const tEl = el('guide-modal-title');  
+ const cEl = el('guide-modal-content');  
+ if (!tEl || !cEl) return;  
+   
+ if (appState.step === 1) {  
+ tEl.textContent = '写真の選択 (Step 1)';  
+ cEl.innerHTML = `  
+ <p><strong>・新しい写真:</strong> 上部の枠をタップして、スマホ内の写真を読み込みます。</p>  
+ <p><strong>・保存済み履歴:</strong> 下部の履歴一覧から、以前作業したプロジェクトをタップすると前回の状態から再開できます。</p>  
+ <p><strong>・プロジェクト名変更:</strong> 履歴の鉛筆アイコンを押すと名前を変更できます。</p>  
+ `;  
+ } else if (appState.step === 1.5) {  
+ tEl.textContent = 'トリミング (Step 1.5)';  
+ cEl.innerHTML = `  
+ <p><strong>・切り抜き比率:</strong> プルダウンから正方形・4:3・16:9・A4比率を選択できます。</p>  
+ <p><strong>・位置合わせ:</strong> 2本指のピンチズーム・ドラッグで画像を枠内に合わせてください。</p>  
+ <p><strong>・スキップ:</strong> 「オリジナルのまま使用」を押すと切り抜かずに進みます。</p>  
+ `;  
+ } else if (appState.step === 2) {  
+ tEl.textContent = '実寸合わせ (Step 2)';  
+ cEl.innerHTML = `  
+ <p><strong>・寸法の入力:</strong> 画像内に写っている基準物（例: テーブル幅や経机など）の寸法を入力、または「1尺・2尺・3尺」ボタンを押します。</p>  
+ <p><strong>・枠に収める:</strong> 緑の点線枠に対象物がぴったり収まるよう、画像をスワイプ・ピンチズームで拡大縮小・移動してください。</p>  
+ `;  
+ } else if (appState.step === 3) {  
+ tEl.textContent = 'グリッド調整・保存 (Step 3)';  
+ cEl.innerHTML = `  
+ <p><strong>・グリッド設定:</strong> 1マスのサイズや線の色・太さ・補助線（分割）を調整できます。</p>  
+ <p><strong>・連動オフ:</strong> スワイプで画像の位置だけを微調整できます（位置が決まったら連動オンにして固定）。</p>  
+ <p><strong>・回転タブ:</strong> 水平出しの微調整ができます。</p>  
+ <p><strong>・文字入れタブ:</strong> テキストの追加や配置変更ができます。</p>  
+ <p><strong>・保存:</strong> 画像保存（JPG/PNG/原寸PDF）やプロジェクト保存が可能です。</p>  
+ `;  
+ }  
+ openModal('guide-modal');  
+ }  
+  
+ on('guide-btn', 'click', showGuideForCurrentStep);  
+ on('close-guide-btn', 'click', () => closeModal('guide-modal'));  
+ on('close-guide-ok-btn', 'click', () => closeModal('guide-modal'));  
+ on('menu-btn', 'click', () => openModal('main-menu-modal'));  
+ on('close-menu-btn', 'click', () => closeModal('main-menu-modal'));  
+  
+ on('menu-history-btn', 'click', () => { closeModal('main-menu-modal'); goToStep(1); });  
+ on('menu-updates-btn', 'click', () => { closeModal('main-menu-modal'); openModal('updates-modal'); });  
+ on('menu-credit-btn', 'click', () => { closeModal('main-menu-modal'); openModal('credit-modal'); });  
+  
+ document.querySelectorAll('.modal-close-btn').forEach(btn => {  
+ btn.addEventListener('click', () => { closeModal('updates-modal'); closeModal('credit-modal'); });  
+ });  
+ </script>  
+</body>  
+</html>

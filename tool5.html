@@ -1,0 +1,1626 @@
+<!--
+==================================================
+花材提案ツール v1.0.0（正式リリース版）
+---
+製作者: 関貴文
+AIアシスタント: Gemini (Google)
+技術スタック: HTML5, CSS3 (Tailwind CSS, Font Awesome), JavaScript (Vanilla JS, IndexedDB)
+---
+==================================================
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 13px; display: inline-block; margin-bottom: 8px;">← メニューに戻る</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>花材提案ツール v1.0.0</title>
+    <meta name="theme-color" content="#0c121e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="花材提案">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzEwYjk4MSI+PHBhdGggZD0iTTEyIDJMMTUuMDkgOC4yNkwyMiA5LjI3TTE3IDE0TDE4LjE4IDIxTDEyIDE3LjI3TDUuODIgMjFMNyAxNEwyIDkuMjdMOC45MSA4LjI2TDEyIDJaIi8+PC9zdmc+">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%E8%8A%B1%E6%9D%90%E6%8F%90%E6%A1%88%E3%83%84%E3%83%BC%E3%83%AB%22%2C%22short_name%22%3A%22%E8%8A%B1%E6%9D%90%E6%8F%90%E6%A1%88%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230c121e%22%2C%22theme_color%22%3A%22%230c121e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzEwYjk4MSI+PHBhdGggZD0iTTEyIDJMMTUuMDkgOC4yNkwyMiA5LjI3TTE3IDE0TDE4LjE4IDIxTDEyIDE3LjI3TDUuODIgMjFMNyAxNEwyIDkuMjdMOC45MSA4LjI2TDEyIDJaIi8+PC9zdmc+%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzEwYjk4MSI+PHBhdGggZD0iTTEyIDJMMTUuMDkgOC4yNkwyMiA5LjI3TTE3IDE0TDE4LjE4IDIxTDEyIDE3LjI3TDUuODIgMjFMNyAxNEwyIDkuMjdMOC45MSA4LjI2TDEyIDJaIi8+PC9zdmc+%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        floral: {
+                            dark: '#0c121e', card: '#161f30',
+                            primary: '#10b981', primaryHover: '#059669',
+                            pink: '#f472b6', yellow: '#fbbf24',
+                            text: '#f8fafc', subText: '#94a3b8',
+                        }
+                    } 
+                } 
+            } 
+        }
+    </script>
+    <style>
+        :root { --app-height: 100dvh; }
+        body { background-color: #0c121e; color: #f8fafc; height: var(--app-height); width: 100vw; overflow: hidden; -webkit-tap-highlight-color: transparent; font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif; }
+        
+        .glass-panel { background: rgba(22, 31, 48, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+        .glass-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; transition: all 0.2s ease; border-radius: 10px; }
+        .glass-input:focus { outline: none; border-color: #10b981; background: rgba(0, 0, 0, 0.6); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        
+        ::-webkit-scrollbar { display: none; }
+        .hidden-safe { display: none !important; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .chip { padding: 6px 14px; border-radius: 100px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s; font-size: 0.75rem; font-weight: 500; white-space: nowrap; color: #94a3b8; cursor: pointer; }
+        .chip.active { background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #34d399; font-weight: bold; transform: scale(1.02); }
+        
+        .qty-btn { width: 28px; height: 28px; display: flex; align-items: justify-center; justify-content: center; background: rgba(255,255,255,0.08); border-radius: 8px; font-weight: bold; transition: all 0.15s; color: #e2e8f0; cursor: pointer; }
+        .qty-btn:active { background: rgba(16, 185, 129, 0.4); transform: scale(0.92); }
+        
+        .toggle-checkbox { display: none; }
+        .toggle-label { width: 46px; height: 24px; background-color: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.25); border-radius: 9999px; transition: all 0.25s; cursor: pointer; display: block; position: relative; }
+        .toggle-dot { width: 16px; height: 16px; background-color: #94a3b8; border-radius: 50%; position: absolute; top: 2px; left: 3px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label .toggle-dot { transform: translateX(20px); background-color: white; }
+
+        .wallet-card { background: linear-gradient(135deg, #059669 0%, #047857 50%, #064e3b 100%); border-radius: 20px; box-shadow: 0 10px 30px -5px rgba(5, 150, 105, 0.45); padding: 18px 20px; color: white; position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); }
+        .wallet-card::before { content: ''; position: absolute; top: -40%; right: -10%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 65%); border-radius: 50%; }
+
+        .slide-up { transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .slide-up.active { transform: translateY(0); }
+        .fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex flex-col text-sm">
+
+ <!-- ヘッダー -->
+<header class="z-40 fixed top-0 w-full pt-safe h-14 flex items-center justify-between px-5 border-b border-white/5 bg-[#0c121e]/90 backdrop-blur-xl">
+  <h1 class="font-bold tracking-widest text-white text-base flex items-center">
+    <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mr-2 border border-emerald-500/30">
+      <i class="fa-solid fa-leaf text-xs"></i>
+    </span>
+    花材提案ツール
+    <span class="ml-2 text-[10px] font-normal px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-normal">v1.1.0</span>
+  </h1>
+  <!-- ここにDB更新ボタンを追加 -->
+  <button onclick="syncFlowersDB()" class="text-[10px] bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full flex items-center gap-1.5 transition active:scale-95 shadow-sm">
+    <i class="fa-solid fa-cloud-arrow-down" id="sync-icon"></i>
+    <span id="db-status-text" class="font-bold">最新DBを取得</span>
+  </button>
+</header>
+
+    <main id="main-container" class="flex-1 overflow-y-auto w-full pb-24 pt-16 px-4 scroll-smooth">
+        
+        <!-- ================= VIEW: FORM (条件設定) ================= -->
+        <section id="view-form" class="space-y-4 max-w-md mx-auto fade-in pb-4">
+            
+            <div class="glass-panel p-4 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 text-[10px] font-bold mb-1.5 tracking-wider">販売予算 (円)</label>
+                        <input type="number" id="input-budget" value="5000" inputmode="numeric" pattern="[0-9]*" class="glass-input w-full py-2 px-3 text-lg font-bold text-center">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 text-[10px] font-bold mb-1.5 tracking-wider">目標原価率 (%)</label>
+                        <select id="input-cost-rate" class="glass-input w-full py-2.5 px-2 text-sm font-bold appearance-none text-center">
+                            <option value="0.20">20% (利益重視)</option>
+                            <option value="0.25">25% (標準)</option>
+                            <option value="0.30" selected>30% (小売目安)</option>
+                            <option value="0.35">35% (ボリューム)</option>
+                            <option value="0.40">40% (高品質)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- スイッチ設定エリア -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex justify-between items-center bg-black/25 p-2.5 rounded-xl border border-white/5">
+                        <div>
+                            <p class="font-bold text-slate-200 text-[10px]">おまかせ枠数</p>
+                            <p class="text-[8px] text-slate-400">予算から自動配分</p>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="toggle-auto-count" class="toggle-checkbox"/>
+                            <label for="toggle-auto-count" class="toggle-label"><div class="toggle-dot"></div></label>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/25 p-2.5 rounded-xl border border-white/5">
+                        <div>
+                            <p class="font-bold text-slate-200 text-[10px]">原価リミット</p>
+                            <p class="text-[8px] text-slate-400">予算超過を自動削減</p>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="toggle-strict-cost" class="toggle-checkbox" checked/>
+                            <label for="toggle-strict-cost" class="toggle-label"><div class="toggle-dot"></div></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 手動枠数設定 -->
+                <div id="manual-counts-area" class="grid grid-cols-2 gap-x-3 gap-y-2.5 transition-opacity duration-300">
+                    <div class="flex justify-between items-center bg-black/25 px-3 py-2 rounded-xl border border-white/5">
+                        <div>
+                            <span class="text-xs font-bold text-slate-200 block">Main</span>
+                            <span class="text-[9px] text-slate-400 block -mt-0.5">主役・大輪</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="updateCount('main', -1)" class="qty-btn"><i class="fa-solid fa-minus text-[8px]"></i></button>
+                            <span id="count-main" class="w-5 text-center font-bold text-sm text-emerald-400">2</span>
+                            <button onclick="updateCount('main', 1)" class="qty-btn"><i class="fa-solid fa-plus text-[8px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/25 px-3 py-2 rounded-xl border border-white/5">
+                        <div>
+                            <span class="text-xs font-bold text-slate-200 block">Sub</span>
+                            <span class="text-[9px] text-slate-400 block -mt-0.5">中輪・脇役</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="updateCount('sub', -1)" class="qty-btn"><i class="fa-solid fa-minus text-[8px]"></i></button>
+                            <span id="count-sub" class="w-5 text-center font-bold text-sm text-emerald-400">2</span>
+                            <button onclick="updateCount('sub', 1)" class="qty-btn"><i class="fa-solid fa-plus text-[8px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/25 px-3 py-2 rounded-xl border border-white/5">
+                        <div>
+                            <span class="text-xs font-bold text-slate-200 block">Filler</span>
+                            <span class="text-[9px] text-slate-400 block -mt-0.5">小花・ライン</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="updateCount('filler', -1)" class="qty-btn"><i class="fa-solid fa-minus text-[8px]"></i></button>
+                            <span id="count-filler" class="w-5 text-center font-bold text-sm text-emerald-400">1</span>
+                            <button onclick="updateCount('filler', 1)" class="qty-btn"><i class="fa-solid fa-plus text-[8px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/25 px-3 py-2 rounded-xl border border-white/5">
+                        <div>
+                            <span class="text-xs font-bold text-slate-200 block">Green</span>
+                            <span class="text-[9px] text-slate-400 block -mt-0.5">葉物・枝物</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="updateCount('green', -1)" class="qty-btn"><i class="fa-solid fa-minus text-[8px]"></i></button>
+                            <span id="count-green" class="w-5 text-center font-bold text-sm text-emerald-400">1</span>
+                            <button onclick="updateCount('green', 1)" class="qty-btn"><i class="fa-solid fa-plus text-[8px]"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- プロダクト -->
+                <div>
+                    <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">商品の種類</label>
+                    <div class="flex flex-wrap gap-1.5" id="filter-type">
+                        <button class="chip active" data-val="花束">花束</button>
+                        <button class="chip" data-val="アレンジメント">アレンジ</button>
+                        <button class="chip" data-val="スタンド花">スタンド</button>
+                        <button class="chip" data-val="生花祭壇">生花祭壇</button>
+                    </div>
+                </div>
+
+                <!-- 用途選択 -->
+                <div>
+                    <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">用途</label>
+                    <div class="flex flex-wrap gap-1.5" id="filter-use">
+                        <button class="chip active" data-val="指定なし">指定なし</button>
+                        <button class="chip" data-val="お供え/法事">お供え/法事</button>
+                        <button class="chip" data-val="お祝い">お祝い</button>
+                        <button class="chip" data-val="ウェディング">ウェディング</button>
+                        <button class="chip" data-val="送別">送別</button>
+                    </div>
+                </div>
+
+                <!-- 季節感 -->
+                <div>
+                    <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">季節感</label>
+                    <div class="flex flex-wrap gap-1.5" id="filter-season">
+                        <button class="chip active" data-val="通年">通年</button>
+                        <button class="chip" data-val="春">春</button>
+                        <button class="chip" data-val="夏">夏</button>
+                        <button class="chip" data-val="秋">秋</button>
+                        <button class="chip" data-val="冬">冬</button>
+                    </div>
+                </div>
+
+                <!-- カラートーン -->
+                <div>
+                    <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">色合い・トーン</label>
+                    <div class="flex flex-wrap gap-1.5" id="filter-color">
+                        <button class="chip active" data-val="おまかせ">おまかせ</button>
+                        <button class="chip" data-val="白系">白系</button>
+                        <button class="chip" data-val="赤・ピンク系">赤・ピンク系</button>
+                        <button class="chip" data-val="黄・オレンジ系">黄・オレンジ系</button>
+                        <button class="chip" data-val="青・紫系">青・紫系</button>
+                        <button class="chip" data-val="明るめ">明るめ(パステル)</button>
+                        <button class="chip" data-val="暗め">暗め(シック)</button>
+                    </div>
+                </div>
+
+                <!-- イメージ -->
+                <div>
+                    <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">イメージ</label>
+                    <div class="flex flex-wrap gap-1.5" id="filter-image">
+                        <button class="chip active" data-val="指定なし">指定なし</button>
+                        <button class="chip" data-val="ナチュラル">ナチュラル</button>
+                        <button class="chip" data-val="キュート">キュート</button>
+                        <button class="chip" data-val="エレガント">エレガント</button>
+                        <button class="chip" data-val="シック">シック</button>
+                        <button class="chip" data-val="和風">和風</button>
+                    </div>
+                </div>
+
+                <!-- 性別・年齢層 -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">対象の性別</label>
+                        <div class="flex flex-wrap gap-1.5" id="filter-gender">
+                            <button class="chip active" data-val="指定なし">指定なし</button>
+                            <button class="chip" data-val="女性">女性</button>
+                            <button class="chip" data-val="男性">男性</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 text-[10px] font-bold mb-1.5 uppercase ml-1 tracking-wider">年齢層</label>
+                        <div class="flex flex-wrap gap-1.5" id="filter-age">
+                            <button class="chip active" data-val="指定なし">指定なし</button>
+                            <button class="chip" data-val="若年層">若年層</button>
+                            <button class="chip" data-val="ミドル">ミドル</button>
+                            <button class="chip" data-val="シニア">シニア</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="generateProposal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 active:scale-95 transition-all mt-4 text-base flex justify-center items-center">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>提案を生成する
+            </button>
+        </section>
+
+
+        <!-- ================= VIEW: RESULT (提案結果) ================= -->
+        <section id="view-result" class="space-y-4 max-w-md mx-auto hidden-safe fade-in pb-8">
+            <div class="flex justify-between items-center px-1">
+                <button onclick="switchView('form')" class="text-slate-300 hover:text-white font-bold py-2 px-1 transition text-xs flex items-center">
+                    <i class="fa-solid fa-arrow-left mr-1.5 text-slate-400"></i>条件を変更する
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="openOrderModal()" class="bg-white/10 hover:bg-white/15 text-slate-200 font-bold px-3.5 py-2 rounded-full border border-white/10 transition text-xs flex items-center gap-1.5 shadow active:scale-95">
+                        <i class="fa-solid fa-file-invoice text-emerald-400"></i>発注用リスト
+                    </button>
+                    <button onclick="openSaveModal()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3.5 py-2 rounded-full shadow-md shadow-emerald-500/20 active:scale-95 transition text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-bookmark text-[10px]"></i>保存する
+                    </button>
+                </div>
+            </div>
+
+            <!-- 原価カード -->
+            <div class="wallet-card">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-[9px] text-emerald-100 uppercase tracking-widest mb-0.5 font-bold opacity-80">販売予算</p>
+                        <p class="text-3xl font-extrabold tracking-tight">¥<span id="res-budget">0</span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] text-emerald-100 uppercase tracking-widest mb-0.5 font-bold opacity-80">目標原価枠</p>
+                        <p class="text-lg font-bold"><span id="res-target-rate">30</span>% <span class="text-xs font-normal opacity-90">(¥<span id="res-target-cost">0</span>)</span></p>
+                    </div>
+                </div>
+                <div class="bg-black/30 rounded-xl p-3 flex justify-between items-center backdrop-blur-md border border-white/10">
+                    <div>
+                        <p class="text-[9px] text-emerald-200 uppercase tracking-widest mb-0.5 font-bold opacity-90">仕入原価計</p>
+                        <p class="text-2xl font-black text-white">¥<span id="res-actual-cost">0</span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] text-emerald-200 uppercase tracking-widest mb-0.5 font-bold opacity-90">実質原価率</p>
+                        <p class="text-2xl font-black" id="res-actual-rate">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center px-1">
+                <div class="flex flex-wrap gap-1.5 text-[10px] font-bold" id="res-tags"></div>
+                <button onclick="rerollFlowers()" class="bg-slate-800 hover:bg-slate-700 text-slate-100 px-3 py-2 rounded-lg text-[10px] font-bold transition shadow border border-white/10 active:scale-95 flex items-center shrink-0">
+                    <i class="fa-solid fa-dice mr-1 text-emerald-400"></i>未ロック再抽選
+                </button>
+            </div>
+
+            <!-- 構成花材リスト -->
+            <div id="res-flowers" class="space-y-5"></div>
+        </section>
+
+       <!-- ================= VIEW: DICTIONARY (花材図鑑) ================= -->
+        <section id="view-dict" class="max-w-md mx-auto hidden-safe pb-8 flex flex-col h-[calc(100dvh-120px)]">
+            <div class="shrink-0 bg-[#0c121e]/95 backdrop-blur-xl z-10 pt-1 pb-3 border-b border-white/5 space-y-2.5">
+                <div class="flex justify-between items-center px-2">
+                    <h2 class="font-bold text-lg text-white flex items-center">
+                        <i class="fa-solid fa-book-open text-emerald-400 mr-2"></i>花材図鑑
+                    </h2>
+                    <span id="dict-count" class="text-[10px] text-slate-400 font-mono"></span>
+                </div>
+
+                <!-- キーワード検索窓 -->
+                <div class="px-2">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input type="text" id="dict-search-input" oninput="onDictSearchInput()" placeholder="花名・品種名・ひらがなで検索..." class="glass-input w-full py-2 pl-8 pr-8 text-xs text-white placeholder-slate-500 bg-black/40 border border-white/10 rounded-xl focus:border-emerald-400">
+                        <button onclick="clearDictSearch()" id="dict-search-clear" class="hidden-safe absolute right-2.5 top-2 text-slate-400 hover:text-white text-xs w-5 h-5 flex items-center justify-center">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 overflow-x-auto px-2 pb-1 hide-scrollbar" id="dict-main-filters">
+                    <button class="chip active bg-white/10 text-white font-bold border-emerald-400" onclick="changeDictMain('role', this)">役割別</button>
+                    <button class="chip" onclick="changeDictMain('season', this)">季節別</button>
+                    <button class="chip" onclick="changeDictMain('color', this)">色別</button>
+                    <button class="chip" onclick="changeDictMain('aiueo', this)">五十音順</button>
+                </div>
+                
+                <div class="flex gap-1.5 overflow-x-auto px-2 pb-1 hide-scrollbar" id="dict-sub-filters"></div>
+            </div>
+            
+            <div id="dict-list" class="flex-1 overflow-y-auto space-y-2 px-2 pt-3"></div>
+        </section>
+
+        <!-- ================= VIEW: HISTORY (保存履歴) ================= -->
+        <section id="view-history" class="space-y-4 max-w-md mx-auto hidden-safe pb-8">
+            <h2 class="font-bold text-lg mb-2 px-2 text-white flex items-center">
+                <i class="fa-solid fa-clock-rotate-left text-emerald-400 mr-2"></i>保存済みアーカイブ
+            </h2>
+            <div id="history-list" class="space-y-3 px-1"></div>
+            <div id="history-empty" class="text-center text-slate-500 py-20 hidden-safe">
+                <i class="fa-solid fa-box-open text-4xl mb-3 opacity-30"></i>
+                <p class="text-xs">保存されたプロジェクトはありません</p>
+            </div>
+
+            <!-- クレジット表記 -->
+            <div class="mt-8 pt-6 border-t border-white/10 text-center text-slate-400 text-[11px] leading-relaxed">
+                <p class="font-bold text-slate-300">花材提案ツール v1.0.0（正式リリース版）</p>
+                <div class="mt-2 space-y-0.5 text-[10px] text-slate-500">
+                    <p>製作者: 関貴文</p>
+                    <p>AIアシスタント: Gemini (Google)</p>
+                    <p>技術スタック: HTML5 / Tailwind CSS / Vanilla JS / IndexedDB</p>
+                </div>
+                <!-- DB初期化ボタン -->
+                <div class="mt-6 pt-4 border-t border-white/5">
+                    <button onclick="confirmResetFlowersDB()" class="text-[11px] text-rose-400/80 hover:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 px-3.5 py-2 rounded-xl transition active:scale-95 inline-flex items-center gap-1.5 font-bold">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                        花材データベースを初期化
+                    </button>
+                    <p class="text-[9px] text-slate-500 mt-1.5">※端末に保存された花材データのみを消去します（保存した案件履歴は消えません）</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 w-full pb-[calc(max(env(safe-area-inset-bottom,0px),20px))] pt-2 z-40 grid grid-cols-4 items-center bg-[#161f30] border-t border-white/20 text-center shadow-[0_-4px_25px_rgba(0,0,0,0.6)]">
+        <button onclick="switchView('form')" id="tab-form" class="flex flex-col items-center justify-center text-emerald-400 transition-colors">
+            <i class="fa-solid fa-sliders text-lg mb-1"></i><span class="text-[11px] font-bold">条件設定</span>
+        </button>
+        <button onclick="switchView('result')" id="tab-result" class="flex flex-col items-center justify-center text-slate-300 hover:text-white transition-colors relative">
+            <i class="fa-solid fa-wand-magic-sparkles text-lg mb-1"></i><span class="text-[11px] font-bold">提案結果</span>
+            <span id="badge-result" class="hidden-safe absolute top-1 right-5 w-2 h-2 rounded-full bg-emerald-400"></span>
+        </button>
+        <button onclick="switchView('dict')" id="tab-dict" class="flex flex-col items-center justify-center text-slate-300 hover:text-white transition-colors">
+            <i class="fa-solid fa-book-open text-lg mb-1"></i><span class="text-[11px] font-bold">花材図鑑</span>
+        </button>
+        <button onclick="switchView('history')" id="tab-history" class="flex flex-col items-center justify-center text-slate-300 hover:text-white transition-colors">
+            <i class="fa-solid fa-clock-rotate-left text-lg mb-1"></i><span class="text-[11px] font-bold">保存履歴</span>
+        </button>
+    </nav>
+
+    <!-- カスタム保存モーダル -->
+    <div id="modal-save" class="fixed inset-0 z-50 hidden-safe flex items-center justify-center p-5">
+        <div class="bg-[#161f30] border border-emerald-500/30 w-full max-w-sm p-6 rounded-2xl shadow-2xl space-y-4 fade-in">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-base">
+                <i class="fa-solid fa-bookmark"></i>
+                <span>プロジェクトの保存</span>
+            </div>
+            <div>
+                <label class="block text-xs text-slate-300 mb-1.5 font-bold">保存名（案件名・お客様名など）</label>
+                <input type="text" id="input-save-title" class="glass-input w-full py-3 px-3.5 text-white text-sm font-bold bg-black/60 border border-white/20 focus:border-emerald-400 placeholder-slate-500">
+            </div>
+            <div class="flex gap-2.5 pt-2">
+                <button onclick="closeModals()" class="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 font-bold text-xs transition">キャンセル</button>
+                <button onclick="executeSave()" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20">保存する</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- カスタム名前変更モーダル -->
+    <div id="modal-edit-history" class="fixed inset-0 z-50 hidden-safe flex items-center justify-center p-5">
+        <div class="bg-[#161f30] border border-emerald-500/30 w-full max-w-sm p-6 rounded-2xl shadow-2xl space-y-4 fade-in">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold text-base">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>保存名の変更</span>
+            </div>
+            <div>
+                <input type="hidden" id="edit-history-id">
+                <label class="block text-xs text-slate-300 mb-1.5 font-bold">新しい保存名</label>
+                <input type="text" id="input-edit-history-title" class="glass-input w-full py-3 px-3.5 text-white text-sm font-bold bg-black/60 border border-white/20 focus:border-emerald-400">
+            </div>
+            <div class="flex gap-2.5 pt-2">
+                <button onclick="closeModals()" class="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 font-bold text-xs transition">キャンセル</button>
+                <button onclick="executeUpdateHistoryTitle()" class="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20">更新する</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 花材詳細モーダル -->
+    <div id="modal-flower" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-md mx-auto bg-[#161f30] rounded-t-3xl shadow-[0_-20px_60px_rgba(0,0,0,0.8)] border-t border-white/10 flex flex-col max-h-[85dvh]">
+        <div class="w-full flex justify-center py-3" onclick="closeModals()"><div class="w-10 h-1 bg-slate-600 rounded-full"></div></div>
+        <div class="px-5 pb-6 overflow-y-auto flex-1">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span id="fm-role" class="text-[9px] font-bold tracking-widest uppercase text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full mb-2 inline-block"></span>
+                    <h2 id="fm-name" class="text-2xl font-bold tracking-tight text-white"></h2>
+                </div>
+            </div>
+            <div class="bg-black/30 rounded-xl p-4 mb-4 border border-white/5"><p class="text-xs text-slate-300 leading-relaxed" id="fm-desc"></p></div>
+            <div class="grid grid-cols-2 gap-3 text-xs mb-5">
+                <div class="bg-black/30 p-3 rounded-xl border border-white/5">
+                    <p class="text-[9px] text-slate-400 mb-1 font-bold"><i class="fa-solid fa-palette mr-1 text-emerald-400"></i> 主な色合い</p>
+                    <p id="fm-colors" class="font-bold text-white"></p>
+                </div>
+                <div class="bg-black/30 p-3 rounded-xl border border-white/5">
+                    <p class="text-[9px] text-slate-400 mb-1 font-bold"><i class="fa-solid fa-calendar-days mr-1 text-emerald-400"></i> 出回り時期</p>
+                    <p id="fm-season" class="font-bold text-white"></p>
+                </div>
+                <div class="bg-black/30 p-4 rounded-xl border border-white/5 col-span-2 flex justify-between items-center">
+                    <p class="text-[10px] text-slate-400 font-bold"><i class="fa-solid fa-yen-sign mr-1 text-emerald-400"></i> 仕入単価の目安</p>
+                    <p id="fm-price" class="font-bold text-xl text-emerald-400"></p>
+                </div>
+            </div>
+            <a id="fm-google-btn" href="#" target="_blank" class="flex justify-center items-center w-full bg-slate-100 text-slate-900 font-bold py-3.5 rounded-xl transition active:scale-95 text-sm shadow-md">
+                <i class="fa-brands fa-google mr-2 text-[#4285F4]"></i>Google画像検索で確認する
+            </a>
+        </div>
+    </div>
+
+    <!-- ピッカーモーダル -->
+    <div id="modal-picker" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-md mx-auto bg-[#161f30] rounded-t-3xl shadow-[0_-20px_60px_rgba(0,0,0,0.8)] border-t border-white/10 flex flex-col h-[85dvh]">
+        <div class="flex justify-between items-center p-5 border-b border-white/5 shrink-0">
+            <div><h3 class="font-bold text-lg text-white">花材を追加</h3><p class="text-[10px] text-emerald-400 mt-0.5" id="picker-role-text"></p></div>
+            <button onclick="closeModals()" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-2" id="picker-list"></div>
+    </div>
+    
+    <!-- 発注用リスト出力モーダル -->
+    <div id="modal-order" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-md mx-auto bg-[#161f30] rounded-t-3xl shadow-[0_-20px_60px_rgba(0,0,0,0.8)] border-t border-white/10 flex flex-col max-h-[85dvh]">
+        <div class="flex justify-between items-center p-5 border-b border-white/5">
+            <h3 class="font-bold text-lg text-white"><i class="fa-solid fa-file-invoice text-emerald-400 mr-2"></i>発注用リスト出力</h3>
+            <button onclick="closeModals()" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="p-5 overflow-y-auto flex-1 space-y-5">
+            <textarea id="order-text-preview" class="w-full h-48 bg-black/40 border border-white/10 rounded-xl p-4 text-xs text-slate-200 focus:outline-none focus:border-emerald-400 font-mono leading-relaxed" readonly></textarea>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="copyOrderText()" class="bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition flex justify-center items-center active:scale-95 border border-white/10 text-sm">
+                    <i class="fa-regular fa-copy mr-1.5"></i>コピー
+                </button>
+                <button onclick="downloadTextFile()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 flex justify-center items-center active:scale-95 text-sm">
+                    <i class="fa-solid fa-file-arrow-down mr-1.5"></i>テキスト保存
+                </button>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center leading-relaxed">
+                テキストファイル（.txt）として端末に保存できます。<br>
+                「コピー」でLINEやメールに貼り付けてそのまま発注も可能です。
+            </p>
+        </div>
+    </div>
+
+    <!-- 終了確認モーダル -->
+    <div id="modal-exit" class="fixed inset-0 z-[70] hidden-safe flex items-center justify-center p-5">
+        <div class="bg-[#161f30] border border-white/20 w-full max-w-xs p-5 rounded-2xl shadow-2xl text-center space-y-4 fade-in">
+            <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="exit-cancel-btn" class="w-full bg-white/10 hover:bg-white/15 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition active:scale-95">
+                    キャンセル
+                </button>
+                <button id="exit-ok-btn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition shadow active:scale-95">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-overlay" onclick="closeModals()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden-safe opacity-0 transition-opacity duration-300"></div>
+
+    <script>
+        const vibrate = (ms) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} };
+        let pickerTargetGroup = 'main';
+
+        // =========================================================================
+        // 【プロ点検済】花材データベース連携 (スプレッドシート & IndexedDB オフライン対応)
+        // =========================================================================
+        const FLOWERS_API_URL = "https://script.google.com/macros/s/AKfycbzNbm4-lxhmyPF3MyrOPfcbzANow_NJ8PE2tMQECjKmq4cCGG6NQxzuIZDXKmAEnnKIIw/exec";
+
+        let flowersDB = []; 
+        let idb;
+
+        const req = indexedDB.open("FloralProCalcDB_v24", 2);
+        req.onupgradeneeded = e => { 
+            idb = e.target.result; 
+            if(!idb.objectStoreNames.contains("projects")) {
+                idb.createObjectStore("projects", { keyPath: "id" }); 
+            }
+            if(!idb.objectStoreNames.contains("master_flowers")) {
+                idb.createObjectStore("master_flowers", { keyPath: "id" }); 
+            }
+        };
+
+        req.onsuccess = e => { 
+            idb = e.target.result;
+            loadFlowersFromLocal();
+        };
+
+        function loadFlowersFromLocal() {
+            const tx = idb.transaction("master_flowers", "readonly");
+            const store = tx.objectStore("master_flowers");
+            const getReq = store.getAll();
+
+            getReq.onsuccess = () => {
+                if (getReq.result && getReq.result.length > 0) {
+                    flowersDB = getReq.result;
+                    console.log(`ローカルDBから ${flowersDB.length} 件の花材を読み込みました。`);
+                } else {
+                    alert("【花材データが未登録です】\n画面右上の「最新DBを取得」ボタンを押して、花材一覧をダウンロードしてください。");
+                }
+            };
+        }
+
+        async function syncFlowersDB() {
+            const icon = document.getElementById("sync-icon");
+            const text = document.getElementById("db-status-text");
+            
+            if (icon) icon.classList.add("fa-beat-fade");
+            if (text) text.innerText = "同期中...";
+            vibrate(10);
+
+            try {
+                const res = await fetch(FLOWERS_API_URL, { cache: "no-cache" });
+                if (!res.ok) throw new Error("花材データの取得に失敗しました");
+                
+                const freshData = await res.json();
+                if (!Array.isArray(freshData) || freshData.length === 0) {
+                    throw new Error("データ形式が正しくありません");
+                }
+
+                const tx = idb.transaction("master_flowers", "readwrite");
+                const store = tx.objectStore("master_flowers");
+                store.clear();
+                freshData.forEach(item => store.put(item));
+
+                tx.oncomplete = () => {
+                    flowersDB = freshData;
+                    vibrate(30);
+                    alert(`最新の花材データ（全 ${freshData.length} 種）を取得しました。\n次回以降はオフラインでも利用可能です。`);
+                    if (icon) icon.classList.remove("fa-beat-fade");
+                    if (text) text.innerText = "最新DBを取得";
+                    
+                    if (typeof renderDictList === "function") renderDictList();
+                };
+            } catch (err) {
+                console.error(err);
+                if (icon) icon.classList.remove("fa-beat-fade");
+                if (text) text.innerText = "同期失敗";
+                alert("データベースの更新に失敗しました。\n電波状況を確認してください。（以前保存した花材データがある場合は、そのままツールを使用できます）");
+            }
+        }
+
+        const roleDisplay = { "main": "Main (主役・大輪)", "sub": "Sub (中輪・脇役)", "filler": "Filler (小花・ライン)", "green": "Green (葉物・枝物)" };
+        const getGroup = (role) => {
+            if (role === "Main") return "main";
+            if (role === "Sub" || role === "Mass") return "sub";
+            if (role === "Filler" || role === "Line" || role === "Berry") return "filler";
+            if (role === "Green" || role === "Branch") return "green";
+            return "filler";
+        };
+
+        // UI State (初期値: 指定なし・おまかせ)
+        let state = { type: "花束", season: "通年", use: "指定なし", image: "指定なし", color: "おまかせ", gender: "指定なし", age: "指定なし" };
+        let counts = { main: 2, sub: 2, filler: 1, green: 1 };
+        let activeProject = null;
+        
+        let dictActiveMain = 'role';
+        let dictActiveSub = 'すべて';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const dictBtn = document.querySelector('#dict-main-filters .chip.active');
+            if(dictBtn) changeDictMain('role', dictBtn);
+        });
+
+        // --- UI Events ---
+        document.querySelectorAll('#view-form .chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                vibrate(10);
+                const parent = this.closest('div[id^="filter-"]');
+                if (parent) {
+                    parent.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const key = parent.id.replace('filter-', '');
+                    state[key] = this.dataset.val;
+                }
+            });
+        });
+
+        const autoCountToggle = document.getElementById('toggle-auto-count');
+        if (autoCountToggle) {
+            autoCountToggle.addEventListener('change', (e) => {
+                const area = document.getElementById('manual-counts-area');
+                if(area) {
+                    if(e.target.checked) area.classList.add('opacity-30', 'pointer-events-none');
+                    else area.classList.remove('opacity-30', 'pointer-events-none');
+                }
+            });
+        }
+
+        function updateCount(group, change) {
+            vibrate(10);
+            if (counts[group] + change >= 0 && counts[group] + change <= 10) {
+                counts[group] += change;
+                document.getElementById(`count-${group}`).innerText = counts[group];
+            }
+        }
+
+        function switchView(view) {
+            vibrate(15);
+            
+            if (view === 'result' && !activeProject) {
+                alert("まだ提案が作成されていません。\n先に「提案を生成する」を実行してください。");
+                return;
+            }
+
+            ['form', 'result', 'history', 'dict'].forEach(v => document.getElementById(`view-${v}`).classList.add('hidden-safe'));
+            document.getElementById(`view-${view}`).classList.remove('hidden-safe');
+            
+            ['form', 'result', 'dict', 'history'].forEach(v => {
+                const el = document.getElementById(`tab-${v}`);
+                if(el) { el.classList.remove('text-emerald-400'); el.classList.add('text-slate-300'); }
+            });
+            
+            const activeTab = document.getElementById(`tab-${view}`);
+            if (activeTab) {
+                activeTab.classList.remove('text-slate-300');
+                activeTab.classList.add('text-emerald-400');
+            }
+            
+            if(view === 'history') {
+                loadHistory();
+            } else if (view === 'dict') {
+                changeDictMain(dictActiveMain, document.querySelector(`#dict-main-filters .chip[onclick*="${dictActiveMain}"]`));
+            }
+            
+            setTimeout(() => {
+                const mainContainer = document.getElementById('main-container');
+                if(mainContainer) mainContainer.scrollTo({ top: 0, behavior: 'instant' });
+                window.scrollTo(0, 0);
+            }, 10);
+        }
+
+        // =========================================================================
+        // 和洋調和＆文脈判定
+        // =========================================================================
+        function isHarmonyCompatible(candidate, currentPicked, isAltar, isOffering) {
+            if (isAltar && candidate.altarLevel === 0) return false;
+
+            for (let f of currentPicked) {
+                if (
+                    (candidate.style === 'jp' && candidate.crossover === 'pure' && f.style === 'western' && f.crossover === 'pure') ||
+                    (candidate.style === 'western' && candidate.crossover === 'pure' && f.style === 'jp' && f.crossover === 'pure')
+                ) {
+                    return false;
+                }
+
+                const isCandidateKiku = candidate.name.includes("菊") || candidate.name.includes("誠");
+                const isCandidateHima = candidate.name.includes("ヒマワリ");
+                const isFKiku = f.name.includes("菊") || f.name.includes("誠");
+                const isFHima = f.name.includes("ヒマワリ");
+
+                if ((isCandidateKiku && isFHima) || (isCandidateHima && isFKiku)) {
+                    if (!isAltar) return false;
+                }
+            }
+
+            return true;
+        }
+
+        // 厳格フィルタリング
+        function getFilteredPool(reqType, reqSeason, reqUse, reqImage, reqColor) {
+            const isAltar = reqType === '生花祭壇';
+            const isOffering = reqUse === 'お供え/法事';
+
+            return flowersDB.filter(f => {
+                if (!f.products.includes(reqType)) return false;
+                if (isAltar && f.altarLevel === 0) return false;
+
+                // 用途チェック
+                if (isOffering) {
+                    if (!f.uses.includes("お供え/法事")) return false;
+                } else if (reqUse !== "指定なし") {
+                    if (!f.uses.includes(reqUse)) return false;
+                } else {
+                    if (f.uses.length === 1 && f.uses[0] === "お供え/法事") return false;
+                }
+
+                // 季節判定（早春/初夏/晩秋/複合表記の柔軟マッチング）
+                const matchSeason = (() => {
+                    if (reqSeason === "通年") return true;
+                    const sArr = Array.isArray(f.season) ? f.season : [f.season];
+                    const sStr = sArr.join(",");
+                    if (sStr.includes("通年")) return true;
+                    if (reqSeason === "春") return sStr.includes("春");
+                    if (reqSeason === "夏") return sStr.includes("夏");
+                    if (reqSeason === "秋") return sStr.includes("秋");
+                    if (reqSeason === "冬") return sStr.includes("冬");
+                    return sStr.includes(reqSeason);
+                })();
+                if (!matchSeason) return false;
+
+                // イメージ判定: データに「指定なし」がある場合はどんなイメージでも合格
+                const matchTone = reqImage === "指定なし" || f.tone.includes(reqImage) || f.tone.includes("指定なし");
+                if (!matchTone) return false;
+
+                // カラートーン判定
+                if (reqColor !== "おまかせ") {
+                    const cStr = f.colors + "," + f.tone.join(',');
+                    let matchColor = true;
+                    if (reqColor === "白系") matchColor = cStr.includes("白") || cStr.includes("パステル");
+                    else if (reqColor === "赤・ピンク系") matchColor = cStr.includes("赤") || cStr.includes("ピンク") || cStr.includes("ボルドー");
+                    else if (reqColor === "黄・オレンジ系") matchColor = cStr.includes("黄") || cStr.includes("オレンジ");
+                    else if (reqColor === "青・紫系") matchColor = cStr.includes("青") || cStr.includes("紫") || cStr.includes("水色");
+                    else if (reqColor === "明るめ") matchColor = cStr.includes("白") || cStr.includes("黄") || cStr.includes("ピンク") || cStr.includes("パステル") || cStr.includes("水色");
+                    else if (reqColor === "暗め") matchColor = cStr.includes("黒") || cStr.includes("茶") || cStr.includes("グレー") || cStr.includes("シック") || cStr.includes("くすみ") || cStr.includes("ボルドー");
+                    
+                    if (getGroup(f.role) !== 'green' && !matchColor) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function generateProposal() {
+            vibrate(40);
+            if (!flowersDB || flowersDB.length === 0) {
+                alert("花材データが登録されていません。\n画面右上の「最新DBを取得」を押してください。");
+                return;
+            }
+            try {
+                const budget = parseInt(document.getElementById('input-budget').value) || 5000;
+                const costRate = parseFloat(document.getElementById('input-cost-rate').value) || 0.30;
+                
+                const strictToggle = document.getElementById('toggle-strict-cost');
+                const isStrict = strictToggle ? strictToggle.checked : true;
+                
+                const autoCountToggle = document.getElementById('toggle-auto-count');
+                const isAutoCount = autoCountToggle ? autoCountToggle.checked : false;
+
+                const isAltar = state.type === '生花祭壇';
+                const isOffering = state.use === 'お供え/法事';
+                const targetCost = budget * costRate;
+                
+                if (isAutoCount) {
+                    let base = Math.floor(budget / 5000);
+                    if (base < 1) base = 1;
+                    counts.main = Math.min(1 + Math.floor(base/2), 5);
+                    counts.sub = Math.min(1 + base, 6);
+                    counts.filler = Math.min(1 + Math.floor(base/2), 4);
+                    counts.green = Math.min(1 + Math.floor(base/2), 4);
+                    
+                    if (isAltar || state.type === 'スタンド花') {
+                        counts.main = Math.max(counts.main, 3);
+                        counts.sub = Math.max(counts.sub, 3);
+                        counts.green = Math.max(counts.green, 2);
+                    }
+                }
+
+                let pool = getFilteredPool(state.type, state.season, state.use, state.image, state.color);
+                pool = pool.sort(() => 0.5 - Math.random());
+
+                let picked = [];
+
+                if (isOffering || isAltar) {
+                    if(counts.main > 0) {
+                        const kikuPool = pool.filter(f => getGroup(f.role) === 'main' && (f.name.includes("菊") || f.name.includes("マム") || f.name.includes("誠")));
+                        if(kikuPool.length > 0) picked.push({...kikuPool[Math.floor(Math.random() * kikuPool.length)]});
+                    }
+                    if(budget >= 10000 && counts.main > 1) {
+                        const lilyPool = pool.filter(f => getGroup(f.role) === 'main' && (f.name.includes("百合") || f.name.includes("カサブランカ") || f.name.includes("胡蝶蘭")));
+                        if(lilyPool.length > 0) {
+                            const lily = lilyPool[Math.floor(Math.random() * lilyPool.length)];
+                            if(!picked.some(p => p.id === lily.id)) picked.push({...lily});
+                        }
+                    }
+                }
+
+                ['main', 'sub', 'filler', 'green'].forEach(g => {
+                    let reqCount = counts[g];
+                    picked.forEach(p => { if(getGroup(p.role) === g) reqCount--; });
+                    
+                    if (reqCount > 0) {
+                        let gPool = pool.filter(f => getGroup(f.role) === g && !picked.some(p => p.id === f.id));
+                        
+                        if (gPool.length === 0) {
+                            let fallbackPool = getFilteredPool(state.type, state.season, state.use, "指定なし", "おまかせ");
+                            gPool = fallbackPool.filter(f => getGroup(f.role) === g && !picked.some(p => p.id === f.id));
+                        }
+                        
+                        for (let cand of gPool) {
+                            if (reqCount <= 0) break;
+                            if (isHarmonyCompatible(cand, picked, isAltar, isOffering)) {
+                                picked.push({...cand});
+                                reqCount--;
+                            }
+                        }
+                    }
+                });
+
+                picked = picked.map(f => {
+                    let weight = f.role === "Main" ? 0.4 : (getGroup(f.role) === "green" ? 0.1 : 0.25);
+                    let allocatedCost = targetCost * weight;
+                    let qty = Math.max(1, Math.round(allocatedCost / f.wholesale));
+                    if(f.wholesale < 200 && qty > 5) qty = Math.round(qty / 5) * 5;
+                    return { ...f, qty: qty, locked: false };
+                });
+
+                if (isStrict) applyCostLimit(picked, targetCost);
+
+                activeProject = {
+                    id: Date.now(),
+                    title: `${state.type} / ${state.use}`,
+                    params: { ...state, strict: isStrict, autoCount: isAutoCount },
+                    counts: { ...counts },
+                    budget: budget,
+                    costRate: costRate,
+                    targetCost: targetCost,
+                    flowers: picked,
+                    date: new Date().toLocaleDateString('ja-JP')
+                };
+
+                const badge = document.getElementById('badge-result');
+                if(badge) badge.classList.remove('hidden-safe');
+
+                renderResult();
+                switchView('result');
+                
+            } catch (error) {
+                console.error("生成時エラー:", error);
+                alert("提案の生成中にエラーが発生しました。\n\n" + error.message);
+            }
+        }
+
+        function applyCostLimit(pickedArr, target) {
+            let currentCost = pickedArr.reduce((s, f) => s + (f.wholesale * f.qty), 0);
+            while (currentCost > target) {
+                let candidates = pickedArr.filter(f => f.qty > 1 && !f.locked);
+                if (candidates.length === 0) break;
+                candidates.sort((a,b) => b.wholesale - a.wholesale);
+                let targetF = candidates[0];
+                let decrease = (targetF.wholesale < 200 && targetF.qty >= 6) ? 5 : 1;
+                targetF.qty -= decrease;
+                currentCost -= (targetF.wholesale * decrease);
+            }
+            if (currentCost > target) {
+                for (let i = pickedArr.length - 1; i >= 0; i--) {
+                    if (currentCost <= target) break;
+                    let f = pickedArr[i];
+                    if (!f || f.locked) continue;
+                    let g = getGroup(f.role);
+                    let sameGroupCount = pickedArr.filter(p => getGroup(p.role) === g).length;
+                    if (sameGroupCount > 1) {
+                        currentCost -= (f.wholesale * f.qty);
+                        pickedArr.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        function rerollFlowers() {
+            vibrate(40);
+            const isAltar = activeProject.params.type === '生花祭壇';
+            const isOffering = activeProject.params.use === 'お供え/法事';
+            const lockedFlowers = activeProject.flowers.filter(f => f.locked);
+            
+            let pool = getFilteredPool(activeProject.params.type, activeProject.params.season, activeProject.params.use, activeProject.params.image, activeProject.params.color);
+            pool = pool.filter(f => !lockedFlowers.some(lf => lf.id === f.id)).sort(() => 0.5 - Math.random());
+            let newPicked = [...lockedFlowers];
+            
+            ['main', 'sub', 'filler', 'green'].forEach(g => {
+                let reqCount = activeProject.counts[g];
+                newPicked.forEach(p => { if(getGroup(p.role) === g) reqCount--; });
+                if (reqCount > 0) {
+                    let gPool = pool.filter(f => getGroup(f.role) === g);
+                    if (gPool.length === 0) {
+                        let fallbackPool = getFilteredPool(activeProject.params.type, activeProject.params.season, activeProject.params.use, "指定なし", "おまかせ");
+                        gPool = fallbackPool.filter(f => getGroup(f.role) === g && !newPicked.some(p => p.id === f.id));
+                    }
+                    for (let cand of gPool) {
+                        if (reqCount <= 0) break;
+                        if (isHarmonyCompatible(cand, newPicked, isAltar, isOffering)) {
+                            newPicked.push({...cand, qty: 1, locked: false});
+                            reqCount--;
+                        }
+                    }
+                }
+            });
+
+            let lockedCost = newPicked.filter(f => f.locked).reduce((s, f) => s + (f.wholesale * f.qty), 0);
+            let remainingCost = activeProject.targetCost - lockedCost;
+            
+            const newAdded = newPicked.filter(f => !f.locked);
+            if (newAdded.length > 0) {
+                if (remainingCost > 0) {
+                    newAdded.forEach(f => {
+                        let weight = f.role === "Main" ? 0.4 : (getGroup(f.role) === "green" ? 0.1 : 0.25);
+                        let qty = Math.max(1, Math.round((remainingCost * weight) / f.wholesale));
+                        if(f.wholesale < 200 && qty > 5) qty = Math.round(qty / 5) * 5;
+                        f.qty = qty;
+                    });
+                } else { newAdded.forEach(f => f.qty = 1); }
+            }
+            if (activeProject.params.strict) applyCostLimit(newPicked, activeProject.targetCost);
+            activeProject.flowers = newPicked;
+            renderResult();
+        }
+
+        // --- 提案結果画面の描画 ---
+        function renderResult() {
+            document.getElementById('res-budget').innerText = activeProject.budget.toLocaleString();
+            document.getElementById('res-target-rate').innerText = (activeProject.costRate * 100).toFixed(0);
+            document.getElementById('res-target-cost').innerText = activeProject.targetCost.toLocaleString();
+            
+            const tagContainer = document.getElementById('res-tags');
+            tagContainer.innerHTML = `
+                ${activeProject.params.use !== '指定なし' ? `<span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded shadow-sm border border-emerald-500/30">${activeProject.params.use}</span>` : ''}
+                <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded shadow-sm border border-emerald-500/20">${activeProject.params.season}</span>
+                <span class="bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded shadow-sm border border-pink-500/20">${activeProject.params.color}</span>
+                <span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded shadow-sm border border-amber-500/20">${activeProject.params.image}</span>
+                ${activeProject.params.gender !== '指定なし' ? `<span class="bg-white/10 text-white px-2 py-0.5 rounded shadow-sm">${activeProject.params.gender}</span>` : ''}
+                ${activeProject.params.age !== '指定なし' ? `<span class="bg-white/10 text-white px-2 py-0.5 rounded shadow-sm">${activeProject.params.age}</span>` : ''}
+            `;
+            
+            const container = document.getElementById('res-flowers');
+            container.innerHTML = "";
+            const groupsOrder = ['main', 'sub', 'filler', 'green'];
+            
+            groupsOrder.forEach(g => {
+                const groupFlowers = activeProject.flowers.filter(f => getGroup(f.role) === g);
+                const gHtml = document.createElement('div');
+                gHtml.className = "mb-5 relative"; 
+                
+                gHtml.innerHTML = `
+                    <div class="flex justify-between items-center mb-2.5 ml-1 border-b border-white/10 pb-1.5">
+                        <h4 class="text-[11px] text-emerald-400 font-bold tracking-widest uppercase">${roleDisplay[g]}</h4>
+                        <button onclick="openPickerForGroup('${g}')" class="text-[10px] font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 px-3 py-1 rounded-full transition active:scale-95 shadow">
+                            <i class="fa-solid fa-plus mr-1"></i>追加
+                        </button>
+                    </div>
+                `;
+                
+                if (groupFlowers.length === 0) {
+                    gHtml.innerHTML += `<div class="text-center text-slate-500 text-xs py-4 bg-white/5 border border-dashed border-white/10 rounded-xl">この枠の花材はありません</div>`;
+                } else {
+                    groupFlowers.forEach(f => {
+                        const idx = activeProject.flowers.indexOf(f);
+                        const el = document.createElement('div');
+                        el.className = `glass-panel p-3.5 mb-2.5 ${f.locked ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-white/5 bg-black/20'} transition-all`;
+                        el.innerHTML = `
+                            <div class="flex justify-between items-start mb-2.5">
+                                <div class="flex-1 cursor-pointer pr-3" onclick="openFlowerModal(${idx}, true)">
+                                    <h5 class="font-bold text-base tracking-wide ${f.locked ? 'text-white' : 'text-slate-100'}">${f.name}</h5>
+                                    <p class="text-[9px] text-slate-400 mt-0.5 line-clamp-1">${f.desc}</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="toggleLock(${idx})" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 ${f.locked ? 'text-emerald-400' : 'text-slate-500 hover:text-white'} transition" title="ロック/解除"><i class="fa-solid ${f.locked ? 'fa-lock' : 'fa-unlock'} text-xs"></i></button>
+                                    <button onclick="removeFlower(${idx})" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/40 text-slate-500 hover:text-red-400 transition" title="削除"><i class="fa-solid fa-xmark text-sm"></i></button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center text-sm pt-2.5 border-t border-white/5">
+                                <div class="text-slate-400 text-[10px] font-mono tracking-wide">単価: ¥${f.wholesale}</div>
+                                <div class="flex items-center gap-3.5">
+                                    <div class="flex items-center bg-black/40 rounded-lg p-1 border border-white/5">
+                                        <button onclick="updateQty(${idx}, -1)" class="w-7 h-7 flex items-center justify-center text-slate-300 active:text-white"><i class="fa-solid fa-minus text-[9px]"></i></button>
+                                        <div class="w-6 text-center font-bold text-white text-sm">${f.qty}</div>
+                                        <button onclick="updateQty(${idx}, 1)" class="w-7 h-7 flex items-center justify-center text-slate-300 active:text-white"><i class="fa-solid fa-plus text-[9px]"></i></button>
+                                    </div>
+                                    <div class="w-16 text-right font-bold text-emerald-400 text-base">¥${(f.wholesale * f.qty).toLocaleString()}</div>
+                                </div>
+                            </div>
+                        `;
+                        gHtml.appendChild(el);
+                    });
+                }
+                container.appendChild(gHtml);
+            });
+            calcTotals();
+        }
+
+        function toggleLock(idx) { vibrate(10); activeProject.flowers[idx].locked = !activeProject.flowers[idx].locked; renderResult(); }
+        function updateQty(idx, change) { vibrate(10); if (activeProject.flowers[idx].qty + change >= 1) { activeProject.flowers[idx].qty += change; renderResult(); } }
+        function removeFlower(idx) { vibrate(20); activeProject.flowers.splice(idx, 1); renderResult(); }
+
+        function calcTotals() {
+            let totalWholesale = 0;
+            activeProject.flowers.forEach(f => { totalWholesale += f.wholesale * f.qty; });
+            document.getElementById('res-actual-cost').innerText = totalWholesale.toLocaleString();
+            const rate = activeProject.budget > 0 ? (totalWholesale / activeProject.budget) * 100 : 0;
+            const rateEl = document.getElementById('res-actual-rate');
+            rateEl.innerText = rate.toFixed(1) + "%";
+            
+            if (rate > (activeProject.costRate * 100) + 3) rateEl.className = "text-2xl font-black text-rose-400";
+            else if (rate < (activeProject.costRate * 100) - 3) rateEl.className = "text-2xl font-black text-emerald-400";
+            else rateEl.className = "text-2xl font-black text-white";
+        }
+
+        // --- 花材ピッカーモーダル ---
+        function openPickerForGroup(group) {
+            vibrate(20);
+            pickerTargetGroup = group;
+            document.getElementById('picker-role-text').innerText = `${roleDisplay[group]} に追加する花材を選択`;
+            
+            const list = document.getElementById('picker-list');
+            list.innerHTML = "";
+            
+            let pool = flowersDB.filter(f => getGroup(f.role) === pickerTargetGroup);
+            
+            if (pool.length === 0) { list.innerHTML = `<div class="text-center text-slate-500 py-10 bg-black/20 rounded-xl">花材がありません</div>`; }
+            else {
+                pool.forEach(f => {
+                    const isAdded = activeProject.flowers.some(p => p.id === f.id);
+                    const el = document.createElement('div');
+                    el.className = `p-3 rounded-xl border ${isAdded ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-white/5 bg-[#161f30]/80'} flex justify-between items-center transition`;
+                    el.innerHTML = `
+                        <div class="flex-1 cursor-pointer pr-2" onclick="openFlowerModalByDbId(${f.id})">
+                            <span class="text-[8px] text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded mr-1">${f.role}</span>
+                            <span class="font-bold text-white text-sm">${f.name}</span>
+                            <div class="flex gap-2 mt-1"><span class="text-[9px] text-slate-400 font-mono">¥${f.wholesale}</span><span class="text-[9px] text-slate-500">${f.season.join('・')}</span></div>
+                        </div>
+                        <button onclick="addFromPicker(${f.id}, '${pickerTargetGroup}')" class="ml-2 w-9 h-9 rounded-full ${isAdded ? 'bg-emerald-500 text-slate-950 shadow' : 'bg-white/10 text-slate-300 hover:bg-white/20'} flex justify-center items-center text-sm transition active:scale-95">
+                            <i class="fa-solid ${isAdded ? 'fa-check' : 'fa-plus'}"></i>
+                        </button>
+                    `;
+                    list.appendChild(el);
+                });
+            }
+            pushModalHistory();
+            document.getElementById('modal-picker').classList.add('active');
+            document.getElementById('modal-overlay').classList.remove('hidden-safe', 'opacity-0');
+        }
+
+        function addFromPicker(dbId, group) {
+            vibrate(10);
+            if (activeProject.flowers.some(p => p.id === dbId)) return;
+            const f = flowersDB.find(x => x.id === dbId);
+            activeProject.flowers.push({ ...f, qty: 1, locked: true });
+            openPickerForGroup(group);
+            renderResult();
+        }
+
+        // --- 花材図鑑タブ ---
+        function changeDictMain(mode, btn) {
+            vibrate(10);
+            if (btn) {
+                document.querySelectorAll('#dict-main-filters .chip').forEach(c => c.classList.remove('active', 'bg-white/10', 'text-white', 'border-emerald-400'));
+                btn.classList.add('active', 'bg-white/10', 'text-white', 'border-emerald-400');
+            }
+            dictActiveMain = mode;
+            
+            const subContainer = document.getElementById('dict-sub-filters');
+            subContainer.innerHTML = '';
+            
+            let subs = [];
+            if(mode === 'role') subs = ['すべて', 'Main', 'Sub', 'Filler', 'Green'];
+            else if(mode === 'season') subs = ['すべて', '春', '夏', '秋', '冬', '通年'];
+            else if(mode === 'color') subs = ['すべて', '白系', '赤・ピンク系', '黄・オレンジ系', '青・紫系', '明るめ', '暗め'];
+            else if(mode === 'aiueo') subs = ['すべて', 'あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行'];
+            
+            subs.forEach((s, i) => {
+                const subBtn = document.createElement('button');
+                subBtn.className = `chip ${i===0 ? 'active border-emerald-400 text-emerald-400' : ''} text-[10px] py-1 px-3`;
+                subBtn.innerText = s;
+                subBtn.onclick = (e) => {
+                    document.querySelectorAll('#dict-sub-filters .chip').forEach(c => c.classList.remove('active', 'border-emerald-400', 'text-emerald-400'));
+                    e.target.classList.add('active', 'border-emerald-400', 'text-emerald-400');
+                    dictActiveSub = s;
+                    renderDictList();
+                };
+                subContainer.appendChild(subBtn);
+            });
+            dictActiveSub = 'すべて';
+            renderDictList();
+        }
+
+        let dictSearchQuery = "";
+        let dictFilteredPool = []; 
+        let dictDisplayLimit = 30;
+        let dictSearchTimer = null;
+
+        function onDictSearchInput() {
+            clearTimeout(dictSearchTimer);
+            dictSearchTimer = setTimeout(() => {
+                const input = document.getElementById('dict-search-input');
+                const clearBtn = document.getElementById('dict-search-clear');
+                dictSearchQuery = input.value.trim().toLowerCase();
+                if (dictSearchQuery) clearBtn.classList.remove('hidden-safe');
+                else clearBtn.classList.add('hidden-safe');
+                
+                dictDisplayLimit = 30;
+                applyDictFilter();
+            }, 200);
+        }
+
+        function clearDictSearch() {
+            const input = document.getElementById('dict-search-input');
+            input.value = "";
+            dictSearchQuery = "";
+            document.getElementById('dict-search-clear').classList.add('hidden-safe');
+            dictDisplayLimit = 30;
+            applyDictFilter();
+        }
+
+        function applyDictFilter() {
+            let pool = [...flowersDB];
+
+            if (dictSearchQuery) {
+                pool = pool.filter(f => 
+                    (f.name && f.name.toLowerCase().includes(dictSearchQuery)) ||
+                    (f.kana && f.kana.toLowerCase().includes(dictSearchQuery)) ||
+                    (f.desc && f.desc.toLowerCase().includes(dictSearchQuery))
+                );
+            }
+
+            if (dictActiveSub !== 'すべて') {
+                if (dictActiveMain === 'role') {
+                    pool = pool.filter(f => getGroup(f.role) === dictActiveSub.toLowerCase());
+                } else if (dictActiveMain === 'season') {
+                    pool = pool.filter(f => {
+                        if (dictActiveSub === 'すべて') return true;
+                        const sArr = Array.isArray(f.season) ? f.season : [f.season];
+                        const sStr = sArr.join(",");
+                        if (sStr.includes("通年")) return true;
+                        if (dictActiveSub === "春") return sStr.includes("春");
+                        if (dictActiveSub === "夏") return sStr.includes("夏");
+                        if (dictActiveSub === "秋") return sStr.includes("秋");
+                        if (dictActiveSub === "冬") return sStr.includes("冬");
+                        if (dictActiveSub === "通年") return sStr.includes("通年");
+                        return sStr.includes(dictActiveSub);
+                    });
+                } else if (dictActiveMain === 'color') {
+                    pool = pool.filter(f => {
+                        const c = (f.colors || "") + (f.tone ? f.tone.join('') : "");
+                        if(dictActiveSub==='赤・ピンク系') return c.includes('赤') || c.includes('ピンク') || c.includes('ボルドー');
+                        if(dictActiveSub==='白系') return c.includes('白') || c.includes('パステル');
+                        if(dictActiveSub==='黄・オレンジ系') return c.includes('黄') || c.includes('オレンジ');
+                        if(dictActiveSub==='青・紫系') return c.includes('青') || c.includes('紫') || c.includes('水色');
+                        if(dictActiveSub==='明るめ') return c.includes('パステル') || c.includes('白') || c.includes('黄') || c.includes('ピンク') || c.includes('水色');
+                        if(dictActiveSub==='暗め') return c.includes('黒') || c.includes('茶') || c.includes('グレー') || c.includes('シック') || c.includes('くすみ') || c.includes('ボルドー');
+                        return true;
+                    });
+                } else if (dictActiveMain === 'aiueo') {
+                    const map = {
+                        'あ行': /^[あ-おア-オぁ-ぉァ-ォ]/, 'か行': /^[か-こカ-コが-ごガ-ゴ]/, 'さ行': /^[さ-そサ-ソざ-ぞザ-ゾ]/,
+                        'た行': /^[た-とタ-トだ-どダ-ド]/, 'な行': /^[な-のナ-ノ]/, 'は行': /^[は-ほハ-ホば-ぼバ-ボぱ-ぽパ-ポ]/,
+                        'ま行': /^[ま-もマ-モ]/, 'や行': /^[や-よヤ-ヨゃ-ょャ-ョ]/, 'ら行': /^[ら-ろラ-ロ]/, 'わ行': /^[わ-んワ-ン]/
+                    };
+                    const reg = map[dictActiveSub];
+                    if (reg) pool = pool.filter(f => reg.test(f.kana || "") || reg.test(f.name || ""));
+                }
+            }
+
+            pool.sort((a, b) => {
+                const ka = (a.name || a.kana || "").replace(/_/g, '');
+                const kb = (b.name || b.kana || "").replace(/_/g, '');
+                return ka.localeCompare(kb, 'ja');
+            });
+
+            dictFilteredPool = pool;
+            renderDictDOM(true);
+        }
+
+        function renderDictDOM(resetScroll = false) {
+            const list = document.getElementById('dict-list');
+            if (resetScroll) {
+                list.innerHTML = "";
+                list.scrollTop = 0;
+            }
+
+            if (dictFilteredPool.length === 0) {
+                list.innerHTML = `<div class="text-center text-slate-500 py-10 text-xs">該当する花材がありません</div>`;
+                return;
+            }
+
+            const slice = dictFilteredPool.slice(list.children.length, dictDisplayLimit);
+
+            slice.forEach(f => {
+                const item = document.createElement('div');
+                item.className = "glass-panel p-3 border border-white/5 active:bg-white/10 transition-colors flex justify-between items-center cursor-pointer mb-2";
+                item.onclick = () => openFlowerModalByDbId(f.id);
+                item.innerHTML = `
+                    <div class="flex-1">
+                        <span class="text-[8px] text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full mr-1.5">${f.role}</span>
+                        <span class="font-bold text-slate-200 text-sm tracking-wide">${f.name}</span>
+                        <p class="text-[9px] text-slate-400 mt-0.5 font-mono">¥${f.wholesale} / ${Array.isArray(f.season) ? f.season.join('・') : f.season}</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const dictList = document.getElementById('dict-list');
+            if (dictList) {
+                dictList.addEventListener('scroll', () => {
+                    if (dictList.scrollTop + dictList.clientHeight >= dictList.scrollHeight - 100) {
+                        if (dictDisplayLimit < dictFilteredPool.length) {
+                            dictDisplayLimit += 30;
+                            renderDictDOM(false);
+                        }
+                    }
+                });
+            }
+        });
+
+        function renderDictList() {
+            dictDisplayLimit = 30;
+            applyDictFilter();
+        }
+
+        // --- モーダル・発注・保存・履歴操作 ---
+        function openSaveModal() {
+            if (!activeProject) return;
+            vibrate(15);
+            pushModalHistory();
+            document.getElementById('input-save-title').value = activeProject.title;
+            document.getElementById('modal-save').classList.remove('hidden-safe');
+            document.getElementById('modal-overlay').classList.remove('hidden-safe', 'opacity-0');
+            document.getElementById('modal-overlay').style.zIndex = 55;
+            document.getElementById('modal-save').style.zIndex = 60;
+        }
+
+        function executeSave() {
+            if(!idb || !activeProject) return;
+            vibrate(30);
+            const titleInput = document.getElementById('input-save-title');
+            const customTitle = titleInput.value.trim() || activeProject.title;
+            activeProject.title = customTitle;
+            
+            const tx = idb.transaction("projects", "readwrite");
+            tx.objectStore("projects").put(activeProject);
+            tx.oncomplete = () => {
+                closeModals();
+                alert("プロジェクトを保存しました。");
+            };
+        }
+
+        function openOrderModal() {
+            if (!activeProject) return;
+            vibrate(20);
+            pushModalHistory();
+            const listText = document.getElementById('order-text-preview');
+            
+            let txt = `【発注用リスト】\n案件名: ${activeProject.title}\n納品希望日:   月   日\n------------------------\n`;
+            
+            const groups = ['main', 'sub', 'filler', 'green'];
+            groups.forEach(g => {
+                const groupFlowers = activeProject.flowers.filter(f => getGroup(f.role) === g);
+                if(groupFlowers.length > 0) {
+                    txt += `[${roleDisplay[g]}]\n`;
+                    groupFlowers.forEach(f => {
+                        txt += `・${f.name} : ${f.qty}本\n`;
+                        txt += `  (目安色: ${f.colors})\n`;
+                    });
+                    txt += `\n`;
+                }
+            });
+            txt += `------------------------\n※市場状況により同等品での代替可。`;
+            listText.value = txt;
+            
+            document.getElementById('modal-order').classList.add('active');
+            document.getElementById('modal-overlay').classList.remove('hidden-safe', 'opacity-0');
+            document.getElementById('modal-overlay').style.zIndex = 55;
+            document.getElementById('modal-order').style.zIndex = 60;
+        }
+
+        function copyOrderText() {
+            vibrate(20);
+            const textArea = document.getElementById('order-text-preview');
+            const txt = textArea.value;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(txt).then(() => {
+                    alert("発注用リストをクリップボードにコピーしました。\nLINEやメールに貼り付けてそのまま送信できます。");
+                }).catch(() => fallbackCopy(textArea));
+            } else {
+                fallbackCopy(textArea);
+            }
+        }
+
+        function fallbackCopy(textArea) {
+            try {
+                textArea.select();
+                textArea.setSelectionRange(0, 99999);
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert("発注用リストをクリップボードにコピーしました。\nLINEやメールに貼り付けてそのまま送信できます。");
+                } else {
+                    alert("コピーに失敗しました。手動でテキストを選択してコピーしてください。");
+                }
+            } catch (err) {
+                alert("コピーに失敗しました。手動でテキストを選択してコピーしてください。");
+            }
+        }
+
+        function downloadTextFile() {
+            vibrate(20);
+            if (!activeProject) return;
+            
+            const txt = document.getElementById('order-text-preview').value;
+            const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `発注用リスト_${activeProject.title.replace(/\//g, '_')}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function openFlowerModal(idx, isProjectItem=false) {
+            vibrate(20);
+            const f = isProjectItem ? activeProject.flowers[idx] : flowersDB[idx];
+            showModalInfo(f);
+        }
+        function openFlowerModalByDbId(id) {
+            vibrate(20);
+            const f = flowersDB.find(x => x.id === id);
+            showModalInfo(f);
+        }
+        function showModalInfo(f) {
+            pushModalHistory();
+            document.getElementById('fm-role').innerText = roleDisplay[getGroup(f.role)] || f.role;
+            document.getElementById('fm-name').innerText = f.name;
+            document.getElementById('fm-price').innerText = `¥${f.wholesale}`;
+            document.getElementById('fm-desc').innerText = f.desc;
+            document.getElementById('fm-colors').innerText = f.colors;
+            document.getElementById('fm-season').innerText = Array.isArray(f.season) ? f.season.join('・') : f.season;
+            document.getElementById('fm-google-btn').href = `https://www.google.com/search?q=${encodeURIComponent(f.name + " 切り花")}&tbm=isch`;
+            
+            document.getElementById('modal-flower').classList.add('active');
+            document.getElementById('modal-overlay').classList.remove('hidden-safe', 'opacity-0');
+            document.getElementById('modal-overlay').style.zIndex = 55;
+            document.getElementById('modal-flower').style.zIndex = 60;
+        }
+
+        // --- ウィンドウ開閉とスマホ戻るボタン連動 ---
+        history.replaceState({ appBase: true }, '');
+        let isClosingModalByCode = false;
+
+        function hasOpenModal() {
+            const hasActiveSlide = document.querySelector('#modal-flower.active, #modal-picker.active, #modal-order.active');
+            const saveModal = document.getElementById('modal-save');
+            const editModal = document.getElementById('modal-edit-history');
+            return !!hasActiveSlide || (saveModal && !saveModal.classList.contains('hidden-safe')) || (editModal && !editModal.classList.contains('hidden-safe'));
+        }
+
+        function pushModalHistory() {
+            if (!history.state || !history.state.modalOpen) {
+                history.pushState({ modalOpen: true }, '');
+            }
+        }
+
+        function closeModals(triggerHistoryBack = true) {
+            document.getElementById('modal-flower').classList.remove('active');
+            document.getElementById('modal-picker').classList.remove('active');
+            document.getElementById('modal-order').classList.remove('active');
+            document.getElementById('modal-save').classList.add('hidden-safe');
+            document.getElementById('modal-edit-history').classList.add('hidden-safe');
+            
+            const exitModal = document.getElementById('modal-exit');
+            if (exitModal) exitModal.classList.add('hidden-safe');
+
+            document.getElementById('modal-overlay').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('modal-overlay').classList.add('hidden-safe');
+                document.getElementById('modal-overlay').style.zIndex = 40;
+                document.getElementById('modal-flower').style.zIndex = 50;
+            }, 300);
+
+            if (triggerHistoryBack && history.state && history.state.modalOpen) {
+                isClosingModalByCode = true;
+                history.back();
+            }
+        }
+
+        // スマホのナビゲーション戻るボタン検知
+        window.addEventListener('popstate', () => {
+            if (isClosingModalByCode) {
+                isClosingModalByCode = false;
+                return;
+            }
+            const exitModal = document.getElementById('modal-exit');
+            if (exitModal && !exitModal.classList.contains('hidden-safe')) {
+                exitModal.classList.add('hidden-safe');
+                document.getElementById('modal-overlay').classList.add('hidden-safe', 'opacity-0');
+                history.pushState({ appBase: true }, '');
+                return;
+            }
+
+            if (hasOpenModal()) {
+                closeModals(false);
+            } else {
+                history.pushState({ appBase: true }, '');
+                if (exitModal) {
+                    exitModal.classList.remove('hidden-safe');
+                    const overlay = document.getElementById('modal-overlay');
+                    overlay.classList.remove('hidden-safe', 'opacity-0');
+                    overlay.style.zIndex = 65;
+                }
+            }
+        });
+
+        // 終了確認モーダルのボタンイベント
+        document.getElementById('exit-ok-btn')?.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+        document.getElementById('exit-cancel-btn')?.addEventListener('click', () => {
+            const exitModal = document.getElementById('modal-exit');
+            if (exitModal) exitModal.classList.add('hidden-safe');
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.add('hidden-safe', 'opacity-0');
+            overlay.style.zIndex = 40;
+        });
+
+        function loadHistory() {
+            if(!idb) return;
+            const r = idb.transaction("projects", "readonly").objectStore("projects").getAll();
+            r.onsuccess = () => {
+                const data = r.result.sort((a,b) => b.id - a.id);
+                const list = document.getElementById('history-list');
+                const empty = document.getElementById('history-empty');
+                if(data.length === 0) { list.innerHTML = ""; empty.classList.remove('hidden-safe'); return; }
+                empty.classList.add('hidden-safe');
+                list.innerHTML = data.map(item => {
+                    let cost = item.flowers.reduce((sum, f) => sum + (f.wholesale * f.qty), 0);
+                    let rate = ((cost / item.budget) * 100).toFixed(1);
+                    return `
+                    <div class="glass-panel p-4 border border-white/5 flex items-center justify-between gap-3">
+                        <div class="flex-1 cursor-pointer" onclick="loadProject(${item.id})">
+                            <h3 class="font-bold text-emerald-400 text-sm tracking-wide line-clamp-1">${item.title}</h3>
+                            <div class="flex gap-2 text-[10px] text-slate-400 mt-1 font-mono">
+                                <span>${item.date}</span>
+                                <span>予算: ¥${item.budget.toLocaleString()}</span>
+                                <span class="text-white font-bold">原価率: ${rate}%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="openEditHistoryModal(${item.id}, '${item.title.replace(/'/g, "\\'")}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center transition active:scale-95" title="名前を変更">
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="deleteHistoryProject(${item.id})" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition active:scale-95" title="削除">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+            };
+        }
+
+        function loadProject(id) {
+            vibrate(20);
+            idb.transaction("projects").objectStore("projects").get(id).onsuccess = e => {
+                activeProject = e.target.result;
+                counts = activeProject.counts;
+                ['main','sub','filler','green'].forEach(g => document.getElementById(`count-${g}`).innerText = counts[g]);
+                
+                const strictEl = document.getElementById('toggle-strict-cost');
+                if (strictEl) strictEl.checked = activeProject.params.strict;
+
+                const badge = document.getElementById('badge-result');
+                if(badge) badge.classList.remove('hidden-safe');
+                
+                renderResult();
+                switchView('result');
+            };
+        }
+
+        function openEditHistoryModal(id, currentTitle) {
+            vibrate(15);
+            pushModalHistory();
+            document.getElementById('edit-history-id').value = id;
+            document.getElementById('input-edit-history-title').value = currentTitle;
+            document.getElementById('modal-edit-history').classList.remove('hidden-safe');
+            document.getElementById('modal-overlay').classList.remove('hidden-safe', 'opacity-0');
+            document.getElementById('modal-overlay').style.zIndex = 55;
+            document.getElementById('modal-edit-history').style.zIndex = 60;
+        }
+
+        function executeUpdateHistoryTitle() {
+            const id = Number(document.getElementById('edit-history-id').value);
+            const newTitle = document.getElementById('input-edit-history-title').value.trim();
+            if(!newTitle) return;
+
+            vibrate(20);
+            const tx = idb.transaction("projects", "readwrite");
+            const store = tx.objectStore("projects");
+            store.get(id).onsuccess = (e) => {
+                const item = e.target.result;
+                if(item) {
+                    item.title = newTitle;
+                    store.put(item);
+                }
+            };
+            tx.oncomplete = () => {
+                closeModals();
+                if(activeProject && activeProject.id === id) {
+                    activeProject.title = newTitle;
+                }
+                loadHistory();
+            };
+        }
+
+        function deleteHistoryProject(id) {
+            if(!confirm("この履歴を削除してもよろしいですか？")) return;
+            vibrate(30);
+            const tx = idb.transaction("projects", "readwrite");
+            tx.objectStore("projects").delete(id);
+            tx.oncomplete = () => {
+                if(activeProject && activeProject.id === id) {
+                    activeProject = null;
+                    const badge = document.getElementById('badge-result');
+                    if(badge) badge.classList.add('hidden-safe');
+                }
+                loadHistory();
+            };
+        }
+
+        function confirmResetFlowersDB() {
+            vibrate(30);
+            const isConfirmed = confirm(
+                "【確認】\n端末内の花材データベースを初期化しますか？\n\n・取得済みの花材データが消去されます。\n・保存済みの案件履歴は削除されません。\n・初期化後は右上の「最新DBを取得」から再ダウンロードが必要です。"
+            );
+            
+            if (!isConfirmed) return;
+
+            if (!idb) {
+                alert("データベースにアクセスできませんでした。");
+                return;
+            }
+
+            try {
+                const tx = idb.transaction("master_flowers", "readwrite");
+                const store = tx.objectStore("master_flowers");
+                store.clear();
+
+                tx.oncomplete = () => {
+                    flowersDB = [];
+                    vibrate(40);
+                    alert("花材データベースを初期化しました。\n画面を再読み込みします。");
+                    location.reload();
+                };
+
+                tx.onerror = (e) => {
+                    console.error("初期化エラー:", e);
+                    alert("初期化中にエラーが発生しました。");
+                };
+            } catch (err) {
+                console.error(err);
+                alert("初期化に失敗しました: " + err.message);
+            }
+        }
+		
+        // =========================================================================
+        // PWA化対応: Service Workerの自動登録（共通sw.jsへの一本化）
+        // =========================================================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .catch((err) => console.log('PWA Service Worker failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>

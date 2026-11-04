@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ぴったりベースサーチ</title>
+    
+    <!-- PWA / Mobile Settings -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ぴったりベースサーチ">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="description" content="祭壇の最適なベース組み合わせを素早く算出する検索・計算ツール">
+
+    <!-- PWA App Icon (SVG Data URI) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%234f46e5'/%3E%3Cpath d='M120 340 L256 160 L392 340 Z' fill='%23f59e0b'/%3E%3Crect x='160' y='320' width='192' height='40' rx='8' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%234f46e5'/%3E%3Cpath d='M120 340 L256 160 L392 340 Z' fill='%23f59e0b'/%3E%3Crect x='160' y='320' width='192' height='40' rx='8' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
+
+    <!-- PWA Manifest (Data URI) -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E3%81%B4%E3%81%A3%E3%81%9F%E3%82%8A%E3%83%99%E3%83%BC%E3%82%B9%E3%82%BD%E3%83%BC%E3%83%81%22%2C%22short_name%22%3A%22%E3%83%99%E3%83%BC%E3%82%B9%E3%82%BD%E3%83%BC%E3%83%81%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'128'%20fill%3D'%25234f46e5'%2F%253E%253Cpath%20d%3D'M120%20340%20L256%20160%20L392%20340%20Z'%20fill%3D'%2523f59e0b'%2F%253E%253Crect%20x%3D'160'%20y%3D'320'%20width%3D'192'%20height%3D'40'%20rx%3D'8'%20fill%3D'%2523ffffff'%20opacity%3D'0.9'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'Noto Sans JP', 'sans-serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.3s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 0px; }
+        
+        /* Input Number Styling */
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; color: #ffffff; font-weight: 900; }
+        input[type="number"]:placeholder-shown { color: #64748b; font-weight: 600; }
+        
+        /* Tabs & Buttons */
+        .tab-active { background-color: #4f46e5; color: white; border-color: #4f46e5; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
+        .tab-inactive { background-color: #1e293b; color: #94a3b8; border-color: #334155; }
+        .action-tab-active { background-color: #334155; color: #ffffff; }
+        
+        /* Modal Overlay */
+        .modal-overlay { background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); }
+        
+        /* Base Shapes Layout */
+        .layout-wrapper { contain: content; }
+        .shape-icon { display: inline-block; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1)); }
+
+        /* --- A4印刷・キャプチャ専用スタイル (A4 1枚レイアウト) --- */
+        .capture-mode {
+            width: 794px !important;
+            max-width: 794px !important;
+            padding: 24px 28px !important;
+            border-radius: 0 !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            margin: 0 auto !important;
+        }
+        .capture-mode * { box-shadow: none !important; }
+        .capture-mode .capture-mode-hide-badge { display: none !important; }
+        .capture-mode-header { display: none; }
+        .capture-mode .capture-mode-header {
+            display: block !important;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4f46e5;
+            letter-spacing: -0.01em;
+        }
+        .capture-mode-light {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+        }
+        .capture-mode-light .capture-mode-header { color: #1e1b4b !important; }
+        .capture-mode-light .result-card {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 10px !important;
+            margin-bottom: 8px !important;
+            background-color: #ffffff !important;
+        }
+        .capture-mode-light .result-card > div:first-child {
+            padding: 6px 12px !important;
+            background-color: #f8fafc !important;
+        }
+        .capture-mode-light .base-item-row {
+            background-color: #f1f5f9 !important;
+            border-color: #e2e8f0 !important;
+        }
+        .capture-mode-light .result-summary {
+            border: 1.5px solid #818cf8 !important;
+            background-color: #f5f7ff !important;
+            border-radius: 10px !important;
+            padding: 10px !important;
+            margin-top: 8px !important;
+        }
+        .capture-mode-dark {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        .capture-mode-dark .capture-mode-header {
+            color: #ffffff !important;
+            border-bottom-color: #3b82f6 !important;
+        }
+        .capture-mode-dark .result-card {
+            border: 1.5px solid #334155 !important;
+            border-radius: 10px !important;
+            margin-bottom: 8px !important;
+            background-color: #1e293b !important;
+        }
+        .capture-mode-dark .result-card > div:first-child {
+            padding: 6px 12px !important;
+            background-color: #0f172a !important;
+            border-bottom-color: #334155 !important;
+        }
+        .capture-mode-dark .result-card * { color: #f8fafc !important; }
+        .capture-mode-dark .base-item-row {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+        }
+        .capture-mode-dark .result-summary {
+            border: 1.5px solid #4338ca !important;
+            background-color: #1e1b4b !important;
+            border-radius: 10px !important;
+            padding: 10px !important;
+            margin-top: 8px !important;
+        }
+        .capture-mode-dark .result-summary p {
+            color: #f8fafc !important;
+        }
+        .capture-mode-dark .result-summary > p:first-child {
+            color: #a5b4fc !important;
+        }
+        .capture-mode-dark .total-base-badge {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+        }
+        .capture-mode-dark .total-base-badge span {
+            color: #f8fafc !important;
+        }
+        .capture-mode .base-items-container {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 4px !important;
+            margin-bottom: 4px !important;
+        }
+        .capture-mode .base-item-row {
+            flex: 1 1 calc(50% - 4px) !important;
+            margin-bottom: 0 !important;
+            padding: 4px 6px !important;
+            border-radius: 6px !important;
+            font-size: 10.5px !important;
+        }
+        .capture-mode .layout-wrapper {
+            margin-top: 3px !important;
+            padding: 4px 6px !important;
+            border-radius: 6px !important;
+        }
+        /* html2canvas用：ベース内文字の上下完全中央センタリング補正 */
+        .capture-mode .base-block-item {
+            display: inline-block !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            height: 22px !important;
+            line-height: 20px !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+        .capture-mode .base-block-text {
+            display: inline-block !important;
+            position: relative !important;
+            top: -3px !important;
+            line-height: inherit !important;
+            font-family: 'Noto Sans JP', sans-serif !important;
+            vertical-align: baseline !important;
+        }
+        .capture-mode .accordion-icon { display: none !important; }
+        @media print {
+            body { background: white !important; padding: 0 !important; }
+            .no-print { display: none !important; }
+            #capture-area {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-height: auto !important;
+                padding: 10mm 15mm !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pb-12">
+
+    <!-- 共通最上部ナビバー -->
+    <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-4 pt-[max(env(safe-area-inset-top,8px),8px)] pb-2 shrink-0 z-50">
+        <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">
+            ← ツール一覧へ
+        </a>
+        <div class="flex items-center gap-2">
+            <button id="btn-reset-new" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white rounded-lg border border-slate-700 text-[11px] font-bold transition active:scale-95 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>新規</span>
+            </button>
+            <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-slate-300 font-bold bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700 max-w-[150px] sm:max-w-[220px]">
+                <span class="w-2 h-2 rounded-full bg-indigo-400 shrink-0"></span>
+                <span id="current-project-name-text" class="truncate text-[10px]">新規プロジェクト</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript Logic -->
+    <script>
+        // --- 0. PWA Service Worker 登録 (オフライン / スタンドアロン動作) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+                    self.addEventListener('fetch', (e) => {});
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+            });
+        }
+
+        // --- 1. 定義と設定 ---
+        const BASE_DATA = [
+            { label: "1個入り(縦)", short: "1縦", size: 13, key: "1pieceVertical", type: "multi", blockBg: "bg-[#164e63] text-white border-cyan-700", color: "text-cyan-400" },
+            { label: "半個入り", short: "半", size: 17, key: "halfPiece", type: "multi", blockBg: "bg-[#115e59] text-white border-teal-600", color: "text-teal-400" },
+            { label: "30cmベース", short: "30", size: 25, key: "30cmBase", type: "multi", blockBg: "bg-[#134e4a] text-white border-teal-700", color: "text-teal-400" },
+            { label: "1個入り", short: "1", size: 27, key: "1piece", type: "multi", blockBg: "bg-[#14532d] text-white border-green-600", color: "text-green-400" },
+            { label: "2個入り", short: "2", size: 48, key: "2pieces", type: "multi", blockBg: "bg-[#155e75] text-white border-cyan-600", color: "text-cyan-400" },
+            { label: "5個入り", short: "5", size: 60, key: "5pieces", type: "multi", blockBg: "bg-[#0f766e] text-white border-teal-500", color: "text-teal-400" },
+            { label: "3個入り", short: "3", size: 74, key: "3pieces", type: "multi", blockBg: "bg-[#065f46] text-white border-emerald-500", color: "text-emerald-400" },
+            { label: "3太", short: "3太", size: 90, key: "3thick", type: "multi", blockBg: "bg-[#3f6212] text-white border-lime-600", color: "text-lime-400" },
+            { label: "4細", short: "4細", size: 120, key: "4fine", type: "multi", blockBg: "bg-[#052e16] text-white border-green-900", color: "text-green-500" },
+            { label: "台付き", short: "台", size: 53, key: "stand", type: "single", blockBg: "bg-[#b45309] text-white border-amber-500 font-black", color: "text-amber-400" },
+            { label: "台付き(大)", short: "台大", size: 70, key: "largeStand", type: "single", blockBg: "bg-[#92400e] text-white border-amber-600 font-black", color: "text-amber-500" }
+        ];
+
+        function resetAllTiers() {
+            tierStates = [{ cm: '', ken: '', shaku: '', selectedBases: {}, isOpen: true }];
+            currentResultData = null;
+            activeFavName = null;
+            updateProjectBadge('新規プロジェクト');
+            document.getElementById('result-card')?.classList.add('hidden');
+            document.getElementById('error-message')?.classList.add('hidden');
+            renderTiers();
+        }
+
+        let tierStates = [
+            { cm: '', ken: '', shaku: '', selectedBases: {}, isOpen: true }
+        ];
+        let currentResultData = null;
+        let activeFavName = null;
+        let currentRecordDate = '';
+        const STORAGE_KEY_FAV = 'base_calc_favorites';
+        const STORAGE_KEY_HIST = 'base_calc_history';
+
+        let alertModalResolve = null;
+        function showAlertModal(desc, title = '完了') {
+            return new Promise(resolve => {
+                alertModalResolve = resolve;
+                const tEl = document.getElementById('alert-modal-title');
+                const dEl = document.getElementById('alert-modal-desc');
+                if (tEl) tEl.textContent = title;
+                if (dEl) dEl.textContent = desc;
+                openModal('alert-modal');
+            });
+        }
+
+        let confirmModalResolve = null;
+        function showConfirmModal(desc, title = '確認') {
+            return new Promise(resolve => {
+                confirmModalResolve = resolve;
+                const tEl = document.getElementById('confirm-modal-title');
+                const dEl = document.getElementById('confirm-modal-desc');
+                if (tEl) tEl.textContent = title;
+                if (dEl) dEl.textContent = desc;
+                openModal('confirm-modal');
+            });
+        }
+
+        function updateProjectBadge(name) {
+            const txt = document.getElementById('current-project-name-text');
+            if (txt) txt.textContent = name || '新規プロジェクト';
+        }
+
+        function getNextExportSeq(cleanBase, dateStr) {
+            const storageKey = `base_calc_seq_${cleanBase}_${dateStr}`;
+            let seq = parseInt(localStorage.getItem(storageKey) || '0', 10) + 1;
+            localStorage.setItem(storageKey, String(seq));
+            return String(seq).padStart(3, '0');
+        }
+
+        function getExportFileName(ext) {
+            const rawName = (activeFavName || '祭壇').trim();
+            let cleanBase = rawName.replace(/\.[^.]+$/, '');
+            const badChars = ['/', String.fromCharCode(92), ':', '*', '?', '"', '<', '>', '|'];
+            badChars.forEach(c => { cleanBase = cleanBase.split(c).join('_'); });
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const dateStr = `${y}${m}${d}`;
+            const seqStr = getNextExportSeq(cleanBase, dateStr);
+            return `base_${cleanBase}_${dateStr}_${seqStr}.${ext}`;
+        }
+
+        function getExportTitle() {
+            return activeFavName || '新規プロジェクト';
+        }
+
+        // --- 2. 初期化とUI描画 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTiers();
+            attachGlobalListeners();
+        });
+
+        window.toggleAllTiers = function(forceOpen) {
+            tierStates.forEach(t => t.isOpen = forceOpen);
+            renderTiers();
+        }
+
+        window.toggleTier = function(index) {
+            tierStates[index].isOpen = !tierStates[index].isOpen;
+            renderTiers();
+        }
+        
+        window.toggleResultTier = function(index) {
+            const el = document.getElementById(`res-tier-${index}`);
+            const icon = document.getElementById(`res-icon-${index}`);
+            if(!el || !icon) return;
+            if(el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                el.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        function renderTiers() {
+            const container = document.getElementById('tiers-container');
+            container.innerHTML = '';
+            document.getElementById('tier-count-display').textContent = tierStates.length;
+            
+            for (let i = tierStates.length - 1; i >= 0; i--) {
+                const state = tierStates[i];
+                let basesHtml = '';
+                BASE_DATA.forEach(base => {
+                    const isChecked = state.selectedBases[base.key] ? 'checked' : '';
+                    const isSingle = base.type === 'single';
+                    const activeClasses = isSingle 
+                        ? 'peer-checked:border-orange-400 peer-checked:bg-orange-50 peer-checked:text-orange-700' 
+                        : 'peer-checked:border-indigo-400 peer-checked:bg-indigo-50 peer-checked:text-indigo-700';
+                    const badge = isSingle ? `<span class="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm scale-90">中央</span>` : '';
+
+                    basesHtml += `
+                        <label class="cursor-pointer relative block">
+                            <input type="checkbox" data-tier="${i}" data-key="${base.key}" class="peer hidden base-checkbox" ${isChecked}>
+                            <div class="h-full rounded-xl border-2 border-slate-700 bg-slate-900/80 p-2 text-center transition-all ${activeClasses} text-slate-400 flex flex-col justify-center items-center gap-0.5 shadow-sm hover:bg-slate-800">
+                                ${badge}
+                                <div class="font-extrabold text-xs leading-tight text-slate-300 peer-checked:text-inherit">${base.label}</div>
+                                <div class="text-[10px] font-semibold opacity-70 flex items-center gap-1.5 mt-0.5">
+                                    <span class="inline-block px-1 py-0.2 rounded border text-[9px] font-black ${base.blockBg}">${base.short}</span>
+                                    <span>${base.size}cm</span>
+                                </div>
+                            </div>
+                        </label>
+                    `;
+                });
+
+                const html = `
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-sm mb-4 overflow-hidden relative transition-all">
+                        <div class="bg-slate-850 px-4 py-3 flex justify-between items-center cursor-pointer select-none border-b border-slate-800/80" onclick="toggleTier(${i})">
+                            <div class="font-black text-sm text-white">${i + 1}段目 ${i === 0 ? '<span class="text-[10px] text-slate-400 font-bold ml-1">(最下段)</span>' : ''}</div>
+                            <div class="text-slate-400 text-xs font-bold transition-transform ${state.isOpen ? 'rotate-180' : ''}">▼</div>
+                        </div>
+                        
+                        <div class="p-4 pt-2 ${state.isOpen ? '' : 'hidden'} animate-fade-in border-t border-slate-800">
+                            <div class="flex gap-2 mb-4">
+                                <div class="flex-1 bg-slate-950 p-2.5 rounded-2xl border border-slate-800 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-900/40 transition-all">
+                                    <label class="block text-[9px] font-bold text-slate-400 mb-0.5 text-center">センチメートル</label>
+                                    <div class="flex items-end justify-center gap-1">
+                                        <input type="number" data-tier="${i}" data-type="cm" placeholder="0" class="w-20 bg-transparent text-2xl outline-none text-center text-white input-cm" value="${state.cm}">
+                                        <span class="text-slate-400 text-xs font-bold pb-1">cm</span>
+                                    </div>
+                                </div>
+                                <div class="flex-[1.2] bg-slate-950 p-2.5 rounded-2xl border border-slate-800 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-900/40 transition-all flex gap-1">
+                                    <div class="w-1/2 flex flex-col items-center">
+                                        <label class="block text-[9px] font-bold text-slate-400 mb-0.5">間(180)</label>
+                                        <input type="number" data-tier="${i}" data-type="ken" placeholder="0" class="w-full bg-transparent text-xl outline-none text-center text-white" value="${state.ken}">
+                                    </div>
+                                    <div class="w-px bg-slate-800 my-1"></div>
+                                    <div class="w-1/2 flex flex-col items-center">
+                                        <label class="block text-[9px] font-bold text-slate-400 mb-0.5">尺(30)</label>
+                                        <input type="number" data-tier="${i}" data-type="shaku" placeholder="0" class="w-full bg-transparent text-xl outline-none text-center text-white" value="${state.shaku}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 mb-2 pl-1">使用するベース</p>
+                                <div class="grid grid-cols-3 gap-2">
+                                    ${basesHtml}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            }
+            
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const tierIdx = parseInt(e.target.dataset.tier);
+                    const type = e.target.dataset.type;
+                    tierStates[tierIdx][type] = e.target.value;
+                });
+            });
+            document.querySelectorAll('.base-checkbox').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const tierIdx = parseInt(e.target.dataset.tier);
+                    const key = e.target.dataset.key;
+                    tierStates[tierIdx].selectedBases[key] = e.target.checked;
+                });
+            });
+        }
+
+        // --- 3. ローカルストレージ (履歴・お気に入り) ---
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; }
+        }
+        function setStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        window.renderHistoryModal = function() {
+            const favs = getStorage(STORAGE_KEY_FAV);
+            const hists = getStorage(STORAGE_KEY_HIST);
+            const favContainer = document.getElementById('modal-fav-list');
+            const histContainer = document.getElementById('modal-hist-list');
+            
+            const createItemHtml = (item, isFav) => `
+                <div class="flex justify-between items-center bg-slate-800 border border-slate-700 p-2.5 rounded-xl">
+                    <div class="flex-1 min-w-0 mr-2 cursor-pointer" onclick="loadFromHistory('${item.id}', ${isFav})">
+                        <p class="text-sm font-bold text-white truncate">${isFav ? '⭐ ' + item.name : item.date}</p>
+                        <p class="text-[10px] text-slate-400 font-medium">${item.tiers.length}段の構成</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="loadFromHistory('${item.id}', ${isFav})" class="px-3 py-1.5 bg-indigo-900/60 border border-indigo-500/40 text-indigo-300 rounded-lg text-xs font-bold active:scale-95 transition">呼出</button>
+                        <button onclick="deleteHistory('${item.id}', ${isFav})" class="w-8 h-8 bg-red-950/60 border border-red-500/40 text-red-400 rounded-lg text-lg flex justify-center items-center active:scale-95 transition">×</button>
+                    </div>
+                </div>
+            `;
+
+            favContainer.innerHTML = favs.length > 0 ? favs.map(i => createItemHtml(i, true)).join('') : '<p class="text-xs text-slate-400">お気に入りがありません。</p>';
+            histContainer.innerHTML = hists.length > 0 ? hists.map(i => createItemHtml(i, false)).join('') : '<p class="text-xs text-slate-400">最近の履歴がありません。</p>';
+        }
+
+        window.loadFromHistory = function(id, isFav) {
+            const key = isFav ? STORAGE_KEY_FAV : STORAGE_KEY_HIST;
+            const list = getStorage(key);
+            const item = list.find(x => x.id === id);
+            if(item && item.tiers) {
+                if (isFav) {
+                    activeFavName = item.name;
+                    updateProjectBadge(item.name);
+                } else {
+                    activeFavName = null;
+                    updateProjectBadge('履歴復元');
+                }
+                currentRecordDate = item.date || '';
+                tierStates = item.tiers.map(t => ({...t, isOpen: false}));
+                renderTiers();
+                closeModal('history-modal');
+                execCalculate(true, false);
+            }
+        }
+
+        window.deleteHistory = async function(id, isFav) {
+            const ok = await showConfirmModal("このデータを削除しますか？", "削除の確認");
+            if(!ok) return;
+            const key = isFav ? STORAGE_KEY_FAV : STORAGE_KEY_HIST;
+            let list = getStorage(key);
+            list = list.filter(x => x.id !== id);
+            setStorage(key, list);
+            renderHistoryModal();
+        }
+
+        function saveToHistory(setupToSave) {
+            const hists = getStorage(STORAGE_KEY_HIST);
+            const currentSetupStr = JSON.stringify(setupToSave);
+            
+            if (hists.length > 0 && JSON.stringify(hists[0].tiers) === currentSetupStr) {
+                return; 
+            }
+
+            const id = Date.now().toString();
+            const dateStr = new Date().toLocaleString('ja-JP', {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+            currentRecordDate = dateStr;
+            hists.unshift({ id, date: dateStr, tiers: setupToSave });
+            if(hists.length > 10) hists.pop();
+            setStorage(STORAGE_KEY_HIST, hists);
+        }
+
+        function toHalfWidth(str) {
+            if (typeof str !== 'string') str = String(str);
+            return str.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+        }
+
+        // --- 4. DPアルゴリズム ---
+        function calculateBestComboDP(targetWidth, multiBases, singleBases) {
+            if (targetWidth <= 0) return null;
+            const tWidth = Math.round(targetWidth);
+            
+            let dp = new Array(tWidth + 1).fill(null);
+            dp[0] = [];
+
+            for (const base of multiBases) {
+                const pairSize = Math.round(base.size * 2);
+                for (let w = pairSize; w <= tWidth; w++) {
+                    if (dp[w - pairSize] !== null) {
+                        const newCombo = [...dp[w - pairSize], base, base];
+                        if (dp[w] === null || newCombo.length < dp[w].length) {
+                            dp[w] = newCombo;
+                        }
+                    }
+                }
+            }
+
+            let centerCandidates = [];
+            if (singleBases.length > 0) {
+                centerCandidates = [...singleBases]; 
+            } else {
+                centerCandidates = [null, ...multiBases]; 
+            }
+
+            let validCombos = [];
+
+            for (const center of centerCandidates) {
+                const cSize = center ? Math.round(center.size) : 0;
+                const maxPairWidth = tWidth - cSize;
+                if (maxPairWidth < 0) continue; 
+
+                for (let w = 0; w <= maxPairWidth; w++) {
+                    if (dp[w] !== null) {
+                        const totalSum = w + cSize;
+                        if (totalSum === 0) continue; 
+                        const count = dp[w].length + (center ? 1 : 0);
+                        const diff = tWidth - totalSum; 
+                        const combo = center ? [...dp[w], center] : [...dp[w]];
+                        validCombos.push({ combo, sum: totalSum, count, diff });
+                    }
+                }
+            }
+
+            if (validCombos.length === 0) return null;
+
+            let minDiffOverall = Math.min(...validCombos.map(v => v.diff));
+            const candidates = validCombos.filter(v => v.diff <= minDiffOverall + 15);
+
+            candidates.sort((a, b) => {
+                if (a.count !== b.count) return a.count - b.count;
+                return a.diff - b.diff;
+            });
+
+            return candidates[0];
+        }
+
+        // --- 5. 計算実行と結果描画 ---
+        function execCalculate(preventScroll = false, isNewCalc = true) {
+            if (isNewCalc && !activeFavName) {
+                updateProjectBadge('新規プロジェクト');
+            }
+            currentRecordDate = new Date().toLocaleString('ja-JP', {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+
+            const errorEl = document.getElementById('error-message');
+            errorEl.classList.add('hidden');
+            let hasError = false;
+            let results = [];
+            let setupToSave = []; 
+
+            for (let i = 0; i < tierStates.length; i++) {
+                const state = tierStates[i];
+                
+                const cmStr = toHalfWidth(state.cm);
+                const kenStr = toHalfWidth(state.ken);
+                const shakuStr = toHalfWidth(state.shaku);
+                
+                const cmVal = parseFloat(cmStr);
+                const kenVal = parseFloat(kenStr) || 0;
+                const shakuVal = parseFloat(shakuStr) || 0;
+                
+                const hasCm = !isNaN(cmVal) && cmVal > 0;
+                const hasShaku = kenVal > 0 || shakuVal > 0;
+
+                if (hasCm && hasShaku) { showError(`${i+1}段目: cmと間・尺はどちらかのみ入力してください。`); hasError = true; break; }
+                if (!hasCm && !hasShaku) { showError(`${i+1}段目: 全体幅を入力してください。`); hasError = true; break; }
+
+                const targetWidth = hasCm ? cmVal : (kenVal * 180 + shakuVal * 30);
+                
+                const selectedMulti = [];
+                const selectedSingle = [];
+                BASE_DATA.forEach(base => {
+                    if (state.selectedBases[base.key]) {
+                        base.type === 'multi' ? selectedMulti.push(base) : selectedSingle.push(base);
+                    }
+                });
+
+                if (selectedMulti.length === 0 && selectedSingle.length === 0) {
+                    showError(`${i+1}段目: ベースを1つ以上選択してください。`); hasError = true; break;
+                }
+
+                selectedMulti.sort((a, b) => b.size - a.size);
+
+                const bestResult = calculateBestComboDP(targetWidth, selectedMulti, selectedSingle);
+
+                if (!bestResult || bestResult.count === 0) {
+                    showError(`${i+1}段目: ターゲット幅を超過しない組み合わせが見つかりません。目標幅やベースを見直してください。`);
+                    hasError = true; break;
+                }
+
+                let counts = {};
+                bestResult.combo.forEach(b => counts[b.label] = (counts[b.label] || 0) + 1);
+                
+                let centerBase = null;
+                let halfList = [];
+                
+                for (const label in counts) {
+                    const baseObj = bestResult.combo.find(b => b.label === label);
+                    if (counts[label] % 2 !== 0) {
+                        centerBase = baseObj;
+                        counts[label] -= 1;
+                    }
+                    for(let k = 0; k < counts[label] / 2; k++) halfList.push(baseObj);
+                }
+                
+                halfList.sort((a, b) => b.size - a.size); 
+                
+                let arrangement = [...halfList];
+                if(centerBase) arrangement.push(centerBase);
+                arrangement = arrangement.concat([...halfList].reverse());
+
+                results.push({ tierNum: i + 1, targetWidth, res: bestResult, arrangement });
+                
+                const savedBases = {};
+                BASE_DATA.forEach(b => { if(state.selectedBases[b.key]) savedBases[b.key] = true; });
+                setupToSave.push({ cm: hasCm?cmStr:'', ken: hasCm?'':kenStr, shaku: hasCm?'':shakuStr, selectedBases: savedBases, isOpen: false });
+            }
+
+            if (!hasError) {
+                renderResult(results, preventScroll);
+                if (isNewCalc) saveToHistory(setupToSave);
+                
+                tierStates.forEach(t => t.isOpen = false);
+                renderTiers();
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error-message');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            document.getElementById('result-card').classList.add('hidden');
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function renderResult(results, preventScroll = false) {
+            const resContent = document.getElementById('result-content');
+            let html = '';
+            let totalCount = 0;
+            let totalBases = {};
+
+            for (let i = results.length - 1; i >= 0; i--) {
+                const item = results[i];
+                const r = item.res;
+                totalCount += r.count;
+                
+                const counts = {};
+                r.combo.forEach(b => {
+                    counts[b.label] = (counts[b.label] || 0) + 1;
+                    totalBases[b.label] = (totalBases[b.label] || 0) + 1;
+                });
+
+                const diffText = r.diff === 0 ? `±0cm (ぴったり！)` : `-${r.diff}cm (不足)`;
+                const diffColor = r.diff === 0 ? 'text-emerald-400' : 'text-cyan-400';
+
+                let listHtml = '';
+                BASE_DATA.forEach(baseObj => {
+                    const count = counts[baseObj.label];
+                    if(count) {
+                        const totalSize = count * baseObj.size;
+                        listHtml += `
+                            <div class="base-item-row flex justify-between items-center py-2 px-3 rounded-xl bg-slate-950 mb-1 border border-slate-800/80">
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-block px-1.5 py-0.5 rounded border text-[10px] font-black shadow-sm ${baseObj.blockBg}">${baseObj.short}</span>
+                                    <span class="font-bold text-slate-200 text-sm">${baseObj.label}</span>
+                                    <span class="font-semibold text-slate-400 text-xs">(${baseObj.size}cm) × ${count}</span>
+                                </div>
+                                <span class="font-mono font-bold text-slate-300 text-xs">合計 ${totalSize}cm</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                let rowLayoutHtml = `
+                    <div class="mt-2 bg-slate-900 rounded-xl py-3 px-2 flex justify-center overflow-hidden layout-wrapper shadow-inner border border-slate-800 relative">
+                        <div class="layout-content flex justify-center items-center gap-1.5 whitespace-nowrap origin-center py-2 relative w-full">
+                            <div class="absolute top-0 bottom-0 w-[2px] bg-red-500 -translate-x-1/2 left-1/2 pointer-events-none z-0"></div>
+                            ${item.arrangement.map(b => `<div class="base-block-item relative z-10 inline-flex items-center justify-center rounded-md border text-[9px] font-bold shadow-sm px-0.5 shrink-0 leading-none ${b.blockBg}" style="width: ${Math.max(14, Math.round(b.size * 1.15))}px; height: 22px;" title="${b.label}(${b.size}cm)"><span class="base-block-text inline-block">${b.short}</span></div>`).join('')}
+                        </div>
+                    </div>`;
+
+                html += `
+                    <div class="result-card mb-3 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm page-break-inside-avoid">
+                        <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex justify-between items-center cursor-pointer select-none" onclick="toggleResultTier(${item.tierNum})">
+                            <div class="flex items-center gap-3">
+                                <span class="font-black text-sm text-white bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap">${item.tierNum}段目</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[10px] font-bold text-slate-400">差:</span>
+                                    <span class="text-sm font-black ${diffColor} whitespace-nowrap">${diffText}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="text-right leading-tight">
+                                    <span class="text-[10px] font-bold text-slate-400 block whitespace-nowrap">ターゲット ${item.targetWidth}cm</span>
+                                    <span class="text-sm font-black text-slate-200 whitespace-nowrap">実測 ${r.sum}cm <span class="text-xs text-slate-400 font-medium">(${r.count}個)</span></span>
+                                </div>
+                                <div id="res-icon-${item.tierNum}" class="text-slate-400 text-xs font-bold transition-transform rotate-180 accordion-icon">▼</div>
+                            </div>
+                        </div>
+                        <div id="res-tier-${item.tierNum}" class="p-4 pt-3 animate-fade-in">
+                            <div class="base-items-container space-y-1.5 mb-2">${listHtml}</div>
+                            <p class="text-[10px] font-bold text-indigo-500 mb-1 mt-2 text-center">配置図</p>
+                            ${rowLayoutHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            let totalListHtml = '';
+            BASE_DATA.forEach(b => {
+                if(totalBases[b.label]) {
+                    totalListHtml += `<div class="total-base-badge bg-slate-900 rounded-xl px-3 py-2 border border-slate-800 shadow-sm flex items-center justify-center gap-2"><span class="inline-block px-1.5 py-0.5 rounded border text-[10px] font-black shadow-sm ${b.blockBg}">${b.short}</span><span class="font-bold text-slate-200 text-sm">${b.label} <span class="text-slate-400 ml-1">×${totalBases[b.label]}</span></span></div>`;
+                }
+            });
+
+            let overallLayoutHtml = '<div class="mt-3"><p class="text-xs font-bold text-indigo-400 mb-2 text-center">全体のベース配置図</p><div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-inner py-4 px-3 flex flex-col items-center gap-3 relative overflow-hidden">';
+            overallLayoutHtml += '<div class="absolute top-0 bottom-0 w-[2px] bg-red-500 pointer-events-none z-0 left-1/2 -translate-x-1/2"></div>';
+            for (let i = results.length - 1; i >= 0; i--) {
+                const item = results[i];
+                let blocksHtml = item.arrangement.map(b => `<div class="base-block-item relative z-10 inline-flex items-center justify-center rounded-md border text-[9px] font-bold shadow-sm px-0.5 shrink-0 leading-none ${b.blockBg}" style="width: ${Math.max(14, Math.round(b.size * 1.15))}px; height: 22px;" title="${b.label}(${b.size}cm)"><span class="base-block-text inline-block">${b.short}</span></div>`).join('');
+                overallLayoutHtml += `
+                    <div class="flex items-center w-full justify-center relative z-10">
+                        <span class="text-xs text-slate-400 font-black w-12 text-right mr-2 shrink-0 select-none leading-none">${item.tierNum}段目</span>
+                        <div class="layout-wrapper flex-none flex justify-center items-center h-[34px] overflow-hidden max-w-[calc(100%-7rem)]">
+                            <div class="layout-content flex justify-center items-center gap-1.5 whitespace-nowrap transition-transform origin-center py-2 relative">
+                                ${blocksHtml}
+                            </div>
+                        </div>
+                        <span class="w-12 ml-2 shrink-0 pointer-events-none select-none"></span>
+                    </div>
+                `;
+            }
+            overallLayoutHtml += '</div></div>';
+
+            const summaryHtml = `
+                <div class="result-summary bg-indigo-950/40 border border-indigo-900/60 rounded-3xl p-4 mb-2 relative overflow-hidden page-break-inside-avoid mt-3">
+                    <p class="text-base font-black text-indigo-300 mb-3 flex items-center gap-2 justify-center"><span class="text-xl">📋</span> 祭壇 総まとめ</p>
+                    <div class="flex flex-wrap gap-2 justify-center mb-2">${totalListHtml}</div>
+                    ${overallLayoutHtml}
+                </div>
+            `;
+
+            resContent.innerHTML = html + summaryHtml;
+            
+            currentResultData = {
+                targetStr: results.map(r=>`${r.tierNum}段目:${r.targetWidth}cm`).join(', '),
+                totalCount: totalCount,
+                results: results,
+                totalBases: totalBases,
+                setup: tierStates.map(t => ({...t}))
+            };
+
+            const resCard = document.getElementById('result-card');
+            resCard.classList.remove('hidden');
+            document.getElementById('panel-text').classList.add('hidden');
+            
+            setTimeout(() => {
+                if (!preventScroll) {
+                    resCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                results.forEach(item => {
+                    const tierContent = document.getElementById(`res-tier-${item.tierNum}`);
+                    const tierIcon = document.getElementById(`res-icon-${item.tierNum}`);
+                    if(tierContent) tierContent.classList.remove('hidden');
+                    if(tierIcon) tierIcon.classList.add('rotate-180');
+                });
+                fitLayoutScales();
+            }, 100);
+        }
+
+        function fitLayoutScales() {
+            document.querySelectorAll('.layout-wrapper').forEach(wrap => {
+                const inner = wrap.querySelector('.layout-content');
+                if(!inner) return;
+                inner.style.transform = 'none';
+                const wWidth = wrap.clientWidth;
+                const iWidth = inner.scrollWidth;
+                if (iWidth > wWidth && wWidth > 0) {
+                    const scale = (wWidth - 10) / iWidth;
+                    inner.style.transform = `scale(${scale})`;
+                }
+            });
+        }
+        window.addEventListener('resize', fitLayoutScales);
+
+        // --- 6. 各種イベント・アクション ---
+        function attachGlobalListeners() {
+            document.getElementById('btn-inc-tier').addEventListener('click', () => {
+                if(tierStates.length < 7) {
+                    tierStates.push({ cm: '', ken: '', shaku: '', selectedBases: {}, isOpen: false });
+                    renderTiers();
+                }
+            });
+            document.getElementById('btn-dec-tier').addEventListener('click', () => {
+                if(tierStates.length > 1) { tierStates.pop(); renderTiers(); }
+            });
+            
+            document.getElementById('btn-calc').addEventListener('click', () => execCalculate(false, true));
+
+            document.getElementById('btn-save-named').addEventListener('click', () => {
+                if(!currentResultData) return;
+                const input = document.getElementById('save-name-input');
+                if (input) input.value = activeFavName || '';
+                openModal('save-modal');
+                setTimeout(() => { input?.focus(); input?.select(); }, 50);
+            });
+
+            document.getElementById('save-name-input')?.addEventListener('keydown', e => {
+                if (e.key === 'Enter') document.getElementById('btn-confirm-save')?.click();
+            });
+            document.getElementById('btn-cancel-save').addEventListener('click', () => closeModal('save-modal'));
+            document.getElementById('btn-confirm-save').addEventListener('click', () => {
+                const name = document.getElementById('save-name-input').value.trim();
+                if(!name) return showAlertModal("名前を入力してください", "入力エラー");
+                
+                const favs = getStorage(STORAGE_KEY_FAV);
+                favs.push({ id: Date.now().toString(), name: name, tiers: currentResultData.setup });
+                setStorage(STORAGE_KEY_FAV, favs);
+                activeFavName = name;
+                updateProjectBadge(name);
+                closeModal('save-modal');
+                showAlertModal(`「${name}」をお気に入りに保存しました`, "保存完了");
+            });
+
+            const btnCopy = document.getElementById('btn-open-text');
+            const panelText = document.getElementById('panel-text');
+            btnCopy.addEventListener('click', () => {
+                panelText.classList.toggle('hidden');
+                btnCopy.classList.toggle('action-tab-active');
+            });
+
+            document.getElementById('btn-exec-copy').addEventListener('click', async () => {
+                if(!currentResultData) return;
+                let lines = [];
+                lines.push(`【${getExportTitle()}】`);
+                lines.push("【祭壇ベース構成表】");
+                
+                const chkOverall = document.getElementById('chk-overall').checked;
+                const chkTarget = document.getElementById('chk-target').checked;
+                const chkCount = document.getElementById('chk-count').checked;
+                const chkActual = document.getElementById('chk-actual').checked;
+                const chkLayout = document.getElementById('chk-layout').checked;
+
+                if (chkOverall || chkLayout) {
+                    lines.push("\n■ ベース凡例");
+                    let usedLabels = new Set();
+                    currentResultData.results.forEach(t => t.arrangement.forEach(b => usedLabels.add(b.label)));
+                    BASE_DATA.filter(b => usedLabels.has(b.label)).forEach(b => {
+                        lines.push(`  [${b.short}] : ${b.label} (${b.size}cm)`);
+                    });
+                }
+
+                if (chkOverall) {
+                    lines.push("\n■ 総配置図");
+                    [...currentResultData.results].reverse().forEach(t => {
+                        const shapes = t.arrangement.map(b => `[${b.short}]`).join(' ');
+                        lines.push(`  ${t.tierNum}段目: ${shapes}`);
+                    });
+                }
+
+                if (chkCount) {
+                    lines.push(`\n■ 全体使用数: ${currentResultData.totalCount}個`);
+                    let bases = [];
+                    BASE_DATA.forEach(b => { 
+                        if(currentResultData.totalBases[b.label]) bases.push(`${b.label}×${currentResultData.totalBases[b.label]}`); 
+                    });
+                    lines.push(`  (${bases.join(', ')})`);
+                }
+
+                [...currentResultData.results].reverse().forEach(t => {
+                    lines.push(`\n[${t.tierNum}段目]`);
+                    if (chkTarget) lines.push(`・目標幅: ${t.targetWidth}cm`);
+                    if (chkActual) lines.push(`・実測幅: ${t.res.sum}cm (${t.res.diff===0?'ぴったり':'-'+t.res.diff+'cm'})`);
+                    if (chkLayout) lines.push(`・配置図: ${t.arrangement.map(b=>`[${b.short}]`).join(' ')}`);
+                });
+
+                const textToCopy = lines.join('\n');
+                const btn = document.getElementById('btn-exec-copy');
+                const showSuccess = () => {
+                    btn.textContent = "✓ コピー完了";
+                    btn.classList.add("bg-emerald-600");
+                    setTimeout(() => { btn.textContent = "コピー実行"; btn.classList.remove("bg-emerald-600"); }, 2000);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        showSuccess();
+                        return;
+                    } catch (_) {}
+                }
+
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showSuccess();
+                } catch(e) { showAlertModal("コピーに失敗しました。", "エラー"); }
+                document.body.removeChild(textarea);
+            });            async function prepareCaptureCanvas() {
+                const scope = document.querySelector('input[name="export-scope"]:checked')?.value || 'all';
+                const theme = document.querySelector('input[name="export-theme"]:checked')?.value || 'dark';
+                const isDark = theme === 'dark';
+                const origTarget = document.getElementById('capture-area');
+
+                // 画面外にクローンを作成して撮影（画面側のレイアウト・表示を一切動かさない）
+                const clone = origTarget.cloneNode(true);
+                clone.id = 'capture-area-clone';
+                clone.style.position = 'fixed';
+                clone.style.left = '-9999px';
+                clone.style.top = '0';
+                clone.style.zIndex = '-9999';
+                clone.classList.add('capture-mode');
+                clone.classList.add(isDark ? 'capture-mode-dark' : 'capture-mode-light');
+
+                // クローン内の全段を展開
+                clone.querySelectorAll('[id^="res-tier-"]').forEach(el => {
+                    el.classList.remove('hidden');
+                    el.style.display = 'block';
+                });
+
+                const headerEl = clone.querySelector('.capture-mode-header');
+                if (headerEl) headerEl.textContent = `★ ${getExportTitle()} ★`;
+
+                if (scope === 'summary') {
+                    clone.querySelectorAll('.result-card').forEach(card => card.remove());
+                }
+
+                document.body.appendChild(clone);
+
+                if (document.fonts && document.fonts.ready) {
+                    await document.fonts.ready;
+                }
+                await new Promise(r => setTimeout(r, 100));
+
+                // フォント確定後にクローン内部の縮尺スケーリングを実行
+                clone.querySelectorAll('.layout-wrapper').forEach(wrap => {
+                    const inner = wrap.querySelector('.layout-content');
+                    if (!inner) return;
+                    inner.style.transform = 'none';
+                    const wWidth = wrap.clientWidth;
+                    const iWidth = inner.scrollWidth;
+                    if (iWidth > wWidth && wWidth > 0) {
+                        const scale = (wWidth - 10) / iWidth;
+                        inner.style.transform = `scale(${scale})`;
+                    }
+                });
+
+                await new Promise(r => setTimeout(r, 100));
+
+                const canvas = await window.html2canvas(clone, {
+                    scale: 2,
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                    useCORS: true,
+                    logging: false
+                });
+
+                document.body.removeChild(clone);
+                return canvas;
+            }
+
+            document.querySelectorAll('.btn-save-format').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if(!currentResultData) return;
+                    const format = e.target.dataset.format;
+                    const ext = format === 'pdf' ? 'pdf' : (format === 'jpeg' ? 'jpg' : 'png');
+                    const outName = getExportFileName(ext);
+                    const orgText = e.target.textContent;
+                    e.target.textContent = "生成中...";
+                    
+                    try {
+                        const canvas = await prepareCaptureCanvas();
+                        if (format === 'pdf') {
+                            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                            const { jsPDF } = window.jspdf;
+                            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                            const pageWidth = 210, pageHeight = 297, margin = 8;
+                            const maxW = pageWidth - margin * 2, maxH = pageHeight - margin * 2;
+                            const canvasRatio = canvas.width / canvas.height;
+                            let renderW = maxW, renderH = maxW / canvasRatio;
+                            if (renderH > maxH) { renderH = maxH; renderW = maxH * canvasRatio; }
+                            const posX = (pageWidth - renderW) / 2, posY = margin + (maxH - renderH) / 2;
+                            pdf.addImage(imgData, 'JPEG', posX, posY, renderW, renderH);
+                            pdf.save(outName);
+                        } else {
+                            const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+                            canvas.toBlob(blob => {
+                                if (!blob) return;
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = outName;
+                                document.body.appendChild(a);
+                                a.click();
+                                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 300);
+                            }, mime, 0.95);
+                        }
+                        e.target.textContent = "✓ ダウンロード開始";
+                        setTimeout(() => e.target.textContent = orgText, 2500);
+                    } catch(err) {
+                        e.target.textContent = orgText;
+                        showAlertModal("ファイルの生成に失敗しました。", "エラー");
+                    }
+                });
+            });
+
+            document.getElementById('btn-share').addEventListener('click', async () => {
+                if(!currentResultData) return;
+                const btn = document.getElementById('btn-share');
+                const orgText = btn.innerHTML;
+                btn.textContent = "共有データを準備中...";
+                try {
+                    const canvas = await prepareCaptureCanvas();
+                    const outName = getExportFileName('png');
+                    canvas.toBlob(async (blob) => {
+                        if (!blob) return;
+                        const file = new File([blob], outName, { type: 'image/png' });
+                        btn.innerHTML = orgText;
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            try { await navigator.share({ title: outName, files: [file] }); }
+                            catch (err) { if (err.name !== 'AbortError') console.warn(err); }
+                        } else {
+                            document.querySelector('.btn-save-format[data-format="png"]')?.click();
+                        }
+                    }, 'image/png');
+                } catch(e) {
+                    btn.innerHTML = orgText;
+                    showAlertModal("共有の準備に失敗しました。", "エラー");
+                }
+            });
+
+            document.getElementById('btn-reset-new')?.addEventListener('click', async () => {
+                const ok = await showConfirmModal('現在の入力内容をリセットして新規プロジェクトを開始しますか？', '新規リセット');
+                if (ok) resetAllTiers();
+            });
+
+            const simpleContainer = document.getElementById('simple-rows');
+            let simpleRowCount = 0;
+            
+            window.calcSimpleTotal = function() {
+                let total = 0;
+                const rows = simpleContainer.children;
+                for(let i=0; i<rows.length; i++) {
+                    const select = rows[i].querySelector('select');
+                    const input = rows[i].querySelector('input[type="number"]');
+                    const count = parseInt(input.value, 10);
+                    total += (parseInt(select.value, 10) || 0) * (isNaN(count) ? 0 : count);
+                }
+                document.getElementById('simple-total').textContent = total;
+            };
+
+            window.addSimpleRow = function() {
+                const rowId = `srow-${simpleRowCount++}`;
+                const div = document.createElement('div');
+                div.id = rowId;
+                div.className = "flex items-center gap-2 mb-2 animate-fade-in";
+                let options = '<option value="0" class="bg-slate-900 text-slate-400">ベースを選択...</option>';
+                BASE_DATA.forEach(b => options += `<option value="${b.size}" class="bg-slate-900 text-white">${b.label} (${b.size}cm)</option>`);
+                div.innerHTML = `
+                    <select class="flex-1 bg-slate-950 border border-slate-700 text-sm font-bold text-slate-200 py-2.5 px-2 rounded-xl outline-none shadow-sm focus:border-indigo-500" onchange="calcSimpleTotal()">
+                        ${options}
+                    </select>
+                    <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 rounded-xl px-2 shadow-sm focus-within:border-indigo-500">
+                        <input type="number" placeholder="0" min="0" class="w-12 bg-transparent text-center font-black text-white py-2.5 outline-none placeholder:text-slate-500" onfocus="this.select()" onclick="this.select()" onchange="calcSimpleTotal()" oninput="calcSimpleTotal()">
+                        <span class="text-xs text-slate-400 font-bold">個</span>
+                    </div>
+                    <button onclick="document.getElementById('${rowId}').remove(); calcSimpleTotal();" class="p-2.5 bg-red-950/60 border border-red-500/40 text-red-400 rounded-xl shadow-sm hover:bg-red-900/60 active:scale-95 transition">✕</button>
+                `;
+                simpleContainer.appendChild(div);
+                calcSimpleTotal();
+            }
+
+            const tabAuto = document.getElementById('tab-auto');
+            const tabSimple = document.getElementById('tab-simple');
+            const viewAuto = document.getElementById('view-auto');
+            const viewSimple = document.getElementById('view-simple');
+
+            tabAuto.addEventListener('click', () => {
+                tabAuto.className = "flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-active";
+                tabSimple.className = "flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-inactive shadow-sm";
+                viewAuto.classList.remove('hidden'); viewSimple.classList.add('hidden');
+            });
+            tabSimple.addEventListener('click', () => {
+                tabSimple.className = "flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-active";
+                tabAuto.className = "flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-inactive shadow-sm";
+                viewSimple.classList.remove('hidden'); viewAuto.classList.add('hidden');
+                if(simpleContainer.children.length === 0) addSimpleRow();
+            });
+
+            // 終了確認モーダルのボタンイベント
+            document.getElementById('exit-ok-btn')?.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            document.getElementById('exit-cancel-btn')?.addEventListener('click', () => {
+                const exitModal = document.getElementById('exit-modal');
+                if (exitModal) {
+                    exitModal.classList.add('hidden');
+                    exitModal.classList.remove('flex');
+                }
+            });
+        }
+        
+        // --- モーダル制御 & 戻るボタン連動 ---
+        history.replaceState({ appBase: true }, '');
+        const modalIds = ['history-modal', 'info-modal', 'save-modal', 'alert-modal', 'confirm-modal'];
+        let isClosingModalByCode = false;
+
+        function hasOpenModal() {
+            return modalIds.some(id => {
+                const el = document.getElementById(id);
+                return el && !el.classList.contains('hidden');
+            });
+        }
+
+        function pushModalHistory() {
+            if (!history.state || !history.state.modalOpen) {
+                history.pushState({ modalOpen: true }, '');
+            }
+        }
+
+        function closeAllModals(triggerHistoryBack = true) {
+            if (!hasOpenModal()) return false;
+            modalIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                }
+            });
+            if (alertModalResolve) {
+                const res = alertModalResolve;
+                alertModalResolve = null;
+                res();
+            }
+            if (confirmModalResolve) {
+                const res = confirmModalResolve;
+                confirmModalResolve = null;
+                res(false);
+            }
+            if (triggerHistoryBack && history.state && history.state.modalOpen) {
+                isClosingModalByCode = true;
+                history.back();
+            }
+            return true;
+        }
+
+        window.openModal = function(id) {
+            pushModalHistory();
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('hidden'); 
+                el.classList.add('flex'); 
+            }
+        };
+
+        window.closeModal = function(id) { 
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('hidden'); 
+                el.classList.remove('flex'); 
+            }
+            if (id === 'alert-modal' && alertModalResolve) {
+                const res = alertModalResolve;
+                alertModalResolve = null;
+                res();
+            }
+            if (id === 'confirm-modal' && confirmModalResolve) {
+                const res = confirmModalResolve;
+                confirmModalResolve = null;
+                res(false);
+            }
+            setTimeout(() => {
+                if (!hasOpenModal() && history.state && history.state.modalOpen) {
+                    isClosingModalByCode = true;
+                    history.back();
+                }
+            }, 10);
+        };
+
+        // スマホのナビゲーション戻るボタン検知
+        window.addEventListener('popstate', () => {
+            if (isClosingModalByCode) {
+                isClosingModalByCode = false;
+                return;
+            }
+            const exitModal = document.getElementById('exit-modal');
+            if (exitModal && !exitModal.classList.contains('hidden')) {
+                exitModal.classList.add('hidden');
+                exitModal.classList.remove('flex');
+                history.pushState({ appBase: true }, '');
+                return;
+            }
+
+            if (hasOpenModal()) {
+                closeAllModals(false);
+            } else {
+                history.pushState({ appBase: true }, '');
+                if (exitModal) {
+                    exitModal.classList.remove('hidden');
+                    exitModal.classList.add('flex');
+                }
+            }
+        });
+
+        window.openInfoModal = function(type) {
+            const title = document.getElementById('info-modal-title');
+            const content = document.getElementById('info-modal-content');
+            if(type === 'version') {
+                title.textContent = "バージョン・更新履歴";
+                content.innerHTML = "<p class='font-black text-indigo-400 text-lg'>Ver 1.4</p><p class='text-sm text-slate-300 mt-2 font-bold'>ファイル命名統一＆完全ダークモーダル対応</p><ul class='text-xs text-slate-400 mt-2 list-disc pl-4 space-y-1'><li>保存命名規則を統一（base_プロジェクト名_YYYYMMDD_通番）</li><li>Androidでのファイル名化け防止（Blob方式化）</li><li>他アプリへ共有（Web Share API）の追加</li><li>全モーダルのダークモード化とUIトーン統一</li><li>履歴呼び出し時の終了確認誤爆を解消</li></ul>";
+            } else {
+                title.textContent = "クレジット";
+                content.innerHTML = "<div class='space-y-3 text-sm'><p><span class='font-bold text-slate-400 text-xs block'>製作者</span><span class='font-black text-white text-base'>関貴文</span></p><p><span class='font-bold text-slate-400 text-xs block'>AIアシスタント</span><span class='font-bold text-indigo-400'>Gemini (Google)</span></p><p><span class='font-bold text-slate-400 text-xs block'>技術スタック</span><span class='text-slate-300 font-medium'>HTML5, JavaScript (ES6), Tailwind CSS<br>PWA (Web Manifest, Service Worker)<br>Local Storage API, html2canvas, jsPDF</span></p></div>";
+            }
+            openModal('info-modal');
+        }
+
+    </script>
+
+    <!-- Main Content -->
+    <div class="max-w-md w-full mx-auto p-4 space-y-4 no-print relative z-10 flex-grow">
+        
+        <header class="text-center pt-2 mb-2">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-700 tracking-tight whitespace-nowrap mb-4 drop-shadow-sm">ぴったりベースサーチ</h1>
+            
+            <div class="flex justify-center gap-2 mb-4 px-2">
+                <button id="tab-auto" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-active">最適組み合わせ</button>
+                <button id="tab-simple" class="flex-1 py-3 rounded-xl text-sm font-bold shadow-sm transition-all tab-inactive">手動計算ツール</button>
+            </div>
+            
+            <div class="w-full mx-auto relative px-2">
+                <button onclick="openModal('history-modal'); renderHistoryModal();" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-sm py-3 px-3 rounded-xl outline-none shadow-sm font-bold cursor-pointer transition hover:bg-slate-800 active:scale-[0.98] flex items-center justify-center gap-2">
+                    📄 過去の履歴・お気に入りから呼び出す
+                </button>
+            </div>
+        </header>
+
+        <!-- View: Auto (最適組み合わせ) -->
+        <div id="view-auto" class="space-y-4">
+            
+            <div class="text-[11px] font-medium text-slate-300 bg-slate-900 p-3.5 rounded-2xl border border-slate-800 shadow-sm leading-relaxed text-left space-y-1">
+                <p class="font-bold text-white text-center text-xs mb-1">祭壇の最適なベース組み合わせを自動算出</p>
+                <p>・作成する段数と幅（cmまたは間・尺）、使用したいベースを選択してください。</p>
+                <p class="text-indigo-400 font-bold">※組み合わせ計算は、ターゲット幅への近似とともに【ベースの合計使用個数が最も少なくなる組み合わせ】を最優先して算出します。</p>
+            </div>
+
+            <!-- 段数設定コントロール -->
+            <div class="flex justify-between items-center bg-slate-900 p-4 rounded-3xl shadow-sm border border-slate-800">
+                <div class="flex flex-col">
+                    <span class="text-sm font-extrabold text-white">祭壇の段数 (最大7段)</span>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="toggleAllTiers(true)" class="text-[10px] font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition active:scale-95">全て開く</button>
+                        <button onclick="toggleAllTiers(false)" class="text-[10px] font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition active:scale-95">全て閉じる</button>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="btn-dec-tier" class="w-10 h-10 rounded-full bg-slate-800 text-slate-200 border border-slate-700 font-black text-lg shadow-inner active:scale-95 transition">-</button>
+                    <span id="tier-count-display" class="text-2xl font-black text-indigo-400 w-8 text-center">1</span>
+                    <button id="btn-inc-tier" class="w-10 h-10 rounded-full bg-indigo-950 border border-indigo-600/50 text-indigo-300 font-black text-lg shadow-inner active:scale-95 transition">+</button>
+                </div>
+            </div>
+
+            <div id="error-message" class="hidden px-4 py-3 bg-red-950/60 border border-red-500/40 text-red-300 rounded-2xl text-xs font-bold text-center shadow-sm"></div>
+
+            <div id="tiers-container" class="space-y-4"></div>
+
+            <button id="btn-calc" class="w-full mt-2 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-3xl shadow-lg transition-all active:scale-[0.98]">
+                計算開始
+            </button>
+        </div>
+
+        <!-- View: Simple (手動計算ツール) -->
+        <div id="view-simple" class="hidden space-y-4">
+            <div class="bg-slate-900 rounded-3xl p-5 shadow-sm border border-slate-800">
+                <p class="text-xs font-bold text-slate-400 mb-4 text-center">ベースの種類と個数を選択して、合計幅を算出します。</p>
+                <div id="simple-rows" class="space-y-0"></div>
+                <button onclick="addSimpleRow()" class="w-full mt-3 py-3 border-2 border-dashed border-slate-700 text-slate-400 font-bold rounded-xl hover:bg-slate-800 transition text-sm">
+                    ＋ ベースを追加
+                </button>
+                <div class="mt-6 pt-5 border-t border-slate-800 flex justify-between items-end bg-slate-950 p-4 rounded-2xl border border-slate-800/80">
+                    <span class="text-sm font-black text-slate-300">合計実測幅</span>
+                    <p class="text-4xl font-black text-indigo-400 leading-none"><span id="simple-total">0</span><span class="text-lg text-slate-400 ml-1">cm</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 結果表示エリア -->
+    <div id="result-card" class="hidden rounded-3xl overflow-hidden animate-fade-in max-w-md mx-auto mb-6 w-full relative z-10">
+        <!-- キャプチャ対象エリア -->
+        <div id="capture-area" class="p-3 bg-transparent transition-colors duration-200">
+            <!-- キャプチャ時のみ表示されるヘッダー -->
+            <div class="capture-mode-header">★ 祭壇ベース計算レポート ★</div>
+            
+            <div class="flex justify-center mb-5 mt-1 capture-mode-hide-badge">
+                <span class="bg-indigo-600 text-white text-xs font-black px-5 py-1.5 rounded-full uppercase tracking-widest shadow-md">RESULT</span>
+            </div>
+            
+            <div id="result-content" class="space-y-4"></div>
+        </div>
+
+        <!-- アクションエリア -->
+        <div id="result-actions" class="p-4 bg-slate-900 rounded-2xl m-2 border border-slate-800 shadow-sm space-y-3 no-print">
+            
+            <button id="btn-save-named" class="w-full py-3 bg-indigo-950/60 border border-indigo-500/40 text-indigo-300 font-bold text-sm rounded-xl shadow-sm transition hover:bg-indigo-900/60 active:scale-[0.98] flex items-center justify-center gap-2">
+                <span>⭐ 結果に名前をつけて保存</span>
+            </button>
+
+            <div class="mt-4 border-t pt-3 space-y-2.5">
+                <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl space-y-2 text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-slate-400">保存対象:</span>
+                        <div class="flex gap-3 text-slate-200 font-bold text-[11px]">
+                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-scope" value="all" checked class="accent-indigo-500"> 全体</label>
+                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-scope" value="summary" class="accent-indigo-500"> 総まとめのみ</label>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-800">
+                        <span class="text-[11px] font-bold text-slate-400">画像テーマ:</span>
+                        <div class="flex gap-3 text-slate-200 font-bold text-[11px]">
+                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-theme" value="dark" checked class="accent-indigo-500"> ダーク</label>
+                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-theme" value="light" class="accent-indigo-500"> ライト</label>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-share" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    他アプリへ共有（LINE・フォト等）
+                </button>
+                <div class="flex gap-2">
+                    <button class="btn-save-format flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm hover:bg-slate-700 active:scale-95" data-format="jpeg">JPG保存</button>
+                    <button class="btn-save-format flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm hover:bg-slate-700 active:scale-95" data-format="png">PNG保存</button>
+                    <button class="btn-save-format flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm hover:bg-slate-700 active:scale-95" data-format="pdf">PDF保存</button>
+                </div>
+            </div>
+            
+            <button id="btn-open-text" class="w-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white py-3 rounded-xl text-xs font-bold transition shadow-sm mt-2">📋 テキストコピー</button>
+
+            <!-- テキストコピー設定パネル -->
+            <div id="panel-text" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-inner space-y-3 mt-3">
+                <p class="text-[10px] font-bold text-slate-400 border-b border-slate-800 pb-1">コピーする項目</p>
+                <div class="flex flex-wrap gap-x-4 gap-y-3 text-xs font-bold text-slate-300">
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-overall" checked class="accent-indigo-500 w-4 h-4"> 総配置図</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-target" checked class="accent-indigo-500 w-4 h-4"> 目標幅</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-count" checked class="accent-indigo-500 w-4 h-4"> 使用ベース数</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-actual" checked class="accent-indigo-500 w-4 h-4"> 実測・誤差</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-layout" checked class="accent-indigo-500 w-4 h-4"> 配置図</label>
+                </div>
+                <button id="btn-exec-copy" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition active:scale-[0.98]">コピー実行</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Buttons -->
+    <footer class="mt-auto mb-6 pt-8 px-4 flex justify-center gap-3 no-print w-full relative z-0">
+        <button onclick="openInfoModal('version')" class="px-5 py-2.5 bg-slate-800 text-white rounded-full text-xs font-bold shadow-md hover:bg-slate-700 active:scale-95 transition border border-slate-700">バージョン情報</button>
+        <button onclick="openInfoModal('credit')" class="px-5 py-2.5 bg-slate-800 text-white rounded-full text-xs font-bold shadow-md hover:bg-slate-700 active:scale-95 transition border border-slate-700">クレジット</button>
+    </footer>
+
+    <!-- Modals -->
+    <!-- 履歴・お気に入り モーダル（ダークモード統一） -->
+    <div id="history-modal" class="hidden fixed inset-0 z-[80] flex items-center justify-center modal-overlay p-4 no-print">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-5 w-full max-w-sm shadow-2xl animate-fade-in relative max-h-[85vh] flex flex-col">
+            <h3 class="text-base font-black text-white mb-4 border-b border-slate-800 pb-2">📄 履歴・お気に入り管理</h3>
+            
+            <div class="overflow-y-auto hide-scrollbar flex-1 space-y-4">
+                <div>
+                    <h4 class="text-xs font-bold text-indigo-400 mb-2">⭐ お気に入り</h4>
+                    <div id="modal-fav-list" class="space-y-2"></div>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 mb-2">🕒 最近の履歴</h4>
+                    <div id="modal-hist-list" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <button onclick="closeModal('history-modal')" class="mt-4 w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-black text-sm rounded-xl transition border border-slate-700 active:scale-95 shrink-0">閉じる</button>
+        </div>
+    </div>
+
+    <!-- 情報 モーダル（ダークモード統一） -->
+    <div id="info-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center modal-overlay p-4 no-print">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-xs shadow-2xl animate-fade-in relative">
+            <h3 id="info-modal-title" class="text-sm font-black text-white mb-3 border-b border-slate-800 pb-2"></h3>
+            <div id="info-modal-content" class="text-slate-300 space-y-2 text-xs leading-relaxed"></div>
+            <button onclick="closeModal('info-modal')" class="mt-5 w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-black text-sm rounded-xl transition border border-slate-700 active:scale-95">閉じる</button>
+        </div>
+    </div>
+    
+    <!-- 名前をつけて保存 モーダル（ダークモード統一） -->
+    <div id="save-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center modal-overlay p-4 no-print">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">
+            <h3 class="text-lg font-black text-white mb-2">⭐ 名前をつけて保存</h3>
+            <p class="text-xs text-slate-400 mb-4 font-medium">この祭壇構成をお気に入りとしてローカルに保存します。</p>
+            <input type="text" id="save-name-input" placeholder="例: 花祭壇4号" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl mb-5 font-bold text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/50 outline-none transition placeholder:text-slate-500 text-center">
+            <div class="flex gap-2">
+                <button id="btn-cancel-save" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl hover:bg-slate-700 border border-slate-700 transition active:scale-95">キャンセル</button>
+                <button id="btn-confirm-save" class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 transition shadow-md active:scale-95">保存する</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 共通通知モーダル（ダークモード） -->
+    <div id="alert-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center modal-overlay p-4 no-print">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">
+            <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>
+            <p id="alert-modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+            <button onclick="if(alertModalResolve){alertModalResolve(); alertModalResolve=null;} closeModal('alert-modal');" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>
+        </div>
+    </div>
+
+    <!-- 共通確認モーダル（ダークモード） -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center modal-overlay p-4 no-print">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">
+            <h3 id="confirm-modal-title" class="text-sm font-bold text-white">確認</h3>
+            <p id="confirm-modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+                <button onclick="if(confirmModalResolve){confirmModalResolve(false); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition">キャンセル</button>
+                <button onclick="if(confirmModalResolve){confirmModalResolve(true); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">削除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 終了確認モーダル（ダークモード統一） -->
+    <div id="exit-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center modal-overlay p-4 no-print">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center animate-fade-in">
+            <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="exit-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition active:scale-95">
+                    キャンセル
+                </button>
+                <button id="exit-ok-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow active:scale-95">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
