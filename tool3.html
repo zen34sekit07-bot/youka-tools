@@ -367,8 +367,8 @@
                     const isChecked = state.selectedBases[base.key] ? 'checked' : '';
                     const isSingle = base.type === 'single';
                     const activeClasses = isSingle 
-                        ? 'peer-checked:border-orange-400 peer-checked:bg-orange-50 peer-checked:text-orange-700' 
-                        : 'peer-checked:border-indigo-400 peer-checked:bg-indigo-50 peer-checked:text-indigo-700';
+                        ? 'peer-checked:border-orange-500 peer-checked:bg-orange-950/80 peer-checked:text-orange-200' 
+                        : 'peer-checked:border-indigo-500 peer-checked:bg-indigo-950/80 peer-checked:text-indigo-200';
                     const badge = isSingle ? `<span class="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm scale-90">中央</span>` : '';
 
                     basesHtml += `
@@ -1273,7 +1273,7 @@
     <div class="max-w-md w-full mx-auto p-4 space-y-4 no-print relative z-10 flex-grow">
         
         <header class="text-center pt-2 mb-2">
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-700 tracking-tight whitespace-nowrap mb-4 drop-shadow-sm">ぴったりベースサーチ</h1>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-400 tracking-tight whitespace-nowrap mb-4 drop-shadow-sm">ぴったりベースサーチ</h1>
             
             <div class="flex justify-center gap-2 mb-4 px-2">
                 <button id="tab-auto" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-active">最適組み合わせ</button>
