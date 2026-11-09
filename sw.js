@@ -1,4 +1,4 @@
-const CACHE_NAME = 'youkaen-tools-v2';
+const CACHE_NAME = 'youkaen-tools-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

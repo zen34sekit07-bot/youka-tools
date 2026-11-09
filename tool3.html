@@ -8,9 +8,10 @@
     <!-- PWA / Mobile Settings -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ぴったりベースサーチ">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="color-scheme" content="dark">
     <meta name="description" content="祭壇の最適なベース組み合わせを素早く算出する検索・計算ツール">
 
     <!-- PWA App Icon (SVG Data URI) -->
@@ -18,7 +19,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%234f46e5'/%3E%3Cpath d='M120 340 L256 160 L392 340 Z' fill='%23f59e0b'/%3E%3Crect x='160' y='320' width='192' height='40' rx='8' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
 
     <!-- PWA Manifest (Data URI) -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E3%81%B4%E3%81%A3%E3%81%9F%E3%82%8A%E3%83%99%E3%83%BC%E3%82%B9%E3%82%BD%E3%83%BC%E3%83%81%22%2C%22short_name%22%3A%22%E3%83%99%E3%83%BC%E3%82%B9%E3%82%BD%E3%83%BC%E3%83%81%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%234f46e5%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'128'%20fill%3D'%25234f46e5'%2F%253E%253Cpath%20d%3D'M120%20340%20L256%20160%20L392%20340%20Z'%20fill%3D'%2523f59e0b'%2F%253E%253Crect%20x%3D'160'%20y%3D'320'%20width%3D'192'%20height%3D'40'%20rx%3D'8'%20fill%3D'%2523ffffff'%20opacity%3D'0.9'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E3%81%B4%E3%81%A3%E3%81%9F%E3%82%8A%E3%83%99%E3%83%BC%E3%82%B9%E3%82%BD%E3%83%BC%E3%83%81%22%2C%22short_name%22%3A%22%E3%83%99%E3%83%BC%E3%82%B9%E3%82%BD%E3%83%BC%E3%83%81%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'128'%20fill%3D'%25234f46e5'%2F%253E%253Cpath%20d%3D'M120%20340%20L256%20160%20L392%20340%20Z'%20fill%3D'%2523f59e0b'%2F%253E%253Crect%20x%3D'160'%20y%3D'320'%20width%3D'192'%20height%3D'40'%20rx%3D'8'%20fill%3D'%2523ffffff'%20opacity%3D'0.9'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,13 +41,23 @@
         }
     </script>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        :root {
+            color-scheme: dark;
+            supported-color-schemes: dark;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+            accent-color: #4f46e5;
+        }
         ::-webkit-scrollbar { width: 0px; }
         
         /* Input Number Styling */
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; color: #ffffff; font-weight: 900; }
         input[type="number"]:placeholder-shown { color: #64748b; font-weight: 600; }
+        select { color-scheme: dark; }
         
         /* Tabs & Buttons */
         .tab-active { background-color: #4f46e5; color: white; border-color: #4f46e5; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3); }
@@ -720,7 +731,7 @@
                 });
 
                 let rowLayoutHtml = `
-                    <div class="mt-2 bg-slate-900 rounded-xl py-3 px-2 flex justify-center overflow-hidden layout-wrapper shadow-inner border border-slate-800 relative">
+                    <div class="mt-2 bg-[#0f172a] rounded-xl py-3 px-2 flex justify-center overflow-hidden layout-wrapper shadow-inner border border-slate-800 relative">
                         <div class="layout-content flex justify-center items-center gap-1.5 whitespace-nowrap origin-center py-2 relative w-full">
                             <div class="absolute top-0 bottom-0 w-[2px] bg-red-500 -translate-x-1/2 left-1/2 pointer-events-none z-0"></div>
                             ${item.arrangement.map(b => `<div class="base-block-item relative z-10 inline-flex items-center justify-center rounded-md border text-[9px] font-bold shadow-sm px-0.5 shrink-0 leading-none ${b.blockBg}" style="width: ${Math.max(14, Math.round(b.size * 1.15))}px; height: 22px;" title="${b.label}(${b.size}cm)"><span class="base-block-text inline-block">${b.short}</span></div>`).join('')}
@@ -728,8 +739,8 @@
                     </div>`;
 
                 html += `
-                    <div class="result-card mb-3 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm page-break-inside-avoid">
-                        <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex justify-between items-center cursor-pointer select-none" onclick="toggleResultTier(${item.tierNum})">
+                    <div class="result-card mb-3 bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-sm page-break-inside-avoid">
+                        <div class="bg-[#1e293b] px-4 py-3 border-b border-slate-800 flex justify-between items-center cursor-pointer select-none" onclick="toggleResultTier(${item.tierNum})">
                             <div class="flex items-center gap-3">
                                 <span class="font-black text-sm text-white bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap">${item.tierNum}段目</span>
                                 <div class="flex items-center gap-1">
@@ -745,9 +756,9 @@
                                 <div id="res-icon-${item.tierNum}" class="text-slate-400 text-xs font-bold transition-transform rotate-180 accordion-icon">▼</div>
                             </div>
                         </div>
-                        <div id="res-tier-${item.tierNum}" class="p-4 pt-3 animate-fade-in">
+                        <div id="res-tier-${item.tierNum}" class="p-4 pt-3 animate-fade-in bg-[#0f172a]">
                             <div class="base-items-container space-y-1.5 mb-2">${listHtml}</div>
-                            <p class="text-[10px] font-bold text-indigo-500 mb-1 mt-2 text-center">配置図</p>
+                            <p class="text-[10px] font-bold text-indigo-400 mb-1 mt-2 text-center">配置図</p>
                             ${rowLayoutHtml}
                         </div>
                     </div>
@@ -761,7 +772,7 @@
                 }
             });
 
-            let overallLayoutHtml = '<div class="mt-3"><p class="text-xs font-bold text-indigo-400 mb-2 text-center">全体のベース配置図</p><div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-inner py-4 px-3 flex flex-col items-center gap-3 relative overflow-hidden">';
+            let overallLayoutHtml = '<div class="mt-3"><p class="text-xs font-bold text-indigo-400 mb-2 text-center">全体のベース配置図</p><div class="bg-[#0f172a] border border-slate-800 rounded-2xl shadow-inner py-4 px-3 flex flex-col items-center gap-3 relative overflow-hidden">';
             overallLayoutHtml += '<div class="absolute top-0 bottom-0 w-[2px] bg-red-500 pointer-events-none z-0 left-1/2 -translate-x-1/2"></div>';
             for (let i = results.length - 1; i >= 0; i--) {
                 const item = results[i];
@@ -781,7 +792,7 @@
             overallLayoutHtml += '</div></div>';
 
             const summaryHtml = `
-                <div class="result-summary bg-indigo-950/40 border border-indigo-900/60 rounded-3xl p-4 mb-2 relative overflow-hidden page-break-inside-avoid mt-3">
+                <div class="result-summary bg-[#1e1b4b] border border-indigo-900 rounded-3xl p-4 mb-2 relative overflow-hidden page-break-inside-avoid mt-3">
                     <p class="text-base font-black text-indigo-300 mb-3 flex items-center gap-2 justify-center"><span class="text-xl">📋</span> 祭壇 総まとめ</p>
                     <div class="flex flex-wrap gap-2 justify-center mb-2">${totalListHtml}</div>
                     ${overallLayoutHtml}
@@ -1312,7 +1323,7 @@
                 </div>
             </div>
 
-            <div id="error-message" class="hidden px-4 py-3 bg-red-950/60 border border-red-500/40 text-red-300 rounded-2xl text-xs font-bold text-center shadow-sm"></div>
+            <div id="error-message" class="hidden px-4 py-3 bg-[#450a0a] border border-[#ef4444] text-[#fca5a5] rounded-2xl text-xs font-bold text-center shadow-sm"></div>
 
             <div id="tiers-container" class="space-y-4"></div>
 

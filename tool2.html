@@ -7,10 +7,12 @@
    
  <!-- PWA Manifest & Meta -->  
  <link rel="manifest" id="manifest-link">  
- <meta name="theme-color" content="#0f172a">  
+ <meta name="mobile-web-app-capable" content="yes">  
  <meta name="apple-mobile-web-app-capable" content="yes">  
  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
  <meta name="apple-mobile-web-app-title" content="グリッドメーカー">  
+ <meta name="theme-color" content="#0f172a">  
+ <meta name="color-scheme" content="dark">  
  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230f172a'/%3E%3Cpath d='M40 40h112v112H40z' stroke='%233b82f6' stroke-width='8' fill='none'/%3E%3Cpath d='M96 40v112M40 96h112' stroke='%233b82f6' stroke-width='4'/%3E%3C/svg%3E">  
   
  <!-- Google Fonts (日本語フォント: 角ゴシック/明朝/丸ゴシック/毛筆風) -->  
@@ -36,11 +38,33 @@
  }  
  </script>  
  <style>  
- body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; background: #0f172a; }  
+ :root {  
+ color-scheme: dark;  
+ supported-color-schemes: dark;  
+ }  
+ body {  
+ overscroll-behavior: none;  
+ -webkit-user-select: none;  
+ user-select: none;  
+ -webkit-tap-highlight-color: transparent;  
+ touch-action: none;  
+ background: #0f172a;  
+ color: #f8fafc;  
+ accent-color: #3b82f6;  
+ }  
  canvas { display: block; touch-action: none; outline: none; }  
  .hide-scrollbar::-webkit-scrollbar { display: none; }  
  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }  
- button { touch-action: manipulation; }  
+ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }  
+ select, input, textarea {  
+ color-scheme: dark;  
+ }  
+ select option {  
+ background-color: #0f172a;  
+ color: #ffffff;  
+ }  
+ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }  
+ input[type="number"] { -moz-appearance: textfield; }  
    
  input[type="range"] {  
  accent-color: #3b82f6;  
@@ -434,7 +458,7 @@
  <label class="text-[10px] text-slate-400">縁取り色</label>  
  <input type="color" id="text-stroke" value="#000000" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
  </div>  
- <button id="text-delete-btn" class="bg-red-600/20 text-red-500 hover:bg-red-600/40 px-2.5 py-1 rounded-lg text-xs font-bold border border-red-500/30 transition">削除</button>  
+ <button id="text-delete-btn" class="bg-[#450a0a] text-[#fca5a5] hover:bg-[#5c0f0f] px-2.5 py-1 rounded-lg text-xs font-bold border border-[#ef4444] transition">削除</button>  
  </div>  
  </div>  
  </div>  
@@ -679,10 +703,16 @@
  </div>  
   
  <script>  
- // PWA Service Worker 登録（共通sw.jsへの一本化）  
+ // PWA Service Worker 登録（オフライン完全自立型Blob方式）  
  if ('serviceWorker' in navigator) {  
    window.addEventListener('load', () => {  
-     navigator.serviceWorker.register('sw.js').catch(() => {});  
+     const swCode = `  
+       self.addEventListener('install', (e) => self.skipWaiting());  
+       self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));  
+       self.addEventListener('fetch', (e) => {});  
+     `;  
+     const blob = new Blob([swCode], { type: 'application/javascript' });  
+     navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});  
    });  
  }  
   

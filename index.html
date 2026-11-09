@@ -11,7 +11,7 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
-  </script>
+  <\/script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -96,8 +96,12 @@
       <h2>04. 写真重ねてチェッカー</h2>
       <p>カタログと実際の商品の比較</p>
     </a>
-	<a href="tool5.html" class="card">
-      <h2>05. 花材提案ツール</h2>
+    <a href="tool5.html" class="card">
+      <h2>05. 供花ポイント＆花材計算</h2>
+      <p>供花発注・ポイント花および総花材自動集計</p>
+    </a>
+    <a href="tool6.html" class="card">
+      <h2>06. 花材提案ツール</h2>
       <p>花材提案・花の図鑑</p>
     </a>
   </div>
@@ -116,7 +120,7 @@
         <p style="margin: 0 0 4px 0;"><span style="color: #94a3b8;">AIアシスタント:</span> <b style="color: #60a5fa;">Gemini (Google)</b></p>
         <p style="margin: 0;"><span style="color: #94a3b8;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
       </div>
-      <button id="btn-close-credit" style="width: 100%; background: #1e293b; hover: #334155; color: #fff; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #334155; font-size: 12px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+      <button id="btn-close-credit" style="width: 100%; background: #1e293b; color: #fff; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #334155; font-size: 12px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
     </div>
   </div>
 
@@ -138,6 +142,6 @@
         if (e.target === cModal) cModal.classList.remove('active');
       });
     }
-  </script>
+  <\/script>
 </body>
 </html>

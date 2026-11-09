@@ -6,11 +6,13 @@
  <title>写真重ねてチェッカー</title>  
    
  <!-- PWA / モバイル対応タグ -->  
- <meta name="theme-color" content="#0f172a">  
- <meta name="application-name" content="写真重ねてチェッカー">  
+ <meta name="mobile-web-app-capable" content="yes">  
  <meta name="apple-mobile-web-app-capable" content="yes">  
  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
  <meta name="apple-mobile-web-app-title" content="重ねてチェッカー">  
+ <meta name="application-name" content="写真重ねてチェッカー">  
+ <meta name="theme-color" content="#0f172a">  
+ <meta name="color-scheme" content="dark">  
    
  <!-- アプリアイコン & マニフェスト -->  
  <link rel="icon" id="app-favicon" type="image/svg+xml">  
@@ -38,10 +40,37 @@
  }  
  </script>  
  <style>  
- body { overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }  
+ :root {  
+ color-scheme: dark;  
+ supported-color-schemes: dark;  
+ }  
+ body {  
+ overscroll-behavior: none;  
+ -webkit-user-select: none;  
+ user-select: none;  
+ -webkit-tap-highlight-color: transparent;  
+ touch-action: none;  
+ background: #0f172a;  
+ color: #f8fafc;  
+ display: flex;  
+ flex-direction: column;  
+ height: 100dvh;  
+ overflow: hidden;  
+ accent-color: #3b82f6;  
+ }  
  canvas { display: block; touch-action: none; outline: none; }  
  .hide-scrollbar::-webkit-scrollbar { display: none; }  
  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }  
+ select, input, textarea {  
+ color-scheme: dark;  
+ }  
+ select option {  
+ background-color: #0f172a;  
+ color: #ffffff;  
+ }  
+ input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }  
+ input[type="number"] { -moz-appearance: textfield; }  
+ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }  
    
  input[type="range"] { accent-color: #3b82f6; -webkit-appearance: none; width: 100%; background: transparent; }  
  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; cursor: pointer; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }  
@@ -427,7 +456,7 @@
  <label class="text-[10px] text-slate-400">縁取り色</label>  
  <input type="color" id="text-stroke" value="#000000" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
  </div>  
- <button id="text-delete-btn" class="bg-red-600/20 text-red-500 hover:bg-red-600/40 px-2.5 py-1 rounded-lg text-xs font-bold border border-red-500/30 transition">削除</button>  
+ <button id="text-delete-btn" class="bg-[#450a0a] text-[#fca5a5] hover:bg-[#5c0f0f] px-2.5 py-1 rounded-lg text-xs font-bold border border-[#ef4444] transition">削除</button>  
  </div>  
  </div>  
  </div>  
@@ -534,7 +563,7 @@
      </select>
    </div>
    <div class="flex justify-end pt-1">
-     <button id="pen-clear" class="bg-red-900/40 px-4 py-2 rounded-lg text-xs font-bold text-red-400 border border-red-500/30 transition active:bg-red-800/50">すべて消去</button>
+     <button id="pen-clear" class="bg-[#450a0a] px-4 py-2 rounded-lg text-xs font-bold text-[#fca5a5] border border-[#ef4444] transition active:bg-[#5c0f0f]">すべて消去</button>
    </div>
  </div>  
  <p class="text-[10px] text-gray-400 leading-relaxed px-1">※ペン入力中は画像の移動や拡大ができません。書き終わったらオフにしてください。</p>  
@@ -743,9 +772,13 @@
   
  if ('serviceWorker' in navigator) {
    window.addEventListener('load', () => {
-     navigator.serviceWorker.register('sw.js').then(reg => {
-       reg.update().catch(() => {});
-     }).catch(() => {});
+     const swCode = `
+       self.addEventListener('install', (e) => self.skipWaiting());
+       self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+       self.addEventListener('fetch', (e) => {});
+     `;
+     const blob = new Blob([swCode], { type: 'application/javascript' });
+     navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
    });
  }  
  })();  
@@ -994,7 +1027,7 @@
          </div>
          <div class='flex gap-1.5 ml-2 shrink-0'>
            <button onclick='loadHistory("${r.id}")' class='px-2.5 py-1 bg-indigo-900/60 border border-indigo-500/40 text-indigo-300 rounded-lg text-xs font-bold'>呼出</button>
-           <button class='delete-history-btn w-7 h-7 bg-red-950/60 border border-red-500/40 text-red-400 rounded-lg flex items-center justify-center text-xs' data-id='${r.id}'>×</button>
+           <button class='delete-history-btn w-7 h-7 bg-[#450a0a] border border-[#ef4444] text-[#fca5a5] rounded-lg flex items-center justify-center text-xs' data-id='${r.id}'>×</button>
          </div>
        </div>
      `;
