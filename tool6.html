@@ -1650,20 +1650,7 @@ AIアシスタント: Gemini (Google)
             }
         }
 		
-        // =========================================================================
-        // PWA化対応: Service Workerの自動登録（オフライン完全自立型Blob方式）
-        // =========================================================================
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-                    self.addEventListener('fetch', (e) => {});
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-            });
-        }
+        // Service Workerは親ポータル(index.html)のsw.jsで統括管理
     </script>
 </body>
 </html>

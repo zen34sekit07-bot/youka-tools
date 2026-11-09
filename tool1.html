@@ -17,19 +17,7 @@
     <link rel="icon" id="app-favicon" type="image/svg+xml">
     <link rel="apple-touch-icon" id="app-apple-icon">
     <link rel="manifest" id="manifest-link">
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          const swCode = `
-            self.addEventListener('install', (e) => self.skipWaiting());
-            self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-            self.addEventListener('fetch', (e) => {});
-          `;
-          const blob = new Blob([swCode], { type: 'application/javascript' });
-          navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-        });
-      }
-    </script>
+    <!-- Service Workerは親ポータル(index.html)のsw.jsで統括管理 -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

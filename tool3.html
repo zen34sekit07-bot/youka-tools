@@ -236,18 +236,7 @@
 
     <!-- Javascript Logic -->
     <script>
-        // --- 0. PWA Service Worker 登録 (オフライン / スタンドアロン動作) ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-                    self.addEventListener('fetch', (e) => {});
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-            });
-        }
+        // Service Workerは親ポータル(index.html)のsw.jsで統括管理
 
         // --- 1. 定義と設定 ---
         const BASE_DATA = [

@@ -18,19 +18,7 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%230f172a'/%3E%3Ccircle cx='256' cy='220' r='100' fill='%234f46e5' opacity='0.8'/%3E%3Cpath d='M256 120 C220 180 220 260 256 320 C292 260 292 180 256 120 Z' fill='%2338bdf8'/%3E%3Crect x='236' y='320' width='40' height='120' rx='8' fill='%2310b981'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%230f172a'/%3E%3Ccircle cx='256' cy='220' r='100' fill='%234f46e5' opacity='0.8'/%3E%3Cpath d='M256 120 C220 180 220 260 256 320 C292 260 292 180 256 120 Z' fill='%2338bdf8'/%3E%3Crect x='236' y='320' width='40' height='120' rx='8' fill='%2310b981'/%3E%3C/svg%3E">
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E4%BE%9B%E8%8A%B1%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E8%8A%B1%E6%9D%90%E8%A8%88%E7%AE%97%22%2C%22short_name%22%3A%22%E4%BE%9B%E8%8A%B1%E8%A8%88%E7%AE%97%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f172a%22%2C%22theme_color%22%3A%22%230f172a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'128'%20fill%3D'%25230f172a'%2F%253E%253Ccircle%20cx%3D'256'%20cy%3D'220'%20r%3D'100'%20fill%3D'%25234f46e5'%20opacity%3D'0.8'%2F%253E%253Cpath%20d%3D'M256%20120%20C220%20180%20220%20260%20256%20320%20C292%20260%20292%20180%20256%20120%20Z'%20fill%3D'%252338bdf8'%2F%253E%253Crect%20x%3D'236'%20y%3D'320'%20width%3D'40'%20height%3D'120'%20rx%3D'8'%20fill%3D'%252310b981'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
-                    self.addEventListener('fetch', (e) => {});
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-            });
-        }
-    </script>
+    <!-- Service Workerは親ポータル(index.html)のsw.jsで統括管理 -->
 
     <!-- Tailwind CSS & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
