@@ -16,7 +16,7 @@
     
     <link rel="icon" id="app-favicon" type="image/svg+xml">
     <link rel="apple-touch-icon" id="app-apple-icon">
-    <link rel="manifest" id="manifest-link">
+    
     <!-- Service Workerは親ポータル(index.html)のsw.jsで統括管理 -->
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1096,7 +1096,7 @@
                 icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]
             };
             const manifestDataUri = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
-            const mLink = document.getElementById('manifest-link'); if (mLink) mLink.href = manifestDataUri;
+            // manifest削除
         })();        let alertModalResolve = null;  
         function showAlertModal(desc, title = '完了') {  
             return new Promise(resolve => {  

@@ -6,7 +6,7 @@
  <title>グリッドメーカー</title>  
    
  <!-- PWA Manifest & Meta -->  
- <link rel="manifest" id="manifest-link">  
+   
  <meta name="mobile-web-app-capable" content="yes">  
  <meta name="apple-mobile-web-app-capable" content="yes">  
  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
@@ -728,7 +728,7 @@
  ]  
  };  
  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});  
- document.getElementById('manifest-link').href = URL.createObjectURL(blob);  
+ // manifest削除  
   
  const el = id => document.getElementById(id);  
  const on = (id, event, handler) => { const elem = el(id); if (elem) elem.addEventListener(event, handler); };  

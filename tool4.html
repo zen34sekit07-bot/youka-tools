@@ -17,7 +17,7 @@
  <!-- アプリアイコン & マニフェスト -->  
  <link rel="icon" id="app-favicon" type="image/svg+xml">  
  <link rel="apple-touch-icon" id="app-apple-icon">  
- <link rel="manifest" id="manifest-link">  
+   
 
  <!-- Google Fonts (日本語フォント) -->
  <link rel="preconnect" href="https://fonts.googleapis.com">  
@@ -768,7 +768,7 @@
  icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]  
  };  
  const mLink = document.getElementById('manifest-link');  
- if (mLink) mLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));  
+ // manifest削除  
   
  // Service Workerは親ポータル(index.html)のsw.jsで統括管理
  })();  
