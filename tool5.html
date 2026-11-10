@@ -114,26 +114,33 @@
 </head>
 <body class="flex flex-col min-h-[100dvh] pb-[72px]">
 
-    <!-- 最上部ナビバー -->
-    <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 border-b border-slate-800 px-3 pt-[max(env(safe-area-inset-top,6px),6px)] pb-2 shrink-0 z-40">
-        <div class="flex items-center gap-1.5">
-            <span class="text-sm font-black text-indigo-300 flex items-center gap-1">
+    <!-- 最上段ナビバー（ツール一覧へ ＆ DB取得ボタン） -->
+    <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-3 pt-[max(env(safe-area-inset-top,6px),6px)] pb-1.5 shrink-0 z-40">
+        <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
+            ← ツール一覧へ
+        </a>
+        <button id="btn-sync-database" class="px-2 py-1 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 rounded-lg text-[11px] font-bold active:scale-95 transition flex items-center gap-1" title="外部スプレッドシートDBから最新マスタを取得">
+            <svg id="sync-icon" class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span>DB取得</span>
+        </button>
+    </div>
+
+    <!-- 2段目：アプリヘッダー（ツール名 ＆ 説明・メニュー） -->
+    <header id="app-header" class="flex justify-between items-center bg-slate-900 border-b border-slate-800 px-3 py-2 shrink-0 z-40">
+        <div class="flex items-center gap-1.5 min-w-0 pr-1">
+            <h1 class="text-sm font-black text-indigo-300 flex items-center gap-1 truncate">
                 <span>🌸</span> 供花ポイント&花材計算
-            </span>
+            </h1>
         </div>
-        <div class="flex items-center gap-1.5">
-            <button id="btn-open-guide" type="button" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-300 rounded-lg text-[11px] font-bold active:scale-95 transition flex items-center gap-1" title="使い方の説明">
+        <div class="flex items-center gap-1.5 shrink-0">
+            <button id="btn-open-guide" type="button" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-300 rounded-lg text-xs font-bold active:scale-95 transition flex items-center gap-1" title="使い方の説明">
                 <span>📖 説明</span>
             </button>
-            <button id="btn-sync-database" class="px-2 py-1 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 rounded-lg text-[11px] font-bold active:scale-95 transition flex items-center gap-1" title="外部スプレッドシートDBから最新マスタを取得">
-                <svg id="sync-icon" class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                <span>DB取得</span>
-            </button>
-            <button id="btn-open-menu" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 text-xs active:scale-95 transition">
+            <button id="btn-open-menu" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 text-xs active:scale-95 transition" title="メニュー">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
-    </div>
+    </header>
 
     <!-- サブバー（拠点＆リスト全削除） -->
     <div class="flex justify-between items-center bg-slate-950/90 border-b border-slate-800/80 px-3 py-1.5 shrink-0 z-30">
@@ -508,10 +515,7 @@
                     </label>
                 </div>
 
-                <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-                    <span class="font-bold text-slate-300">出力形式:</span>
-                    <span class="text-xs font-bold text-cyan-300 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">📊 エクセル／表スタイル (白背景)</span>
-                </div>
+
             </div>
 
             <div class="space-y-2">
@@ -743,9 +747,7 @@
                             <span class="text-xs font-bold text-slate-400">基</span>
                         </div>
                         <button id="modal-btn-qty-plus" type="button" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-lg font-bold active:scale-95 transition">+</button>
-                        <button id="modal-btn-qty-pair" type="button" class="px-2.5 py-2 rounded-xl bg-indigo-950 border border-indigo-500/60 text-indigo-300 text-xs font-black active:scale-95 transition flex items-center gap-0.5" title="2基（1対）加算">
-                            <span>+1対</span>
-                        </button>
+
                     </div>
 
                     <button id="modal-btn-add-cart" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 mt-2">
@@ -1196,6 +1198,7 @@
 
             // 起動時に確実に初期同期
             selectCompany('all');
+            checkInitialDatabasePrompt();
         }
 
         async function fetchExternalDatabase(silent = false) {
@@ -2414,7 +2417,7 @@
                                 <button onclick="updateCartQty(${idx}, -1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold active:scale-95 transition">-</button>
                                 <span class="w-6 text-center text-xs font-black text-white">${cartItem.qty}</span>
                                 <button onclick="updateCartQty(${idx}, 1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold active:scale-95 transition">+</button>
-                                <button onclick="updateCartQty(${idx}, 2)" class="px-1.5 py-1 rounded-lg bg-indigo-950/80 border border-indigo-500/50 text-[10px] text-indigo-300 font-black active:scale-95 transition" title="1対(2基)追加">+1対</button>
+
                                 <button onclick="removeCartItem(${idx})" class="p-1 text-slate-500 hover:text-rose-400 ml-0.5">✕</button>
                             </div>
                         </div>
@@ -3110,10 +3113,7 @@
                 let v = parseInt(qtyInput.value, 10) || 1;
                 qtyInput.value = v + 1;
             });
-            document.getElementById('modal-btn-qty-pair')?.addEventListener('click', () => {
-                let v = parseInt(qtyInput.value, 10) || 0;
-                qtyInput.value = v + 2;
-            });
+
             document.querySelectorAll('.modal-qty-adjust').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const delta = parseInt(e.currentTarget.getAttribute('data-delta'), 10) || 0;
@@ -3727,6 +3727,16 @@
                 branches: [branch],
                 isCustom: true
             };
+        }
+
+        function checkInitialDatabasePrompt() {
+            if (!state.flowers || state.flowers.length === 0) {
+                setTimeout(() => {
+                    showConfirmModal('【供花データが未取得です】\n最新の供花マスタをダウンロードしますか？\n（オフラインでも使えるよう端末に保存されます）', '初期セットアップ').then(ok => {
+                        if (ok) fetchExternalDatabase(false);
+                    });
+                }, 300);
+            }
         }
 
         function saveCustomFlowers() {
