@@ -2159,6 +2159,10 @@
  });  
   
  history.replaceState({ appBase: true }, '');  
+ let hasGuard = false;  
+ const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };  
+ window.addEventListener('pointerdown', setGuard, { once: true });  
+ window.addEventListener('DOMContentLoaded', setGuard);  
  const modalIds = ['main-menu-modal', 'updates-modal', 'credit-modal', 'export-modal', 'guide-modal', 'rename-modal', 'confirm-modal', 'alert-modal'];  
  let isClosingModalByCode = false;  
   
@@ -2196,7 +2200,6 @@
  isClosingModalByCode = false;  
  return;  
  }  
- // 履歴ガードを即座に再装填
  history.pushState({ appGuard: true }, '');  
  const exitModal = el('exit-modal');  
  if (exitModal && !exitModal.classList.contains('hidden')) {  

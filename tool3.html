@@ -1154,6 +1154,10 @@
         
         // --- モーダル制御 & 戻るボタン連動 ---
         history.replaceState({ appBase: true }, '');
+        let hasGuard = false;
+        const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };
+        window.addEventListener('pointerdown', setGuard, { once: true });
+        window.addEventListener('DOMContentLoaded', setGuard);
         const modalIds = ['history-modal', 'info-modal', 'save-modal', 'alert-modal', 'confirm-modal'];
         let isClosingModalByCode = false;
 

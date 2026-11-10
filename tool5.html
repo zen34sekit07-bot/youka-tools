@@ -3869,6 +3869,10 @@
         }
 
         history.replaceState({ appBase: true }, '');
+        let hasGuard = false;
+        const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };
+        window.addEventListener('pointerdown', setGuard, { once: true });
+        window.addEventListener('DOMContentLoaded', setGuard);
         let alertModalResolve = null;
         let confirmModalResolve = null;
 

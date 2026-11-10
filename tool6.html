@@ -2028,6 +2028,10 @@ AIアシスタント: Gemini (Google)
 
         // スマホの戻るボタン＆モーダル連動制御
         history.replaceState({ appBase: true }, '');
+        let hasGuard = false;
+        const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };
+        window.addEventListener('pointerdown', setGuard, { once: true });
+        window.addEventListener('DOMContentLoaded', setGuard);
         let isClosingModalByCode = false;
 
         function hasOpenModal() {

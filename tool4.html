@@ -1755,7 +1755,10 @@
   
  // --- ウィンドウ開閉とスマホ戻るボタン連動 ---  
  history.replaceState({ appBase: true }, '');  
- history.pushState({ appGuard: true }, '');  
+ let hasGuard = false;  
+ const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };  
+ window.addEventListener('pointerdown', setGuard, { once: true });  
+ window.addEventListener('DOMContentLoaded', setGuard);  
  let isClosingByCode = false;  
   
  function pushWindowHistory() {  

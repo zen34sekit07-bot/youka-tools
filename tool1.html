@@ -4030,6 +4030,15 @@
 
         // --- スマホ「戻る」ボタン連動 (History API) ---
         history.replaceState({ appBase: true }, '');
+        let hasGuard = false;
+        const setGuard = () => {
+            if (!hasGuard) {
+                history.pushState({ appGuard: true }, '');
+                hasGuard = true;
+            }
+        };
+        window.addEventListener('pointerdown', setGuard, { once: true });
+        window.addEventListener('DOMContentLoaded', setGuard);
         let isClosingByCode = false;
 
         function hasAnyOpenOverlay() {
@@ -4089,20 +4098,26 @@
                 isClosingByCode = false;
                 return;
             }
-            // 履歴ガードを即座に再装填（ブラウザの離脱を阻止）
             history.pushState({ appGuard: true }, '');
+
+            // 0. すでに確認モーダルが開いていれば閉じる（キャンセル扱い）
+            const exitModal = document.getElementById('custom-confirm-modal');
+            if (exitModal && exitModal.classList.contains('active')) {
+                closeModal('custom-confirm-modal');
+                return;
+            }
 
             // 1. 開いているウィンドウ類を閉じる
             if (hasAnyOpenOverlay()) {
                 closeActiveOverlayFromHistory();
                 return;
             }
-            // 2. 作業中なら通常起動時のトップ画面（未読み込み初期状態）へ戻す
+            // 2. 作業中なら通常起動時のトップ画面へ戻す
             if (state.bg.loaded || state.items.length > 0) {
                 resetProjectData();
                 return;
             }
-            // 3. トップ画面での戻る：確認画面を表示
+            // 3. トップ画面での戻る：同期的に確認画面を表示
             showCustomConfirm('ツール一覧へ戻る', 'ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。').then(ok => {
                 if (ok) window.location.href = 'index.html';
             });
