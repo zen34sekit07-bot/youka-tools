@@ -130,11 +130,11 @@ AIアシスタント: Gemini (Google)
 </head>
 <body class="flex flex-col">
 
-    <!-- 最上段ナビバー（ツール一覧へ） -->
+    <!-- 最上段ナビバー（ツール一覧へ: 確認画面なしで直接遷移） -->
     <div id="top-nav-bar" class="flex items-center bg-slate-900 px-3 pt-[max(env(safe-area-inset-top,8px),8px)] pb-1.5 shrink-0 z-40">
-        <button onclick="triggerAppExit()" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
+        <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
             ← ツール一覧へ
-        </button>
+        </a>
     </div>
 
     <!-- 2段目：アプリヘッダー（ツール名 ＆ 最新花材取得） -->
@@ -706,8 +706,14 @@ AIアシスタント: Gemini (Google)
                 if (getReq.result && getReq.result.length > 0) {
                     flowersDB = getReq.result;
                     document.getElementById('db-status-text').innerText = `花材DB (${flowersDB.length}種)`;
+                    if (typeof renderDictList === "function") renderDictList();
                 } else {
                     document.getElementById('db-status-text').innerText = "未取得 (要更新)";
+                    setTimeout(() => {
+                        showConfirm("【花材データが未取得です】\n最新の花材マスタ（全1,007種）をダウンロードしますか？\n（オフラインでも使えるよう端末に保存されます）", "初期セットアップ").then(ok => {
+                            if (ok) syncFlowersDB();
+                        });
+                    }, 400);
                 }
             };
         }
