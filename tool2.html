@@ -2158,13 +2158,9 @@
  }  
  });  
   
- history.replaceState({ appBase: true }, '');  
- let hasGuard = false;  
- const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };  
- window.addEventListener('pointerdown', setGuard, { once: true });  
- window.addEventListener('DOMContentLoaded', setGuard);  
+ history.replaceState({ page: 'root' }, '');  
+ history.pushState({ page: 'main' }, '');  
  const modalIds = ['main-menu-modal', 'updates-modal', 'credit-modal', 'export-modal', 'guide-modal', 'rename-modal', 'confirm-modal', 'alert-modal'];  
- let isClosingModalByCode = false;  
   
  function hasOpenModal() {  
  return modalIds.some(id => {  
@@ -2179,7 +2175,7 @@
  }  
  }  
   
- function closeAllModals(triggerHistoryBack = true) {  
+ function closeAllModals() {  
  if (!hasOpenModal()) return false;  
  modalIds.forEach(id => {  
  const elem = el(id);  
@@ -2188,19 +2184,11 @@
  elem.classList.add('hidden');  
  }  
  });  
- if (triggerHistoryBack && history.state && history.state.modalOpen) {  
- isClosingModalByCode = true;  
- history.back();  
- }  
  return true;  
  }  
   
  window.addEventListener('popstate', () => {  
- if (isClosingModalByCode) {  
- isClosingModalByCode = false;  
- return;  
- }  
- history.pushState({ appGuard: true }, '');  
+ history.pushState({ page: 'main' }, '');  
  const exitModal = el('exit-modal');  
  if (exitModal && !exitModal.classList.contains('hidden')) {  
  exitModal.classList.remove('flex');  
@@ -2209,7 +2197,7 @@
  }  
  // 1. 開いているウィンドウ類を閉じる
  if (hasOpenModal()) {  
- closeAllModals(false);  
+ closeAllModals();  
  return;  
  }  
  // 2. 作業画面にいる場合は通常起動時のトップ画面 (Step 1) へ戻す
@@ -2258,12 +2246,7 @@
  alertResolve = null;  
  res();  
  }  
- setTimeout(() => {  
- if (!hasOpenModal() && history.state && history.state.modalOpen) {  
- isClosingModalByCode = true;  
- history.back();  
- }  
- }, 10);  
+ // 履歴消費を防止  
  };  
   
  on('confirm-modal-ok-btn', 'click', () => {  

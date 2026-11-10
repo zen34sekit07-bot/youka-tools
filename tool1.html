@@ -1724,12 +1724,7 @@
         const closeModeOverlay = () => {
             const startOverlay = document.getElementById('start-screen-overlay');
             if (startOverlay) startOverlay.style.display = 'none';
-            setTimeout(() => {
-                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
-                    isClosingByCode = true;
-                    history.back();
-                }
-            }, 10);
+            // 履歴消費を防止
         };
         document.getElementById('mode-select-cancel-x')?.addEventListener('click', closeModeOverlay);
         document.getElementById('mode-select-cancel-btn')?.addEventListener('click', closeModeOverlay);
@@ -4029,17 +4024,8 @@
         }
 
         // --- スマホ「戻る」ボタン連動 (History API) ---
-        history.replaceState({ appBase: true }, '');
-        let hasGuard = false;
-        const setGuard = () => {
-            if (!hasGuard) {
-                history.pushState({ appGuard: true }, '');
-                hasGuard = true;
-            }
-        };
-        window.addEventListener('pointerdown', setGuard, { once: true });
-        window.addEventListener('DOMContentLoaded', setGuard);
-        let isClosingByCode = false;
+        history.replaceState({ page: 'root' }, '');
+        history.pushState({ page: 'main' }, '');
 
         function hasAnyOpenOverlay() {
             const hasModal = document.querySelector('.modal.active') !== null;
@@ -4094,19 +4080,14 @@
         }
 
         window.addEventListener('popstate', () => {
-            if (isClosingByCode) {
-                isClosingByCode = false;
-                return;
-            }
-            history.pushState({ appGuard: true }, '');
+            history.pushState({ page: 'main' }, '');
 
-            // 0. すでに確認モーダルが開いていれば閉じる（キャンセル扱い）
+            // 0. すでに確認モーダルが開いている場合は閉じる
             const exitModal = document.getElementById('custom-confirm-modal');
             if (exitModal && exitModal.classList.contains('active')) {
                 closeModal('custom-confirm-modal');
                 return;
             }
-
             // 1. 開いているウィンドウ類を閉じる
             if (hasAnyOpenOverlay()) {
                 closeActiveOverlayFromHistory();
@@ -4117,7 +4098,7 @@
                 resetProjectData();
                 return;
             }
-            // 3. トップ画面での戻る：同期的に確認画面を表示
+            // 3. トップ画面での戻る：確認画面を表示
             showCustomConfirm('ツール一覧へ戻る', 'ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。').then(ok => {
                 if (ok) window.location.href = 'index.html';
             });

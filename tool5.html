@@ -3868,11 +3868,8 @@
             } catch (_) {}
         }
 
-        history.replaceState({ appBase: true }, '');
-        let hasGuard = false;
-        const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };
-        window.addEventListener('pointerdown', setGuard, { once: true });
-        window.addEventListener('DOMContentLoaded', setGuard);
+        history.replaceState({ page: 'root' }, '');
+        history.pushState({ page: 'main' }, '');
         let alertModalResolve = null;
         let confirmModalResolve = null;
 
@@ -3920,12 +3917,7 @@
 
         function openModal(id) {
             const el = document.getElementById(id);
-            if (el) {
-                if (!history.state || !history.state.modalOpen) {
-                    history.pushState({ modalOpen: true }, '');
-                }
-                el.classList.add('active');
-            }
+            if (el) el.classList.add('active');
         }
 
         function closeModal(id) {
@@ -3944,8 +3936,14 @@
         }
 
         window.addEventListener('popstate', () => {
-            // 履歴ガードを即座に再装填（ブラウザの離脱を阻止）
-            history.pushState({ appGuard: true }, '');
+            history.pushState({ page: 'main' }, '');
+
+            // 0. 確認モーダルが開いていれば閉じる
+            const confirmM = document.getElementById('confirm-modal');
+            if (confirmM && confirmM.classList.contains('active')) {
+                closeModal('confirm-modal');
+                return;
+            }
 
             // 1. 開いているウィンドウ類（モーダル）を閉じる
             const activeModal = document.querySelector('.modal.active');
@@ -3961,7 +3959,7 @@
                 return;
             }
 
-            // 2. 作業画面・他タブ（お気に入り・発注リスト・保存出力）にいる場合は通常起動時のトップ画面（供花検索）へ戻す
+            // 2. 作業画面・他タブにいる場合は通常起動時のトップ画面（供花検索）へ戻す
             const searchPanel = document.getElementById('tab-panel-search');
             if (searchPanel && searchPanel.classList.contains('hidden')) {
                 switchTab('tab-panel-search');

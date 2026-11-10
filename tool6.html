@@ -2027,12 +2027,8 @@ AIアシスタント: Gemini (Google)
         }
 
         // スマホの戻るボタン＆モーダル連動制御
-        history.replaceState({ appBase: true }, '');
-        let hasGuard = false;
-        const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };
-        window.addEventListener('pointerdown', setGuard, { once: true });
-        window.addEventListener('DOMContentLoaded', setGuard);
-        let isClosingModalByCode = false;
+        history.replaceState({ page: 'root' }, '');
+        history.pushState({ page: 'main' }, '');
 
         function hasOpenModal() {
             const hasSlide = document.querySelector('#modal-flower.active, #modal-picker.active, #modal-order.active');
@@ -2054,7 +2050,7 @@ AIアシスタント: Gemini (Google)
             document.getElementById('modal-overlay').classList.remove('hidden-safe');
         }
 
-        function closeModals(triggerHistoryBack = true) {
+        function closeModals() {
             document.getElementById('modal-flower').classList.remove('active');
             document.getElementById('modal-picker').classList.remove('active');
             document.getElementById('modal-order').classList.remove('active');
@@ -2062,20 +2058,10 @@ AIアシスタント: Gemini (Google)
             document.getElementById('modal-edit-history').classList.add('hidden-safe');
             document.getElementById('modal-exit').classList.add('hidden-safe');
             document.getElementById('modal-overlay').classList.add('hidden-safe');
-
-            if (triggerHistoryBack && history.state && history.state.modalOpen) {
-                isClosingModalByCode = true;
-                history.back();
-            }
         }
 
         window.addEventListener('popstate', () => {
-            if (isClosingModalByCode) {
-                isClosingModalByCode = false;
-                return;
-            }
-            // 履歴ガードを即座に再装填
-            history.pushState({ appGuard: true }, '');
+            history.pushState({ page: 'main' }, '');
             const exitModal = document.getElementById('modal-exit');
             if (exitModal && !exitModal.classList.contains('hidden-safe')) {
                 exitModal.classList.add('hidden-safe');
@@ -2085,7 +2071,7 @@ AIアシスタント: Gemini (Google)
 
             // 1. 開いているウィンドウ類を閉じる
             if (hasOpenModal()) {
-                closeModals(false);
+                closeModals();
                 return;
             }
 
