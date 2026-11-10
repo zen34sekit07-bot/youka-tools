@@ -1,11 +1,17 @@
 // sw.js
-const CACHE_NAME = 'youkaen-tools-v2';
+const CACHE_NAME = 'youkaen-tools-v5';
 
-// 現在リポジトリに実在する基本ファイルのみを指定
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon.png',
+  './tool1.html',
+  './tool2.html',
+  './tool3.html',
+  './tool4.html',
+  './tool5.html',
+  './tool6.html'
 ];
 
 self.addEventListener('install', (event) => {
