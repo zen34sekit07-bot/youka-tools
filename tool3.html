@@ -1243,14 +1243,36 @@
                 return;
             }
 
+            // 1. 開いているウィンドウ類を閉じる
             if (hasOpenModal()) {
                 closeAllModals(false);
-            } else {
                 history.pushState({ appBase: true }, '');
-                if (exitModal) {
-                    exitModal.classList.remove('hidden');
-                    exitModal.classList.add('flex');
+                return;
+            }
+
+            // 2. 作業画面（結果表示中または手動計算タブ）にいる場合は通常起動時のトップ画面へ戻す
+            const resCard = document.getElementById('result-card');
+            const isResultShowing = resCard && !resCard.classList.contains('hidden');
+            const viewSimple = document.getElementById('view-simple');
+            const isSimpleShowing = viewSimple && !viewSimple.classList.contains('hidden');
+
+            if (isResultShowing || isSimpleShowing) {
+                if (isSimpleShowing) {
+                    document.getElementById('tab-auto')?.click();
                 }
+                if (isResultShowing) {
+                    resCard.classList.add('hidden');
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState({ appBase: true }, '');
+                return;
+            }
+
+            // 3. トップ画面での戻る：確認画面を表示
+            history.pushState({ appBase: true }, '');
+            if (exitModal) {
+                exitModal.classList.remove('hidden');
+                exitModal.classList.add('flex');
             }
         });
 
@@ -1477,8 +1499,8 @@
     <!-- 終了確認モーダル（ダークモード統一） -->
     <div id="exit-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center modal-overlay p-4 no-print">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center animate-fade-in">
-            <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>
-            <p class="text-xs text-slate-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>
+            <h3 class="text-base font-bold text-white mb-2">ツール一覧へ戻りますか？</h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>
             <div class="grid grid-cols-2 gap-2">
                 <button id="exit-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition active:scale-95">
                     キャンセル

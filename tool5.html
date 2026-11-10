@@ -3927,14 +3927,49 @@
         function closeModal(id) {
             const el = document.getElementById(id);
             if (el) el.classList.remove('active');
+            if (id === 'confirm-modal' && confirmModalResolve) {
+                const res = confirmModalResolve;
+                confirmModalResolve = null;
+                res(false);
+            }
+            if (id === 'alert-modal' && alertModalResolve) {
+                const res = alertModalResolve;
+                alertModalResolve = null;
+                res();
+            }
         }
 
         window.addEventListener('popstate', () => {
+            // 1. 開いているウィンドウ類（モーダル）を閉じる
             const activeModal = document.querySelector('.modal.active');
             if (activeModal) {
                 closeModal(activeModal.id);
                 history.pushState({ appBase: true }, '');
+                return;
             }
+
+            // 葬儀社選択アコーディオンが開いていれば閉じる
+            const compMenu = document.getElementById('company-accordion-menu');
+            if (compMenu && !compMenu.classList.contains('hidden')) {
+                closeCompanyAccordion();
+                history.pushState({ appBase: true }, '');
+                return;
+            }
+
+            // 2. 作業画面・他タブ（お気に入り・発注リスト・保存出力）にいる場合は通常起動時のトップ画面（供花検索）へ戻す
+            const searchPanel = document.getElementById('tab-panel-search');
+            if (searchPanel && searchPanel.classList.contains('hidden')) {
+                switchTab('tab-panel-search');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState({ appBase: true }, '');
+                return;
+            }
+
+            // 3. トップ画面での戻る：確認画面を表示
+            history.pushState({ appBase: true }, '');
+            showConfirmModal('ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。', 'ツール一覧へ戻る').then(ok => {
+                if (ok) window.location.href = 'index.html';
+            });
         });
 
         if (document.readyState === 'loading') {

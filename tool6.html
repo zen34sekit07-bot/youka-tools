@@ -624,8 +624,8 @@ AIアシスタント: Gemini (Google)
     <!-- モーダル：アプリ終了確認 -->
     <div id="modal-exit" class="fixed inset-0 z-[70] hidden-safe flex items-center justify-center p-4 bg-black/80">
         <div class="card-solid w-full max-w-xs p-5 text-center space-y-4">
-            <h3 class="text-base font-bold text-white">メニューに戻りますか？</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">編集中の未保存内容は破棄されます。</p>
+            <h3 class="text-base font-bold text-white">ツール一覧へ戻りますか？</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">保存されていないデータは破棄されます。</p>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="closeModals()" class="w-full bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">キャンセル</button>
                 <button onclick="window.location.href='index.html'" class="w-full bg-sky-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">OK</button>
@@ -2034,7 +2034,9 @@ AIアシスタント: Gemini (Google)
             const hasSlide = document.querySelector('#modal-flower.active, #modal-picker.active, #modal-order.active');
             const hasSave = !document.getElementById('modal-save').classList.contains('hidden-safe');
             const hasEdit = !document.getElementById('modal-edit-history').classList.contains('hidden-safe');
-            return !!hasSlide || hasSave || hasEdit;
+            const hasAlert = !document.getElementById('modal-alert').classList.contains('hidden-safe');
+            const hasConfirm = !document.getElementById('modal-confirm').classList.contains('hidden-safe');
+            return !!hasSlide || hasSave || hasEdit || hasAlert || hasConfirm;
         }
 
         function pushModalHistory() {
@@ -2076,12 +2078,24 @@ AIアシスタント: Gemini (Google)
                 return;
             }
 
+            // 1. 開いているウィンドウ類を閉じる
             if (hasOpenModal()) {
                 closeModals(false);
-            } else {
                 history.pushState({ appBase: true }, '');
-                triggerAppExit();
+                return;
             }
+
+            // 2. 作業画面・サブ画面（結果・図鑑・履歴）にいる場合は通常起動時のトップ画面 (form) へ戻す
+            const isFormView = !document.getElementById('view-form').classList.contains('hidden-safe');
+            if (!isFormView) {
+                switchView('form');
+                history.pushState({ appBase: true }, '');
+                return;
+            }
+
+            // 3. トップ画面での戻る：確認画面を表示
+            history.pushState({ appBase: true }, '');
+            triggerAppExit();
         });
 
         window.addEventListener('DOMContentLoaded', () => {

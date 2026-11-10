@@ -689,8 +689,8 @@
  <!-- 終了確認モーダル -->  
  <div id="exit-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[120] hidden flex-col items-center justify-center p-4">  
  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center">  
- <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>  
- <p class="text-xs text-slate-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>  
+ <h3 class="text-base font-bold text-white mb-2">ツール一覧へ戻りますか？</h3>  
+ <p class="text-xs text-slate-400 mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>  
  <div class="grid grid-cols-2 gap-2">  
  <button id="exit-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition">  
  キャンセル  
@@ -2203,14 +2203,23 @@
  history.pushState({ appBase: true }, '');  
  return;  
  }  
+ // 1. 開いているウィンドウ類を閉じる
  if (hasOpenModal()) {  
  closeAllModals(false);  
- } else {  
+ history.pushState({ appBase: true }, '');  
+ return;  
+ }  
+ // 2. 作業画面にいる場合は通常起動時のトップ画面 (Step 1) へ戻す
+ if (appState.step !== 1) {  
+ goToStep(1);  
+ history.pushState({ appBase: true }, '');  
+ return;  
+ }  
+ // 3. トップ画面での戻る：確認画面を表示
  history.pushState({ appBase: true }, '');  
  if (exitModal) {  
  exitModal.classList.remove('hidden');  
  exitModal.classList.add('flex');  
- }  
  }  
  });  
   

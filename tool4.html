@@ -700,8 +700,8 @@
  <!-- 終了確認モーダル -->  
  <div id="exit-modal" class="modal">  
  <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center my-auto">  
- <h3 class="text-base font-bold text-white mb-2">アプリを終了しますか？</h3>  
- <p class="text-xs text-gray-400 mb-5 leading-relaxed">メニュー画面に戻ります。</p>  
+ <h3 class="text-base font-bold text-white mb-2">ツール一覧へ戻りますか？</h3>  
+ <p class="text-xs text-gray-400 mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>  
  <div class="grid grid-cols-2 gap-2">  
  <button id="exit-cancel-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition">  
  キャンセル  
@@ -1790,26 +1790,26 @@
  const exitModal = document.getElementById('exit-modal');  
  if (exitModal && exitModal.classList.contains('active')) {  
  exitModal.classList.remove('active');  
+ history.pushState({ appBase: true }, '');  
  return;  
  }  
+ // 1. 開いているウィンドウ類を閉じる
  const hasOtherWindow = document.querySelector('.bottom-sheet.active, .modal.active');  
  if (hasOtherWindow) {  
  closeAllActiveWindows(false);  
+ history.pushState({ appBase: true }, '');  
  return;  
  }  
- if (state.mode === 'camera' && !state.isGridCameraMode) {  
- const camBtn = document.getElementById('camera-toggle-btn');  
- if (camBtn) camBtn.click();  
- history.pushState({ inEditor: true }, '');  
- return;  
- }  
+ // 2. 作業画面（エディタまたはカメラ中）にいる場合は通常起動時のトップ画面へ戻す
  const isStartVisible = !document.getElementById('start-overlay')?.classList.contains('hidden');  
  if (!isStartVisible) {  
  goToStartScreen();  
- } else {  
+ history.pushState({ appBase: true }, '');  
+ return;  
+ }  
+ // 3. トップ画面での戻る：確認画面を表示
  history.pushState({ appBase: true }, '');  
  if (exitModal) exitModal.classList.add('active');  
- }  
  });  
   
  bindClick('exit-ok-btn', () => { window.location.href = 'index.html'; });  
