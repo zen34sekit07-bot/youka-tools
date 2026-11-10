@@ -1755,6 +1755,7 @@
   
  // --- ウィンドウ開閉とスマホ戻るボタン連動 ---  
  history.replaceState({ appBase: true }, '');  
+ history.pushState({ appGuard: true }, '');  
  let isClosingByCode = false;  
   
  function pushWindowHistory() {  
@@ -1787,28 +1788,26 @@
  isClosingByCode = false;  
  return;  
  }  
+ // 履歴ガードを即座に再装填（ブラウザの離脱を阻止）
+ history.pushState({ appGuard: true }, '');  
  const exitModal = document.getElementById('exit-modal');  
  if (exitModal && exitModal.classList.contains('active')) {  
  exitModal.classList.remove('active');  
- history.pushState({ appBase: true }, '');  
  return;  
  }  
  // 1. 開いているウィンドウ類を閉じる
  const hasOtherWindow = document.querySelector('.bottom-sheet.active, .modal.active');  
  if (hasOtherWindow) {  
  closeAllActiveWindows(false);  
- history.pushState({ appBase: true }, '');  
  return;  
  }  
  // 2. 作業画面（エディタまたはカメラ中）にいる場合は通常起動時のトップ画面へ戻す
  const isStartVisible = !document.getElementById('start-overlay')?.classList.contains('hidden');  
  if (!isStartVisible) {  
  goToStartScreen();  
- history.pushState({ appBase: true }, '');  
  return;  
  }  
  // 3. トップ画面での戻る：確認画面を表示
- history.pushState({ appBase: true }, '');  
  if (exitModal) exitModal.classList.add('active');  
  });  
   

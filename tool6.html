@@ -2070,18 +2070,18 @@ AIアシスタント: Gemini (Google)
                 isClosingModalByCode = false;
                 return;
             }
+            // 履歴ガードを即座に再装填
+            history.pushState({ appGuard: true }, '');
             const exitModal = document.getElementById('modal-exit');
             if (exitModal && !exitModal.classList.contains('hidden-safe')) {
                 exitModal.classList.add('hidden-safe');
                 document.getElementById('modal-overlay').classList.add('hidden-safe');
-                history.pushState({ appBase: true }, '');
                 return;
             }
 
             // 1. 開いているウィンドウ類を閉じる
             if (hasOpenModal()) {
                 closeModals(false);
-                history.pushState({ appBase: true }, '');
                 return;
             }
 
@@ -2089,12 +2089,10 @@ AIアシスタント: Gemini (Google)
             const isFormView = !document.getElementById('view-form').classList.contains('hidden-safe');
             if (!isFormView) {
                 switchView('form');
-                history.pushState({ appBase: true }, '');
                 return;
             }
 
             // 3. トップ画面での戻る：確認画面を表示
-            history.pushState({ appBase: true }, '');
             triggerAppExit();
         });
 

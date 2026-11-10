@@ -2196,27 +2196,25 @@
  isClosingModalByCode = false;  
  return;  
  }  
+ // 履歴ガードを即座に再装填
+ history.pushState({ appGuard: true }, '');  
  const exitModal = el('exit-modal');  
  if (exitModal && !exitModal.classList.contains('hidden')) {  
  exitModal.classList.remove('flex');  
  exitModal.classList.add('hidden');  
- history.pushState({ appBase: true }, '');  
  return;  
  }  
  // 1. 開いているウィンドウ類を閉じる
  if (hasOpenModal()) {  
  closeAllModals(false);  
- history.pushState({ appBase: true }, '');  
  return;  
  }  
  // 2. 作業画面にいる場合は通常起動時のトップ画面 (Step 1) へ戻す
  if (appState.step !== 1) {  
  goToStep(1);  
- history.pushState({ appBase: true }, '');  
  return;  
  }  
  // 3. トップ画面での戻る：確認画面を表示
- history.pushState({ appBase: true }, '');  
  if (exitModal) {  
  exitModal.classList.remove('hidden');  
  exitModal.classList.add('flex');  

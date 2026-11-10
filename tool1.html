@@ -4089,20 +4089,20 @@
                 isClosingByCode = false;
                 return;
             }
+            // 履歴ガードを即座に再装填（ブラウザの離脱を阻止）
+            history.pushState({ appGuard: true }, '');
+
             // 1. 開いているウィンドウ類を閉じる
             if (hasAnyOpenOverlay()) {
                 closeActiveOverlayFromHistory();
-                history.pushState({ appBase: true }, '');
                 return;
             }
             // 2. 作業中なら通常起動時のトップ画面（未読み込み初期状態）へ戻す
             if (state.bg.loaded || state.items.length > 0) {
                 resetProjectData();
-                history.pushState({ appBase: true }, '');
                 return;
             }
             // 3. トップ画面での戻る：確認画面を表示
-            history.pushState({ appBase: true }, '');
             showCustomConfirm('ツール一覧へ戻る', 'ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。').then(ok => {
                 if (ok) window.location.href = 'index.html';
             });

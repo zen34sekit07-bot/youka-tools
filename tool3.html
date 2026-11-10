@@ -1235,18 +1235,18 @@
                 isClosingModalByCode = false;
                 return;
             }
+            // 履歴ガードを即座に再装填
+            history.pushState({ appGuard: true }, '');
             const exitModal = document.getElementById('exit-modal');
             if (exitModal && !exitModal.classList.contains('hidden')) {
                 exitModal.classList.add('hidden');
                 exitModal.classList.remove('flex');
-                history.pushState({ appBase: true }, '');
                 return;
             }
 
             // 1. 開いているウィンドウ類を閉じる
             if (hasOpenModal()) {
                 closeAllModals(false);
-                history.pushState({ appBase: true }, '');
                 return;
             }
 
@@ -1264,12 +1264,10 @@
                     resCard.classList.add('hidden');
                 }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                history.pushState({ appBase: true }, '');
                 return;
             }
 
             // 3. トップ画面での戻る：確認画面を表示
-            history.pushState({ appBase: true }, '');
             if (exitModal) {
                 exitModal.classList.remove('hidden');
                 exitModal.classList.add('flex');
