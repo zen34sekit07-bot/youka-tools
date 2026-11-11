@@ -495,19 +495,52 @@
             </button>
 
             <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
-                <div class="flex items-center justify-between gap-1.5">
-                    <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
-                        <button type="button" id="tab-venue-local" class="px-2.5 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
-                        <button type="button" id="tab-venue-shared" class="px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button type="button" id="btn-gas-url-venue" class="hidden bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-[10px] font-bold px-2 py-1 rounded-lg" title="共有URL設定">URL</button>
-                        <button type="button" id="btn-upload-venue-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow whitespace-nowrap">
-                            ↑ 現在の式場を共有UP
+                <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1 shrink-0">
+                        <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
+                            <button type="button" id="tab-venue-local" class="px-2 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
+                            <button type="button" id="tab-venue-shared" class="px-2 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
+                        </div>
+                        <button type="button" class="btn-library-help bg-gray-800 hover:bg-gray-700 border border-gray-700 text-blue-400 p-1.5 rounded-lg transition shrink-0" title="マイ保存・共有ドライブの説明">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+                        <button type="button" id="btn-refresh-venue-shared" class="hidden bg-gray-800 hover:bg-gray-700 border border-cyan-600/50 text-cyan-300 p-1.5 rounded-lg transition active:scale-95 shrink-0" title="共有ドライブを再読込">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                     </div>
+                    <button type="button" id="btn-upload-venue-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
+                        現在の式場をUP
+                    </button>
                 </div>
-                <div id="saved-venues-list" class="space-y-1.5 max-h-40 overflow-y-auto hide-scrollbar">
+                <!-- 共有ドライブ検索・あいうえお順絞り込みバー（式場） -->
+                <div id="venue-shared-controls" class="hidden space-y-1.5 pt-1 border-t border-gray-800/80">
+                    <div class="flex items-center gap-1.5">
+                        <div class="relative flex-1">
+                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[11px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
+                            <svg class="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="venue-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[10px] absolute right-2 top-1.5">✕</button>
+                        </div>
+                        <select id="venue-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[10px] font-bold text-cyan-300 outline-none shrink-0">
+                            <option value="newest">新着順</option>
+                            <option value="kana">あいうえお順</option>
+                        </select>
+                        <select id="venue-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[10px] font-bold text-gray-200 outline-none shrink-0">
+                            <option value="all">全行</option>
+                            <option value="a">あ行</option>
+                            <option value="ka">か行</option>
+                            <option value="sa">さ行</option>
+                            <option value="ta">た行</option>
+                            <option value="na">な行</option>
+                            <option value="ha">は行</option>
+                            <option value="ma">ま行</option>
+                            <option value="ya">や行</option>
+                            <option value="ra">ら行</option>
+                            <option value="wa">わ行</option>
+                            <option value="other">他</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="saved-venues-list" class="space-y-1.5 max-h-44 overflow-y-auto hide-scrollbar">
                     <p class="text-[11px] text-gray-500 text-center py-2">保存された式場はありません</p>
                 </div>
             </div>
@@ -541,19 +574,52 @@
                 </button>
 
                 <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
-                    <div class="flex items-center justify-between gap-1.5">
-                        <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
-                            <button type="button" id="tab-part-local" class="px-2.5 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
-                            <button type="button" id="tab-part-shared" class="px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <button type="button" id="btn-gas-url-part" class="hidden bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-[10px] font-bold px-2 py-1 rounded-lg" title="共有URL設定">URL</button>
-                            <button type="button" id="btn-upload-part-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow whitespace-nowrap">
-                                ↑ 選択パーツを共有UP
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="flex items-center gap-1 shrink-0">
+                            <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
+                                <button type="button" id="tab-part-local" class="px-2 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
+                                <button type="button" id="tab-part-shared" class="px-2 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
+                            </div>
+                            <button type="button" class="btn-library-help bg-gray-800 hover:bg-gray-700 border border-gray-700 text-blue-400 p-1.5 rounded-lg transition shrink-0" title="マイ保存・共有ドライブの説明">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+                            <button type="button" id="btn-refresh-part-shared" class="hidden bg-gray-800 hover:bg-gray-700 border border-cyan-600/50 text-cyan-300 p-1.5 rounded-lg transition active:scale-95 shrink-0" title="共有ドライブを再読込">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                             </button>
                         </div>
+                        <button type="button" id="btn-upload-part-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
+                            選択パーツをUP
+                        </button>
                     </div>
-                    <div id="saved-parts-list" class="space-y-1.5 max-h-40 overflow-y-auto hide-scrollbar">
+                    <!-- 共有ドライブ検索・あいうえお順絞り込みバー（パーツ） -->
+                    <div id="part-shared-controls" class="hidden space-y-1.5 pt-1 border-t border-gray-800/80">
+                        <div class="flex items-center gap-1.5">
+                            <div class="relative flex-1">
+                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[11px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
+                                <svg class="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <button type="button" id="part-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[10px] absolute right-2 top-1.5">✕</button>
+                            </div>
+                            <select id="part-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[10px] font-bold text-cyan-300 outline-none shrink-0">
+                                <option value="newest">新着順</option>
+                                <option value="kana">あいうえお順</option>
+                            </select>
+                            <select id="part-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[10px] font-bold text-gray-200 outline-none shrink-0">
+                                <option value="all">全行</option>
+                                <option value="a">あ行</option>
+                                <option value="ka">か行</option>
+                                <option value="sa">さ行</option>
+                                <option value="ta">た行</option>
+                                <option value="na">な行</option>
+                                <option value="ha">は行</option>
+                                <option value="ma">ま行</option>
+                                <option value="ya">や行</option>
+                                <option value="ra">ら行</option>
+                                <option value="wa">わ行</option>
+                                <option value="other">他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="saved-parts-list" class="space-y-1.5 max-h-44 overflow-y-auto hide-scrollbar">
                         <p class="text-[11px] text-gray-500 text-center py-2">保存されたパーツはありません</p>
                     </div>
                 </div>
@@ -768,6 +834,71 @@
             <p id="alert-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>  
             <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>  
         </div>  
+    </div>
+
+    <!-- 通信・読み込み中専用モーダル（回転スピナー＋プログレスバー） -->
+    <div id="loading-modal" class="modal" style="z-index: 220;">
+        <div class="bg-gray-900 border border-cyan-500/50 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3.5">
+            <div class="flex justify-center">
+                <div class="w-11 h-11 rounded-full bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center shadow-inner">
+                    <svg class="w-6 h-6 text-cyan-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                        <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div>
+                <h3 id="loading-modal-title" class="text-sm font-bold text-white">読み込み中</h3>
+                <p id="loading-modal-desc" class="text-xs text-gray-300 mt-1 leading-relaxed">処理しています...</p>
+            </div>
+            <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden border border-gray-700/80">
+                <div id="loading-modal-bar" class="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-300" style="width: 35%;"></div>
+            </div>
+            <p class="text-[10px] text-gray-400">完了までそのままお待ちください</p>
+        </div>
+    </div>
+
+    <!-- マイ保存・共有ドライブ機能説明モーダル -->
+    <div id="library-help-modal" class="modal" style="z-index: 215;">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
+                <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    マイ保存・共有ドライブの使い方
+                </h3>
+                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3 text-xs text-gray-300 leading-relaxed">
+                <div class="bg-blue-950/40 border border-blue-500/30 p-3 rounded-xl space-y-1">
+                    <p class="font-bold text-blue-300">📁 マイ保存（端末内ライブラリ）</p>
+                    <p class="text-[11px] text-gray-300">
+                        お使いのスマホ・PC内に保存される自分専用の保管場所です。電波の届かない式場や地下でもすぐに呼び出せます。
+                    </p>
+                </div>
+
+                <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-xl space-y-1.5">
+                    <p class="font-bold text-emerald-300">☁ 共有ドライブ（全員と共有）</p>
+                    <p class="text-[11px] text-gray-300">
+                        登録した式場やパーツをチーム全員で共有できるクラウド保管庫です。初回読み込み後はキャッシュされるため通信量を節約でき、最新状態にしたい時は右上の<strong>更新ボタン（↻）</strong>で再読込できます。
+                    </p>
+                    <div class="bg-gray-950/70 p-2 rounded-lg border border-gray-800 text-[10px] text-amber-300/90">
+                        ※重複防止のため、<strong>一度共有ドライブへUP済みのデータは「マイ保存」のUPボタンが非表示</strong>になります（名前や基準線を変更しても同一データ扱いとなります）。再アップロードしたい場合は、先に共有ドライブ側のゴミ箱から削除してください。
+                    </div>
+                </div>
+
+                <div class="bg-gray-950 border border-gray-800 p-3 rounded-xl space-y-1.5">
+                    <p class="font-bold text-gray-200">🏷 バッジ・ボタンの見方</p>
+                    <ul class="space-y-1 text-[11px] text-gray-300">
+                        <li>・<span class="text-[9px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
+                        <li>・<span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded">パースあり</span> / <span class="text-[9px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded">パースなし</span>：奥行き基準ラインの設定有無</li>
+                        <li>・<strong>クラウドUPボタン</strong>：マイ保存のデータを共有ドライブへ公開</li>
+                        <li>・<strong>ダウンロードボタン（↓）</strong>：共有ドライブのデータを端末のマイ保存へ取り込み</li>
+                        <li>・<strong>ゴミ箱ボタン</strong>：データの削除（共有ドライブでは自分がUPしたデータのみ削除可能）</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="close-modal-btn w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs shrink-0">閉じる</button>
+        </div>
     </div>  
   
     <div id="custom-confirm-modal" class="modal" style="z-index: 200;">
@@ -1658,7 +1789,7 @@
         window.handleModeSelect = async function(selectedMode) {
             const overlay = document.getElementById('start-screen-overlay');
             if (selectedMode === state.mode) {
-                if (overlay) overlay.style.display = 'none';
+                closeModeOverlay();
                 return;
             }
             if (state.bg.loaded || state.items.length > 0) {
@@ -1666,7 +1797,8 @@
                 if (!ok) return;
                 resetProjectData();
             }
-            applyAppMode(selectedMode);
+            applyAppMode(selectedMode, true);
+            closeModeOverlay();
         };
 
         function applyAppMode(modeName, persist = true) {
@@ -1725,35 +1857,19 @@
             }
         })();
 
-        document.querySelectorAll('.mode-select-btn').forEach(btn => {
-            btn.addEventListener('click', async e => {
-                const selectedMode = e.currentTarget.getAttribute('data-mode');
-                const overlay = document.getElementById('start-screen-overlay');
-
-                // 同じモードを選択した場合はリセットせず元の画面に戻る
-                if (selectedMode === state.mode) {
-                    if (overlay) overlay.style.display = 'none';
-                    return;
-                }
-
-                // 異なるモードに変更する場合のみ確認ダイアログを表示
-                const ok = await showCustomConfirm('動作モードの変更', '動作モードを変更すると、現在のプロジェクトはリセットされ最初からになりますが、よろしいですか？');
-                if (ok) {
-                    resetProjectData();
-                    applyAppMode(selectedMode);
-                }
-            });
-        });
-
         const switchBtn = document.getElementById('menu-switch-mode-btn');
         if (switchBtn) {
             switchBtn.addEventListener('click', () => {
-                closeModal('settings-menu-modal');
+                // メニューモーダルをhistory.back()なしで閉じ、そのままモード選択オーバーレイへ切り替え
+                const menuModal = document.getElementById('settings-menu-modal');
+                if (menuModal) menuModal.classList.remove('active');
+                const overlay = document.getElementById('sheet-overlay');
+                if (overlay) overlay.classList.remove('active');
                 pushOverlayHistory();
+
                 const startOverlay = document.getElementById('start-screen-overlay');
                 if (startOverlay) {
                     startOverlay.style.display = 'flex';
-                    // 作業中なのでキャンセルボタンを表示
                     document.getElementById('mode-select-cancel-x')?.classList.remove('hidden');
                     document.getElementById('mode-select-cancel-btn')?.classList.remove('hidden');
                 }
@@ -2725,8 +2841,10 @@
         }
 
         function renderSavedVenues() {
+            if (document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) return;
             if (!db) return;
             db.transaction('venues', 'readonly').objectStore('venues').getAll().onsuccess = e => {
+                if (document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) return;
                 const list = document.getElementById('saved-venues-list');
                 if (!list) return;
                 const recs = (e.target.result || []).sort((a,b) => b.id - a.id);
@@ -2740,29 +2858,34 @@
                     const vd = new Date(vt);
                     const vDateStr = `${vd.getFullYear()}/${String(vd.getMonth()+1).padStart(2,'0')}/${String(vd.getDate()).padStart(2,'0')} ${String(vd.getHours()).padStart(2,'0')}:${String(vd.getMinutes()).padStart(2,'0')}`;
                     const hasPersp = !!(v.perspectiveLinesRaw && v.perspectiveLinesRaw.length >= 2);
+                    const alreadyUploaded = isLocalRecordAlreadyUploaded(v);
+
                     const originBadge = v.isSharedCopy
-                        ? `<span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
-                        : `<span class="text-[9px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
+                        ? `<span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
+                        : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
                     const perspBadge = hasPersp
-                        ? `<span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded shrink-0">パースあり</span>`
-                        : `<span class="text-[9px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+                        ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded shrink-0">パースあり</span>`
+                        : `<span class="text-[8px] leading-tight bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
 
                     const row = document.createElement('div');
-                    row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-3 py-2 rounded-lg flex items-center justify-between cursor-pointer transition";
+                    row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2 cursor-pointer transition";
                     row.innerHTML = `
-                        <div class="flex-1 overflow-hidden pr-2">
+                        <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1 mb-0.5">
                                 ${originBadge}
-                                ${perspBadge}
                                 <span class="text-xs font-bold text-gray-200 truncate">${v.name}</span>
                             </div>
-                            <span class="text-[10px] text-gray-400 font-mono block">${v.measureRealMm}mm 設定済 | ${vDateStr}</span>
+                            <div class="flex items-center gap-1 overflow-hidden">
+                                ${perspBadge}
+                                <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">${v.measureRealMm}mm設定済 ${vDateStr}</span>
+                            </div>
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
-                            <button type="button" class="up-venue-btn text-emerald-400 hover:text-emerald-300 p-1" title="共有ドライブへアップロード">
+                            ${!alreadyUploaded ? `
+                            <button type="button" class="up-venue-btn text-emerald-400 hover:text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-700/50 p-1.5 rounded-lg transition" title="共有ドライブへアップロード">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            </button>
-                            <button type="button" class="del-venue-btn text-red-400 hover:text-red-300 p-1" title="削除">
+                            </button>` : ''}
+                            <button type="button" class="del-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="マイ保存から削除">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -2811,10 +2934,13 @@
                         };
                         img.src = v.imgData;
                     };
-                    row.querySelector('.up-venue-btn').onclick = async ev => {
-                        ev.stopPropagation();
-                        await uploadVenueRecordToShared(v);
-                    };
+                    const upBtn = row.querySelector('.up-venue-btn');
+                    if (upBtn) {
+                        upBtn.onclick = async ev => {
+                            ev.stopPropagation();
+                            await uploadVenueRecordToShared(v);
+                        };
+                    }
                     row.querySelector('.del-venue-btn').onclick = async ev => {
                         ev.stopPropagation();
                         const ok = await showCustomConfirm('式場削除', `「${v.name}」を削除しますか？`);
@@ -3998,8 +4124,10 @@
         }
 
         function renderSavedParts() {
+            if (document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) return;
             if (!db) return;
             db.transaction('parts', 'readonly').objectStore('parts').getAll().onsuccess = e => {
+                if (document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) return;
                 const list = document.getElementById('saved-parts-list');
                 if (!list) return;
                 const recs = (e.target.result || []).sort((a,b) => b.id - a.id);
@@ -4012,30 +4140,34 @@
                     const rt = r.timestamp || r.id;
                     const rd = new Date(rt);
                     const rDateStr = `${rd.getFullYear()}/${String(rd.getMonth()+1).padStart(2,'0')}/${String(rd.getDate()).padStart(2,'0')} ${String(rd.getHours()).padStart(2,'0')}:${String(rd.getMinutes()).padStart(2,'0')}`;
+                    const alreadyUploaded = isLocalRecordAlreadyUploaded(r);
                     const originBadge = r.isSharedCopy
-                        ? `<span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
-                        : `<span class="text-[9px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
+                        ? `<span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
+                        : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
                     const extLabel = (r.ext || (r.imgData && r.imgData.startsWith('data:image/jpeg') ? 'jpg' : 'png')).toUpperCase();
 
                     const row = document.createElement('div');
-                    row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-3 py-2 rounded-lg flex items-center justify-between cursor-pointer transition";
+                    row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2 cursor-pointer transition";
                     row.innerHTML = `
-                        <div class="flex-1 overflow-hidden pr-2">
+                        <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1 mb-0.5">
                                 ${originBadge}
-                                <span class="text-[9px] bg-gray-800 text-gray-300 px-1 rounded font-mono shrink-0">${extLabel}</span>
                                 <span class="text-xs font-bold text-gray-200 truncate">${r.name}</span>
                             </div>
-                            <span class="text-[9px] text-gray-400 font-mono block">${rDateStr}</span>
+                            <div class="flex items-center gap-1 overflow-hidden">
+                                <span class="text-[8px] leading-tight bg-gray-800 text-gray-300 px-1 rounded font-mono shrink-0">${extLabel}</span>
+                                <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">${rDateStr}</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-1 ml-2 shrink-0">
-                            <button type="button" class="up-part-btn text-emerald-400 hover:text-emerald-300 p-1" title="共有ドライブへアップロード">
+                        <div class="flex items-center gap-1 shrink-0">
+                            ${!alreadyUploaded ? `
+                            <button type="button" class="up-part-btn text-emerald-400 hover:text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-700/50 p-1.5 rounded-lg transition" title="共有ドライブへアップロード">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            </button>
-                            <button type="button" class="rename-part-btn text-blue-400 hover:text-blue-300 p-1" title="名前変更">
+                            </button>` : ''}
+                            <button type="button" class="rename-part-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="名前変更">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button type="button" class="del-part-btn text-red-400 hover:text-red-300 p-1" title="削除">
+                            <button type="button" class="del-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="マイ保存から削除">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -4057,10 +4189,13 @@
                         };
                         img.src = r.imgData;
                     };
-                    row.querySelector('.up-part-btn').onclick = async ev => {
-                        ev.stopPropagation();
-                        await uploadPartRecordToShared(r);
-                    };
+                    const upBtn = row.querySelector('.up-part-btn');
+                    if (upBtn) {
+                        upBtn.onclick = async ev => {
+                            ev.stopPropagation();
+                            await uploadPartRecordToShared(r);
+                        };
+                    }
                     row.querySelector('.rename-part-btn').onclick = async ev => {
                         ev.stopPropagation();
                         const newName = await showCustomPrompt('パーツ名変更', '新しい名称を入力してください:', r.name);
@@ -4179,7 +4314,7 @@
             const pBanner = document.getElementById('perspective-banner');
             const hasPersp = pBanner && !pBanner.classList.contains('hidden');
             const startOverlay = document.getElementById('start-screen-overlay');
-            const hasStart = startOverlay && startOverlay.style.display === 'flex' && (state.bg.loaded || state.items.length > 0);
+            const hasStart = startOverlay && startOverlay.style.display === 'flex' && !!localStorage.getItem('sekou_sim_mode');
             return hasModal || hasSheet || hasMeasure || hasPersp || hasStart;
         }
 
@@ -4191,12 +4326,13 @@
 
         function closeActiveOverlayFromHistory() {
             const startOverlay = document.getElementById('start-screen-overlay');
-            if (startOverlay && startOverlay.style.display === 'flex' && (state.bg.loaded || state.items.length > 0)) {
+            if (startOverlay && startOverlay.style.display === 'flex' && !!localStorage.getItem('sekou_sim_mode')) {
                 startOverlay.style.display = 'none';
                 return true;
             }
             const activeModals = Array.from(document.querySelectorAll('.modal.active'));
             if (activeModals.length > 0) {
+                if (activeModals.some(m => m.id === 'loading-modal')) return true;
                 const topModal = activeModals.find(m => m.id === 'alert-modal' || m.id === 'custom-prompt-modal' || m.id === 'custom-confirm-modal') || activeModals[activeModals.length - 1];
                 closeModal(topModal.id);
                 return true;
@@ -4303,7 +4439,7 @@
 
         function openModal(id) {
             pushOverlayHistory();
-            if (id !== 'custom-confirm-modal' && id !== 'custom-prompt-modal' && id !== 'alert-modal') {
+            if (id !== 'custom-confirm-modal' && id !== 'custom-prompt-modal' && id !== 'alert-modal' && id !== 'loading-modal') {
                 document.querySelectorAll('.bottom-sheet').forEach(el => el.classList.remove('active'));
             }
             const m = document.getElementById(id);
@@ -5040,10 +5176,238 @@
         }
 
         // =====================================================================
-        // Googleドライブ（GAS）共有ライブラリ連携
+        // Googleドライブ（GAS）共有ライブラリ連携（強化版）
         // ▼ ここにデプロイしたGASの「ウェブアプリURL」を貼り付けてください ▼
         // =====================================================================
-        const DEFAULT_GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyh17_BOrXs1j2cp-zBVEtqqAv5Gd-HxeEpGL5Ld9VaNkNrTZbDr5C-6WYe7kkh_KNw/exec';
+        const DEFAULT_GAS_WEBAPP_URL = 'ここにウェブアプリURLを貼り付け';
+
+        // 説明モーダル（？ボタン）バインド
+        document.querySelectorAll('.btn-library-help').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                openModal('library-help-modal');
+            });
+        });
+
+        // 端末ごとのアップロード識別ID（自分がUPした項目だけ削除ボタンを表示するため）
+        function getMyUploaderId() {
+            let uid = localStorage.getItem('sekou_sim_uploader_id');
+            if (!uid) {
+                uid = 'usr_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem('sekou_sim_uploader_id', uid);
+            }
+            return uid;
+        }
+
+        function getMyUploadedFileIds() {
+            try {
+                return JSON.parse(localStorage.getItem('sekou_sim_my_uploaded_ids') || '[]');
+            } catch (_) {
+                return [];
+            }
+        }
+
+        function recordMyUploadedFileId(fileId) {
+            if (!fileId) return;
+            const ids = getMyUploadedFileIds();
+            if (!ids.includes(fileId)) {
+                ids.push(fileId);
+                localStorage.setItem('sekou_sim_my_uploaded_ids', JSON.stringify(ids));
+            }
+        }
+
+        function removeMyUploadedFileId(fileId) {
+            const ids = getMyUploadedFileIds().filter(id => id !== fileId);
+            localStorage.setItem('sekou_sim_my_uploaded_ids', JSON.stringify(ids));
+        }
+
+        function isMySharedUpload(item) {
+            if (!item) return false;
+            const myUid = getMyUploaderId();
+            if (item.uploaderId && item.uploaderId === myUid) return true;
+            if (item.fileId && getMyUploadedFileIds().includes(item.fileId)) return true;
+            return false;
+        }
+
+        // 重複UP防止用の画像指紋・アップロード済みマッピング（名前や基準線を変更しても同一扱い）
+        function computeImageFingerprint(imgData) {
+            if (!imgData || typeof imgData !== 'string') return '';
+            const len = imgData.length;
+            const head = imgData.slice(0, 120);
+            const mid = imgData.slice(Math.floor(len / 2), Math.floor(len / 2) + 80);
+            const tail = imgData.slice(-120);
+            return `fp_${len}_${head}_${mid}_${tail}`;
+        }
+
+        function getUploadedKeyToFileIdMap() {
+            try {
+                return JSON.parse(localStorage.getItem('sekou_sim_uploaded_key_map') || '{}');
+            } catch (_) {
+                return {};
+            }
+        }
+
+        function markLocalItemAsUploaded(record, fileId) {
+            if (!fileId) return;
+            const map = getUploadedKeyToFileIdMap();
+            if (record && record.id) map['id_' + record.id] = fileId;
+            if (record && record.imgData) {
+                const fp = computeImageFingerprint(record.imgData);
+                if (fp) map[fp] = fileId;
+            }
+            localStorage.setItem('sekou_sim_uploaded_key_map', JSON.stringify(map));
+
+            // IndexedDB側のレコードにも sharedFileId を保存
+            if (db && record && record.id) {
+                ['venues', 'parts'].forEach(storeName => {
+                    try {
+                        const tx = db.transaction(storeName, 'readwrite');
+                        const store = tx.objectStore(storeName);
+                        store.get(record.id).onsuccess = ev => {
+                            const found = ev.target.result;
+                            if (found) {
+                                found.sharedFileId = fileId;
+                                store.put(found);
+                            }
+                        };
+                    } catch (_) {}
+                });
+            }
+        }
+
+        function unmarkUploadedFileId(fileId) {
+            if (!fileId) return;
+            const map = getUploadedKeyToFileIdMap();
+            Object.keys(map).forEach(k => {
+                if (map[k] === fileId) delete map[k];
+            });
+            localStorage.setItem('sekou_sim_uploaded_key_map', JSON.stringify(map));
+
+            // IndexedDB側で該当 sharedFileId を持つデータのロックを解除（再UP可能にする）
+            if (db) {
+                ['venues', 'parts'].forEach(storeName => {
+                    try {
+                        const tx = db.transaction(storeName, 'readwrite');
+                        const store = tx.objectStore(storeName);
+                        store.getAll().onsuccess = ev => {
+                            const all = ev.target.result || [];
+                            all.forEach(rec => {
+                                if (rec.sharedFileId === fileId) {
+                                    delete rec.sharedFileId;
+                                    rec.isSharedCopy = false;
+                                    store.put(rec);
+                                }
+                            });
+                        };
+                    } catch (_) {}
+                });
+            }
+        }
+
+        function isLocalRecordAlreadyUploaded(record) {
+            if (!record) return false;
+            if (record.isSharedCopy) return true;
+            if (record.sharedFileId) return true;
+            const map = getUploadedKeyToFileIdMap();
+            if (record.id && map['id_' + record.id]) return true;
+            if (record.imgData) {
+                const fp = computeImageFingerprint(record.imgData);
+                if (fp && map[fp]) return true;
+            }
+            return false;
+        }
+
+        // 視覚的な読み込み中モーダル（回転スピナー＋アニメーションプログレスバー）
+        let loadingBarTimer = null;
+        function showLoadingModal(desc, title = '読み込み中') {
+            const tEl = document.getElementById('loading-modal-title');
+            const dEl = document.getElementById('loading-modal-desc');
+            const bar = document.getElementById('loading-modal-bar');
+            if (tEl) tEl.textContent = title;
+            if (dEl) dEl.textContent = desc;
+            if (bar) bar.style.width = '18%';
+            openModal('loading-modal');
+
+            if (loadingBarTimer) clearInterval(loadingBarTimer);
+            let progress = 18;
+            loadingBarTimer = setInterval(() => {
+                progress += (92 - progress) * 0.14;
+                if (bar) bar.style.width = `${Math.min(92, Math.round(progress))}%`;
+            }, 220);
+        }
+
+        function hideLoadingModal() {
+            if (loadingBarTimer) {
+                clearInterval(loadingBarTimer);
+                loadingBarTimer = null;
+            }
+            const bar = document.getElementById('loading-modal-bar');
+            if (bar) bar.style.width = '100%';
+            closeModal('loading-modal');
+        }
+
+        // 一覧エリア用の視覚的ローディング表示（回転矢印＋プログレスバー）
+        function getInlineLoadingHtml(text) {
+            return `
+                <div class="py-5 px-3 flex flex-col items-center justify-center gap-2.5 text-center">
+                    <div class="w-8 h-8 rounded-full bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-cyan-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                            <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-[11px] font-bold text-cyan-300">${text}</span>
+                    <div class="w-40 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                        <div class="h-full w-2/3 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatSharedDateTime(ts) {
+            if (!ts) return '-';
+            const d = new Date(ts);
+            return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        }
+
+        // ひらがな・カタカナの行判定（あいうえお絞り込み用）
+        function getKanaRowKey(str) {
+            if (!str) return 'other';
+            const first = str.trim().charAt(0);
+            if (!first) return 'other';
+            const code = first.charCodeAt(0);
+            const hira = (code >= 0x30A1 && code <= 0x30F6) ? String.fromCharCode(code - 0x60) : first;
+            if ('あいうえおぁぃぅぇぉ'.includes(hira)) return 'a';
+            if ('かきくけこがぎぐげご'.includes(hira)) return 'ka';
+            if ('さしすせそざじずぜぞ'.includes(hira)) return 'sa';
+            if ('たちつてとだぢづでどっ'.includes(hira)) return 'ta';
+            if ('なにぬねの'.includes(hira)) return 'na';
+            if ('はひふへほばびぶべぼぱぴぷぺぽ'.includes(hira)) return 'ha';
+            if ('まみむめも'.includes(hira)) return 'ma';
+            if ('やゆよゃゅょ'.includes(hira)) return 'ya';
+            if ('らりるれろ'.includes(hira)) return 'ra';
+            if ('わをんゎ'.includes(hira)) return 'wa';
+            return 'other';
+        }
+
+        const jaCollator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+
+        function filterAndSortSharedItems(items, searchWord, sortMode, kanaRow) {
+            const kw = (searchWord || '').trim().toLowerCase();
+            const filtered = items.filter(it => {
+                const name = it.name || '';
+                if (kw && !name.toLowerCase().includes(kw)) return false;
+                if (kanaRow && kanaRow !== 'all') {
+                    if (getKanaRowKey(name) !== kanaRow) return false;
+                }
+                return true;
+            });
+
+            if (sortMode === 'kana') {
+                return [...filtered].sort((a, b) => jaCollator.compare(a.name || '', b.name || ''));
+            }
+            return [...filtered].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        }
 
         function getGasWebAppUrl() {
             if (DEFAULT_GAS_WEBAPP_URL && DEFAULT_GAS_WEBAPP_URL.startsWith('http')) {
@@ -5067,42 +5431,48 @@
             return null;
         }
 
-        // URL未ハードコード時のみUIに「URL」設定ボタンを表示
-        (function initGasUrlButtons() {
-            const isHardcoded = DEFAULT_GAS_WEBAPP_URL && DEFAULT_GAS_WEBAPP_URL.startsWith('http');
-            if (!isHardcoded) {
-                ['btn-gas-url-venue', 'btn-gas-url-part'].forEach(id => {
-                    const btn = document.getElementById(id);
-                    if (btn) {
-                        btn.classList.remove('hidden');
-                        btn.addEventListener('click', async () => {
-                            const cur = localStorage.getItem('sekou_sim_gas_url') || '';
-                            const next = await showCustomPrompt('共有ドライブURL設定', 'GASのウェブアプリURLを入力:', cur);
-                            if (next !== null) {
-                                localStorage.setItem('sekou_sim_gas_url', next.trim());
-                                showAlertModal('共有ドライブURLを保存しました', '設定完了');
-                            }
-                        });
-                    }
-                });
-            }
-        })();
-
         async function uploadToSharedDrive(payload) {
             const url = await ensureGasUrlConfigured();
             if (!url) {
                 showAlertModal('共有ドライブのURLが未設定です', '設定エラー');
-                return false;
+                return null;
             }
             try {
                 const res = await fetch(url, {
                     method: 'POST',
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        ...payload,
+                        uploaderId: getMyUploaderId()
+                    })
+                });
+                const json = await res.json();
+                if (json.status === 'ok') {
+                    if (json.fileId) recordMyUploadedFileId(json.fileId);
+                    return json;
+                }
+                return null;
+            } catch (err) {
+                hideLoadingModal();
+                showAlertModal('アップロードに失敗しました: ' + err.message, '通信エラー');
+                return null;
+            }
+        }
+
+        async function deleteFromSharedDrive(fileId) {
+            const url = await ensureGasUrlConfigured();
+            if (!url) return false;
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'delete',
+                        fileId: fileId,
+                        uploaderId: getMyUploaderId()
+                    })
                 });
                 const json = await res.json();
                 return json.status === 'ok';
             } catch (err) {
-                showAlertModal('アップロードに失敗しました: ' + err.message, '通信エラー');
                 return false;
             }
         }
@@ -5122,7 +5492,51 @@
             return await res.json();
         }
 
+        // セッション内キャッシュ（起動中は再読込ボタンを押すかUPするまで再通信しない）
+        let cachedSharedVenues = [];
+        let hasLoadedSharedVenues = false;
+        let cachedSharedParts = [];
+        let hasLoadedSharedParts = false;
+
+        async function loadSharedVenuesFromServer(forceRefresh = false) {
+            const list = document.getElementById('saved-venues-list');
+            if (!list) return;
+            if (hasLoadedSharedVenues && !forceRefresh) {
+                renderSharedVenuesListUI();
+                return;
+            }
+            list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
+            try {
+                cachedSharedVenues = await fetchSharedList('venue');
+                hasLoadedSharedVenues = true;
+                renderSharedVenuesListUI();
+            } catch (e) {
+                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
+            }
+        }
+
+        async function loadSharedPartsFromServer(forceRefresh = false) {
+            const list = document.getElementById('saved-parts-list');
+            if (!list) return;
+            if (hasLoadedSharedParts && !forceRefresh) {
+                renderSharedPartsListUI();
+                return;
+            }
+            list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
+            try {
+                cachedSharedParts = await fetchSharedList('part');
+                hasLoadedSharedParts = true;
+                renderSharedPartsListUI();
+            } catch (e) {
+                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
+            }
+        }
+
         async function uploadVenueRecordToShared(venueData) {
+            if (isLocalRecordAlreadyUploaded(venueData)) {
+                showAlertModal('この式場はすでに共有ドライブへアップロード済みです。再アップロードする場合は、共有ドライブ側から一度削除してください。', 'アップロード済み');
+                return;
+            }
             const hasPersp = !!(venueData.perspectiveLinesRaw && venueData.perspectiveLinesRaw.length >= 2);
             const name = await showCustomPrompt(
                 '共有ドライブへ式場を登録',
@@ -5131,8 +5545,8 @@
             );
             if (!name) return;
 
-            showAlertModal('Googleドライブへアップロード中です...', '通信中');
-            const ok = await uploadToSharedDrive({
+            showLoadingModal('共有ドライブへ式場データをアップロードしています...', 'アップロード中');
+            const res = await uploadToSharedDrive({
                 type: 'venue',
                 timestamp: Date.now(),
                 name: name,
@@ -5144,14 +5558,21 @@
                 baselineDepth: venueData.baselineDepth,
                 perspectiveLinesRaw: venueData.perspectiveLinesRaw
             });
-            closeModal('alert-modal');
-            if (ok) {
+            hideLoadingModal();
+            if (res) {
+                markLocalItemAsUploaded(venueData, res.fileId);
+                hasLoadedSharedVenues = false; // 次回またはタブ切替時に最新を取得
+                renderSavedVenues();
                 showAlertModal(`式場「${name}」を共有ドライブに登録しました！`, '共有完了');
                 document.getElementById('tab-venue-shared')?.click();
             }
         }
 
         async function uploadPartRecordToShared(partData) {
+            if (isLocalRecordAlreadyUploaded(partData)) {
+                showAlertModal('このパーツはすでに共有ドライブへアップロード済みです。再アップロードする場合は、共有ドライブ側から一度削除してください。', 'アップロード済み');
+                return;
+            }
             const name = await showCustomPrompt(
                 '共有ドライブへパーツを登録',
                 'みんなに公開するパーツ名を入力してください（透過PNG対応）:',
@@ -5159,8 +5580,8 @@
             );
             if (!name) return;
 
-            showAlertModal('Googleドライブへアップロード中です...', '通信中');
-            const ok = await uploadToSharedDrive({
+            showLoadingModal('共有ドライブへパーツデータをアップロードしています...', 'アップロード中');
+            const res = await uploadToSharedDrive({
                 type: 'part',
                 timestamp: Date.now(),
                 name: name,
@@ -5169,14 +5590,17 @@
                 realMm: partData.realMm,
                 rawPxPerMm: partData.rawPxPerMm
             });
-            closeModal('alert-modal');
-            if (ok) {
+            hideLoadingModal();
+            if (res) {
+                markLocalItemAsUploaded(partData, res.fileId);
+                hasLoadedSharedParts = false; // 次回またはタブ切替時に最新を取得
+                renderSavedParts();
                 showAlertModal(`パーツ「${name}」を共有ドライブに登録しました！`, '共有完了');
                 document.getElementById('tab-part-shared')?.click();
             }
         }
 
-        // 現在の式場を共有UP
+        // 現在の式場をUP
         document.getElementById('btn-upload-venue-shared')?.addEventListener('click', async () => {
             if (!state.bg.loaded || !state.bg.rawPxPerMm) {
                 showAlertModal('寸法設定済みの式場写真が必要です', '確認');
@@ -5193,83 +5617,142 @@
             });
         });
 
+        function renderSharedVenuesListUI() {
+            const list = document.getElementById('saved-venues-list');
+            if (!list) return;
+            const searchWord = document.getElementById('venue-shared-search')?.value || '';
+            const sortMode = document.getElementById('venue-shared-sort')?.value || 'newest';
+            const kanaRow = document.getElementById('venue-shared-kana-filter')?.value || 'all';
+
+            const clearBtn = document.getElementById('venue-shared-search-clear');
+            if (clearBtn) clearBtn.classList.toggle('hidden', !searchWord);
+
+            const items = filterAndSortSharedItems(cachedSharedVenues, searchWord, sortMode, kanaRow);
+            if (items.length === 0) {
+                list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-3">該当する共有式場はありません</p>`;
+                return;
+            }
+
+            list.innerHTML = '';
+            items.forEach(v => {
+                const vDateStr = formatSharedDateTime(v.timestamp);
+                const canDelete = isMySharedUpload(v);
+                const perspBadge = v.hasPerspective
+                    ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-500/50 px-1 rounded font-bold shrink-0">パースあり</span>`
+                    : `<span class="text-[8px] leading-tight bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+                const mineBadge = canDelete
+                    ? `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分UP</span>`
+                    : '';
+
+                const row = document.createElement('div');
+                row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
+                row.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1 mb-0.5">
+                            <span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
+                            ${mineBadge}
+                            <span class="text-xs font-bold text-white truncate">${v.name}</span>
+                        </div>
+                        <div class="flex items-center gap-1 overflow-hidden">
+                            ${perspBadge}
+                            <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">基準:${v.measureRealMm}mm ${vDateStr}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        ${canDelete ? `
+                        <button type="button" class="del-shared-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたデータを共有ドライブから削除">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>` : ''}
+                        <button type="button" class="dl-venue-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードしてマイ保存へ追加">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </button>
+                    </div>
+                `;
+
+                if (canDelete) {
+                    row.querySelector('.del-shared-venue-btn').onclick = async ev => {
+                        ev.stopPropagation();
+                        const ok = await showCustomConfirm('共有データの削除', `自分がアップロードした「${v.name}」を共有ドライブから削除しますか？`);
+                        if (!ok) return;
+                        showLoadingModal('共有ドライブから削除しています...', '削除中');
+                        const deleted = await deleteFromSharedDrive(v.fileId);
+                        hideLoadingModal();
+                        if (deleted) {
+                            removeMyUploadedFileId(v.fileId);
+                            unmarkUploadedFileId(v.fileId);
+                            cachedSharedVenues = cachedSharedVenues.filter(x => x.fileId !== v.fileId);
+                            renderSharedVenuesListUI();
+                            showAlertModal(`「${v.name}」を共有ドライブから削除しました`, '削除完了');
+                        } else {
+                            showAlertModal('削除に失敗しました。GAS側のコードが最新版か確認してください。', 'エラー');
+                        }
+                    };
+                }
+
+                row.querySelector('.dl-venue-btn').onclick = async () => {
+                    showLoadingModal(`「${v.name}」の式場データをダウンロード中...`, 'ダウンロード中');
+                    try {
+                        const fullData = await downloadSharedItem(v.fileId);
+                        if (db) {
+                            db.transaction('venues', 'readwrite').objectStore('venues').put({
+                                id: Date.now(),
+                                timestamp: Date.now(),
+                                name: fullData.name,
+                                isSharedCopy: true,
+                                sharedFileId: v.fileId,
+                                imgData: fullData.imgData,
+                                measureRealMm: fullData.measureRealMm,
+                                rawPxPerMm: fullData.rawPxPerMm,
+                                measureHandlesRaw: fullData.measureHandlesRaw,
+                                baselineDepth: fullData.baselineDepth,
+                                perspectiveLinesRaw: fullData.perspectiveLinesRaw
+                            });
+                        }
+                        hideLoadingModal();
+                        document.getElementById('tab-venue-local')?.click();
+                        showAlertModal(`「${fullData.name}」をマイ保存にダウンロードしました。一覧からタップして読み込めます。`, 'ダウンロード完了');
+                    } catch (err) {
+                        hideLoadingModal();
+                        showAlertModal('ダウンロードに失敗しました', 'エラー');
+                    }
+                };
+                list.appendChild(row);
+            });
+        }
+
+        // 式場検索・絞り込みイベント
+        document.getElementById('venue-shared-search')?.addEventListener('input', renderSharedVenuesListUI);
+        document.getElementById('venue-shared-search-clear')?.addEventListener('click', () => {
+            const inp = document.getElementById('venue-shared-search');
+            if (inp) inp.value = '';
+            renderSharedVenuesListUI();
+        });
+        document.getElementById('venue-shared-sort')?.addEventListener('change', renderSharedVenuesListUI);
+        document.getElementById('venue-shared-kana-filter')?.addEventListener('change', renderSharedVenuesListUI);
+
+        // 共有ドライブ手動再読込ボタン（式場）
+        document.getElementById('btn-refresh-venue-shared')?.addEventListener('click', async () => {
+            await loadSharedVenuesFromServer(true);
+        });
+
         // 式場タブ切り替え（マイ保存 / 共有ドライブ）
         document.getElementById('tab-venue-local')?.addEventListener('click', () => {
-            document.getElementById('tab-venue-local').className = "px-2.5 py-1 rounded-md bg-blue-600 text-white transition";
-            document.getElementById('tab-venue-shared').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md bg-blue-600 text-white transition";
+            document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('venue-shared-controls')?.classList.add('hidden');
+            document.getElementById('btn-refresh-venue-shared')?.classList.add('hidden');
             renderSavedVenues();
         });
 
         document.getElementById('tab-venue-shared')?.addEventListener('click', async () => {
-            document.getElementById('tab-venue-shared').className = "px-2.5 py-1 rounded-md bg-emerald-600 text-white transition";
-            document.getElementById('tab-venue-local').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
-            const list = document.getElementById('saved-venues-list');
-            if (!list) return;
-            list.innerHTML = `<p class="text-[11px] text-cyan-400 text-center py-3 animate-pulse">共有ドライブを読み込み中...</p>`;
-
-            try {
-                const items = await fetchSharedList('venue');
-                if (items.length === 0) {
-                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-2">共有された式場はありません</p>`;
-                    return;
-                }
-                list.innerHTML = '';
-                items.forEach(v => {
-                    const vd = new Date(v.timestamp || Date.now());
-                    const vDateStr = `${vd.getFullYear()}/${String(vd.getMonth()+1).padStart(2,'0')}/${String(vd.getDate()).padStart(2,'0')}`;
-                    const perspBadge = v.hasPerspective
-                        ? `<span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/50 px-1.5 py-0.5 rounded font-bold shrink-0">パースあり</span>`
-                        : `<span class="text-[9px] bg-gray-800 text-gray-400 border border-gray-700 px-1.5 py-0.5 rounded shrink-0">パースなし</span>`;
-
-                    const row = document.createElement('div');
-                    row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-3 py-2 rounded-lg flex items-center justify-between gap-2";
-                    row.innerHTML = `
-                        <div class="flex-1 overflow-hidden">
-                            <div class="flex items-center gap-1 mb-0.5">
-                                <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
-                                ${perspBadge}
-                                <span class="text-xs font-bold text-white truncate">${v.name}</span>
-                            </div>
-                            <span class="text-[10px] text-gray-400 font-mono block">基準: ${v.measureRealMm}mm | ${vDateStr}</span>
-                        </div>
-                        <button type="button" class="dl-venue-btn bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shrink-0 shadow">
-                            DLして保存
-                        </button>
-                    `;
-                    row.querySelector('.dl-venue-btn').onclick = async () => {
-                        showAlertModal('式場データをダウンロード中...', '読み込み中');
-                        try {
-                            const fullData = await downloadSharedItem(v.fileId);
-                            if (db) {
-                                db.transaction('venues', 'readwrite').objectStore('venues').put({
-                                    id: Date.now(),
-                                    timestamp: Date.now(),
-                                    name: fullData.name,
-                                    isSharedCopy: true,
-                                    imgData: fullData.imgData,
-                                    measureRealMm: fullData.measureRealMm,
-                                    rawPxPerMm: fullData.rawPxPerMm,
-                                    measureHandlesRaw: fullData.measureHandlesRaw,
-                                    baselineDepth: fullData.baselineDepth,
-                                    perspectiveLinesRaw: fullData.perspectiveLinesRaw
-                                });
-                            }
-                            closeModal('alert-modal');
-                            document.getElementById('tab-venue-local')?.click();
-                            showAlertModal(`「${fullData.name}」をマイ保存にダウンロードしました。一覧からタップして読み込めます。`, 'ダウンロード完了');
-                        } catch (err) {
-                            closeModal('alert-modal');
-                            showAlertModal('ダウンロードに失敗しました', 'エラー');
-                        }
-                    };
-                    list.appendChild(row);
-                });
-            } catch (e) {
-                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
-            }
+            document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-white transition";
+            document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('venue-shared-controls')?.classList.remove('hidden');
+            document.getElementById('btn-refresh-venue-shared')?.classList.remove('hidden');
+            await loadSharedVenuesFromServer(false);
         });
 
-        // 選択中のパーツを共有UP
+        // 選択中のパーツをUP
         document.getElementById('btn-upload-part-shared')?.addEventListener('click', async () => {
             const item = state.items.find(i => i.id === state.selectedItemId);
             if (!item) {
@@ -5284,87 +5767,147 @@
             });
         });
 
+        function renderSharedPartsListUI() {
+            const list = document.getElementById('saved-parts-list');
+            if (!list) return;
+            const searchWord = document.getElementById('part-shared-search')?.value || '';
+            const sortMode = document.getElementById('part-shared-sort')?.value || 'newest';
+            const kanaRow = document.getElementById('part-shared-kana-filter')?.value || 'all';
+
+            const clearBtn = document.getElementById('part-shared-search-clear');
+            if (clearBtn) clearBtn.classList.toggle('hidden', !searchWord);
+
+            const items = filterAndSortSharedItems(cachedSharedParts, searchWord, sortMode, kanaRow);
+            if (items.length === 0) {
+                list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-3">該当する共有パーツはありません</p>`;
+                return;
+            }
+
+            list.innerHTML = '';
+            items.forEach(p => {
+                const pDateStr = formatSharedDateTime(p.timestamp);
+                const canDelete = isMySharedUpload(p);
+                const mineBadge = canDelete
+                    ? `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分UP</span>`
+                    : '';
+
+                const row = document.createElement('div');
+                row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
+                row.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1 mb-0.5">
+                            <span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
+                            ${mineBadge}
+                            <span class="text-xs font-bold text-white truncate">${p.name}</span>
+                        </div>
+                        <div class="flex items-center gap-1 overflow-hidden">
+                            <span class="text-[8px] leading-tight bg-gray-800 text-gray-300 px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
+                            <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">${pDateStr}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        ${canDelete ? `
+                        <button type="button" class="del-shared-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたパーツを共有ドライブから削除">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>` : ''}
+                        <button type="button" class="dl-part-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードして配置">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </button>
+                    </div>
+                `;
+
+                if (canDelete) {
+                    row.querySelector('.del-shared-part-btn').onclick = async ev => {
+                        ev.stopPropagation();
+                        const ok = await showCustomConfirm('共有パーツの削除', `自分がアップロードした「${p.name}」を共有ドライブから削除しますか？`);
+                        if (!ok) return;
+                        showLoadingModal('共有ドライブから削除しています...', '削除中');
+                        const deleted = await deleteFromSharedDrive(p.fileId);
+                        hideLoadingModal();
+                        if (deleted) {
+                            removeMyUploadedFileId(p.fileId);
+                            unmarkUploadedFileId(p.fileId);
+                            cachedSharedParts = cachedSharedParts.filter(x => x.fileId !== p.fileId);
+                            renderSharedPartsListUI();
+                            showAlertModal(`「${p.name}」を共有ドライブから削除しました`, '削除完了');
+                        } else {
+                            showAlertModal('削除に失敗しました。GAS側のコードが最新版か確認してください。', 'エラー');
+                        }
+                    };
+                }
+
+                row.querySelector('.dl-part-btn').onclick = async () => {
+                    showLoadingModal(`「${p.name}」のパーツデータをダウンロード中...`, 'ダウンロード中');
+                    try {
+                        const fullData = await downloadSharedItem(p.fileId);
+                        if (db) {
+                            db.transaction('parts', 'readwrite').objectStore('parts').put({
+                                id: Date.now(),
+                                timestamp: Date.now(),
+                                name: fullData.name,
+                                isSharedCopy: true,
+                                sharedFileId: p.fileId,
+                                ext: fullData.ext || 'png',
+                                imgData: fullData.imgData,
+                                realMm: fullData.realMm,
+                                rawPxPerMm: fullData.rawPxPerMm
+                            });
+                        }
+                        const img = new Image();
+                        img.onload = () => {
+                            const cvs = document.createElement('canvas');
+                            cvs.width = img.width; cvs.height = img.height;
+                            cvs.getContext('2d').drawImage(img, 0, 0);
+                            state.pendingItemCanvas = cvs;
+                            let targetScale = 1.0;
+                            if (fullData.rawPxPerMm && state.bg.rawPxPerMm) {
+                                targetScale = state.bg.rawPxPerMm / fullData.rawPxPerMm;
+                            }
+                            addItemToScene(targetScale, fullData.realMm, fullData.rawPxPerMm);
+                            hideLoadingModal();
+                            closeModal('add-item-modal');
+                            document.getElementById('tab-part-local')?.click();
+                        };
+                        img.src = fullData.imgData;
+                    } catch (err) {
+                        hideLoadingModal();
+                        showAlertModal('ダウンロードに失敗しました', 'エラー');
+                    }
+                };
+                list.appendChild(row);
+            });
+        }
+
+        // パーツ検索・絞り込みイベント
+        document.getElementById('part-shared-search')?.addEventListener('input', renderSharedPartsListUI);
+        document.getElementById('part-shared-search-clear')?.addEventListener('click', () => {
+            const inp = document.getElementById('part-shared-search');
+            if (inp) inp.value = '';
+            renderSharedPartsListUI();
+        });
+        document.getElementById('part-shared-sort')?.addEventListener('change', renderSharedPartsListUI);
+        document.getElementById('part-shared-kana-filter')?.addEventListener('change', renderSharedPartsListUI);
+
+        // 共有ドライブ手動再読込ボタン（パーツ）
+        document.getElementById('btn-refresh-part-shared')?.addEventListener('click', async () => {
+            await loadSharedPartsFromServer(true);
+        });
+
         // パーツタブ切り替え（マイ保存 / 共有ドライブ）
         document.getElementById('tab-part-local')?.addEventListener('click', () => {
-            document.getElementById('tab-part-local').className = "px-2.5 py-1 rounded-md bg-blue-600 text-white transition";
-            document.getElementById('tab-part-shared').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md bg-blue-600 text-white transition";
+            document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('part-shared-controls')?.classList.add('hidden');
+            document.getElementById('btn-refresh-part-shared')?.classList.add('hidden');
             renderSavedParts();
         });
 
         document.getElementById('tab-part-shared')?.addEventListener('click', async () => {
-            document.getElementById('tab-part-shared').className = "px-2.5 py-1 rounded-md bg-emerald-600 text-white transition";
-            document.getElementById('tab-part-local').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
-            const list = document.getElementById('saved-parts-list');
-            if (!list) return;
-            list.innerHTML = `<p class="text-[11px] text-cyan-400 text-center py-3 animate-pulse">共有ドライブを読み込み中...</p>`;
-
-            try {
-                const items = await fetchSharedList('part');
-                if (items.length === 0) {
-                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-2">共有されたパーツはありません</p>`;
-                    return;
-                }
-                list.innerHTML = '';
-                items.forEach(p => {
-                    const pd = new Date(p.timestamp || Date.now());
-                    const pDateStr = `${pd.getFullYear()}/${String(pd.getMonth()+1).padStart(2,'0')}/${String(pd.getDate()).padStart(2,'0')}`;
-                    const row = document.createElement('div');
-                    row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-3 py-2 rounded-lg flex items-center justify-between gap-2";
-                    row.innerHTML = `
-                        <div class="flex-1 overflow-hidden">
-                            <div class="flex items-center gap-1 mb-0.5">
-                                <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
-                                <span class="text-[9px] bg-gray-800 text-gray-300 px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
-                                <span class="text-xs font-bold text-white truncate">${p.name}</span>
-                            </div>
-                            <span class="text-[9px] text-gray-400 font-mono block">${pDateStr}</span>
-                        </div>
-                        <button type="button" class="dl-part-btn bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shrink-0 shadow">
-                            DLして配置
-                        </button>
-                    `;
-                    row.querySelector('.dl-part-btn').onclick = async () => {
-                        showAlertModal('パーツをダウンロード中...', '読み込み中');
-                        try {
-                            const fullData = await downloadSharedItem(p.fileId);
-                            if (db) {
-                                db.transaction('parts', 'readwrite').objectStore('parts').put({
-                                    id: Date.now(),
-                                    timestamp: Date.now(),
-                                    name: fullData.name,
-                                    isSharedCopy: true,
-                                    ext: fullData.ext || 'png',
-                                    imgData: fullData.imgData,
-                                    realMm: fullData.realMm,
-                                    rawPxPerMm: fullData.rawPxPerMm
-                                });
-                            }
-                            const img = new Image();
-                            img.onload = () => {
-                                const cvs = document.createElement('canvas');
-                                cvs.width = img.width; cvs.height = img.height;
-                                cvs.getContext('2d').drawImage(img, 0, 0);
-                                state.pendingItemCanvas = cvs;
-                                let targetScale = 1.0;
-                                if (fullData.rawPxPerMm && state.bg.rawPxPerMm) {
-                                    targetScale = state.bg.rawPxPerMm / fullData.rawPxPerMm;
-                                }
-                                addItemToScene(targetScale, fullData.realMm, fullData.rawPxPerMm);
-                                closeModal('alert-modal');
-                                closeModal('add-item-modal');
-                                document.getElementById('tab-part-local')?.click();
-                            };
-                            img.src = fullData.imgData;
-                        } catch (err) {
-                            closeModal('alert-modal');
-                            showAlertModal('ダウンロードに失敗しました', 'エラー');
-                        }
-                    };
-                    list.appendChild(row);
-                });
-            } catch (e) {
-                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
-            }
+            document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-white transition";
+            document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('part-shared-controls')?.classList.remove('hidden');
+            document.getElementById('btn-refresh-part-shared')?.classList.remove('hidden');
+            await loadSharedPartsFromServer(false);
         });
     </script>
 </body>
