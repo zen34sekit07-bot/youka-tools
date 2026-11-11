@@ -5431,6 +5431,55 @@
             return null;
         }
 
+        // 一斉アクセス時の混雑エラーを防ぐ自動リトライ通信（指数バックオフ＋ランダム分散待機）
+        async function fetchGasJsonWithRetry(url, options = {}, retryConfig = {}) {
+            const maxRetries = retryConfig.maxRetries ?? 4;
+            const timeoutMs = retryConfig.timeoutMs ?? 25000;
+            const onRetry = retryConfig.onRetry || null;
+            let lastError = null;
+
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                const controller = new AbortController();
+                const timerId = setTimeout(() => controller.abort(), timeoutMs);
+                try {
+                    const res = await fetch(url, {
+                        ...options,
+                        signal: controller.signal
+                    });
+                    clearTimeout(timerId);
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}`);
+                    }
+                    const rawText = await res.text();
+                    let json;
+                    try {
+                        json = JSON.parse(rawText);
+                    } catch (_) {
+                        // GASの同時接続上限(30件)超過時に返るHTMLエラーページを検知してリトライへ回す
+                        throw new Error('サーバー混雑応答');
+                    }
+                    if (json && json.status === 'busy') {
+                        throw new Error('サーバー処理中');
+                    }
+                    return json;
+                } catch (err) {
+                    clearTimeout(timerId);
+                    lastError = err;
+                    if (attempt < maxRetries) {
+                        // 0.5秒〜最大6秒の範囲でランダムにずらして再試行
+                        const jitter = Math.floor(Math.random() * 650);
+                        const delay = Math.min(6000, 450 * Math.pow(2, attempt) + jitter);
+                        if (onRetry) {
+                            try { onRetry(attempt + 1, maxRetries, delay); } catch (_) {}
+                        }
+                        await new Promise(r => setTimeout(r, delay));
+                    }
+                }
+            }
+            throw lastError || new Error('通信に失敗しました');
+        }
+
         async function uploadToSharedDrive(payload) {
             const url = await ensureGasUrlConfigured();
             if (!url) {
@@ -5438,22 +5487,27 @@
                 return null;
             }
             try {
-                const res = await fetch(url, {
+                const json = await fetchGasJsonWithRetry(url, {
                     method: 'POST',
                     body: JSON.stringify({
                         ...payload,
                         uploaderId: getMyUploaderId()
                     })
+                }, {
+                    maxRetries: 4,
+                    onRetry: (retryNum, maxNum) => {
+                        const dEl = document.getElementById('loading-modal-desc');
+                        if (dEl) dEl.textContent = `アクセスが集中しています。自動で再試行中 (${retryNum}/${maxNum})...`;
+                    }
                 });
-                const json = await res.json();
-                if (json.status === 'ok') {
+                if (json && json.status === 'ok') {
                     if (json.fileId) recordMyUploadedFileId(json.fileId);
                     return json;
                 }
                 return null;
             } catch (err) {
                 hideLoadingModal();
-                showAlertModal('アップロードに失敗しました: ' + err.message, '通信エラー');
+                showAlertModal('アップロードに失敗しました（混み合っている可能性があります）: ' + err.message, '通信エラー');
                 return null;
             }
         }
@@ -5462,73 +5516,178 @@
             const url = await ensureGasUrlConfigured();
             if (!url) return false;
             try {
-                const res = await fetch(url, {
+                const json = await fetchGasJsonWithRetry(url, {
                     method: 'POST',
                     body: JSON.stringify({
                         action: 'delete',
                         fileId: fileId,
                         uploaderId: getMyUploaderId()
                     })
+                }, {
+                    maxRetries: 4,
+                    onRetry: (retryNum, maxNum) => {
+                        const dEl = document.getElementById('loading-modal-desc');
+                        if (dEl) dEl.textContent = `アクセスが集中しています。自動で削除を再試行中 (${retryNum}/${maxNum})...`;
+                    }
                 });
-                const json = await res.json();
-                return json.status === 'ok';
+                return !!(json && json.status === 'ok');
             } catch (err) {
                 return false;
             }
         }
 
-        async function fetchSharedList(type) {
+        async function fetchSharedList(type, onRetry = null) {
             const url = await ensureGasUrlConfigured();
             if (!url) throw new Error('URL未設定');
-            const res = await fetch(`${url}?action=list&type=${encodeURIComponent(type)}`);
-            const json = await res.json();
+            const json = await fetchGasJsonWithRetry(
+                `${url}?action=list&type=${encodeURIComponent(type)}`,
+                {},
+                { maxRetries: 4, onRetry }
+            );
             return json.items || [];
         }
 
-        async function downloadSharedItem(fileId) {
+        async function downloadSharedItem(fileId, onRetry = null) {
             const url = await ensureGasUrlConfigured();
             if (!url) throw new Error('URL未設定');
-            const res = await fetch(`${url}?action=get&fileId=${encodeURIComponent(fileId)}`);
-            return await res.json();
+            return await fetchGasJsonWithRetry(
+                `${url}?action=get&fileId=${encodeURIComponent(fileId)}`,
+                {},
+                { maxRetries: 4, onRetry }
+            );
         }
 
-        // セッション内キャッシュ（起動中は再読込ボタンを押すかUPするまで再通信しない）
-        let cachedSharedVenues = [];
+        // 端末永続キャッシュ（次回起動時も0秒で即座に一覧表示＋裏側で最新差分を自動同期）
+        function getPersistentSharedCache(type) {
+            try {
+                const raw = localStorage.getItem(`sekou_sim_shared_cache_${type}`);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed.items) ? parsed.items : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function setPersistentSharedCache(type, items) {
+            try {
+                localStorage.setItem(`sekou_sim_shared_cache_${type}`, JSON.stringify({
+                    updatedAt: Date.now(),
+                    items: items || []
+                }));
+            } catch (_) {}
+        }
+
+        function setRefreshSpinState(btnId, spinning) {
+            const svg = document.querySelector(`#${btnId} svg`);
+            if (!svg) return;
+            if (spinning) svg.classList.add('animate-spin');
+            else svg.classList.remove('animate-spin');
+        }
+
+        function findLocalRecordBySharedFileId(storeName, fileId) {
+            return new Promise(resolve => {
+                if (!db || !fileId) return resolve(null);
+                try {
+                    db.transaction(storeName, 'readonly').objectStore(storeName).getAll().onsuccess = e => {
+                        const all = e.target.result || [];
+                        const hit = all.find(x => x.sharedFileId === fileId && x.imgData);
+                        resolve(hit || null);
+                    };
+                } catch (_) {
+                    resolve(null);
+                }
+            });
+        }
+
+        // セッション内キャッシュ＋永続キャッシュ併用
+        let cachedSharedVenues = getPersistentSharedCache('venue') || [];
         let hasLoadedSharedVenues = false;
-        let cachedSharedParts = [];
+        let isFetchingSharedVenues = false;
+
+        let cachedSharedParts = getPersistentSharedCache('part') || [];
         let hasLoadedSharedParts = false;
+        let isFetchingSharedParts = false;
 
         async function loadSharedVenuesFromServer(forceRefresh = false) {
             const list = document.getElementById('saved-venues-list');
             if (!list) return;
-            if (hasLoadedSharedVenues && !forceRefresh) {
+
+            const hasWarmCache = cachedSharedVenues.length > 0;
+            if (hasWarmCache) {
                 renderSharedVenuesListUI();
-                return;
+                if (hasLoadedSharedVenues && !forceRefresh) return;
+            } else {
+                list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
             }
-            list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
+
+            if (isFetchingSharedVenues) return;
+            isFetchingSharedVenues = true;
+            setRefreshSpinState('btn-refresh-venue-shared', true);
+
             try {
-                cachedSharedVenues = await fetchSharedList('venue');
+                const latest = await fetchSharedList('venue', (retryNum, maxNum) => {
+                    if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
+                        list.innerHTML = getInlineLoadingHtml(`混み合っています。自動再試行中 (${retryNum}/${maxNum})...`);
+                    }
+                });
+                const prevSig = JSON.stringify(cachedSharedVenues);
+                const nextSig = JSON.stringify(latest);
+                cachedSharedVenues = latest;
                 hasLoadedSharedVenues = true;
-                renderSharedVenuesListUI();
+                setPersistentSharedCache('venue', latest);
+
+                if ((prevSig !== nextSig || !hasWarmCache) && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
+                    renderSharedVenuesListUI();
+                }
             } catch (e) {
-                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
+                if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
+                    list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
+                }
+            } finally {
+                isFetchingSharedVenues = false;
+                setRefreshSpinState('btn-refresh-venue-shared', false);
             }
         }
 
         async function loadSharedPartsFromServer(forceRefresh = false) {
             const list = document.getElementById('saved-parts-list');
             if (!list) return;
-            if (hasLoadedSharedParts && !forceRefresh) {
+
+            const hasWarmCache = cachedSharedParts.length > 0;
+            if (hasWarmCache) {
                 renderSharedPartsListUI();
-                return;
+                if (hasLoadedSharedParts && !forceRefresh) return;
+            } else {
+                list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
             }
-            list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
+
+            if (isFetchingSharedParts) return;
+            isFetchingSharedParts = true;
+            setRefreshSpinState('btn-refresh-part-shared', true);
+
             try {
-                cachedSharedParts = await fetchSharedList('part');
+                const latest = await fetchSharedList('part', (retryNum, maxNum) => {
+                    if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
+                        list.innerHTML = getInlineLoadingHtml(`混み合っています。自動再試行中 (${retryNum}/${maxNum})...`);
+                    }
+                });
+                const prevSig = JSON.stringify(cachedSharedParts);
+                const nextSig = JSON.stringify(latest);
+                cachedSharedParts = latest;
                 hasLoadedSharedParts = true;
-                renderSharedPartsListUI();
+                setPersistentSharedCache('part', latest);
+
+                if ((prevSig !== nextSig || !hasWarmCache) && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
+                    renderSharedPartsListUI();
+                }
             } catch (e) {
-                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
+                if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
+                    list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
+                }
+            } finally {
+                isFetchingSharedParts = false;
+                setRefreshSpinState('btn-refresh-part-shared', false);
             }
         }
 
@@ -5681,6 +5840,7 @@
                             removeMyUploadedFileId(v.fileId);
                             unmarkUploadedFileId(v.fileId);
                             cachedSharedVenues = cachedSharedVenues.filter(x => x.fileId !== v.fileId);
+                            setPersistentSharedCache('venue', cachedSharedVenues);
                             renderSharedVenuesListUI();
                             showAlertModal(`「${v.name}」を共有ドライブから削除しました`, '削除完了');
                         } else {
@@ -5690,9 +5850,13 @@
                 }
 
                 row.querySelector('.dl-venue-btn').onclick = async () => {
-                    showLoadingModal(`「${v.name}」の式場データをダウンロード中...`, 'ダウンロード中');
+                    showLoadingModal(`「${v.name}」の式場データを読み込み中...`, '読み込み中');
                     try {
-                        const fullData = await downloadSharedItem(v.fileId);
+                        const localHit = await findLocalRecordBySharedFileId('venues', v.fileId);
+                        const fullData = localHit || await downloadSharedItem(v.fileId, (retryNum, maxNum) => {
+                            const dEl = document.getElementById('loading-modal-desc');
+                            if (dEl) dEl.textContent = `アクセス集中ため自動再試行中 (${retryNum}/${maxNum})...`;
+                        });
                         if (db) {
                             db.transaction('venues', 'readwrite').objectStore('venues').put({
                                 id: Date.now(),
@@ -5828,6 +5992,7 @@
                             removeMyUploadedFileId(p.fileId);
                             unmarkUploadedFileId(p.fileId);
                             cachedSharedParts = cachedSharedParts.filter(x => x.fileId !== p.fileId);
+                            setPersistentSharedCache('part', cachedSharedParts);
                             renderSharedPartsListUI();
                             showAlertModal(`「${p.name}」を共有ドライブから削除しました`, '削除完了');
                         } else {
@@ -5837,9 +6002,13 @@
                 }
 
                 row.querySelector('.dl-part-btn').onclick = async () => {
-                    showLoadingModal(`「${p.name}」のパーツデータをダウンロード中...`, 'ダウンロード中');
+                    showLoadingModal(`「${p.name}」のパーツデータを読み込み中...`, '読み込み中');
                     try {
-                        const fullData = await downloadSharedItem(p.fileId);
+                        const localHit = await findLocalRecordBySharedFileId('parts', p.fileId);
+                        const fullData = localHit || await downloadSharedItem(p.fileId, (retryNum, maxNum) => {
+                            const dEl = document.getElementById('loading-modal-desc');
+                            if (dEl) dEl.textContent = `アクセス集中ため自動再試行中 (${retryNum}/${maxNum})...`;
+                        });
                         if (db) {
                             db.transaction('parts', 'readwrite').objectStore('parts').put({
                                 id: Date.now(),
