@@ -425,7 +425,7 @@
     </section>
 
     <input type="file" id="bg-file-input" accept="image/*" class="hidden">
-    <input type="file" id="item-file-input" accept="image/*" class="hidden">
+    <input type="file" id="item-file-input" accept="image/png,image/jpeg,image/webp,image/*" class="hidden">
 
     <footer id="bottom-toolbar">
         <button class="toolbar-btn" data-sheet="sheet-bg">
@@ -494,9 +494,20 @@
                 写真から式場を読み込む / 変更
             </button>
 
-            <div class="bg-gray-950 border border-gray-800 rounded-xl p-3">
-                <span class="text-xs font-bold text-gray-300 block mb-2">保存済み式場ライブラリ</span>
-                <div id="saved-venues-list" class="space-y-1.5 max-h-36 overflow-y-auto hide-scrollbar">
+            <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
+                <div class="flex items-center justify-between gap-1.5">
+                    <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
+                        <button type="button" id="tab-venue-local" class="px-2.5 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
+                        <button type="button" id="tab-venue-shared" class="px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" id="btn-gas-url-venue" class="hidden bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-[10px] font-bold px-2 py-1 rounded-lg" title="共有URL設定">URL</button>
+                        <button type="button" id="btn-upload-venue-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow whitespace-nowrap">
+                            ↑ 現在の式場を共有UP
+                        </button>
+                    </div>
+                </div>
+                <div id="saved-venues-list" class="space-y-1.5 max-h-40 overflow-y-auto hide-scrollbar">
                     <p class="text-[11px] text-gray-500 text-center py-2">保存された式場はありません</p>
                 </div>
             </div>
@@ -529,9 +540,20 @@
                     写真からパーツを作成（切り抜き）
                 </button>
 
-                <div class="bg-gray-950 border border-gray-800 rounded-xl p-3">
-                    <span class="text-xs font-bold text-gray-300 block mb-2">保存済みパーツ（マイライブラリ）</span>
-                    <div id="saved-parts-list" class="space-y-1.5 max-h-36 overflow-y-auto hide-scrollbar">
+                <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between gap-1.5">
+                        <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
+                            <button type="button" id="tab-part-local" class="px-2.5 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
+                            <button type="button" id="tab-part-shared" class="px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button type="button" id="btn-gas-url-part" class="hidden bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-[10px] font-bold px-2 py-1 rounded-lg" title="共有URL設定">URL</button>
+                            <button type="button" id="btn-upload-part-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow whitespace-nowrap">
+                                ↑ 選択パーツを共有UP
+                            </button>
+                        </div>
+                    </div>
+                    <div id="saved-parts-list" class="space-y-1.5 max-h-40 overflow-y-auto hide-scrollbar">
                         <p class="text-[11px] text-gray-500 text-center py-2">保存されたパーツはありません</p>
                     </div>
                 </div>
@@ -1751,7 +1773,7 @@
         document.getElementById('mode-select-cancel-x')?.addEventListener('click', closeModeOverlay);
         document.getElementById('mode-select-cancel-btn')?.addEventListener('click', closeModeOverlay);
 
-        function loadOptimizedImage(file, callback) {
+        function loadOptimizedImage(file, callback, keepTransparency = false) {
             const reader = new FileReader();
             reader.onload = e => {
                 const img = new Image();
@@ -1765,9 +1787,16 @@
                     const off = document.createElement('canvas');
                     off.width = w; off.height = h;
                     off.getContext('2d').drawImage(img, 0, 0, w, h);
+
+                    const rawExt = (file.name.split('.').pop() || '').toLowerCase();
+                    const isTransparentType = keepTransparency || ['image/png', 'image/webp', 'image/gif'].includes(file.type) || ['png', 'webp', 'gif'].includes(rawExt);
+                    const mimeType = isTransparentType ? 'image/png' : 'image/jpeg';
+                    const quality = isTransparentType ? undefined : 0.90;
+
                     const optImg = new Image();
+                    optImg.dataset.ext = isTransparentType ? (rawExt === 'webp' ? 'webp' : 'png') : 'jpg';
                     optImg.onload = () => callback(optImg);
-                    optImg.src = off.toDataURL('image/jpeg', 0.90);
+                    optImg.src = off.toDataURL(mimeType, quality);
                 };
                 img.src = e.target.result;
             };
@@ -2710,14 +2739,33 @@
                     const vt = v.timestamp || v.id;
                     const vd = new Date(vt);
                     const vDateStr = `${vd.getFullYear()}/${String(vd.getMonth()+1).padStart(2,'0')}/${String(vd.getDate()).padStart(2,'0')} ${String(vd.getHours()).padStart(2,'0')}:${String(vd.getMinutes()).padStart(2,'0')}`;
+                    const hasPersp = !!(v.perspectiveLinesRaw && v.perspectiveLinesRaw.length >= 2);
+                    const originBadge = v.isSharedCopy
+                        ? `<span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
+                        : `<span class="text-[9px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
+                    const perspBadge = hasPersp
+                        ? `<span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded shrink-0">パースあり</span>`
+                        : `<span class="text-[9px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+
                     const row = document.createElement('div');
                     row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-3 py-2 rounded-lg flex items-center justify-between cursor-pointer transition";
                     row.innerHTML = `
                         <div class="flex-1 overflow-hidden pr-2">
-                            <span class="text-xs font-bold text-gray-200 truncate block">${v.name}</span>
-                            <span class="text-[10px] text-gray-400 font-mono">${v.measureRealMm}mm 設定済 | ${vDateStr}</span>
+                            <div class="flex items-center gap-1 mb-0.5">
+                                ${originBadge}
+                                ${perspBadge}
+                                <span class="text-xs font-bold text-gray-200 truncate">${v.name}</span>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-mono block">${v.measureRealMm}mm 設定済 | ${vDateStr}</span>
                         </div>
-                        <button class="del-venue-btn text-red-400 hover:text-red-300 p-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" class="up-venue-btn text-emerald-400 hover:text-emerald-300 p-1" title="共有ドライブへアップロード">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            </button>
+                            <button type="button" class="del-venue-btn text-red-400 hover:text-red-300 p-1" title="削除">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
                     `;
                     row.onclick = async () => {
                         if (state.items.length > 0) {
@@ -2762,6 +2810,10 @@
                             requestRender();
                         };
                         img.src = v.imgData;
+                    };
+                    row.querySelector('.up-venue-btn').onclick = async ev => {
+                        ev.stopPropagation();
+                        await uploadVenueRecordToShared(v);
                     };
                     row.querySelector('.del-venue-btn').onclick = async ev => {
                         ev.stopPropagation();
@@ -2849,7 +2901,7 @@
                     openModal('crop-modal');
                     requestAnimationFrame(() => {
                         setTimeout(() => initCropEditor(optImg), 50);
-                    });
+                    }, true);
                 });
                 e.target.value = '';
             });
@@ -3960,18 +4012,30 @@
                     const rt = r.timestamp || r.id;
                     const rd = new Date(rt);
                     const rDateStr = `${rd.getFullYear()}/${String(rd.getMonth()+1).padStart(2,'0')}/${String(rd.getDate()).padStart(2,'0')} ${String(rd.getHours()).padStart(2,'0')}:${String(rd.getMinutes()).padStart(2,'0')}`;
+                    const originBadge = r.isSharedCopy
+                        ? `<span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
+                        : `<span class="text-[9px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
+                    const extLabel = (r.ext || (r.imgData && r.imgData.startsWith('data:image/jpeg') ? 'jpg' : 'png')).toUpperCase();
+
                     const row = document.createElement('div');
                     row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-3 py-2 rounded-lg flex items-center justify-between cursor-pointer transition";
                     row.innerHTML = `
                         <div class="flex-1 overflow-hidden pr-2">
-                            <span class="text-xs font-bold text-gray-200 truncate block">${r.name}</span>
+                            <div class="flex items-center gap-1 mb-0.5">
+                                ${originBadge}
+                                <span class="text-[9px] bg-gray-800 text-gray-300 px-1 rounded font-mono shrink-0">${extLabel}</span>
+                                <span class="text-xs font-bold text-gray-200 truncate">${r.name}</span>
+                            </div>
                             <span class="text-[9px] text-gray-400 font-mono block">${rDateStr}</span>
                         </div>
-                        <div class="flex items-center gap-1 ml-2">
-                            <button class="rename-part-btn text-blue-400 hover:text-blue-300 p-1" title="名前変更">
+                        <div class="flex items-center gap-1 ml-2 shrink-0">
+                            <button type="button" class="up-part-btn text-emerald-400 hover:text-emerald-300 p-1" title="共有ドライブへアップロード">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            </button>
+                            <button type="button" class="rename-part-btn text-blue-400 hover:text-blue-300 p-1" title="名前変更">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button class="del-part-btn text-red-400 hover:text-red-300 p-1" title="削除">
+                            <button type="button" class="del-part-btn text-red-400 hover:text-red-300 p-1" title="削除">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -3992,6 +4056,10 @@
                             closeModal('add-item-modal');
                         };
                         img.src = r.imgData;
+                    };
+                    row.querySelector('.up-part-btn').onclick = async ev => {
+                        ev.stopPropagation();
+                        await uploadPartRecordToShared(r);
                     };
                     row.querySelector('.rename-part-btn').onclick = async ev => {
                         ev.stopPropagation();
@@ -4970,6 +5038,334 @@
                 }  
             });  
         }
+
+        // =====================================================================
+        // Googleドライブ（GAS）共有ライブラリ連携
+        // ▼ ここにデプロイしたGASの「ウェブアプリURL」を貼り付けてください ▼
+        // =====================================================================
+        const DEFAULT_GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyh17_BOrXs1j2cp-zBVEtqqAv5Gd-HxeEpGL5Ld9VaNkNrTZbDr5C-6WYe7kkh_KNw/exec';
+
+        function getGasWebAppUrl() {
+            if (DEFAULT_GAS_WEBAPP_URL && DEFAULT_GAS_WEBAPP_URL.startsWith('http')) {
+                return DEFAULT_GAS_WEBAPP_URL.trim();
+            }
+            return (localStorage.getItem('sekou_sim_gas_url') || '').trim();
+        }
+
+        async function ensureGasUrlConfigured() {
+            let url = getGasWebAppUrl();
+            if (url && url.startsWith('http')) return url;
+            const inputUrl = await showCustomPrompt(
+                'Googleドライブ連携URL設定',
+                'GASの「ウェブアプリURL（https://script.google.com/.../exec）」を入力してください:',
+                ''
+            );
+            if (inputUrl && inputUrl.trim().startsWith('http')) {
+                localStorage.setItem('sekou_sim_gas_url', inputUrl.trim());
+                return inputUrl.trim();
+            }
+            return null;
+        }
+
+        // URL未ハードコード時のみUIに「URL」設定ボタンを表示
+        (function initGasUrlButtons() {
+            const isHardcoded = DEFAULT_GAS_WEBAPP_URL && DEFAULT_GAS_WEBAPP_URL.startsWith('http');
+            if (!isHardcoded) {
+                ['btn-gas-url-venue', 'btn-gas-url-part'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.addEventListener('click', async () => {
+                            const cur = localStorage.getItem('sekou_sim_gas_url') || '';
+                            const next = await showCustomPrompt('共有ドライブURL設定', 'GASのウェブアプリURLを入力:', cur);
+                            if (next !== null) {
+                                localStorage.setItem('sekou_sim_gas_url', next.trim());
+                                showAlertModal('共有ドライブURLを保存しました', '設定完了');
+                            }
+                        });
+                    }
+                });
+            }
+        })();
+
+        async function uploadToSharedDrive(payload) {
+            const url = await ensureGasUrlConfigured();
+            if (!url) {
+                showAlertModal('共有ドライブのURLが未設定です', '設定エラー');
+                return false;
+            }
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                return json.status === 'ok';
+            } catch (err) {
+                showAlertModal('アップロードに失敗しました: ' + err.message, '通信エラー');
+                return false;
+            }
+        }
+
+        async function fetchSharedList(type) {
+            const url = await ensureGasUrlConfigured();
+            if (!url) throw new Error('URL未設定');
+            const res = await fetch(`${url}?action=list&type=${encodeURIComponent(type)}`);
+            const json = await res.json();
+            return json.items || [];
+        }
+
+        async function downloadSharedItem(fileId) {
+            const url = await ensureGasUrlConfigured();
+            if (!url) throw new Error('URL未設定');
+            const res = await fetch(`${url}?action=get&fileId=${encodeURIComponent(fileId)}`);
+            return await res.json();
+        }
+
+        async function uploadVenueRecordToShared(venueData) {
+            const hasPersp = !!(venueData.perspectiveLinesRaw && venueData.perspectiveLinesRaw.length >= 2);
+            const name = await showCustomPrompt(
+                '共有ドライブへ式場を登録',
+                `みんなに公開する式場名を入力してください（状態: ${hasPersp ? 'パースあり' : 'パースなし'}）:`,
+                venueData.name || '式場'
+            );
+            if (!name) return;
+
+            showAlertModal('Googleドライブへアップロード中です...', '通信中');
+            const ok = await uploadToSharedDrive({
+                type: 'venue',
+                timestamp: Date.now(),
+                name: name,
+                hasPerspective: hasPersp,
+                imgData: venueData.imgData,
+                measureRealMm: venueData.measureRealMm,
+                rawPxPerMm: venueData.rawPxPerMm,
+                measureHandlesRaw: venueData.measureHandlesRaw,
+                baselineDepth: venueData.baselineDepth,
+                perspectiveLinesRaw: venueData.perspectiveLinesRaw
+            });
+            closeModal('alert-modal');
+            if (ok) {
+                showAlertModal(`式場「${name}」を共有ドライブに登録しました！`, '共有完了');
+                document.getElementById('tab-venue-shared')?.click();
+            }
+        }
+
+        async function uploadPartRecordToShared(partData) {
+            const name = await showCustomPrompt(
+                '共有ドライブへパーツを登録',
+                'みんなに公開するパーツ名を入力してください（透過PNG対応）:',
+                partData.name || 'パーツ'
+            );
+            if (!name) return;
+
+            showAlertModal('Googleドライブへアップロード中です...', '通信中');
+            const ok = await uploadToSharedDrive({
+                type: 'part',
+                timestamp: Date.now(),
+                name: name,
+                ext: 'png',
+                imgData: partData.imgData,
+                realMm: partData.realMm,
+                rawPxPerMm: partData.rawPxPerMm
+            });
+            closeModal('alert-modal');
+            if (ok) {
+                showAlertModal(`パーツ「${name}」を共有ドライブに登録しました！`, '共有完了');
+                document.getElementById('tab-part-shared')?.click();
+            }
+        }
+
+        // 現在の式場を共有UP
+        document.getElementById('btn-upload-venue-shared')?.addEventListener('click', async () => {
+            if (!state.bg.loaded || !state.bg.rawPxPerMm) {
+                showAlertModal('寸法設定済みの式場写真が必要です', '確認');
+                return;
+            }
+            await uploadVenueRecordToShared({
+                name: state.bg.name || '式場',
+                imgData: state.bg.obj.src,
+                measureRealMm: state.bg.measureRealMm,
+                rawPxPerMm: state.bg.rawPxPerMm,
+                measureHandlesRaw: state.bg.measureHandlesRaw,
+                baselineDepth: state.bg.baselineDepth,
+                perspectiveLinesRaw: state.bg.perspectiveLinesRaw
+            });
+        });
+
+        // 式場タブ切り替え（マイ保存 / 共有ドライブ）
+        document.getElementById('tab-venue-local')?.addEventListener('click', () => {
+            document.getElementById('tab-venue-local').className = "px-2.5 py-1 rounded-md bg-blue-600 text-white transition";
+            document.getElementById('tab-venue-shared').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
+            renderSavedVenues();
+        });
+
+        document.getElementById('tab-venue-shared')?.addEventListener('click', async () => {
+            document.getElementById('tab-venue-shared').className = "px-2.5 py-1 rounded-md bg-emerald-600 text-white transition";
+            document.getElementById('tab-venue-local').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
+            const list = document.getElementById('saved-venues-list');
+            if (!list) return;
+            list.innerHTML = `<p class="text-[11px] text-cyan-400 text-center py-3 animate-pulse">共有ドライブを読み込み中...</p>`;
+
+            try {
+                const items = await fetchSharedList('venue');
+                if (items.length === 0) {
+                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-2">共有された式場はありません</p>`;
+                    return;
+                }
+                list.innerHTML = '';
+                items.forEach(v => {
+                    const vd = new Date(v.timestamp || Date.now());
+                    const vDateStr = `${vd.getFullYear()}/${String(vd.getMonth()+1).padStart(2,'0')}/${String(vd.getDate()).padStart(2,'0')}`;
+                    const perspBadge = v.hasPerspective
+                        ? `<span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/50 px-1.5 py-0.5 rounded font-bold shrink-0">パースあり</span>`
+                        : `<span class="text-[9px] bg-gray-800 text-gray-400 border border-gray-700 px-1.5 py-0.5 rounded shrink-0">パースなし</span>`;
+
+                    const row = document.createElement('div');
+                    row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-3 py-2 rounded-lg flex items-center justify-between gap-2";
+                    row.innerHTML = `
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex items-center gap-1 mb-0.5">
+                                <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
+                                ${perspBadge}
+                                <span class="text-xs font-bold text-white truncate">${v.name}</span>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-mono block">基準: ${v.measureRealMm}mm | ${vDateStr}</span>
+                        </div>
+                        <button type="button" class="dl-venue-btn bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shrink-0 shadow">
+                            DLして保存
+                        </button>
+                    `;
+                    row.querySelector('.dl-venue-btn').onclick = async () => {
+                        showAlertModal('式場データをダウンロード中...', '読み込み中');
+                        try {
+                            const fullData = await downloadSharedItem(v.fileId);
+                            if (db) {
+                                db.transaction('venues', 'readwrite').objectStore('venues').put({
+                                    id: Date.now(),
+                                    timestamp: Date.now(),
+                                    name: fullData.name,
+                                    isSharedCopy: true,
+                                    imgData: fullData.imgData,
+                                    measureRealMm: fullData.measureRealMm,
+                                    rawPxPerMm: fullData.rawPxPerMm,
+                                    measureHandlesRaw: fullData.measureHandlesRaw,
+                                    baselineDepth: fullData.baselineDepth,
+                                    perspectiveLinesRaw: fullData.perspectiveLinesRaw
+                                });
+                            }
+                            closeModal('alert-modal');
+                            document.getElementById('tab-venue-local')?.click();
+                            showAlertModal(`「${fullData.name}」をマイ保存にダウンロードしました。一覧からタップして読み込めます。`, 'ダウンロード完了');
+                        } catch (err) {
+                            closeModal('alert-modal');
+                            showAlertModal('ダウンロードに失敗しました', 'エラー');
+                        }
+                    };
+                    list.appendChild(row);
+                });
+            } catch (e) {
+                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
+            }
+        });
+
+        // 選択中のパーツを共有UP
+        document.getElementById('btn-upload-part-shared')?.addEventListener('click', async () => {
+            const item = state.items.find(i => i.id === state.selectedItemId);
+            if (!item) {
+                showAlertModal('先に画面上のパーツを1つタップして選択するか、マイ保存一覧の雲アイコンからUPしてください', '確認');
+                return;
+            }
+            await uploadPartRecordToShared({
+                name: item.name,
+                imgData: item.canvas.toDataURL('image/png'),
+                realMm: item.realMm,
+                rawPxPerMm: item.rawPxPerMm || (item.realMm ? item.canvas.width / item.realMm.w : null)
+            });
+        });
+
+        // パーツタブ切り替え（マイ保存 / 共有ドライブ）
+        document.getElementById('tab-part-local')?.addEventListener('click', () => {
+            document.getElementById('tab-part-local').className = "px-2.5 py-1 rounded-md bg-blue-600 text-white transition";
+            document.getElementById('tab-part-shared').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
+            renderSavedParts();
+        });
+
+        document.getElementById('tab-part-shared')?.addEventListener('click', async () => {
+            document.getElementById('tab-part-shared').className = "px-2.5 py-1 rounded-md bg-emerald-600 text-white transition";
+            document.getElementById('tab-part-local').className = "px-2.5 py-1 rounded-md text-gray-400 hover:text-white transition";
+            const list = document.getElementById('saved-parts-list');
+            if (!list) return;
+            list.innerHTML = `<p class="text-[11px] text-cyan-400 text-center py-3 animate-pulse">共有ドライブを読み込み中...</p>`;
+
+            try {
+                const items = await fetchSharedList('part');
+                if (items.length === 0) {
+                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-2">共有されたパーツはありません</p>`;
+                    return;
+                }
+                list.innerHTML = '';
+                items.forEach(p => {
+                    const pd = new Date(p.timestamp || Date.now());
+                    const pDateStr = `${pd.getFullYear()}/${String(pd.getMonth()+1).padStart(2,'0')}/${String(pd.getDate()).padStart(2,'0')}`;
+                    const row = document.createElement('div');
+                    row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-3 py-2 rounded-lg flex items-center justify-between gap-2";
+                    row.innerHTML = `
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex items-center gap-1 mb-0.5">
+                                <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
+                                <span class="text-[9px] bg-gray-800 text-gray-300 px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
+                                <span class="text-xs font-bold text-white truncate">${p.name}</span>
+                            </div>
+                            <span class="text-[9px] text-gray-400 font-mono block">${pDateStr}</span>
+                        </div>
+                        <button type="button" class="dl-part-btn bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shrink-0 shadow">
+                            DLして配置
+                        </button>
+                    `;
+                    row.querySelector('.dl-part-btn').onclick = async () => {
+                        showAlertModal('パーツをダウンロード中...', '読み込み中');
+                        try {
+                            const fullData = await downloadSharedItem(p.fileId);
+                            if (db) {
+                                db.transaction('parts', 'readwrite').objectStore('parts').put({
+                                    id: Date.now(),
+                                    timestamp: Date.now(),
+                                    name: fullData.name,
+                                    isSharedCopy: true,
+                                    ext: fullData.ext || 'png',
+                                    imgData: fullData.imgData,
+                                    realMm: fullData.realMm,
+                                    rawPxPerMm: fullData.rawPxPerMm
+                                });
+                            }
+                            const img = new Image();
+                            img.onload = () => {
+                                const cvs = document.createElement('canvas');
+                                cvs.width = img.width; cvs.height = img.height;
+                                cvs.getContext('2d').drawImage(img, 0, 0);
+                                state.pendingItemCanvas = cvs;
+                                let targetScale = 1.0;
+                                if (fullData.rawPxPerMm && state.bg.rawPxPerMm) {
+                                    targetScale = state.bg.rawPxPerMm / fullData.rawPxPerMm;
+                                }
+                                addItemToScene(targetScale, fullData.realMm, fullData.rawPxPerMm);
+                                closeModal('alert-modal');
+                                closeModal('add-item-modal');
+                                document.getElementById('tab-part-local')?.click();
+                            };
+                            img.src = fullData.imgData;
+                        } catch (err) {
+                            closeModal('alert-modal');
+                            showAlertModal('ダウンロードに失敗しました', 'エラー');
+                        }
+                    };
+                    list.appendChild(row);
+                });
+            } catch (e) {
+                list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（URL設定を確認してください）</p>`;
+            }
+        });
     </script>
 </body>
 </html>
