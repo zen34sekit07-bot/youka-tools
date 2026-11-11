@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'youkaen-tools-v5';
+const CACHE_NAME = 'youkaen-tools-v6';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -16,8 +16,10 @@ const ASSETS_TO_CACHE = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // ブラウザの古い一時キャッシュを無視して最新を取得
+      const requests = ASSETS_TO_CACHE.map((url) => new Request(url, { cache: 'reload' }));
+      return cache.addAll(requests);
     }).then(() => self.skipWaiting())
   );
 });
@@ -34,8 +36,23 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// ネット優先（Network First）：オンライン時は常に最新を取得し、圏外時のみキャッシュを返す
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request).then((res) => res || fetch(event.request))
+    fetch(event.request, { cache: 'no-cache' })
+      .then((networkRes) => {
+        if (networkRes && networkRes.status === 200) {
+          const resClone = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, resClone);
+          });
+        }
+        return networkRes;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });

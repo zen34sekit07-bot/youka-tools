@@ -69,6 +69,70 @@
     .card:active { background: #334155; }
     .card h2 { font-size: 1.1rem; margin: 0 0 6px 0; color: #38bdf8; }
     .card p { font-size: 0.85rem; margin: 0; color: #94a3b8; }
+    .update-box {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 20px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-sizing: border-box;
+    }
+    .update-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #334155;
+    }
+    .update-box-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .update-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .update-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      gap: 8px;
+    }
+    .update-tool {
+      color: #f8fafc;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .update-date {
+      color: #94a3b8;
+      font-family: monospace;
+      font-size: 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-new {
+      background: #0284c7;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
   </style>
 </head>
 <body>
@@ -104,6 +168,16 @@
       <h2>06. 花材提案ツール</h2>
       <p>花材提案・花の図鑑</p>
     </a>
+  </div>
+
+  <div class="update-box">
+    <div class="update-box-header">
+      <span class="update-box-title">🔄 更新履歴（自動検出）</span>
+      <span id="update-status-text" style="font-size: 10px; color: #64748b;">確認中...</span>
+    </div>
+    <ul id="update-history-list" class="update-list">
+      <li style="font-size: 11px; color: #64748b;">更新情報を読み込んでいます...</li>
+    </ul>
   </div>
 
   <!-- クレジットモーダル -->
@@ -142,6 +216,51 @@
         if (e.target === cModal) cModal.classList.remove('active');
       });
     }
-  <\/script>
+
+    (async function checkToolUpdates() {
+      const tools = [
+        { file: 'tool1.html', name: '01. 施工シミュレーター' },
+        { file: 'tool2.html', name: '02. グリッドメーカー' },
+        { file: 'tool3.html', name: '03. ぴったりベースサーチ' },
+        { file: 'tool4.html', name: '04. 写真重ねてチェッカー' },
+        { file: 'tool5.html', name: '05. 供花ポイント＆花材計算' },
+        { file: 'tool6.html', name: '06. 花材提案ツール' }
+      ];
+      const listEl = document.getElementById('update-history-list');
+      const statusEl = document.getElementById('update-status-text');
+      if (!listEl) return;
+
+      const results = await Promise.all(tools.map(async (t) => {
+        try {
+          const res = await fetch(t.file, { method: 'HEAD', cache: 'no-cache' });
+          const lastMod = res.headers.get('Last-Modified');
+          if (res.ok && lastMod) {
+            const ts = Date.parse(lastMod);
+            if (!isNaN(ts)) return { ...t, ts };
+          }
+        } catch (_) {}
+        return null;
+      }));
+
+      const valid = results.filter(Boolean).sort((a, b) => b.ts - a.ts);
+      if (valid.length === 0) {
+        if (statusEl) statusEl.textContent = 'オフライン';
+        listEl.innerHTML = '<li style="font-size: 11px; color: #64748b;">更新情報を取得できませんでした</li>';
+        return;
+      }
+
+      if (statusEl) statusEl.textContent = '最新順';
+      const now = Date.now();
+      const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+
+      listEl.innerHTML = valid.map((item) => {
+        const d = new Date(item.ts);
+        const pad = (n) => String(n).padStart(2, '0');
+        const dateStr = `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        const isNew = (now - item.ts) < threeDaysMs;
+        return `<li class="update-item"><span class="update-tool">${isNew ? '<span class="badge-new">NEW</span>' : ''}${item.name}</span><span class="update-date">${dateStr}</span></li>`;
+      }).join('');
+    })();
+  </script>
 </body>
 </html>
