@@ -122,11 +122,19 @@
             padding-top: 6px;
             padding-left: 4px;
             padding-right: 4px;
-            padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+            padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 2px;
             box-sizing: border-box;
+        }
+        @media (display-mode: standalone) {
+            #bottom-toolbar {
+                padding-bottom: max(env(safe-area-inset-bottom, 0px), 54px);
+            }
+            #toggle-ui-btn {
+                bottom: calc(64px + max(env(safe-area-inset-bottom, 0px), 54px));
+            }
         }
 
         .bottom-sheet {
@@ -741,12 +749,12 @@
     </div>  
   
     <div id="custom-confirm-modal" class="modal" style="z-index: 200;">
-        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center">
-            <h3 id="custom-confirm-title" class="text-sm font-bold text-white mb-2">確認</h3>
-            <p id="custom-confirm-desc" class="text-xs text-gray-300 mb-5 leading-relaxed"></p>
-            <div class="grid grid-cols-2 gap-2">
-                <button id="custom-confirm-cancel" class="bg-gray-800 text-gray-300 py-2 rounded-xl text-xs font-bold border border-gray-700">キャンセル</button>
-                <button id="custom-confirm-ok" class="bg-red-600 text-white py-2 rounded-xl text-xs font-bold shadow">実行</button>
+        <div class="bg-slate-900/95 border border-slate-700/80 rounded-2xl w-full max-w-xs p-6 shadow-2xl text-center">
+            <h3 id="custom-confirm-title" class="text-base font-bold text-white mb-2">確認</h3>
+            <p id="custom-confirm-desc" class="text-xs text-slate-400 mb-6 leading-relaxed whitespace-pre-line"></p>
+            <div class="grid grid-cols-2 gap-2.5">
+                <button id="custom-confirm-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">キャンセル</button>
+                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">OK</button>
             </div>
         </div>
     </div>
@@ -4171,10 +4179,11 @@
                 return;
             }
             // 3. トップ画面での戻る：確認画面を表示
-            showCustomConfirm('ツール一覧へ戻る', 'ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。').then(ok => {
+            showCustomConfirm('ツール一覧へ戻りますか？', '保存されていないデータは破棄されます。').then(ok => {
                 if (ok) {
-                    isClosingByCode = true;
-                    window.location.href = 'index.html';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 60);
                 }
             });
         });
