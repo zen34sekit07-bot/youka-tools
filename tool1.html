@@ -1639,9 +1639,11 @@
             applyAppMode(selectedMode);
         };
 
-        function applyAppMode(modeName) {
+        function applyAppMode(modeName, persist = true) {
             state.mode = modeName;
-            localStorage.setItem('sekou_sim_mode', modeName);
+            if (persist) {
+                localStorage.setItem('sekou_sim_mode', modeName);
+            }
             updateGuideContent();
 
             const isPrecision = modeName === 'precision';
@@ -1670,8 +1672,10 @@
 
             updateFloatingDepthSlider();
 
-            const startOverlay = document.getElementById('start-screen-overlay');
-            if (startOverlay) startOverlay.style.display = 'none';
+            if (persist) {
+                const startOverlay = document.getElementById('start-screen-overlay');
+                if (startOverlay) startOverlay.style.display = 'none';
+            }
             try { updateGuideContent(); } catch(_) {}
             requestRender();
         }
@@ -1680,15 +1684,14 @@
             const savedMode = localStorage.getItem('sekou_sim_mode');
             const startOverlay = document.getElementById('start-screen-overlay');
             if (!savedMode) {
+                applyAppMode('precision', false);
                 if (startOverlay) {
                     startOverlay.style.display = 'flex';
                     document.getElementById('mode-select-cancel-x')?.classList.add('hidden');
                     document.getElementById('mode-select-cancel-btn')?.classList.add('hidden');
                 }
-                applyAppMode('precision');
             } else {
-                if (startOverlay) startOverlay.style.display = 'none';
-                applyAppMode(savedMode);
+                applyAppMode(savedMode, true);
             }
         })();
 
@@ -2585,7 +2588,7 @@
         const bgRemeasureTrigger = document.getElementById('bg-remeasure-trigger');
         if (bgRemeasureTrigger) {
             bgRemeasureTrigger.addEventListener('click', () => {
-                if (!state.bg.loaded) { alert('先に背景写真を読み込んでください'); return; }
+                if (!state.bg.loaded) { showAlertModal('先に背景写真を読み込んでください', '確認'); return; }
                 closeSheet('sheet-bg');
                 startBgMeasuring();
             });
@@ -4730,7 +4733,7 @@
         if (btnQuickGridGear) {
             btnQuickGridGear.addEventListener('click', () => {
                 if (!state.bg.loaded) {
-                    alert('先に式場写真を読み込んでください');
+                    showAlertModal('先に式場写真を読み込んでください', '確認');
                     return;
                 }
                 syncGridSettingsModal();
