@@ -1879,12 +1879,7 @@
         const closeModeOverlay = () => {
             const startOverlay = document.getElementById('start-screen-overlay');
             if (startOverlay) startOverlay.style.display = 'none';
-            setTimeout(() => {
-                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
-                    isClosingByCode = true;
-                    history.back();
-                }
-            }, 10);
+            syncOverlayHistoryOnClose();
         };
         document.getElementById('mode-select-cancel-x')?.addEventListener('click', closeModeOverlay);
         document.getElementById('mode-select-cancel-btn')?.addEventListener('click', closeModeOverlay);
@@ -2916,6 +2911,7 @@
 
                             const bgStatus = document.getElementById('bg-status-label');
                             if (bgStatus) bgStatus.textContent = v.name;
+                            updateProjectNameDisplay(v.name);
                             const pStatus = document.getElementById('bg-perspective-status');
                             if (pStatus) pStatus.textContent = v.perspectiveLinesRaw ? '設定完了（有効）' : '未設定（標準遠近）';
 
@@ -2931,6 +2927,9 @@
                             updateLayersUI();
                             updatePartSaveBox();
                             requestRender();
+                        };
+                        img.onerror = () => {
+                            showAlertModal('式場画像の読み込みに失敗しました。', '読み込みエラー');
                         };
                         img.src = v.imgData;
                     };
@@ -4301,8 +4300,9 @@
             });
         }
 
-        // --- スマホ「戻る」ボタン連動 (History API) ---
-        let isClosingByCode = false;
+        // --- スマホ「戻る」ボタン連動 (History API・多重発火防止版) ---
+        let pendingHistoryBackCount = 0;
+        let overlayHistorySyncTimer = null;
         history.replaceState({ page: 'root' }, '');
         history.pushState({ page: 'main' }, '');
 
@@ -4319,9 +4319,24 @@
         }
 
         function pushOverlayHistory() {
+            if (overlayHistorySyncTimer) {
+                clearTimeout(overlayHistorySyncTimer);
+                overlayHistorySyncTimer = null;
+            }
             if (!history.state || !history.state.overlayOpen) {
                 history.pushState({ overlayOpen: true }, '');
             }
+        }
+
+        function syncOverlayHistoryOnClose() {
+            if (overlayHistorySyncTimer) clearTimeout(overlayHistorySyncTimer);
+            overlayHistorySyncTimer = setTimeout(() => {
+                overlayHistorySyncTimer = null;
+                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
+                    pendingHistoryBackCount++;
+                    history.back();
+                }
+            }, 30);
         }
 
         function closeActiveOverlayFromHistory() {
@@ -4360,8 +4375,8 @@
         }
 
         window.addEventListener('popstate', () => {
-            if (isClosingByCode) {
-                isClosingByCode = false;
+            if (pendingHistoryBackCount > 0) {
+                pendingHistoryBackCount--;
                 return;
             }
             history.pushState({ page: 'main' }, '');
@@ -4410,12 +4425,7 @@
             const overlay = document.getElementById('sheet-overlay');
             if (overlay) overlay.classList.remove('active');
             document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
-            setTimeout(() => {
-                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
-                    isClosingByCode = true;
-                    history.back();
-                }
-            }, 10);
+            syncOverlayHistoryOnClose();
         }
 
         const sheetOverlay = document.getElementById('sheet-overlay');
@@ -4424,12 +4434,7 @@
                 document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('active'));
                 document.querySelectorAll('.toolbar-btn').forEach(b => b.classList.remove('active'));
                 sheetOverlay.classList.remove('active');
-                setTimeout(() => {
-                    if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
-                        isClosingByCode = true;
-                        history.back();
-                    }
-                }, 10);
+                syncOverlayHistoryOnClose();
             });
         }
 
@@ -4454,12 +4459,7 @@
             if (!anySheetActive && overlay) {
                 overlay.classList.remove('active');
             }
-            setTimeout(() => {
-                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
-                    isClosingByCode = true;
-                    history.back();
-                }
-            }, 10);
+            syncOverlayHistoryOnClose();
         }
 
         const btnGuide = document.getElementById('btn-guide');
@@ -5867,6 +5867,10 @@
                             hideLoadingModal();
                             closeModal('add-item-modal');
                             document.getElementById('tab-part-local')?.click();
+                        };
+                        img.onerror = () => {
+                            hideLoadingModal();
+                            showAlertModal('パーツ画像の展開に失敗しました', 'エラー');
                         };
                         img.src = fullData.imgData;
                     } catch (err) {
