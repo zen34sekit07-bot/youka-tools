@@ -119,10 +119,10 @@
             background: #0f172a; 
             border-top: 1px solid #1e293b; 
             z-index: 50; 
-            padding-top: 4px;
+            padding-top: 6px;
             padding-left: 4px;
             padding-right: 4px;
-            padding-bottom: max(env(safe-area-inset-bottom, 0px), 54px);
+            padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 2px;
@@ -151,7 +151,7 @@
 
         #toggle-ui-btn { 
             position: absolute; 
-            bottom: calc(80px + max(env(safe-area-inset-bottom, 0px), 28px)); 
+            bottom: calc(64px + max(env(safe-area-inset-bottom, 0px), 8px)); 
             right: 16px; 
             width: 46px; height: 46px; 
             background: rgba(15, 23, 42, 0.85); 
@@ -317,31 +317,35 @@
             <span class="text-[9px] font-bold text-cyan-300 select-none">手前</span>
         </div>
 
-        <div id="measure-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-xs p-3.5 rounded-xl shadow-2xl border border-blue-500 z-40 backdrop-blur-md flex flex-col gap-2.5">
-            <div class="flex justify-between items-center text-gray-300">
-                <span class="font-bold text-blue-300">【背景の基準寸法】線の端をスライドして調整</span>
-                <button id="measure-cancel-btn" class="text-gray-400 hover:text-white text-xs px-2 py-0.5">✕</button>
+        <div id="measure-banner" class="hidden absolute top-2 left-2 right-2 bg-gray-900/90 text-white text-xs p-2.5 rounded-xl shadow-2xl border border-blue-500/80 z-40 backdrop-blur-md flex flex-col gap-1.5">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2 text-[10px] flex-wrap">
+                    <span class="font-bold text-blue-300">【基準寸法】</span>
+                    <span class="text-red-300 font-bold">●赤線:実寸を合わせる</span>
+                    <span id="measure-blue-line-desc" class="text-cyan-300 font-bold">●青線:測った場所の奥行き</span>
+                </div>
+                <button id="measure-cancel-btn" class="text-gray-400 hover:text-white text-xs px-1.5 shrink-0">✕</button>
             </div>
             
-            <div class="flex items-center gap-2">
-                <div class="flex-1 flex items-center bg-gray-950 border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500">
-                    <span class="text-xs text-gray-400 font-bold mr-2 whitespace-nowrap">実寸</span>
+            <div class="flex items-center gap-1.5">
+                <div class="flex-1 flex items-center bg-gray-950 border border-gray-700 rounded-lg px-2.5 py-1 focus-within:border-blue-500">
+                    <span class="text-[11px] text-gray-400 font-bold mr-1.5 whitespace-nowrap">実寸</span>
                     <input type="number" id="inline-bg-dim-input" placeholder="例: 1200" class="w-full bg-transparent text-white font-bold text-sm outline-none text-right pr-1">
-                    <span class="text-xs text-gray-400 font-bold">mm</span>
+                    <span class="text-[11px] text-gray-400 font-bold whitespace-nowrap">mm</span>
                 </div>
-                <button id="inline-bg-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition active:scale-95 whitespace-nowrap">
+                <button id="inline-bg-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition active:scale-95 whitespace-nowrap">
                     決定
                 </button>
             </div>
 
-            <div id="bg-depth-select-box" class="pt-2 border-t border-gray-800 flex items-center justify-between gap-2">
-                <span class="text-[10px] text-cyan-300 font-bold whitespace-nowrap">この線の位置:</span>
-                <div class="flex-1 flex items-center gap-2">
-                    <span class="text-[9px] text-gray-400">手前</span>
+            <div id="bg-depth-select-box" class="pt-1 border-t border-gray-800/80 flex items-center justify-between gap-2">
+                <span class="text-[10px] text-cyan-300 font-bold whitespace-nowrap">青線の奥行き:</span>
+                <div class="flex-1 flex items-center gap-1.5">
+                    <span class="text-[10px] text-gray-400 whitespace-nowrap">手前</span>
                     <input type="range" id="bg-baseline-depth-slider" min="0" max="1" step="0.01" value="0.9">
-                    <span class="text-[9px] text-cyan-300 font-bold">奥</span>
+                    <span class="text-[10px] text-cyan-300 font-bold whitespace-nowrap">奥</span>
                 </div>
-                <span id="val-bg-baseline-depth" class="text-[10px] font-mono text-cyan-400 w-10 text-right font-bold">奥(90%)</span>
+                <span id="val-bg-baseline-depth" class="text-[10px] font-mono text-cyan-400 w-10 text-right font-bold whitespace-nowrap">奥(90%)</span>
             </div>
         </div>
 
@@ -1659,6 +1663,8 @@
             if (pBox) pBox.style.display = isPrecision ? 'block' : 'none';
             const dBox = document.getElementById('bg-depth-select-box');
             if (dBox) dBox.style.display = isPrecision ? 'flex' : 'none';
+            const bDesc = document.getElementById('measure-blue-line-desc');
+            if (bDesc) bDesc.style.display = isPrecision ? 'inline' : 'none';
             const aBox = document.getElementById('adjust-depth-box');
             if (aBox) aBox.style.display = isPrecision ? 'block' : 'none';
 
@@ -1724,7 +1730,12 @@
         const closeModeOverlay = () => {
             const startOverlay = document.getElementById('start-screen-overlay');
             if (startOverlay) startOverlay.style.display = 'none';
-            // 履歴消費を防止
+            setTimeout(() => {
+                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
+                    isClosingByCode = true;
+                    history.back();
+                }
+            }, 10);
         };
         document.getElementById('mode-select-cancel-x')?.addEventListener('click', closeModeOverlay);
         document.getElementById('mode-select-cancel-btn')?.addEventListener('click', closeModeOverlay);
@@ -2094,6 +2105,56 @@
             // パース基準ライン設定
             if (state.perspectiveSetting && state.bg.perspectiveLinesRaw) {
                 ctx.save();
+                const guideLeftX = (state.bg.loaded && state.bg.obj) ? state.bg.renderRect.x : 0;
+                const guideRightX = (state.bg.loaded && state.bg.obj) ? (state.bg.renderRect.x + state.bg.renderRect.w) : canvas.width;
+
+                const guideTopY = (state.bg.loaded && state.bg.obj) ? state.bg.renderRect.y : 0;
+                const guideBottomY = (state.bg.loaded && state.bg.obj) ? (state.bg.renderRect.y + state.bg.renderRect.h) : canvas.height;
+
+                // 水平合わせ用の横向き点線（手前・奥の各ハンドル高さ）
+                ctx.save();
+                ctx.strokeStyle = 'rgba(253, 224, 71, 0.65)';
+                ctx.lineWidth = 1.2 / state.view.zoom;
+                ctx.setLineDash([5 / state.view.zoom, 5 / state.view.zoom]);
+                state.bg.perspectiveLinesRaw.forEach(l => {
+                    const wp1 = bgRawToWorld(l.p1);
+                    const wp2 = bgRawToWorld(l.p2);
+                    ctx.beginPath();
+                    ctx.moveTo(guideLeftX, wp1.y); ctx.lineTo(guideRightX, wp1.y);
+                    ctx.moveTo(guideLeftX, wp2.y); ctx.lineTo(guideRightX, wp2.y);
+                    ctx.stroke();
+                });
+                ctx.restore();
+
+                // 2本のパース線の交点を通る垂直の赤点線
+                if (state.bg.perspectiveLinesRaw.length >= 2) {
+                    const a1 = bgRawToWorld(state.bg.perspectiveLinesRaw[0].p1);
+                    const a2 = bgRawToWorld(state.bg.perspectiveLinesRaw[0].p2);
+                    const b1 = bgRawToWorld(state.bg.perspectiveLinesRaw[1].p1);
+                    const b2 = bgRawToWorld(state.bg.perspectiveLinesRaw[1].p2);
+                    const denom = (a1.x - a2.x) * (b1.y - b2.y) - (a1.y - a2.y) * (b1.x - b2.x);
+                    if (Math.abs(denom) > 0.001) {
+                        const ix = ((a1.x * a2.y - a1.y * a2.x) * (b1.x - b2.x) - (a1.x - a2.x) * (b1.x * b2.y - b1.y * b2.x)) / denom;
+                        const iy = ((a1.x * a2.y - a1.y * a2.x) * (b1.y - b2.y) - (a1.y - a2.y) * (b1.x * b2.y - b1.y * b2.x)) / denom;
+                        if (ix >= guideLeftX - canvas.width && ix <= guideRightX + canvas.width) {
+                            ctx.save();
+                            ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
+                            ctx.lineWidth = 1.5 / state.view.zoom;
+                            ctx.setLineDash([5 / state.view.zoom, 5 / state.view.zoom]);
+                            ctx.beginPath();
+                            ctx.moveTo(ix, guideTopY);
+                            ctx.lineTo(ix, guideBottomY);
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                            ctx.fillStyle = '#ef4444';
+                            ctx.beginPath();
+                            ctx.arc(ix, iy, 3.5 / state.view.zoom, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.restore();
+                        }
+                    }
+                }
+
                 state.bg.perspectiveLinesRaw.forEach((l, idx) => {
                     const wp1 = bgRawToWorld(l.p1);
                     const wp2 = bgRawToWorld(l.p2);
@@ -2434,7 +2495,7 @@
         const bgPerspectiveTrigger = document.getElementById('bg-perspective-setup-trigger');
         if (bgPerspectiveTrigger) {
             bgPerspectiveTrigger.addEventListener('click', () => {
-                if (!state.bg.loaded) { alert('先に背景写真を読み込んでください'); return; }
+                if (!state.bg.loaded) { showAlertModal('先に背景写真を読み込んでください', '確認'); return; }
                 closeSheet('sheet-bg');
                 startPerspectiveSetting();
             });
@@ -2560,7 +2621,7 @@
             bgConfirmBtn.addEventListener('click', () => {
                 const dimInput = document.getElementById('inline-bg-dim-input');
                 const mm = parseFloat(dimInput?.value);
-                if (isNaN(mm) || mm <= 0) { alert('有効な数値(mm)を入力してください'); return; }
+                if (isNaN(mm) || mm <= 0) { showAlertModal('有効な数値(mm)を入力してください', '入力エラー'); return; }
                 const hRaw = state.bg.measureHandlesRaw;
                 const rawPxDist = Math.hypot(hRaw[1].x - hRaw[0].x, hRaw[1].y - hRaw[0].y);
                 state.bg.measureRealMm = mm;
@@ -2599,7 +2660,7 @@
         if (bgSaveLibTrigger) {
             bgSaveLibTrigger.addEventListener('click', async () => {
                 if (!state.bg.loaded || !state.bg.rawPxPerMm || !db) {
-                    alert('寸法設定済みの式場写真が必要です');
+                    showAlertModal('寸法設定済みの式場写真が必要です', '確認');
                     return;
                 }
                 closeSheet('sheet-bg');
@@ -2726,7 +2787,7 @@
         if (addPartTrigger) {
             addPartTrigger.addEventListener('click', () => {
                 if (!state.bg.loaded || !state.bg.rawPxPerMm) {
-                    alert('先に「式場(背景)」の写真を読み込み、基準の長さを入力してください。');
+                    showAlertModal('先に「式場(背景)」の写真を読み込み、基準の長さを入力してください。', '確認');
                     return;
                 }
                 updatePartSaveBox();
@@ -2936,7 +2997,7 @@
                     const wMm = parseFloat(document.getElementById('cust-w').value);
                     const hMm = parseFloat(document.getElementById('cust-h').value);
                     const name = document.getElementById('cust-name').value.trim();
-                    if (!wMm || !hMm) { alert('幅(mm)と高さ(mm)を入力してください'); return; }
+                    if (!wMm || !hMm) { showAlertModal('幅(mm)と高さ(mm)を入力してください', '入力エラー'); return; }
                     closeModal('add-item-modal');
                     createCustomPart(name || 'カスタムパーツ', wMm, hMm);
                 };
@@ -3573,8 +3634,11 @@
                 [p0, p1].forEach(pt => {
                     itemScaleCtx.fillStyle = '#ffffff';
                     itemScaleCtx.beginPath();
-                    itemScaleCtx.arc(pt.x, pt.y, 2.5 / state.itemScaleView.zoom, 0, Math.PI * 2);
+                    itemScaleCtx.arc(pt.x, pt.y, 4 / state.itemScaleView.zoom, 0, Math.PI * 2);
                     itemScaleCtx.fill();
+                    itemScaleCtx.strokeStyle = '#ef4444';
+                    itemScaleCtx.lineWidth = 2 / state.itemScaleView.zoom;
+                    itemScaleCtx.stroke();
                 });
             }
             itemScaleCtx.restore();
@@ -3666,7 +3730,7 @@
                 const dimInput = document.getElementById('item-real-dim-input');
                 const mm = parseFloat(dimInput?.value);
                 if (isNaN(mm) || mm <= 0) {
-                    alert('有効な寸法(mm)を入力してください（例: 450）');
+                    showAlertModal('有効な寸法(mm)を入力してください（例: 450）', '入力エラー');
                     return;
                 }
 
@@ -3733,7 +3797,7 @@
 
         bindAction('crop-confirm-btn', () => {
             if (state.cropPoints.length < 3) {
-                alert('輪郭を囲んで領域を指定してください。');
+                showAlertModal('輪郭を囲んで領域を指定してください。', '確認');
                 return;
             }
             proceedToItemScale(state.cropWorkingImg, true);
@@ -4024,6 +4088,7 @@
         }
 
         // --- スマホ「戻る」ボタン連動 (History API) ---
+        let isClosingByCode = false;
         history.replaceState({ page: 'root' }, '');
         history.pushState({ page: 'main' }, '');
 
@@ -4053,7 +4118,7 @@
             }
             const activeModals = Array.from(document.querySelectorAll('.modal.active'));
             if (activeModals.length > 0) {
-                const topModal = activeModals.find(m => m.id === 'custom-prompt-modal' || m.id === 'custom-confirm-modal') || activeModals[activeModals.length - 1];
+                const topModal = activeModals.find(m => m.id === 'alert-modal' || m.id === 'custom-prompt-modal' || m.id === 'custom-confirm-modal') || activeModals[activeModals.length - 1];
                 closeModal(topModal.id);
                 return true;
             }
@@ -4080,6 +4145,10 @@
         }
 
         window.addEventListener('popstate', () => {
+            if (isClosingByCode) {
+                isClosingByCode = false;
+                return;
+            }
             history.pushState({ page: 'main' }, '');
 
             // 0. すでに確認モーダルが開いている場合は閉じる
@@ -4100,7 +4169,10 @@
             }
             // 3. トップ画面での戻る：確認画面を表示
             showCustomConfirm('ツール一覧へ戻る', 'ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。').then(ok => {
-                if (ok) window.location.href = 'index.html';
+                if (ok) {
+                    isClosingByCode = true;
+                    window.location.href = 'index.html';
+                }
             });
         });
 
@@ -4151,7 +4223,7 @@
 
         function openModal(id) {
             pushOverlayHistory();
-            if (id !== 'custom-confirm-modal' && id !== 'custom-prompt-modal') {
+            if (id !== 'custom-confirm-modal' && id !== 'custom-prompt-modal' && id !== 'alert-modal') {
                 document.querySelectorAll('.bottom-sheet').forEach(el => el.classList.remove('active'));
             }
             const m = document.getElementById(id);
@@ -4559,7 +4631,7 @@
         if (exportSheetBtn) {
             exportSheetBtn.addEventListener('click', () => {
                 if (!state.bg.loaded) {
-                    alert('先に式場(背景)の写真を読み込んでください');
+                    showAlertModal('先に式場(背景)の写真を読み込んでください', '確認');
                     return;
                 }
                 const includeFooter = document.getElementById('export-include-footer')?.checked ?? true;
@@ -4619,7 +4691,7 @@
         if (btnQuickGrid) {
             btnQuickGrid.addEventListener('click', () => {
                 if (!state.bg.loaded) {
-                    alert('先に式場写真を読み込んでください');
+                    showAlertModal('先に式場写真を読み込んでください', '確認');
                     return;
                 }
                 state.grid.enabled = !state.grid.enabled;
