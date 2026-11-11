@@ -230,13 +230,22 @@
       const statusEl = document.getElementById('update-status-text');
       if (!listEl) return;
 
+      const hostParts = location.hostname.split('.');
+      const owner = hostParts[0] || '34sekit07-bot';
+      const pathSegs = location.pathname.split('/').filter(Boolean);
+      const repo = (pathSegs.length > 0 && !pathSegs[0].endsWith('.html')) ? pathSegs[0] : location.hostname;
+
       const results = await Promise.all(tools.map(async (t) => {
         try {
-          const res = await fetch(t.file, { method: 'HEAD', cache: 'no-cache' });
-          const lastMod = res.headers.get('Last-Modified');
-          if (res.ok && lastMod) {
-            const ts = Date.parse(lastMod);
-            if (!isNaN(ts)) return { ...t, ts };
+          const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${t.file}&per_page=1`;
+          const res = await fetch(apiUrl, { cache: 'no-cache' });
+          if (res.ok) {
+            const data = await res.json();
+            const dateIso = data?.[0]?.commit?.committer?.date || data?.[0]?.commit?.author?.date;
+            if (dateIso) {
+              const ts = Date.parse(dateIso);
+              if (!isNaN(ts)) return { ...t, ts };
+            }
           }
         } catch (_) {}
         return null;
