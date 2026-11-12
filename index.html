@@ -13,116 +13,111 @@
     }
   </script>
   <style>
+    html {
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 #0f172a;
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      width: 7px;
+      display: block;
+    }
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 9999px;
+      border: 1px solid #1e293b;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #0f172a;
       color: #f8fafc;
       margin: 0;
-      padding: 24px 16px;
+      padding: 20px 14px 36px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100dvh;
+      box-sizing: border-box;
     }
     .header-wrap {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     h1 { font-size: 1.15rem; margin: 0; font-weight: 700; }
     .btn-credit {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 4px 8px;
+      padding: 5px 9px;
       font-size: 11px;
       font-weight: 600;
-      background: #1e293b;
-      color: #94a3b8;
-      border: 1px solid #334155;
+      background: linear-gradient(180deg, #263348 0%, #1a2436 100%);
+      color: #cbd5e1;
+      border: 1px solid #475569;
       border-radius: 8px;
+      box-shadow: 0 2px 0 #090e1a;
       cursor: pointer;
       touch-action: manipulation;
     }
-    .btn-credit:active { background: #334155; color: #fff; }
-    .credit-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
-    .credit-modal.active { display: flex; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      width: 100%;
-      max-width: 400px;
+    .btn-credit:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 #090e1a;
+      background: #334155;
+      color: #fff;
     }
-    .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 18px;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      transition: background 0.2s;
-    }
-    .card:active { background: #334155; }
-    .card h2 { font-size: 1.1rem; margin: 0 0 6px 0; color: #38bdf8; }
-    .card p { font-size: 0.85rem; margin: 0; color: #94a3b8; }
-    .update-box {
+
+    /* 最新更新バー（一番最新の1件のみ上部にコンパクト表示） */
+    .latest-update-bar {
       width: 100%;
-      max-width: 400px;
-      margin-top: 20px;
-      background: #1e293b;
+      max-width: 420px;
+      margin-bottom: 14px;
+      background: #172033;
       border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 14px 16px;
+      border-left: 3px solid #38bdf8;
+      border-radius: 10px;
+      padding: 8px 12px;
       box-sizing: border-box;
-    }
-    .update-box-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid #334155;
-    }
-    .update-box-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #e2e8f0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .update-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 3px;
     }
-    .update-item {
+    .latest-update-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
       gap: 8px;
+      font-size: 11px;
     }
-    .update-tool {
+    .latest-update-tool {
       color: #f8fafc;
-      font-weight: 600;
+      font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .update-date {
+    .latest-update-date {
       color: #94a3b8;
       font-family: monospace;
       font-size: 10px;
       white-space: nowrap;
       flex-shrink: 0;
+    }
+    .latest-update-msg {
+      font-size: 10.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .badge-new {
       background: #0284c7;
@@ -131,8 +126,115 @@
       font-weight: 700;
       padding: 1px 5px;
       border-radius: 4px;
-      margin-right: 4px;
+      margin-right: 5px;
+      vertical-align: middle;
     }
+
+    /* ツール一覧グリッド＆ボタンらしい立体デザイン */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .tool-row {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .card {
+      flex: 1;
+      min-width: 0;
+      background: linear-gradient(180deg, #243247 0%, #192334 100%);
+      border: 1px solid #475569;
+      border-radius: 12px;
+      padding: 14px 14px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 3px 0 #080d19, 0 4px 10px rgba(0, 0, 0, 0.35);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      touch-action: manipulation;
+    }
+    .card:hover {
+      border-color: #38bdf8;
+    }
+    .card:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #080d19;
+      background: #29384e;
+    }
+    .card-body {
+      min-width: 0;
+      flex: 1;
+    }
+    .card h2 {
+      font-size: 1.03rem;
+      margin: 0 0 4px 0;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    .card p {
+      font-size: 0.8rem;
+      margin: 0;
+      color: #cbd5e1;
+      line-height: 1.35;
+    }
+    .card-arrow {
+      color: #64748b;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .btn-desc {
+      width: 54px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #1e293b 0%, #141d2c 100%);
+      border: 1px solid #475569;
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #080d19, 0 4px 10px rgba(0, 0, 0, 0.35);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      touch-action: manipulation;
+      padding: 0 4px;
+    }
+    .btn-desc:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .btn-desc:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #080d19;
+      background: #29384e;
+      color: #fff;
+    }
+
+    /* モーダル共通 */
+    .credit-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.82);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .credit-modal.active { display: flex; }
   </style>
 </head>
 <body>
@@ -143,41 +245,121 @@
       <span>クレジット</span>
     </button>
   </div>
-  <div class="grid">
-    <a href="tool1.html" class="card">
-      <h2>01. 施工シミュレーター</h2>
-      <p>式場の写真に花祭壇や供花を合成</p>
-    </a>
-    <a href="tool2.html" class="card">
-      <h2>02. グリッドメーカー</h2>
-      <p>写真の寸法合わせ・グリッド作成</p>
-    </a>
-    <a href="tool3.html" class="card">
-      <h2>03. ぴったりベースサーチ</h2>
-      <p>必要なベースの計算・配置図</p>
-    </a>
-    <a href="tool4.html" class="card">
-      <h2>04. 写真重ねてチェッカー</h2>
-      <p>カタログと実際の商品の比較</p>
-    </a>
-    <a href="tool5.html" class="card">
-      <h2>05. 供花ポイント＆花材計算</h2>
-      <p>供花発注・ポイント花および総花材自動集計</p>
-    </a>
-    <a href="tool6.html" class="card">
-      <h2>06. 花材提案ツール</h2>
-      <p>花材提案・花の図鑑</p>
-    </a>
+
+  <!-- 一番最新の更新内容のみ上部に表示 -->
+  <div id="latest-update-bar" class="latest-update-bar">
+    <div class="latest-update-top">
+      <span id="latest-update-tool" class="latest-update-tool" style="color: #94a3b8;">🔄 最新更新を確認中...</span>
+      <span id="latest-update-date" class="latest-update-date"></span>
+    </div>
+    <div id="latest-update-msg" class="latest-update-msg" style="display: none;"></div>
   </div>
 
-  <div class="update-box">
-    <div class="update-box-header">
-      <span class="update-box-title">🔄 更新履歴（自動検出）</span>
-      <span id="update-status-text" style="font-size: 10px; color: #64748b;">確認中...</span>
+  <div class="grid">
+    <div class="tool-row">
+      <a href="tool1.html" class="card">
+        <div class="card-body">
+          <h2>01. 施工シミュレーター</h2>
+          <p>式場の写真に花祭壇や供花を合成</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="tool1">
+        <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
     </div>
-    <ul id="update-history-list" class="update-list">
-      <li style="font-size: 11px; color: #64748b;">更新情報を読み込んでいます...</li>
-    </ul>
+
+    <div class="tool-row">
+      <a href="tool2.html" class="card">
+        <div class="card-body">
+          <h2>02. グリッドメーカー</h2>
+          <p>写真の寸法合わせ・グリッド作成</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="tool2">
+        <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
+    </div>
+
+    <div class="tool-row">
+      <a href="tool3.html" class="card">
+        <div class="card-body">
+          <h2>03. ぴったりベースサーチ</h2>
+          <p>必要なベースの計算・配置図</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="tool3">
+        <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
+    </div>
+
+    <div class="tool-row">
+      <a href="tool4.html" class="card">
+        <div class="card-body">
+          <h2>04. 写真重ねてチェッカー</h2>
+          <p>カタログと実際の商品の比較</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="tool4">
+        <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
+    </div>
+
+    <div class="tool-row">
+      <a href="tool5.html" class="card">
+        <div class="card-body">
+          <h2>05. 供花ポイント＆花材計算</h2>
+          <p>供花発注・ポイント花および総花材自動集計</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="tool5">
+        <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
+    </div>
+
+    <div class="tool-row">
+      <a href="tool6.html" class="card">
+        <div class="card-body">
+          <h2>06. 花材提案ツール</h2>
+          <p>花材提案・花の図鑑</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="tool6">
+        <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ツール説明モーダル -->
+  <div id="desc-modal" class="credit-modal">
+    <div style="background: #0f172a; border: 1px solid #475569; border-radius: 16px; width: 100%; max-width: 370px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.85); position: relative; box-sizing: border-box;">
+      <button id="btn-close-desc-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px; font-size: 16px;" type="button">✕</button>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-right: 24px;">
+        <span id="desc-modal-badge" style="background: rgba(2,132,199,0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; flex-shrink: 0;">ツール解説</span>
+        <h3 id="desc-modal-title" style="font-size: 15px; font-weight: 700; color: #fff; margin: 0;"></h3>
+      </div>
+      <div style="background: #0b1120; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: left;">
+        <p style="font-size: 11px; font-weight: 700; color: #38bdf8; margin: 0 0 4px 0;">【目的】</p>
+        <p id="desc-modal-purpose" style="font-size: 12px; color: #e2e8f0; line-height: 1.55; margin: 0 0 12px 0;"></p>
+        <p style="font-size: 11px; font-weight: 700; color: #38bdf8; margin: 0 0 6px 0;">【主な機能・できること】</p>
+        <ul id="desc-modal-features" style="font-size: 12px; color: #cbd5e1; line-height: 1.55; margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px;"></ul>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button id="btn-close-desc" style="width: 100%; background: #1e293b; color: #cbd5e1; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #475569; font-size: 12px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+        <a id="btn-open-tool-from-desc" href="#" style="width: 100%; background: #0284c7; color: #fff; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #38bdf8; font-size: 12px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">ツールを開く ›</a>
+      </div>
+    </div>
   </div>
 
   <!-- クレジットモーダル -->
@@ -199,6 +381,101 @@
   </div>
 
   <script>
+    const TOOL_DESCRIPTIONS = {
+      tool1: {
+        title: '01. 施工シミュレーター',
+        href: 'tool1.html',
+        purpose: '式場の現地写真に、生花祭壇や供花などの画像を合成して施工後の仕上がりイメージを事前に確認・共有するためのツールです。',
+        features: [
+          '式場背景写真の上への花祭壇・供花画像の重ね合わせ合成',
+          '現場の奥行きや設置位置に合わせたサイズ・角度・遠近感の調整',
+          '施工前のレイアウト確認や打合せ時の完成イメージ共有'
+        ]
+      },
+      tool2: {
+        title: '02. グリッドメーカー',
+        href: 'tool2.html',
+        purpose: '祭壇や装飾デザインの参考写真に基準となる寸法グリッド線（マス目）を作成し、制作・施工時の寸法把握を正確にするためのツールです。',
+        features: [
+          '写真の実寸サイズに合わせた基準グリッド線（マス目）の生成・重ね表示',
+          '全体の横幅・高さや各パーツの配置位置・プロポーションの可視化',
+          '現場スタッフ間での制作指示や寸法共有の効率化'
+        ]
+      },
+      tool3: {
+        title: '03. ぴったりベースサーチ',
+        href: 'tool3.html',
+        purpose: '設営する生花祭壇や装飾の寸法条件から、必要なベース資材の数量を自動計算し、配置図を作成するためのツールです。',
+        features: [
+          '指定した幅・奥行などの寸法にぴったり合うベース組み合わせの自動算出',
+          '必要資材の数量把握と現場での配置図（レイアウト図）の確認',
+          '資材の拾い出し時間の短縮と過不足・積み忘れの防止'
+        ]
+      },
+      tool4: {
+        title: '04. 写真重ねてチェッカー',
+        href: 'tool4.html',
+        purpose: '見本（カタログ）写真と実際に制作・施工した商品の写真を重ね合わせて比較し、仕上がりの再現度と品質を確認するためのツールです。',
+        features: [
+          'カタログ写真と実物写真の透過重ね合わせによる視覚的な比較',
+          '高さ・横幅・アウトライン・ボリュームのズレの即時チェック',
+          '手直し箇所の早期発見と施工品質の均一化'
+        ]
+      },
+      tool5: {
+        title: '05. 供花ポイント＆花材計算',
+        href: 'tool5.html',
+        purpose: '供花の発注内容からポイント花および全体の必要花材本数を自動集計し、発注作業と数量計算を効率化するためのツールです。',
+        features: [
+          '供花の基数・種類に応じたポイント花および総花材本数の自動計算・集計',
+          '発注リストや伝票確認用の内訳表示・出力',
+          '手計算による拾い出しミスの防止と発注準備時間の大幅短縮'
+        ]
+      },
+      tool6: {
+        title: '06. 花材提案ツール',
+        href: 'tool6.html',
+        purpose: '販売予算や目標原価率、商品の種類・用途・季節・色合い・イメージに合わせて最適な構成花材と本数を自動提案し、発注データ作成や花材検索ができるツールです。',
+        features: [
+          '販売予算・目標原価率（20〜40%）と商品種類（花束／アレンジ／スタンド／生花祭壇）・用途・季節・色合い・イメージからの花材自動提案',
+          '気に入った花材のロック固定・未ロック花材の再抽選・手動追加・単価/本数調整と実質原価率のリアルタイム計算',
+          '発注用プレビュー画像（JPG／PNG保存・LINE等への画像共有）および発注テキストの出力・案件保存',
+          '役割別・季節別・色別・五十音順・キーワード検索で花材の特徴や仕入単価を確認できる「花材図鑑」機能'
+        ]
+      }
+    };
+
+    const descModal = document.getElementById('desc-modal');
+    const descTitle = document.getElementById('desc-modal-title');
+    const descPurpose = document.getElementById('desc-modal-purpose');
+    const descFeatures = document.getElementById('desc-modal-features');
+    const descOpenLink = document.getElementById('btn-open-tool-from-desc');
+
+    document.querySelectorAll('.btn-desc').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.tool;
+        const info = TOOL_DESCRIPTIONS[key];
+        if (!info || !descModal) return;
+        descTitle.textContent = info.title;
+        descPurpose.textContent = info.purpose;
+        descFeatures.innerHTML = info.features.map(item => `<li>${item}</li>`).join('');
+        descOpenLink.href = info.href;
+        descModal.classList.add('active');
+      });
+    });
+
+    ['btn-close-desc', 'btn-close-desc-x'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && descModal) {
+        el.addEventListener('click', () => descModal.classList.remove('active'));
+      }
+    });
+    if (descModal) {
+      descModal.addEventListener('click', (e) => {
+        if (e.target === descModal) descModal.classList.remove('active');
+      });
+    }
+
     const cModal = document.getElementById('credit-modal');
     const bOpen = document.getElementById('btn-index-credit');
     const bClose = document.getElementById('btn-close-credit');
@@ -226,9 +503,10 @@
         { file: 'tool5.html', name: '05. 供花ポイント＆花材計算' },
         { file: 'tool6.html', name: '06. 花材提案ツール' }
       ];
-      const listEl = document.getElementById('update-history-list');
-      const statusEl = document.getElementById('update-status-text');
-      if (!listEl) return;
+      const toolEl = document.getElementById('latest-update-tool');
+      const dateEl = document.getElementById('latest-update-date');
+      const msgEl = document.getElementById('latest-update-msg');
+      if (!toolEl) return;
 
       const hostParts = location.hostname.split('.');
       const owner = hostParts[0] || '34sekit07-bot';
@@ -241,10 +519,12 @@
           const res = await fetch(apiUrl, { cache: 'no-cache' });
           if (res.ok) {
             const data = await res.json();
-            const dateIso = data?.[0]?.commit?.committer?.date || data?.[0]?.commit?.author?.date;
+            const commit = data?.[0]?.commit;
+            const dateIso = commit?.committer?.date || commit?.author?.date;
+            const message = (commit?.message || '').split('\n')[0].trim();
             if (dateIso) {
               const ts = Date.parse(dateIso);
-              if (!isNaN(ts)) return { ...t, ts };
+              if (!isNaN(ts)) return { ...t, ts, message };
             }
           }
         } catch (_) {}
@@ -253,22 +533,25 @@
 
       const valid = results.filter(Boolean).sort((a, b) => b.ts - a.ts);
       if (valid.length === 0) {
-        if (statusEl) statusEl.textContent = 'オフライン';
-        listEl.innerHTML = '<li style="font-size: 11px; color: #64748b;">更新情報を取得できませんでした</li>';
+        toolEl.textContent = '🔄 最新更新: オフライン（取得不可）';
         return;
       }
 
-      if (statusEl) statusEl.textContent = '最新順';
+      const latest = valid[0];
       const now = Date.now();
       const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+      const d = new Date(latest.ts);
+      const pad = (n) => String(n).padStart(2, '0');
+      const dateStr = `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      const isNew = (now - latest.ts) < threeDaysMs;
 
-      listEl.innerHTML = valid.map((item) => {
-        const d = new Date(item.ts);
-        const pad = (n) => String(n).padStart(2, '0');
-        const dateStr = `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        const isNew = (now - item.ts) < threeDaysMs;
-        return `<li class="update-item"><span class="update-tool">${isNew ? '<span class="badge-new">NEW</span>' : ''}${item.name}</span><span class="update-date">${dateStr}</span></li>`;
-      }).join('');
+      toolEl.style.color = '#f8fafc';
+      toolEl.innerHTML = `${isNew ? '<span class="badge-new">NEW</span>' : '<span style="color:#38bdf8;margin-right:4px;">最新</span>'}${latest.name}`;
+      if (dateEl) dateEl.textContent = dateStr;
+      if (msgEl && latest.message) {
+        msgEl.textContent = `内容: ${latest.message}`;
+        msgEl.style.display = 'block';
+      }
     })();
   </script>
 </body>

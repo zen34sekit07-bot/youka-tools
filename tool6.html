@@ -1931,10 +1931,51 @@ AIアシスタント: Gemini (Google)
             renderDictList();
         }
 
+        const ALPHA_TO_KANA = {
+            a: 'えー', b: 'びー', c: 'しー', d: 'でぃー', e: 'いー', f: 'えふ', g: 'じー',
+            h: 'えいち', i: 'あい', j: 'じぇい', k: 'けー', l: 'える', m: 'えむ', n: 'えぬ',
+            o: 'おー', p: 'ぴー', q: 'きゅー', r: 'あーる', s: 'えす', t: 'てぃー', u: 'ゆー',
+            v: 'ぶい', w: 'だぶりゅー', x: 'えっくす', y: 'わい', z: 'ぜっと'
+        };
+        const DIGIT_TO_KANA = {
+            '0': 'ぜろ', '1': 'いち', '2': 'に', '3': 'さん', '4': 'よん',
+            '5': 'ご', '6': 'ろく', '7': 'なな', '8': 'はち', '9': 'きゅう'
+        };
+
+        let dictRawSearchQuery = "";
+
+        function normalizeToJapaneseReading(str) {
+            return (str || "")
+                .replace(/[Ａ-Ｚａ-ｚ０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
+                .replace(/[ァ-ヶ]/g, m => String.fromCharCode(m.charCodeAt(0) - 0x60))
+                .replace(/[a-zA-Z]/g, ch => ALPHA_TO_KANA[ch.toLowerCase()] || ch)
+                .replace(/[0-9]/g, ch => DIGIT_TO_KANA[ch] || ch)
+                .replace(/[_・／/（）()\s]/g, "");
+        }
+
+        function getDictSortKey(f) {
+            const rawName = (f && f.name) ? String(f.name) : "";
+            const rawKana = (f && f.kana) ? String(f.kana) : "";
+            const normKana = normalizeToJapaneseReading(rawKana);
+            const normName = normalizeToJapaneseReading(rawName);
+            const baseReading = normKana || normName;
+
+            // 花名の先頭に英語（OH・LA等）がある場合、読み仮名（おーえいち・えるえー等）を先頭に反映
+            const leadAlphaMatch = rawName.match(/^[a-zA-ZＡ-Ｚａ-ｚ]+/);
+            if (leadAlphaMatch) {
+                const leadReading = normalizeToJapaneseReading(leadAlphaMatch[0]);
+                if (leadReading && !baseReading.startsWith(leadReading)) {
+                    return leadReading + baseReading;
+                }
+            }
+            return baseReading;
+        }
+
         function onDictSearchInput() {
             const input = document.getElementById('dict-search-input');
-            dictSearchQuery = input.value.trim().toLowerCase();
-            document.getElementById('dict-search-clear').classList.toggle('hidden-safe', !dictSearchQuery);
+            dictRawSearchQuery = input.value.trim().toLowerCase();
+            dictSearchQuery = normalizeToJapaneseReading(dictRawSearchQuery);
+            document.getElementById('dict-search-clear').classList.toggle('hidden-safe', !dictRawSearchQuery);
             dictDisplayLimit = 30;
             renderDictList();
         }
@@ -1942,6 +1983,7 @@ AIアシスタント: Gemini (Google)
         function clearDictSearch() {
             document.getElementById('dict-search-input').value = "";
             dictSearchQuery = "";
+            dictRawSearchQuery = "";
             document.getElementById('dict-search-clear').classList.add('hidden-safe');
             dictDisplayLimit = 30;
             renderDictList();
@@ -1950,12 +1992,15 @@ AIアシスタント: Gemini (Google)
         function renderDictList() {
             let pool = [...flowersDB];
 
-            if (dictSearchQuery) {
-                pool = pool.filter(f => 
-                    (f.name && f.name.toLowerCase().includes(dictSearchQuery)) ||
-                    (f.kana && f.kana.toLowerCase().includes(dictSearchQuery)) ||
-                    (f.desc && f.desc.toLowerCase().includes(dictSearchQuery))
-                );
+            if (dictRawSearchQuery || dictSearchQuery) {
+                pool = pool.filter(f => {
+                    const sortKey = getDictSortKey(f);
+                    return (dictRawSearchQuery && (
+                        (f.name && f.name.toLowerCase().includes(dictRawSearchQuery)) ||
+                        (f.kana && f.kana.toLowerCase().includes(dictRawSearchQuery)) ||
+                        (f.desc && f.desc.toLowerCase().includes(dictRawSearchQuery))
+                    )) || (dictSearchQuery && sortKey.includes(dictSearchQuery));
+                });
             }
 
             if (dictActiveSub !== 'すべて') {
@@ -1979,24 +2024,22 @@ AIアシスタント: Gemini (Google)
                     });
                 } else if (dictActiveMain === 'aiueo') {
                     const map = {
-                        'あ行': /^[あ-おア-オぁ-ぉァ-ォ]/, 'か行': /^[か-こカ-コが-ごガ-ゴ]/, 'さ行': /^[さ-そサ-ソざ-ぞザ-ゾ]/,
-                        'た行': /^[た-とタ-トだ-どダ-ド]/, 'な行': /^[な-のナ-ノ]/, 'は行': /^[は-ほハ-ホば-ぼバ-ボぱ-ぽパ-ポ]/,
-                        'ま行': /^[ま-もマ-モ]/, 'や行': /^[や-よヤ-ヨゃ-ょャ-ョ]/, 'ら行': /^[ら-ろラ-ロ]/, 'わ行': /^[わ-んワ-ン]/
+                        'あ行': /^[あ-おぁ-ぉ]/, 'か行': /^[か-こが-ご]/, 'さ行': /^[さ-そざ-ぞ]/,
+                        'た行': /^[た-とだ-ど]/, 'な行': /^[な-の]/, 'は行': /^[は-ほば-ぼぱ-ぽ]/,
+                        'ま行': /^[ま-も]/, 'や行': /^[や-よゃ-ょ]/, 'ら行': /^[ら-ろ]/, 'わ行': /^[わ-ん]/
                     };
                     const reg = map[dictActiveSub];
-                    if (reg) pool = pool.filter(f => reg.test(f.kana || "") || reg.test(f.name || ""));
+                    if (reg) pool = pool.filter(f => reg.test(getDictSortKey(f)));
                 }
             }
 
-            // 五十音順モード時は、読みがな（ひらがな正規化）で確実に五十音順（あいうえお順）に昇順ソート
-            if (dictActiveMain === 'aiueo') {
-                const toHira = (s) => (s || "").replace(/[\u30a1-\u30f6]/g, m => String.fromCharCode(m.charCodeAt(0) - 0x60)).replace(/[_・\s]/g, "");
-                pool.sort((a, b) => {
-                    const kA = toHira(a.kana || a.name || "");
-                    const kB = toHira(b.kana || b.name || "");
-                    return kA.localeCompare(kB, 'ja');
-                });
-            }
+            // 図鑑の一覧・検索結果は常にあいうえお順（英語はOH→おーえいち、LA→えるえー等の日本語読み）でソート
+            pool.sort((a, b) => {
+                const kA = getDictSortKey(a);
+                const kB = getDictSortKey(b);
+                const cmp = kA.localeCompare(kB, 'ja');
+                return cmp !== 0 ? cmp : (a.name || "").localeCompare(b.name || "", 'ja');
+            });
 
             document.getElementById('dict-count').innerText = `${pool.length}件`;
             const list = document.getElementById('dict-list');
