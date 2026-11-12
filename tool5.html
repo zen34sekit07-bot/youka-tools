@@ -3869,7 +3869,20 @@
         }
 
         history.replaceState({ page: 'root' }, '');
-        history.pushState({ page: 'main' }, '');
+        history.pushState({ page: 'guard1' }, '');
+        history.pushState({ page: 'guard2' }, '');
+        function ensureHistoryGuards() {
+            if (!history.state || history.state.page === 'root') {
+                history.pushState({ page: 'guard1' }, '');
+                history.pushState({ page: 'guard2' }, '');
+            } else if (history.state.page === 'guard1') {
+                history.pushState({ page: 'guard2' }, '');
+            }
+        }
+        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
+        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
+
+        let isExitConfirmOpen = false;
         let alertModalResolve = null;
         let confirmModalResolve = null;
 
@@ -3890,11 +3903,21 @@
             closeModal('alert-modal');
         });
 
-        function showConfirmModal(desc, title = '確認') {
+        function showConfirmModal(desc, title = '確認', isDanger = true) {
             return new Promise(resolve => {
                 confirmModalResolve = resolve;
                 document.getElementById('confirm-modal-title').textContent = title;
                 document.getElementById('confirm-modal-desc').textContent = desc;
+                const okBtn = document.getElementById('confirm-modal-ok');
+                if (okBtn) {
+                    if (isDanger) {
+                        okBtn.className = 'bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold shadow';
+                        okBtn.textContent = '実行';
+                    } else {
+                        okBtn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-bold shadow';
+                        okBtn.textContent = 'OK';
+                    }
+                }
                 openModal('confirm-modal');
             });
         }
@@ -3916,6 +3939,7 @@
         });
 
         function openModal(id) {
+            ensureHistoryGuards();
             const el = document.getElementById(id);
             if (el) el.classList.add('active');
         }
@@ -3923,10 +3947,13 @@
         function closeModal(id) {
             const el = document.getElementById(id);
             if (el) el.classList.remove('active');
-            if (id === 'confirm-modal' && confirmModalResolve) {
-                const res = confirmModalResolve;
-                confirmModalResolve = null;
-                res(false);
+            if (id === 'confirm-modal') {
+                isExitConfirmOpen = false;
+                if (confirmModalResolve) {
+                    const res = confirmModalResolve;
+                    confirmModalResolve = null;
+                    res(false);
+                }
             }
             if (id === 'alert-modal' && alertModalResolve) {
                 const res = alertModalResolve;
@@ -3936,11 +3963,12 @@
         }
 
         window.addEventListener('popstate', () => {
-            history.pushState({ page: 'main' }, '');
+            ensureHistoryGuards();
 
-            // 0. 確認モーダルが開いていれば閉じる
+            // 0. すでに確認モーダルが開いていればキャンセルして閉じる
             const confirmM = document.getElementById('confirm-modal');
-            if (confirmM && confirmM.classList.contains('active')) {
+            if (isExitConfirmOpen || (confirmM && confirmM.classList.contains('active'))) {
+                isExitConfirmOpen = false;
                 closeModal('confirm-modal');
                 return;
             }
@@ -3968,7 +3996,9 @@
             }
 
             // 3. トップ画面での戻る：確認画面を表示
-            showConfirmModal('ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。', 'ツール一覧へ戻る').then(ok => {
+            isExitConfirmOpen = true;
+            showConfirmModal('ツール一覧へ戻りますか？\n保存されていないデータは破棄されます。', 'ツール一覧へ戻る', false).then(ok => {
+                isExitConfirmOpen = false;
                 if (ok) window.location.href = 'index.html';
             });
         });

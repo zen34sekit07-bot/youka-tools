@@ -4300,11 +4300,22 @@
             });
         }
 
-        // --- スマホ「戻る」ボタン連動 (History API・多重発火防止版) ---
-        let pendingHistoryBackCount = 0;
-        let overlayHistorySyncTimer = null;
+        // --- スマホ「戻る」ボタン連動 (履歴ガード2段補充版) ---
+        let isExitConfirmOpen = false;
         history.replaceState({ page: 'root' }, '');
-        history.pushState({ page: 'main' }, '');
+        history.pushState({ page: 'guard1' }, '');
+        history.pushState({ page: 'guard2' }, '');
+
+        function ensureHistoryGuards() {
+            if (!history.state || history.state.page === 'root') {
+                history.pushState({ page: 'guard1' }, '');
+                history.pushState({ page: 'guard2' }, '');
+            } else if (history.state.page === 'guard1') {
+                history.pushState({ page: 'guard2' }, '');
+            }
+        }
+        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
+        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
 
         function hasAnyOpenOverlay() {
             const hasModal = document.querySelector('.modal.active') !== null;
@@ -4319,24 +4330,11 @@
         }
 
         function pushOverlayHistory() {
-            if (overlayHistorySyncTimer) {
-                clearTimeout(overlayHistorySyncTimer);
-                overlayHistorySyncTimer = null;
-            }
-            if (!history.state || !history.state.overlayOpen) {
-                history.pushState({ overlayOpen: true }, '');
-            }
+            ensureHistoryGuards();
         }
 
         function syncOverlayHistoryOnClose() {
-            if (overlayHistorySyncTimer) clearTimeout(overlayHistorySyncTimer);
-            overlayHistorySyncTimer = setTimeout(() => {
-                overlayHistorySyncTimer = null;
-                if (!hasAnyOpenOverlay() && history.state && history.state.overlayOpen) {
-                    pendingHistoryBackCount++;
-                    history.back();
-                }
-            }, 30);
+            ensureHistoryGuards();
         }
 
         function closeActiveOverlayFromHistory() {
@@ -4349,7 +4347,15 @@
             if (activeModals.length > 0) {
                 if (activeModals.some(m => m.id === 'loading-modal')) return true;
                 const topModal = activeModals.find(m => m.id === 'alert-modal' || m.id === 'custom-prompt-modal' || m.id === 'custom-confirm-modal') || activeModals[activeModals.length - 1];
-                closeModal(topModal.id);
+                if (topModal.id === 'custom-confirm-modal') {
+                    document.getElementById('custom-confirm-cancel')?.click();
+                } else if (topModal.id === 'custom-prompt-modal') {
+                    document.getElementById('custom-prompt-cancel')?.click();
+                } else if (topModal.id === 'alert-modal') {
+                    document.getElementById('alert-modal-ok-btn')?.click();
+                } else {
+                    closeModal(topModal.id);
+                }
                 return true;
             }
             const activeSheet = document.querySelector('.bottom-sheet.active');
@@ -4375,16 +4381,13 @@
         }
 
         window.addEventListener('popstate', () => {
-            if (pendingHistoryBackCount > 0) {
-                pendingHistoryBackCount--;
-                return;
-            }
-            history.pushState({ page: 'main' }, '');
+            ensureHistoryGuards();
 
-            // 0. すでに確認モーダルが開いている場合は閉じる
+            // 0. すでに終了確認モーダルが開いている場合はキャンセルして閉じる
             const exitModal = document.getElementById('custom-confirm-modal');
-            if (exitModal && exitModal.classList.contains('active')) {
-                closeModal('custom-confirm-modal');
+            if (isExitConfirmOpen || (exitModal && exitModal.classList.contains('active'))) {
+                isExitConfirmOpen = false;
+                document.getElementById('custom-confirm-cancel')?.click();
                 return;
             }
             // 1. 開いているウィンドウ類を閉じる
@@ -4398,7 +4401,9 @@
                 return;
             }
             // 3. トップ画面での戻る：確認画面を表示
+            isExitConfirmOpen = true;
             showCustomConfirm('ツール一覧へ戻りますか？', '保存されていないデータは破棄されます。').then(ok => {
+                isExitConfirmOpen = false;
                 if (ok) {
                     setTimeout(() => {
                         window.location.href = 'index.html';

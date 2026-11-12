@@ -1152,14 +1152,22 @@
             });
         }
         
-        // --- モーダル制御 & 戻るボタン連動 ---
+        // --- モーダル制御 & 戻るボタン連動 (履歴ガード2段補充版) ---
         history.replaceState({ appBase: true }, '');
-        let hasGuard = false;
-        const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };
-        window.addEventListener('pointerdown', setGuard, { once: true });
-        window.addEventListener('DOMContentLoaded', setGuard);
+        history.pushState({ appGuard: 1 }, '');
+        history.pushState({ appGuard: 2 }, '');
+        const ensureHistoryGuards = () => {
+            if (!history.state || history.state.appBase) {
+                history.pushState({ appGuard: 1 }, '');
+                history.pushState({ appGuard: 2 }, '');
+            } else if (history.state.appGuard === 1) {
+                history.pushState({ appGuard: 2 }, '');
+            }
+        };
+        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
+        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
+        window.addEventListener('DOMContentLoaded', ensureHistoryGuards);
         const modalIds = ['history-modal', 'info-modal', 'save-modal', 'alert-modal', 'confirm-modal'];
-        let isClosingModalByCode = false;
 
         function hasOpenModal() {
             return modalIds.some(id => {
@@ -1169,12 +1177,10 @@
         }
 
         function pushModalHistory() {
-            if (!history.state || !history.state.modalOpen) {
-                history.pushState({ modalOpen: true }, '');
-            }
+            ensureHistoryGuards();
         }
 
-        function closeAllModals(triggerHistoryBack = true) {
+        function closeAllModals() {
             if (!hasOpenModal()) return false;
             modalIds.forEach(id => {
                 const el = document.getElementById(id);
@@ -1193,10 +1199,6 @@
                 confirmModalResolve = null;
                 res(false);
             }
-            if (triggerHistoryBack && history.state && history.state.modalOpen) {
-                isClosingModalByCode = true;
-                history.back();
-            }
             return true;
         }
 
@@ -1204,16 +1206,16 @@
             pushModalHistory();
             const el = document.getElementById(id);
             if (el) {
-                el.classList.remove('hidden'); 
-                el.classList.add('flex'); 
+                el.classList.remove('hidden');
+                el.classList.add('flex');
             }
         };
 
-        window.closeModal = function(id) { 
+        window.closeModal = function(id) {
             const el = document.getElementById(id);
             if (el) {
-                el.classList.add('hidden'); 
-                el.classList.remove('flex'); 
+                el.classList.add('hidden');
+                el.classList.remove('flex');
             }
             if (id === 'alert-modal' && alertModalResolve) {
                 const res = alertModalResolve;
@@ -1225,22 +1227,11 @@
                 confirmModalResolve = null;
                 res(false);
             }
-            setTimeout(() => {
-                if (!hasOpenModal() && history.state && history.state.modalOpen) {
-                    isClosingModalByCode = true;
-                    history.back();
-                }
-            }, 10);
         };
 
         // スマホのナビゲーション戻るボタン検知
         window.addEventListener('popstate', () => {
-            if (isClosingModalByCode) {
-                isClosingModalByCode = false;
-                return;
-            }
-            // 履歴ガードを即座に再装填
-            history.pushState({ appGuard: true }, '');
+            ensureHistoryGuards();
             const exitModal = document.getElementById('exit-modal');
             if (exitModal && !exitModal.classList.contains('hidden')) {
                 exitModal.classList.add('hidden');
@@ -1250,7 +1241,7 @@
 
             // 1. 開いているウィンドウ類を閉じる
             if (hasOpenModal()) {
-                closeAllModals(false);
+                closeAllModals();
                 return;
             }
 

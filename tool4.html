@@ -1753,65 +1753,61 @@
  }
  });  
   
- // --- ウィンドウ開閉とスマホ戻るボタン連動 ---  
- history.replaceState({ appBase: true }, '');  
- let hasGuard = false;  
- const setGuard = () => { if (!hasGuard) { history.pushState({ appGuard: true }, ''); hasGuard = true; } };  
- window.addEventListener('pointerdown', setGuard, { once: true });  
- window.addEventListener('DOMContentLoaded', setGuard);  
- let isClosingByCode = false;  
-  
- function pushWindowHistory() {  
- if (!history.state || !history.state.windowOpen) {  
- history.pushState({ windowOpen: true }, '');  
- }  
- }  
-  
- function closeAllActiveWindows(triggerHistoryBack = true) {  
- const activeElements = document.querySelectorAll('.bottom-sheet.active, .modal.active');  
- if (activeElements.length === 0) return false;  
-  
- document.querySelectorAll('.bottom-sheet, .sheet-overlay, .toolbar-btn').forEach(el => el.classList.remove('active'));  
- document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));  
- document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');  
- if (state.selectedTextId) { state.selectedTextId = null; updateTextPanel(); render(); }  
-  
- if (alertModalResolve) { const res = alertModalResolve; alertModalResolve = null; res(); }
- if (confirmModalResolve) { const res = confirmModalResolve; confirmModalResolve = null; res(false); }
+ // --- ウィンドウ開閉とスマホ戻るボタン連動 (履歴ガード2段補充版) ---
+ history.replaceState({ appBase: true }, '');
+ history.pushState({ appGuard: 1 }, '');
+ history.pushState({ appGuard: 2 }, '');
+ const ensureHistoryGuards = () => {
+   if (!history.state || history.state.appBase) {
+     history.pushState({ appGuard: 1 }, '');
+     history.pushState({ appGuard: 2 }, '');
+   } else if (history.state.appGuard === 1) {
+     history.pushState({ appGuard: 2 }, '');
+   }
+ };
+ window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
+ window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
+ window.addEventListener('DOMContentLoaded', ensureHistoryGuards);
 
- if (triggerHistoryBack && history.state && history.state.windowOpen) {  
- isClosingByCode = true;  
- history.back();  
- }  
- return true;  
- }  
-  
- window.addEventListener('popstate', (e) => {  
- if (isClosingByCode) {  
- isClosingByCode = false;  
- return;  
- }  
- // 履歴ガードを即座に再装填（ブラウザの離脱を阻止）
- history.pushState({ appGuard: true }, '');  
- const exitModal = document.getElementById('exit-modal');  
- if (exitModal && exitModal.classList.contains('active')) {  
- exitModal.classList.remove('active');  
- return;  
- }  
- // 1. 開いているウィンドウ類を閉じる
- const hasOtherWindow = document.querySelector('.bottom-sheet.active, .modal.active');  
- if (hasOtherWindow) {  
- closeAllActiveWindows(false);  
- return;  
- }  
- // 2. 作業画面（エディタまたはカメラ中）にいる場合は通常起動時のトップ画面へ戻す
- const isStartVisible = !document.getElementById('start-overlay')?.classList.contains('hidden');  
- if (!isStartVisible) {  
- goToStartScreen();  
- return;  
- }  
- // 3. トップ画面での戻る：確認画面を表示
- if (exitModal) exitModal.classList.add('active');  
+ function pushWindowHistory() {
+   ensureHistoryGuards();
+ }
+
+ function closeAllActiveWindows() {
+   const activeElements = document.querySelectorAll('.bottom-sheet.active, .modal.active');
+   if (activeElements.length === 0) return false;
+
+   document.querySelectorAll('.bottom-sheet, .sheet-overlay, .toolbar-btn').forEach(el => el.classList.remove('active'));
+   document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+   document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');
+   if (state.selectedTextId) { state.selectedTextId = null; updateTextPanel(); render(); }
+
+   if (alertModalResolve) { const res = alertModalResolve; alertModalResolve = null; res(); }
+   if (confirmModalResolve) { const res = confirmModalResolve; confirmModalResolve = null; res(false); }
+   return true;
+ }
+
+ window.addEventListener('popstate', () => {
+   ensureHistoryGuards();
+   const exitModal = document.getElementById('exit-modal');
+   if (exitModal && exitModal.classList.contains('active')) {
+     exitModal.classList.remove('active');
+     return;
+   }
+   // 1. 開いているウィンドウ類を閉じる
+   const hasOtherWindow = document.querySelector('.bottom-sheet.active, .modal.active');
+   if (hasOtherWindow) {
+     closeAllActiveWindows();
+     return;
+   }
+   // 2. 作業画面（エディタまたはカメラ中）にいる場合は通常起動時のトップ画面へ戻す
+   const isStartVisible = !document.getElementById('start-overlay')?.classList.contains('hidden');
+   if (!isStartVisible) {
+     goToStartScreen();
+     return;
+   }
+   // 3. トップ画面での戻る：確認画面を表示
+   if (exitModal) exitModal.classList.add('active');
  });  
   
  bindClick('exit-ok-btn', () => { window.location.href = 'index.html'; });  
@@ -2006,15 +2002,11 @@
  document.getElementById('pen-floating-buttons')?.classList.replace('flex', 'hidden');  
  };  
   
- const closeModal = id => {  
- const m = document.getElementById(id);   
- if(m && m.classList.contains('active')) {  
- m.classList.remove('active');  
- if (history.state && history.state.windowOpen) {  
- isClosingByCode = true;  
- history.back();  
- }  
- }  
+ const closeModal = id => {
+   const m = document.getElementById(id);
+   if (m && m.classList.contains('active')) {
+     m.classList.remove('active');
+   }
  };  
    
  document.querySelectorAll('.settings-btn').forEach(btn => btn.addEventListener('click', () => openModal('settings-menu-modal')));  

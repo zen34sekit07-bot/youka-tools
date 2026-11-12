@@ -2069,9 +2069,20 @@ AIアシスタント: Gemini (Google)
             });
         }
 
-        // スマホの戻るボタン＆モーダル連動制御
+        // スマホの戻るボタン＆モーダル連動制御 (履歴ガード2段補充版)
         history.replaceState({ page: 'root' }, '');
-        history.pushState({ page: 'main' }, '');
+        history.pushState({ page: 'guard1' }, '');
+        history.pushState({ page: 'guard2' }, '');
+        function ensureHistoryGuards() {
+            if (!history.state || history.state.page === 'root') {
+                history.pushState({ page: 'guard1' }, '');
+                history.pushState({ page: 'guard2' }, '');
+            } else if (history.state.page === 'guard1') {
+                history.pushState({ page: 'guard2' }, '');
+            }
+        }
+        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
+        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
 
         function hasOpenModal() {
             const hasSlide = document.querySelector('#modal-flower.active, #modal-picker.active, #modal-order.active');
@@ -2083,9 +2094,7 @@ AIアシスタント: Gemini (Google)
         }
 
         function pushModalHistory() {
-            if (!history.state || !history.state.modalOpen) {
-                history.pushState({ modalOpen: true }, '');
-            }
+            ensureHistoryGuards();
         }
 
         function triggerAppExit() {
@@ -2101,10 +2110,12 @@ AIアシスタント: Gemini (Google)
             document.getElementById('modal-edit-history').classList.add('hidden-safe');
             document.getElementById('modal-exit').classList.add('hidden-safe');
             document.getElementById('modal-overlay').classList.add('hidden-safe');
+            closeCustomAlert();
+            resolveCustomConfirm(false);
         }
 
         window.addEventListener('popstate', () => {
-            history.pushState({ page: 'main' }, '');
+            ensureHistoryGuards();
             const exitModal = document.getElementById('modal-exit');
             if (exitModal && !exitModal.classList.contains('hidden-safe')) {
                 exitModal.classList.add('hidden-safe');

@@ -355,9 +355,8 @@
         <p style="font-size: 11px; font-weight: 700; color: #38bdf8; margin: 0 0 6px 0;">【主な機能・できること】</p>
         <ul id="desc-modal-features" style="font-size: 12px; color: #cbd5e1; line-height: 1.55; margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px;"></ul>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <div>
         <button id="btn-close-desc" style="width: 100%; background: #1e293b; color: #cbd5e1; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #475569; font-size: 12px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
-        <a id="btn-open-tool-from-desc" href="#" style="width: 100%; background: #0284c7; color: #fff; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #38bdf8; font-size: 12px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">ツールを開く ›</a>
       </div>
     </div>
   </div>
@@ -449,7 +448,38 @@
     const descTitle = document.getElementById('desc-modal-title');
     const descPurpose = document.getElementById('desc-modal-purpose');
     const descFeatures = document.getElementById('desc-modal-features');
-    const descOpenLink = document.getElementById('btn-open-tool-from-desc');
+    const cModal = document.getElementById('credit-modal');
+    let isClosingModalByCode = false;
+
+    function openPortalModal(modalEl) {
+      if (!modalEl) return;
+      modalEl.classList.add('active');
+      if (!history.state || !history.state.portalModalOpen) {
+        history.pushState({ portalModalOpen: true }, '');
+      }
+    }
+
+    function closePortalModal(modalEl, syncHistory = true) {
+      if (!modalEl || !modalEl.classList.contains('active')) return;
+      modalEl.classList.remove('active');
+      if (syncHistory && history.state && history.state.portalModalOpen) {
+        isClosingModalByCode = true;
+        history.back();
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      if (isClosingModalByCode) {
+        isClosingModalByCode = false;
+        return;
+      }
+      if (descModal && descModal.classList.contains('active')) {
+        closePortalModal(descModal, false);
+      }
+      if (cModal && cModal.classList.contains('active')) {
+        closePortalModal(cModal, false);
+      }
+    });
 
     document.querySelectorAll('.btn-desc').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -459,38 +489,36 @@
         descTitle.textContent = info.title;
         descPurpose.textContent = info.purpose;
         descFeatures.innerHTML = info.features.map(item => `<li>${item}</li>`).join('');
-        descOpenLink.href = info.href;
-        descModal.classList.add('active');
+        openPortalModal(descModal);
       });
     });
 
     ['btn-close-desc', 'btn-close-desc-x'].forEach(id => {
       const el = document.getElementById(id);
       if (el && descModal) {
-        el.addEventListener('click', () => descModal.classList.remove('active'));
+        el.addEventListener('click', () => closePortalModal(descModal, true));
       }
     });
     if (descModal) {
       descModal.addEventListener('click', (e) => {
-        if (e.target === descModal) descModal.classList.remove('active');
+        if (e.target === descModal) closePortalModal(descModal, true);
       });
     }
 
-    const cModal = document.getElementById('credit-modal');
     const bOpen = document.getElementById('btn-index-credit');
     const bClose = document.getElementById('btn-close-credit');
     const bCloseX = document.getElementById('btn-close-credit-x');
     if (bOpen && cModal) {
-      bOpen.addEventListener('click', () => cModal.classList.add('active'));
+      bOpen.addEventListener('click', () => openPortalModal(cModal));
     }
     [bClose, bCloseX].forEach(btn => {
       if (btn && cModal) {
-        btn.addEventListener('click', () => cModal.classList.remove('active'));
+        btn.addEventListener('click', () => closePortalModal(cModal, true));
       }
     });
     if (cModal) {
       cModal.addEventListener('click', (e) => {
-        if (e.target === cModal) cModal.classList.remove('active');
+        if (e.target === cModal) closePortalModal(cModal, true);
       });
     }
 

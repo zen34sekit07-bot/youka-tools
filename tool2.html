@@ -2158,58 +2158,64 @@
  }  
  });  
   
- history.replaceState({ page: 'root' }, '');  
- history.pushState({ page: 'main' }, '');  
- const modalIds = ['main-menu-modal', 'updates-modal', 'credit-modal', 'export-modal', 'guide-modal', 'rename-modal', 'confirm-modal', 'alert-modal'];  
-  
- function hasOpenModal() {  
- return modalIds.some(id => {  
- const elem = el(id);  
- return elem && !elem.classList.contains('hidden');  
- });  
- }  
-  
- function pushModalHistory() {  
- if (!history.state || !history.state.modalOpen) {  
- history.pushState({ modalOpen: true }, '');  
- }  
- }  
-  
- function closeAllModals() {  
- if (!hasOpenModal()) return false;  
- modalIds.forEach(id => {  
- const elem = el(id);  
- if (elem) {  
- elem.classList.remove('flex');  
- elem.classList.add('hidden');  
- }  
- });  
- return true;  
- }  
-  
- window.addEventListener('popstate', () => {  
- history.pushState({ page: 'main' }, '');  
- const exitModal = el('exit-modal');  
- if (exitModal && !exitModal.classList.contains('hidden')) {  
- exitModal.classList.remove('flex');  
- exitModal.classList.add('hidden');  
- return;  
- }  
- // 1. 開いているウィンドウ類を閉じる
- if (hasOpenModal()) {  
- closeAllModals();  
- return;  
- }  
- // 2. 作業画面にいる場合は通常起動時のトップ画面 (Step 1) へ戻す
- if (appState.step !== 1) {  
- goToStep(1);  
- return;  
- }  
- // 3. トップ画面での戻る：確認画面を表示
- if (exitModal) {  
- exitModal.classList.remove('hidden');  
- exitModal.classList.add('flex');  
- }  
+ history.replaceState({ page: 'root' }, '');
+ history.pushState({ page: 'guard1' }, '');
+ history.pushState({ page: 'guard2' }, '');
+ function ensureHistoryGuards() {
+   if (!history.state || history.state.page === 'root') {
+     history.pushState({ page: 'guard1' }, '');
+     history.pushState({ page: 'guard2' }, '');
+   } else if (history.state.page === 'guard1') {
+     history.pushState({ page: 'guard2' }, '');
+   }
+ }
+ window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
+ window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
+
+ const modalIds = ['main-menu-modal', 'updates-modal', 'credit-modal', 'export-modal', 'guide-modal', 'rename-modal', 'confirm-modal', 'alert-modal'];
+
+ function hasOpenModal() {
+   return modalIds.some(id => {
+     const elem = el(id);
+     return elem && !elem.classList.contains('hidden');
+   });
+ }
+
+ function pushModalHistory() {
+   ensureHistoryGuards();
+ }
+
+ function closeAllModals() {
+   if (!hasOpenModal()) return false;
+   modalIds.forEach(id => {
+     closeModal(id);
+   });
+   return true;
+ }
+
+ window.addEventListener('popstate', () => {
+   ensureHistoryGuards();
+   const exitModal = el('exit-modal');
+   if (exitModal && !exitModal.classList.contains('hidden')) {
+     exitModal.classList.remove('flex');
+     exitModal.classList.add('hidden');
+     return;
+   }
+   // 1. 開いているウィンドウ類を閉じる
+   if (hasOpenModal()) {
+     closeAllModals();
+     return;
+   }
+   // 2. 作業画面にいる場合は通常起動時のトップ画面 (Step 1) へ戻す
+   if (appState.step !== 1) {
+     goToStep(1);
+     return;
+   }
+   // 3. トップ画面での戻る：確認画面を表示
+   if (exitModal) {
+     exitModal.classList.remove('hidden');
+     exitModal.classList.add('flex');
+   }
  });  
   
  on('exit-ok-btn', 'click', () => { window.location.href = 'index.html'; });  
