@@ -3753,7 +3753,11 @@
         };
 
         function buildFlowerFromRegisterForm() {
-            const company = document.getElementById('reg-company')?.value || 'all';
+            const companySel = document.getElementById('reg-company');
+            const company = companySel?.value || 'all';
+            const companyName = company === 'all'
+                ? 'ユー花園 (カタログ)'
+                : (companySel?.options[companySel.selectedIndex]?.textContent.replace(/様+$/, '').trim() || company);
             const branch = document.getElementById('reg-branch')?.value || 'all';
             const cat = document.getElementById('reg-category').value;
             const code = document.getElementById('reg-code').value.trim();
@@ -3816,6 +3820,7 @@
                 name: name,
                 category: cat,
                 company: company,
+                companyName: companyName,
                 price: price,
                 height: height,
                 width: width,
