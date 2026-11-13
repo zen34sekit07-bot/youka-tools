@@ -689,9 +689,8 @@
 
             <div id="modal-company-list" class="space-y-1.5 overflow-y-auto hide-scrollbar flex-1 pr-1"></div>
 
-            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800 shrink-0">
-                <button id="btn-open-comp-add-from-modal" type="button" class="py-2 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 font-bold rounded-xl text-xs active:scale-95 transition">＋ 葬儀社を追加</button>
-                <button class="close-modal-btn py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs border border-slate-700 transition">閉じる</button>
+            <div class="pt-1 border-t border-slate-800 shrink-0">
+                <button class="close-modal-btn w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs border border-slate-700 transition">閉じる</button>
             </div>
         </div>
     </div>
@@ -955,6 +954,29 @@
                         ※自身の端末へ登録されるため、社内共有はされません。
                     </p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新規葬儀社 追加モーダル（最前面表示） -->
+    <div id="add-company-modal" class="modal" style="z-index: 130;">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-xs p-5 shadow-2xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h3 class="text-sm font-black text-white flex items-center gap-1.5">
+                    <span>🏢</span> 新規葬儀社の追加
+                </h3>
+                <button type="button" class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+            </div>
+            <div class="space-y-2 text-xs">
+                <label class="block font-bold text-[11px] text-amber-300">葬儀社名 <span class="text-rose-400">*</span></label>
+                <input type="text" id="new-company-name-input" placeholder="例: ○○セレモニー" class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-xl p-2.5 text-white font-bold outline-none placeholder:text-slate-600">
+                <p class="text-[10px] text-slate-400 leading-relaxed">
+                    ※末尾の「様」は自動で付与されるため社名のみ入力してください。登録後は端末に保存され、続けて供花を登録できます。
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
+                <button type="button" class="close-modal-btn py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs border border-slate-700 transition">キャンセル</button>
+                <button type="button" id="btn-save-new-company" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-xs shadow active:scale-95 transition">登録する</button>
             </div>
         </div>
     </div>
@@ -3099,10 +3121,7 @@
                 if (inp) inp.value = '';
                 renderCompanyModalList();
             });
-            document.getElementById('btn-open-comp-add-from-modal')?.addEventListener('click', () => {
-                closeModal('company-search-modal');
-                openModal('register-flower-modal');
-            });
+
 
             const qtyInput = document.getElementById('modal-qty-input');
             document.getElementById('modal-btn-qty-minus').addEventListener('click', () => {
@@ -3449,8 +3468,50 @@
             });
 
             document.getElementById('btn-reg-add-new-company')?.addEventListener('click', () => {
-                openModal('company-search-modal');
+                const inp = document.getElementById('new-company-name-input');
+                if (inp) inp.value = '';
+                openModal('add-company-modal');
+                setTimeout(() => inp?.focus(), 50);
+            });
+
+            document.getElementById('btn-save-new-company')?.addEventListener('click', () => {
+                const inp = document.getElementById('new-company-name-input');
+                const rawName = (inp?.value || '').trim();
+                const cleanName = rawName.replace(/様+$/, '').trim();
+                if (!cleanName) {
+                    showAlertModal('葬儀社名を入力してください。', '入力不足');
+                    return;
+                }
+
+                const existing = getAllCompanies(true).find(c => c.name.replace(/様+$/, '').trim() === cleanName);
+                let targetId = '';
+                if (existing) {
+                    targetId = existing.id;
+                } else {
+                    targetId = 'comp_' + Date.now();
+                    if (!Array.isArray(window.__syncedCompanies) || window.__syncedCompanies.length === 0) {
+                        window.__syncedCompanies = [...DEFAULT_COMPANIES];
+                    }
+                    window.__syncedCompanies.push({
+                        id: targetId,
+                        name: cleanName,
+                        isCustom: true
+                    });
+                    localStorage.setItem(STORAGE_KEYS.COMPANIES, JSON.stringify(window.__syncedCompanies));
+                }
+
+                const compSel = document.getElementById('reg-company');
+                if (compSel) {
+                    const comps = getAllCompanies(false);
+                    compSel.innerHTML = '<option value="all">ユー花園 公式</option>' +
+                        comps.map(c => `<option value="${c.id}">${c.name.replace(/様+$/, '')} 様</option>`).join('');
+                    compSel.value = targetId;
+                }
+
                 renderCompanyModalList();
+                renderCompanyAccordionList();
+                closeModal('add-company-modal');
+                showAlertModal(existing ? `「${cleanName} 様」は既に登録されているため選択しました。` : `「${cleanName} 様」を追加しました！`, existing ? '選択完了' : '登録完了');
             });
 
             document.getElementById('btn-open-local-data-manage')?.addEventListener('click', () => {
@@ -3973,10 +4034,11 @@
                 return;
             }
 
-            // 1. 開いているウィンドウ類（モーダル）を閉じる
-            const activeModal = document.querySelector('.modal.active');
-            if (activeModal) {
-                closeModal(activeModal.id);
+            // 1. 開いているウィンドウ類（モーダル）を最前面から閉じる
+            const activeModals = Array.from(document.querySelectorAll('.modal.active'));
+            if (activeModals.length > 0) {
+                const topModal = activeModals[activeModals.length - 1];
+                closeModal(topModal.id);
                 return;
             }
 
