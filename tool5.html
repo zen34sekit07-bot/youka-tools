@@ -3613,8 +3613,9 @@
             { name: "カスミソウ", colors: ["W", "染B", "染V", "染P", "染Y"] },
             { name: "グラジオラス", colors: ["W", "P", "Y", "OR", "V"] },
             { name: "ダリア", colors: ["W", "P"] },
-            { name: "アナスタシア", colors: ["G"] },
+            { name: "アナスタシア", colors: [] },
             { name: "ソリダコ", colors: [] },
+            { name: "サンデリアーナ", colors: [] },
             { name: "ハラン", colors: [] },
             { name: "丸葉ルスカス", colors: [] },
             { name: "アレカヤシ", colors: [] },
@@ -3623,18 +3624,71 @@
             { name: "ゴッドセフィア", colors: [] },
             { name: "青ドラセナ", colors: [] },
             { name: "レザーファン", colors: [] },
-            { name: "アイビー", colors: [] },
-            { name: "サンデリアーナ", colors: [] }
+            { name: "アイビー", colors: [] }
         ];
 
         const REG_MASTER_POINTS = [
             { name: "コチョウラン", colors: ["W", "P"] },
             { name: "デンファレ", colors: ["W", "P(ソニア)", "P(淡P)"] },
             { name: "ユリ(1本)", colors: ["W", "P", "Y"] },
-            { name: "オンシジューム", colors: ["Y"] },
-            { name: "カトレア", colors: ["W", "P"] },
-            { name: "テッポウユリ", colors: ["W"] }
+            { name: "オンシジューム", colors: [] },
+            { name: "カトレア", colors: [] },
+            { name: "テッポウユリ", colors: [] }
         ];
+
+        const LEAF_MATERIAL_NAMES = ['ソリダコ', 'サンデリアーナ', 'ハラン', '丸葉ルスカス', 'アレカヤシ', 'モンステラ', 'リリオペ', 'ゴッドセフィア', '青ドラセナ', 'レザーファン', 'アイビー'];
+        const NO_DUPLICATE_MATERIAL_NAMES = ['アナスタシア', ...LEAF_MATERIAL_NAMES, 'オンシジューム', 'カトレア', 'テッポウユリ'];
+
+        function createRegisterRowHtml(item, typeClass, isClone = false) {
+            const hasColor = item.colors && item.colors.length > 0;
+            const colorSelect = hasColor
+                ? `<select onchange="adjustColorSelectWidth(this)" class="${typeClass}-color bg-slate-900 border border-slate-700 text-white rounded px-1 py-1 text-xs outline-none w-[52px] shrink-0 truncate transition-all">
+                    ${item.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+                   </select>`
+                : `<span class="text-[10px] text-slate-600 font-mono w-[52px] shrink-0 text-center">-</span>`;
+
+            const canDuplicate = !NO_DUPLICATE_MATERIAL_NAMES.includes(item.name);
+            const actionBtn = isClone
+                ? `<button type="button" onclick="this.closest('.${typeClass}-row').remove()" class="shrink-0 px-1.5 py-0.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-[10px] text-rose-300 font-bold rounded active:scale-95 transition" title="この行を削除">✕</button>`
+                : (canDuplicate ? `<button type="button" onclick="duplicateRegisterRow(this, '${typeClass}')" class="shrink-0 px-1.5 py-0.5 bg-slate-800 hover:bg-indigo-900 border border-slate-700 hover:border-indigo-500/50 text-[10px] text-cyan-300 font-bold rounded active:scale-95 transition">この花材を+</button>` : '');
+
+            return `
+                <div class="${typeClass}-row flex items-center justify-between py-1.5 border-b border-slate-800/80 last:border-none text-xs gap-1.5">
+                    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                        <span class="font-bold text-slate-200 truncate">${item.name}</span>
+                        ${actionBtn}
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        ${colorSelect}
+                        <div class="flex items-center gap-0.5">
+                            <input type="number" min="0" placeholder="0" data-name="${item.name}" class="${typeClass}-qty w-11 text-center bg-slate-900 border border-slate-700 text-cyan-300 font-bold rounded py-1 text-xs outline-none focus:border-cyan-500">
+                            <span class="text-[10px] text-slate-400 font-mono">本</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.duplicateRegisterRow = function(btn, typeClass) {
+            const row = btn.closest(`.${typeClass}-row`);
+            if (!row) return;
+            const qtyInp = row.querySelector(`.${typeClass}-qty`);
+            const colSel = row.querySelector(`.${typeClass}-color`);
+            const name = qtyInp ? qtyInp.getAttribute('data-name') : '';
+            const colors = colSel ? Array.from(colSel.options).map(o => o.value) : [];
+            const temp = document.createElement('div');
+            temp.innerHTML = createRegisterRowHtml({ name, colors }, typeClass, true).trim();
+            const newRow = temp.firstElementChild;
+            row.insertAdjacentElement('afterend', newRow);
+        };
+
+        window.toggleRegAccordion = function(targetId, btn) {
+            const body = document.getElementById(targetId);
+            if (!body) return;
+            const isHidden = body.classList.toggle('hidden');
+            const arrow = btn.querySelector('.reg-acc-arrow');
+            if (arrow) arrow.textContent = isHidden ? '▼' : '▲';
+        };
 
         function renderRegisterFormLists() {
             const cat = document.getElementById('reg-category')?.value || 'general';
@@ -3655,52 +3709,34 @@
                 displayMats = [...REG_MASTER_MATERIALS];
             }
 
-            if (matContainer) {
-                matContainer.innerHTML = displayMats.map((m) => {
-                    const hasColor = m.colors && m.colors.length > 0;
-                    const colorSelect = hasColor
-                        ? `<select onchange="adjustColorSelectWidth(this)" class="reg-mat-color bg-slate-900 border border-slate-700 text-white rounded px-1 py-1 text-xs outline-none w-[52px] shrink-0 truncate transition-all">
-                            ${m.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-                           </select>`
-                        : `<span class="text-[10px] text-slate-600 font-mono w-[52px] shrink-0 text-center">-</span>`;
+            const flowerMats = displayMats.filter(m => !LEAF_MATERIAL_NAMES.includes(m.name));
+            const leafMats = displayMats.filter(m => LEAF_MATERIAL_NAMES.includes(m.name));
 
-                    return `
-                        <div class="flex items-center justify-between py-1.5 border-b border-slate-800/80 last:border-none text-xs">
-                            <span class="font-bold text-slate-200 truncate pr-1 flex-1">${m.name}</span>
-                            <div class="flex items-center gap-2 shrink-0">
-                                ${colorSelect}
-                                <div class="flex items-center gap-0.5">
-                                    <input type="number" min="0" placeholder="0" data-name="${m.name}" class="reg-mat-qty w-12 text-center bg-slate-900 border border-slate-700 text-cyan-300 font-bold rounded py-1 text-xs outline-none focus:border-cyan-500">
-                                    <span class="text-[10px] text-slate-400 font-mono">本</span>
-                                </div>
-                            </div>
+            if (matContainer) {
+                matContainer.innerHTML = `
+                    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50">
+                        <button type="button" onclick="toggleRegAccordion('reg-acc-flowers', this)" class="w-full flex items-center justify-between px-3 py-2 bg-slate-800/90 hover:bg-slate-800 text-xs font-black text-pink-300 transition">
+                            <span>🌸 花 (${flowerMats.length}種)</span>
+                            <span class="reg-acc-arrow text-[10px] text-slate-400">▲</span>
+                        </button>
+                        <div id="reg-acc-flowers" class="px-2 py-1 divide-y divide-slate-800/60">
+                            ${flowerMats.map(m => createRegisterRowHtml(m, 'reg-mat', false)).join('')}
                         </div>
-                    `;
-                }).join('');
+                    </div>
+                    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50 mt-2">
+                        <button type="button" onclick="toggleRegAccordion('reg-acc-leaves', this)" class="w-full flex items-center justify-between px-3 py-2 bg-slate-800/90 hover:bg-slate-800 text-xs font-black text-emerald-300 transition">
+                            <span>🌿 葉物・グリーン (${leafMats.length}種)</span>
+                            <span class="reg-acc-arrow text-[10px] text-slate-400">▼</span>
+                        </button>
+                        <div id="reg-acc-leaves" class="hidden px-2 py-1 divide-y divide-slate-800/60">
+                            ${leafMats.map(m => createRegisterRowHtml(m, 'reg-mat', false)).join('')}
+                        </div>
+                    </div>
+                `;
             }
 
             if (ptContainer && !isSpecial) {
-                ptContainer.innerHTML = REG_MASTER_POINTS.map((p) => {
-                    const hasColor = p.colors && p.colors.length > 0;
-                    const colorSelect = hasColor
-                        ? `<select onchange="adjustColorSelectWidth(this)" class="reg-pt-color bg-slate-900 border border-slate-700 text-white rounded px-1 py-1 text-xs outline-none w-[52px] shrink-0 truncate transition-all">
-                            ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-                           </select>`
-                        : `<span class="text-[10px] text-slate-600 font-mono w-[52px] shrink-0 text-center">-</span>`;
-
-                    return `
-                        <div class="flex items-center justify-between py-1.5 border-b border-slate-800/80 last:border-none text-xs">
-                            <span class="font-bold text-slate-200 truncate pr-1 flex-1">${p.name}</span>
-                            <div class="flex items-center gap-2 shrink-0">
-                                ${colorSelect}
-                                <div class="flex items-center gap-0.5">
-                                    <input type="number" min="0" placeholder="0" data-name="${p.name}" class="reg-pt-qty w-12 text-center bg-slate-900 border border-slate-700 text-cyan-300 font-bold rounded py-1 text-xs outline-none focus:border-cyan-500">
-                                    <span class="text-[10px] text-slate-400 font-mono">本</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                ptContainer.innerHTML = REG_MASTER_POINTS.map((p) => createRegisterRowHtml(p, 'reg-pt', false)).join('');
             }
         }
 
@@ -3743,7 +3779,7 @@
             const isSpecial = cat === 'chief' || cat === 'family';
             const materials = [];
 
-            document.querySelectorAll('#reg-materials-list-container > div').forEach(row => {
+            document.querySelectorAll('#reg-materials-list-container .reg-mat-row').forEach(row => {
                 const qtyInp = row.querySelector('.reg-mat-qty');
                 const colSel = row.querySelector('.reg-mat-color');
                 const count = parseInt(qtyInp?.value, 10) || 0;
@@ -3759,7 +3795,7 @@
 
             const points = {};
             if (!isSpecial) {
-                document.querySelectorAll('#reg-points-list-container > div').forEach(row => {
+                document.querySelectorAll('#reg-points-list-container .reg-pt-row').forEach(row => {
                     const qtyInp = row.querySelector('.reg-pt-qty');
                     const colSel = row.querySelector('.reg-pt-color');
                     const count = parseInt(qtyInp?.value, 10) || 0;
@@ -3767,7 +3803,7 @@
                         const pName = qtyInp.getAttribute('data-name');
                         const color = (colSel && colSel.value && colSel.value !== 'W') ? `(${colSel.value})` : (pName === 'コチョウラン' ? '(W)' : '');
                         const key = `${pName}${color}`;
-                        points[key] = count;
+                        points[key] = (points[key] || 0) + count;
                     }
                 });
             }
