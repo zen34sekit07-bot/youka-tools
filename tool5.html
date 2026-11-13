@@ -1496,8 +1496,8 @@
                 return ['白'];
             }
 
-            // 喪主花は「白」固定
-            const isChiefFlower = code.startsWith('DX') || name.includes('喪主') || String(flower.category || '').toLowerCase() === 'chief';
+            // 喪主花は「白」固定（BS家族花は除外）
+            const isChiefFlower = !code.toUpperCase().startsWith('BS') && (code.toUpperCase().startsWith('DX') || String(flower.category || '').toLowerCase() === 'chief' || (name.includes('喪主') && !name.includes('家族')));
             if (isChiefFlower) {
                 if (/ピンク|桃/.test(name)) return ['ピンク'];
                 if (/ブルー|青/.test(name)) return ['青'];
@@ -1540,13 +1540,18 @@
                 colors.add('濃紫');
             }
 
-            // 3. AY/AM型番体系による色判定（白系統花材時の補助）
+            // 3. AY/AM/BS型番体系による色判定（白系統花材時の補助）
             if (colors.size === 0 && /^A[YM]-\d+/i.test(code)) {
                 const lastDigit = code.slice(-1);
                 if (lastDigit === '1') colors.add('ピンク');
                 else if (lastDigit === '2') colors.add('青');
                 else if (lastDigit === '3') colors.add('黄色');
                 else if (lastDigit === '4') colors.add('紫');
+            }
+            if (colors.size === 0 && /^BS-\d+/i.test(code)) {
+                if (/P$/i.test(code)) colors.add('ピンク');
+                else if (/S$/i.test(code)) colors.add('濃紫');
+                else if (/K$/i.test(code)) colors.add('紫');
             }
 
             const hasColorFlower = Array.from(colors).some(c => c !== '白');
