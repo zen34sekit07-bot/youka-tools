@@ -926,7 +926,7 @@
                         <span class="text-xs font-black text-cyan-300 flex items-center gap-1">
                             <span>✨</span> ポイント花リスト (1基あたり)
                         </span>
-                        <span class="text-[10px] text-slate-500 font-mono">使用本数を入力</span>
+                        <span class="text-[10px] text-slate-500 font-mono">実際の使用本数を入力</span>
                     </div>
                     <div id="reg-points-list-container" class="space-y-1 bg-slate-950/60 p-2 rounded-xl border border-slate-800"></div>
                 </div>
@@ -3613,7 +3613,7 @@
             { name: "カスミソウ", colors: ["W", "染B", "染V", "染P", "染Y"] },
             { name: "グラジオラス", colors: ["W", "P", "Y", "OR", "V"] },
             { name: "ダリア", colors: ["W", "P"] },
-            { name: "アナスタシア", colors: [] },
+            { name: "アナスタシア", colors: [], fixedColor: "G" },
             { name: "ソリダコ", colors: [] },
             { name: "サンデリアーナ", colors: [] },
             { name: "ハラン", colors: [] },
@@ -3631,8 +3631,8 @@
             { name: "コチョウラン", colors: ["W", "P"] },
             { name: "デンファレ", colors: ["W", "P(ソニア)", "P(淡P)"] },
             { name: "ユリ(1本)", colors: ["W", "P", "Y"] },
-            { name: "オンシジューム", colors: [] },
-            { name: "カトレア", colors: [] },
+            { name: "オンシジューム", colors: [], fixedColor: "Y", note: "2本1組→2を入力" },
+            { name: "カトレア", colors: [], fixedColor: "P" },
             { name: "テッポウユリ", colors: [] }
         ];
 
@@ -3641,11 +3641,18 @@
 
         function createRegisterRowHtml(item, typeClass, isClone = false) {
             const hasColor = item.colors && item.colors.length > 0;
+            const fixedColor = item.fixedColor || '';
             const colorSelect = hasColor
                 ? `<select onchange="adjustColorSelectWidth(this)" class="${typeClass}-color bg-slate-900 border border-slate-700 text-white rounded px-1 py-1 text-xs outline-none w-[52px] shrink-0 truncate transition-all">
                     ${item.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
                    </select>`
-                : `<span class="text-[10px] text-slate-600 font-mono w-[52px] shrink-0 text-center">-</span>`;
+                : (fixedColor
+                    ? `<span data-fixed-color="${fixedColor}" class="${typeClass}-fixed-color text-xs font-mono font-bold text-slate-300 w-[52px] shrink-0 text-center">${fixedColor}</span>`
+                    : `<span class="text-[10px] text-slate-600 font-mono w-[52px] shrink-0 text-center">-</span>`);
+
+            const noteHtml = item.note
+                ? `<span class="text-[10px] text-slate-400 font-bold shrink-0">${item.note}</span>`
+                : '';
 
             const canDuplicate = !NO_DUPLICATE_MATERIAL_NAMES.includes(item.name);
             const actionBtn = isClone
@@ -3656,6 +3663,7 @@
                 <div class="${typeClass}-row flex items-center justify-between py-1.5 border-b border-slate-800/80 last:border-none text-xs gap-1.5">
                     <div class="flex items-center gap-1.5 flex-1 min-w-0">
                         <span class="font-bold text-slate-200 truncate">${item.name}</span>
+                        ${noteHtml}
                         ${actionBtn}
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
@@ -3786,10 +3794,11 @@
             document.querySelectorAll('#reg-materials-list-container .reg-mat-row').forEach(row => {
                 const qtyInp = row.querySelector('.reg-mat-qty');
                 const colSel = row.querySelector('.reg-mat-color');
+                const fixedColEl = row.querySelector('.reg-mat-fixed-color');
                 const count = parseInt(qtyInp?.value, 10) || 0;
                 if (count > 0) {
                     const mName = qtyInp.getAttribute('data-name');
-                    const color = colSel ? colSel.value : '';
+                    const color = colSel ? colSel.value : (fixedColEl ? fixedColEl.getAttribute('data-fixed-color') : '');
                     materials.push({ name: mName, color: color, qty: count + '本' });
                 }
             });
@@ -3802,10 +3811,12 @@
                 document.querySelectorAll('#reg-points-list-container .reg-pt-row').forEach(row => {
                     const qtyInp = row.querySelector('.reg-pt-qty');
                     const colSel = row.querySelector('.reg-pt-color');
+                    const fixedColEl = row.querySelector('.reg-pt-fixed-color');
                     const count = parseInt(qtyInp?.value, 10) || 0;
                     if (count > 0) {
                         const pName = qtyInp.getAttribute('data-name');
-                        const color = (colSel && colSel.value && colSel.value !== 'W') ? `(${colSel.value})` : (pName === 'コチョウラン' ? '(W)' : '');
+                        const rawCol = colSel ? colSel.value : (fixedColEl ? fixedColEl.getAttribute('data-fixed-color') : '');
+                        const color = (rawCol && rawCol !== 'W') ? `(${rawCol})` : (pName === 'コチョウラン' ? '(W)' : '');
                         const key = `${pName}${color}`;
                         points[key] = (points[key] || 0) + count;
                     }
