@@ -2010,7 +2010,7 @@ AIアシスタント: Gemini (Google)
                 } else if (dictActiveMain === 'season') {
                     pool = pool.filter(f => {
                         const sStr = (Array.isArray(f.season) ? f.season : [f.season]).join(',');
-                        return sStr.includes("通年") || sStr.includes(dictActiveSub);
+                        return sStr.includes(dictActiveSub);
                     });
                 } else if (dictActiveMain === 'color') {
                     pool = pool.filter(f => {
