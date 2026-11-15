@@ -126,8 +126,8 @@
             padding-right: 4px;
             padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
             box-sizing: border-box;
         }
         @media (display-mode: standalone) {
@@ -152,9 +152,18 @@
         .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
         .sheet-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6f6f6f; font-size: 9px; line-height: 1.1; font-weight: bold; gap: 2px; border-radius: 8px; padding: 3px 0; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
+        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #525252; font-size: 12.5px; line-height: 1.15; font-weight: bold; gap: 3px; border-radius: 12px; padding: 9px 0 8px; min-height: 62px; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; position: relative; }
         .toolbar-btn.active { color: #2563eb; background: rgba(37, 99, 235, 0.15); }
-        .toolbar-btn svg { width: 18px; height: 18px; margin: 0 auto; flex-shrink: 0; }
+        .toolbar-btn svg { width: 25px; height: 25px; margin: 0 auto; flex-shrink: 0; }
+        @keyframes tabGlowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.55); background: rgba(37,99,235,0.12); } 50% { box-shadow: 0 0 0 7px rgba(37,99,235,0); background: rgba(37,99,235,0.28); } }
+        .toolbar-btn.attention { color: #1d4ed8; animation: tabGlowPulse 1.6s ease-in-out infinite; }
+        .toolbar-btn.attention::after { content: '▼'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); color: #2563eb; font-size: 13px; animation: tabArrowBounce 0.9s ease-in-out infinite; }
+        @keyframes tabArrowBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(4px); } }
+        #bg-hint-balloon { position: fixed; left: 10px; bottom: calc(96px + max(env(safe-area-inset-bottom, 0px), 10px)); z-index: 45; background: #ffffff; color: #1c1c1c; border: 2px solid #2563eb; border-radius: 14px; padding: 10px 14px; font-size: 13.5px; font-weight: bold; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,0.35); max-width: 78vw; cursor: pointer; animation: balloonFloat 1.8s ease-in-out infinite; }
+        #bg-hint-balloon::after { content: ''; position: absolute; left: 34px; bottom: -9px; width: 16px; height: 16px; background: #ffffff; border-right: 2px solid #2563eb; border-bottom: 2px solid #2563eb; transform: rotate(45deg); }
+        #bg-hint-balloon .balloon-sub { display: block; font-size: 12px; color: #2563eb; margin-top: 2px; }
+        @keyframes balloonFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .step-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 9999px; background: #2563eb; color: #ffffff; font-size: 14px; font-weight: bold; flex-shrink: 0; }
 
         .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 12px; }
         .modal.active { display: flex; }
@@ -408,7 +417,7 @@
                             <span class="text-sm font-bold text-white group-hover:text-cyan-400 flex items-center gap-2">
                                 📐 精密モード（パース対応）
                             </span>
-                            <span class="text-[12px] bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-bold">推奨</span>
+                            <span class="text-[12px] bg-blue-600 text-[#ffffff] px-2 py-0.5 rounded font-bold">推奨</span>
                         </div>
                         <p class="text-[13px] text-gray-400 leading-relaxed mt-1">
                             床と壁のラインから奥行き比率を算出し、手前と奥の遠近感を考慮した正確な縮尺シミュレーションが可能です。<br>
@@ -430,22 +439,23 @@
     <input type="file" id="bg-file-input" accept="image/*" class="hidden">
     <input type="file" id="item-file-input" accept="image/png,image/jpeg,image/webp,image/*" class="hidden">
 
+    <div id="bg-hint-balloon" class="hidden">
+        まずは式場の写真を読み込んでください
+        <span class="balloon-sub">下の「式場（背景）」をタップ ↓</span>
+    </div>
+
     <footer id="bottom-toolbar">
-        <button class="toolbar-btn" data-sheet="sheet-bg">
+        <button class="toolbar-btn" data-sheet="sheet-bg" id="tab-btn-bg">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            式場(背景)
+            式場（背景）
         </button>
         <button class="toolbar-btn" id="btn-add-item-trigger">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            パーツ追加・保存
+            パーツ追加
         </button>
         <button class="toolbar-btn" data-sheet="sheet-layers">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-            レイヤー
-        </button>
-        <button class="toolbar-btn" data-sheet="sheet-adjust">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-            微調整
+            レイヤー・調整
         </button>
         <button class="toolbar-btn" id="btn-export-sheet">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -456,78 +466,104 @@
     <div class="sheet-overlay" id="sheet-overlay"></div>
 
     <div class="bottom-sheet" id="sheet-bg">
-        <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
-        <div class="px-5 pb-2 border-b border-gray-800 shrink-0 flex justify-between items-center">
-            <h3 class="text-sm font-bold text-white">式場(背景)の設定</h3>
-            <span id="bg-status-label" class="text-[12px] text-gray-400 font-mono">未読み込み</span>
+        <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
+        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
+            <h3 class="text-base font-bold text-white">式場（背景）の設定</h3>
+            <span id="bg-status-label" class="text-[13px] text-gray-500 font-mono">未読み込み</span>
         </div>
         <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1 space-y-4">
-            <div class="bg-gray-900 border border-gray-800 rounded-xl p-3.5 space-y-2">
-                <div class="flex justify-between items-center text-xs text-gray-300">
-                    <span class="font-bold">背景の不透明度</span>
-                    <span id="val-bg-alpha" class="font-mono text-blue-400 font-bold">100%</span>
+            <div class="border-2 border-blue-200 rounded-2xl p-4 space-y-2.5">
+                <div class="flex items-center gap-2">
+                    <span class="step-num">1</span>
+                    <span class="text-base font-bold text-white">画像を選ぶ</span>
                 </div>
-                <input type="range" id="bg-alpha-slider" min="0.1" max="1.0" step="0.02" value="1.0">
+                <p class="text-[13px] text-gray-400 leading-relaxed">式場の写真を読み込みます。まずはここから始めてください。</p>
+                <button id="bg-upload-new-trigger" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm shadow transition active:scale-[0.98]">
+                    📷 写真から式場を読み込む / 変更
+                </button>
             </div>
 
-            <div id="bg-perspective-box" class="bg-gray-900 border border-gray-800 rounded-xl p-3.5 space-y-2.5">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <span class="text-xs font-bold text-white block">奥行き基準ライン</span>
-                        <span id="bg-perspective-status" class="text-[12px] text-gray-400 block mt-0.5">未設定（標準遠近）</span>
-                    </div>
-                    <button id="bg-perspective-setup-trigger" class="bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/50 text-cyan-300 font-bold py-1.5 px-3 rounded-lg text-xs transition">
+            <div id="bg-perspective-box" class="border-2 border-[#d9d9d7] rounded-2xl p-4 space-y-2.5">
+                <div class="flex items-center gap-2">
+                    <span class="step-num">2</span>
+                    <span class="text-base font-bold text-white">パース設定（奥行き）</span>
+                </div>
+                <p class="text-[13px] text-gray-400 leading-relaxed">式場の奥行きを設定します。床と壁の境目にラインを合わせると、手前と奥でパーツの大きさが正確に変わります。</p>
+                <div class="flex items-center justify-between gap-2">
+                    <span id="bg-perspective-status" class="text-[13px] text-gray-500">未設定（標準遠近）</span>
+                    <button id="bg-perspective-setup-trigger" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 px-4 rounded-xl text-sm transition active:scale-95 shrink-0">
                         📐 設定・再調整
                     </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2">
-                <button id="bg-remeasure-trigger" class="bg-gray-800 hover:bg-gray-700 border border-gray-300 text-amber-700 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                    基準寸法を再設定
+            <div class="border-2 border-[#d9d9d7] rounded-2xl p-4 space-y-2.5">
+                <div class="flex items-center gap-2">
+                    <span class="step-num">3</span>
+                    <span class="text-base font-bold text-white">基準寸法</span>
+                </div>
+                <p class="text-[13px] text-gray-400 leading-relaxed">画像に写る実際の寸法を測ります。祭壇の幅など、分かっている長さを写真の上で2点指定してください。</p>
+                <button id="bg-remeasure-trigger" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-blue-600 text-blue-700 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    基準寸法を設定・再設定
                 </button>
-                <button id="bg-save-library-trigger" class="bg-gray-800 hover:bg-gray-700 border border-gray-300 text-green-700 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                    式場を保存
+                <button id="bg-save-library-trigger" class="w-full bg-[#ffffff] hover:bg-gray-50 border-2 border-[#d9d9d7] text-gray-100 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    この式場を保存する
                 </button>
+                <p class="text-[12px] text-gray-400">保存した式場は、下の「端末内保存」からいつでも呼び出せます。</p>
             </div>
 
-            <button id="bg-upload-new-trigger" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow transition">
-                写真から式場を読み込む / 変更
-            </button>
-
-            <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
-                <div class="flex items-center justify-between gap-1">
-                    <div class="flex items-center gap-1 shrink-0">
-                        <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[13px] font-bold shrink-0">
-                            <button type="button" id="tab-venue-local" class="px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition">マイ保存</button>
-                            <button type="button" id="tab-venue-shared" class="px-2 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
-                        </div>
-                        <button type="button" class="btn-library-help bg-gray-800 hover:bg-gray-700 border border-gray-700 text-blue-400 p-1.5 rounded-lg transition shrink-0" title="マイ保存・共有ドライブの説明">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="border-2 border-[#d9d9d7] rounded-2xl p-3.5 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-base font-bold text-white">保存した式場</span>
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" class="btn-library-help bg-[#ffffff] border border-[#d9d9d7] text-blue-600 px-2.5 py-1.5 rounded-lg transition shrink-0 text-[13px] font-bold" title="端末内保存・オンライン共有の説明">
+                            ？ 説明
                         </button>
-                        <button type="button" id="btn-refresh-venue-shared" class="hidden bg-gray-800 hover:bg-gray-700 border border-cyan-600/50 text-cyan-300 p-1.5 rounded-lg transition active:scale-95 shrink-0" title="共有ドライブを再読込">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <button type="button" id="btn-refresh-venue-shared" class="hidden bg-[#ffffff] border border-blue-600 text-blue-700 px-2.5 py-1.5 rounded-lg transition active:scale-95 shrink-0 text-[13px] font-bold" title="オンライン共有を再読込">
+                            ↻ 再読込
                         </button>
                     </div>
-                    <button type="button" id="btn-upload-venue-shared" class="bg-emerald-700 hover:bg-emerald-600 text-[#ffffff] text-[12px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
-                        現在の式場をUP
-                    </button>
                 </div>
-                <!-- 共有ドライブ検索・あいうえお順絞り込みバー（式場） -->
-                <div id="venue-shared-controls" class="hidden space-y-1.5 pt-1 border-t border-gray-800/80">
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" id="tab-venue-local" class="py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-local-on">端末内保存</button>
+                    <button type="button" id="tab-venue-shared" class="py-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7] text-gray-300 font-bold text-sm transition">オンライン共有</button>
+                </div>
+                <button type="button" id="btn-upload-venue-shared" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] text-sm font-bold py-3 rounded-xl shadow transition active:scale-[0.98]">
+                    ⬆ 式場をアップロード
+                </button>
+                <!-- 端末内保存の検索・並び替え（式場） -->
+                <div id="venue-local-controls" class="space-y-1.5">
                     <div class="flex items-center gap-1.5">
                         <div class="relative flex-1">
-                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[13px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
-                            <svg class="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <button type="button" id="venue-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[12px] absolute right-2 top-1.5">✕</button>
+                            <input type="text" id="venue-local-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="venue-local-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
                         </div>
-                        <select id="venue-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[12px] font-bold text-cyan-300 outline-none shrink-0">
-                            <option value="newest">新着順</option>
-                            <option value="kana">あいうえお順</option>
+                        <select id="venue-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                            <option value="newest">新しい順</option>
+                            <option value="oldest">古い順</option>
+                            <option value="kana">あいうえお昇順</option>
+                            <option value="kana-desc">あいうえお降順</option>
                         </select>
-                        <select id="venue-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[12px] font-bold text-gray-200 outline-none shrink-0">
+                    </div>
+                </div>
+                <!-- オンライン共有の検索・並び替え（式場） -->
+                <div id="venue-shared-controls" class="hidden space-y-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <div class="relative flex-1">
+                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="venue-shared-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
+                        </div>
+                        <select id="venue-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                            <option value="newest">新しい順</option>
+                            <option value="oldest">古い順</option>
+                            <option value="kana">あいうえお昇順</option>
+                            <option value="kana-desc">あいうえお降順</option>
+                        </select>
+                        <select id="venue-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
                             <option value="all">全行</option>
                             <option value="a">あ行</option>
                             <option value="ka">か行</option>
@@ -543,19 +579,20 @@
                         </select>
                     </div>
                 </div>
-                <div id="saved-venues-list" class="space-y-1.5 max-h-44 overflow-y-auto hide-scrollbar">
+                <div id="saved-venues-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
                     <p class="text-[13px] text-gray-500 text-center py-2">保存された式場はありません</p>
                 </div>
             </div>
+            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeSheet('sheet-bg')">閉じる</button>
         </div>
     </div>
 
     <div id="add-item-modal" class="modal">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    パーツの追加・保存
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    パーツの追加
                 </h3>
                 <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
@@ -571,42 +608,61 @@
                     </button>
                 </div>
 
-                <button id="upload-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold p-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition active:scale-98">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <button id="upload-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold p-3.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg transition active:scale-98">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     写真からパーツを作成（切り抜き）
                 </button>
 
-                <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
-                    <div class="flex items-center justify-between gap-1">
-                        <div class="flex items-center gap-1 shrink-0">
-                            <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[13px] font-bold shrink-0">
-                                <button type="button" id="tab-part-local" class="px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition">マイ保存</button>
-                                <button type="button" id="tab-part-shared" class="px-2 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
-                            </div>
-                            <button type="button" class="btn-library-help bg-gray-800 hover:bg-gray-700 border border-gray-700 text-blue-400 p-1.5 rounded-lg transition shrink-0" title="マイ保存・共有ドライブの説明">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="border-2 border-[#d9d9d7] rounded-2xl p-3.5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-base font-bold text-white">保存したパーツ</span>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" class="btn-library-help bg-[#ffffff] border border-[#d9d9d7] text-blue-600 px-2.5 py-1.5 rounded-lg transition shrink-0 text-[13px] font-bold" title="端末内保存・オンライン共有の説明">
+                                ？ 説明
                             </button>
-                            <button type="button" id="btn-refresh-part-shared" class="hidden bg-gray-800 hover:bg-gray-700 border border-cyan-600/50 text-cyan-300 p-1.5 rounded-lg transition active:scale-95 shrink-0" title="共有ドライブを再読込">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            <button type="button" id="btn-refresh-part-shared" class="hidden bg-[#ffffff] border border-blue-600 text-blue-700 px-2.5 py-1.5 rounded-lg transition active:scale-95 shrink-0 text-[13px] font-bold" title="オンライン共有を再読込">
+                                ↻ 再読込
                             </button>
                         </div>
-                        <button type="button" id="btn-upload-part-shared" class="bg-emerald-700 hover:bg-emerald-600 text-[#ffffff] text-[12px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
-                            選択パーツをUP
-                        </button>
                     </div>
-                    <!-- 共有ドライブ検索・あいうえお順絞り込みバー（パーツ） -->
-                    <div id="part-shared-controls" class="hidden space-y-1.5 pt-1 border-t border-gray-800/80">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="tab-part-local" class="py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-local-on">端末内保存</button>
+                        <button type="button" id="tab-part-shared" class="py-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7] text-gray-300 font-bold text-sm transition">オンライン共有</button>
+                    </div>
+                    <button type="button" id="btn-upload-part-shared" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] text-sm font-bold py-3 rounded-xl shadow transition active:scale-[0.98]">
+                        ⬆ パーツをアップロード
+                    </button>
+                    <!-- 端末内保存の検索・並び替え（パーツ） -->
+                    <div id="part-local-controls" class="space-y-1.5">
                         <div class="flex items-center gap-1.5">
                             <div class="relative flex-1">
-                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[13px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
-                                <svg class="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <button type="button" id="part-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[12px] absolute right-2 top-1.5">✕</button>
+                                <input type="text" id="part-local-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <button type="button" id="part-local-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
                             </div>
-                            <select id="part-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[12px] font-bold text-cyan-300 outline-none shrink-0">
-                                <option value="newest">新着順</option>
-                                <option value="kana">あいうえお順</option>
+                            <select id="part-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                                <option value="newest">新しい順</option>
+                                <option value="oldest">古い順</option>
+                                <option value="kana">あいうえお昇順</option>
+                                <option value="kana-desc">あいうえお降順</option>
                             </select>
-                            <select id="part-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[12px] font-bold text-gray-200 outline-none shrink-0">
+                        </div>
+                    </div>
+                    <!-- オンライン共有の検索・並び替え（パーツ） -->
+                    <div id="part-shared-controls" class="hidden space-y-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <div class="relative flex-1">
+                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <button type="button" id="part-shared-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
+                            </div>
+                            <select id="part-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                                <option value="newest">新しい順</option>
+                                <option value="oldest">古い順</option>
+                                <option value="kana">あいうえお昇順</option>
+                                <option value="kana-desc">あいうえお降順</option>
+                            </select>
+                            <select id="part-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
                                 <option value="all">全行</option>
                                 <option value="a">あ行</option>
                                 <option value="ka">か行</option>
@@ -622,7 +678,7 @@
                             </select>
                         </div>
                     </div>
-                    <div id="saved-parts-list" class="space-y-1.5 max-h-44 overflow-y-auto hide-scrollbar">
+                    <div id="saved-parts-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
                         <p class="text-[13px] text-gray-500 text-center py-2">保存されたパーツはありません</p>
                     </div>
                 </div>
@@ -635,28 +691,58 @@
                     <div id="catalog-tree-container" class="space-y-2"></div>
                 </div>
             </div>
-            <button class="close-modal-btn w-full mt-3 bg-gray-800 text-white font-bold py-2 rounded-xl text-xs border border-gray-700 shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-3 bg-gray-100 text-[#ffffff] font-bold py-3 rounded-xl text-sm shrink-0">閉じる</button>
+        </div>
+    </div>
+
+    <div id="part-upload-picker-modal" class="modal" style="z-index: 130;">
+        <div class="bg-[#ffffff] border border-gray-300 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-2 shrink-0 border-b border-[#d9d9d7] pb-2">
+                <h3 class="text-base font-bold text-white">アップロードするパーツを選ぶ</h3>
+                <button class="close-modal-btn text-gray-500 hover:text-gray-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <p class="text-[13px] text-gray-400 mb-3 shrink-0">今、画面に表示中のパーツ一覧です。アップロードすると「オンライン共有」に入り、他の端末からも使えるようになります。</p>
+            <div id="part-upload-picker-list" class="overflow-y-auto hide-scrollbar space-y-2 flex-1"></div>
+            <button class="close-modal-btn w-full mt-3 bg-gray-100 text-[#ffffff] font-bold py-3 rounded-xl text-sm shrink-0">閉じる</button>
         </div>
     </div>
 
     <div class="bottom-sheet" id="sheet-layers">
-        <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
-        <div class="px-5 pb-2 border-b border-gray-800 shrink-0 flex justify-between items-center">
-            <h3 class="text-sm font-bold text-white">重ね合わせレイヤー</h3>
-            <span class="text-[12px] text-gray-400">上が手前に表示</span>
+        <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
+        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
+            <h3 class="text-base font-bold text-white">レイヤー・調整</h3>
+            <span class="text-[12px] text-gray-500">上が手前に表示</span>
         </div>
         <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1">
+            <p class="text-[12px] text-gray-400 mb-2">パーツの「調整」ボタンで、大きさ・位置・傾きを変えられます。</p>
             <div id="layers-list" class="space-y-2"></div>
+        </div>
+        <div class="px-5 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0 space-y-3">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-lg overflow-hidden border border-[#d9d9d7] bg-black flex items-center justify-center shrink-0">
+                    <img id="layer-bg-thumb" class="max-w-full max-h-full object-contain hidden">
+                    <span id="layer-bg-thumb-empty" class="text-[10px] text-gray-400 font-bold">背景</span>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-bold text-white">背景（式場）</span>
+                        <span id="val-bg-alpha" class="font-mono text-blue-600 font-bold text-sm">100%</span>
+                    </div>
+                    <input type="range" id="bg-alpha-slider" min="0.1" max="1.0" step="0.02" value="1.0" class="w-full">
+                    <span class="text-[11px] text-gray-400">背景の不透明度（薄くするとパーツが見やすくなります）</span>
+                </div>
+            </div>
+            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeSheet('sheet-layers')">閉じる</button>
         </div>
     </div>
 
     <div class="bottom-sheet" id="sheet-adjust">
-        <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
-        <div class="px-5 pb-2 border-b border-gray-800 shrink-0 flex justify-between items-center">
-            <h3 class="text-sm font-bold text-white">選択パーツの微調整</h3>
-            <button id="selected-item-title-btn" class="text-xs text-blue-400 font-bold bg-blue-950/40 border border-blue-500/40 px-2.5 py-1 rounded-lg flex items-center gap-1 hover:bg-blue-900/60 transition active:scale-95" title="レイヤー一覧で切り替え">
+        <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
+        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
+            <h3 class="text-base font-bold text-white">パーツの調整</h3>
+            <button id="selected-item-title-btn" class="text-[13px] text-blue-700 font-bold bg-blue-50 border border-blue-300 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-blue-100 transition active:scale-95" title="レイヤー一覧で切り替え">
                 <span id="selected-item-title">未選択</span>
-                <span class="text-[12px] text-blue-300">▼切替</span>
+                <span class="text-[12px] text-blue-600">▼切替</span>
             </button>
         </div>
         <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1 space-y-4" id="adjust-panel">
@@ -743,6 +829,9 @@
                     <span>このパーツを削除</span>
                 </button>
             </div>
+        </div>
+        <div class="px-5 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0">
+            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeSheet('sheet-adjust')">閉じる</button>
         </div>
     </div>
 
@@ -861,42 +950,42 @@
         </div>
     </div>
 
-    <!-- マイ保存・共有ドライブ機能説明モーダル -->
+    <!-- 端末内保存・オンライン共有機能説明モーダル -->
     <div id="library-help-modal" class="modal" style="z-index: 215;">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
                 <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    マイ保存・共有ドライブの使い方
+                    端末内保存・オンライン共有の使い方
                 </h3>
                 <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3 text-xs text-gray-300 leading-relaxed">
                 <div class="bg-blue-950/40 border border-blue-500/30 p-3 rounded-xl space-y-1">
-                    <p class="font-bold text-blue-300">📁 マイ保存（端末内ライブラリ）</p>
+                    <p class="font-bold text-blue-300">📁 端末内保存（端末内ライブラリ）</p>
                     <p class="text-[13px] text-gray-300">
                         お使いのスマホ・PC内に保存される自分専用の保管場所です。電波の届かない式場や地下でもすぐに呼び出せます。
                     </p>
                 </div>
 
-                <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-xl space-y-1.5">
-                    <p class="font-bold text-emerald-300">☁ 共有ドライブ（全員と共有）</p>
+                <div class="bg-blue-50 border border-blue-300 p-3 rounded-xl space-y-1.5">
+                    <p class="font-bold text-blue-700">☁ オンライン共有（全員と共有）</p>
                     <p class="text-[13px] text-gray-300">
                         登録した式場やパーツをチーム全員で共有できるクラウド保管庫です。初回読み込み後はキャッシュされるため通信量を節約でき、最新状態にしたい時は右上の<strong>更新ボタン（↻）</strong>で再読込できます。
                     </p>
                     <div class="bg-gray-950/70 p-2 rounded-lg border border-gray-800 text-[12px] text-amber-300/90">
-                        ※重複防止のため、<strong>一度共有ドライブへUP済みのデータは「マイ保存」のUPボタンが非表示</strong>になります（名前や基準線を変更しても同一データ扱いとなります）。再アップロードしたい場合は、先に共有ドライブ側のゴミ箱から削除してください。
+                        ※重複防止のため、<strong>一度オンライン共有へUP済みのデータは「端末内保存」のUPボタンが非表示</strong>になります（名前や基準線を変更しても同一データ扱いとなります）。再アップロードしたい場合は、先にオンライン共有側のゴミ箱から削除してください。
                     </div>
                 </div>
 
                 <div class="bg-gray-950 border border-gray-800 p-3 rounded-xl space-y-1.5">
                     <p class="font-bold text-gray-200">🏷 バッジ・ボタンの見方</p>
                     <ul class="space-y-1 text-[13px] text-gray-300">
-                        <li>・<span class="text-[13px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-[13px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
+                        <li>・<span class="text-[13px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-[13px] bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
                         <li>・<span class="text-[13px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded">パースあり</span> / <span class="text-[13px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded">パースなし</span>：奥行き基準ラインの設定有無</li>
-                        <li>・<strong>クラウドUPボタン</strong>：マイ保存のデータを共有ドライブへ公開</li>
-                        <li>・<strong>ダウンロードボタン（↓）</strong>：共有ドライブのデータを端末のマイ保存へ取り込み</li>
-                        <li>・<strong>ゴミ箱ボタン</strong>：データの削除（共有ドライブでは自分がUPしたデータのみ削除可能）</li>
+                        <li>・<strong>クラウドUPボタン</strong>：端末内保存のデータをオンライン共有へ公開</li>
+                        <li>・<strong>ダウンロードボタン（↓）</strong>：オンライン共有のデータを端末の端末内保存へ取り込み</li>
+                        <li>・<strong>ゴミ箱ボタン</strong>：データの削除（オンライン共有では自分がUPしたデータのみ削除可能）</li>
                     </ul>
                 </div>
             </div>
@@ -1819,8 +1908,8 @@
                 badge.style.display = 'inline-block';
                 badge.textContent = isPrecision ? '精密' : 'かんたん';
                 badge.className = isPrecision 
-                    ? 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 whitespace-nowrap shrink-0'
-                    : 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-500/30 whitespace-nowrap shrink-0';
+                    ? 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-blue-600 text-[#ffffff] border border-blue-600 whitespace-nowrap shrink-0'
+                    : 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-300 whitespace-nowrap shrink-0';
             }
             if (menuText) {
                 menuText.textContent = isPrecision ? '精密' : 'かんたん';
@@ -1976,10 +2065,44 @@
                 ctx.drawImage(state.bg.obj, r.x, r.y, r.w, r.h);
                 ctx.restore();
             } else {
-                ctx.fillStyle = '#c6c6c4';
-                ctx.font = 'bold 13px sans-serif';
+                const cx = canvas.width / 2, cy = canvas.height / 2;
+                const fs1 = Math.max(17, Math.round(canvas.width * 0.019));
+                const fs2 = Math.max(14, Math.round(canvas.width * 0.0155));
+                ctx.save();
+                ctx.font = `bold ${fs1}px sans-serif`;
+                const w1 = ctx.measureText('式場の写真が読み込まれていません').width;
+                ctx.font = `bold ${fs2}px sans-serif`;
+                const w2 = ctx.measureText('下の「式場（背景）」から写真を読み込んでください').width;
+                const boxW = Math.max(w1, w2) + fs1 * 2.2;
+                const boxH = fs1 + fs2 + fs1 * 1.7;
+                ctx.fillStyle = 'rgba(0,0,0,0.62)';
+                if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(cx - boxW / 2, cy - boxH / 2, boxW, boxH, 16); ctx.fill(); }
+                else { ctx.fillRect(cx - boxW / 2, cy - boxH / 2, boxW, boxH); }
                 ctx.textAlign = 'center';
-                ctx.fillText('下部の「式場(背景)」から写真を読み込んでください', canvas.width / 2, canvas.height / 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${fs1}px sans-serif`;
+                ctx.fillText('式場の写真が読み込まれていません', cx, cy - fs2 * 0.55);
+                ctx.fillStyle = '#bfdbfe';
+                ctx.font = `bold ${fs2}px sans-serif`;
+                ctx.fillText('下の「式場（背景）」から写真を読み込んでください', cx, cy + fs1 * 0.95);
+                ctx.restore();
+            }
+            // 背景未読込時は「式場（背景）」タブを光らせ、バルーンで案内する
+            const needBgAttn = !(state.bg.loaded && state.bg.obj);
+            const bgTabBtn = document.getElementById('tab-btn-bg');
+            if (bgTabBtn && bgTabBtn.classList.contains('attention') !== needBgAttn) bgTabBtn.classList.toggle('attention', needBgAttn);
+            const bgBalloon = document.getElementById('bg-hint-balloon');
+            if (bgBalloon && bgBalloon.classList.contains('hidden') === needBgAttn) bgBalloon.classList.toggle('hidden', !needBgAttn);
+            const bgThumb = document.getElementById('layer-bg-thumb');
+            if (bgThumb) {
+                if (state.bg.obj && state.bg.obj.src && bgThumb.getAttribute('src') !== state.bg.obj.src) {
+                    bgThumb.src = state.bg.obj.src;
+                    bgThumb.classList.remove('hidden');
+                    document.getElementById('layer-bg-thumb-empty')?.classList.add('hidden');
+                } else if (!state.bg.obj && !bgThumb.classList.contains('hidden')) {
+                    bgThumb.classList.add('hidden');
+                    document.getElementById('layer-bg-thumb-empty')?.classList.remove('hidden');
+                }
             }
 
             const mBanner = document.getElementById('measure-banner');
@@ -2839,15 +2962,19 @@
         }
 
         function renderSavedVenues() {
-            if (document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) return;
+            if (document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) return;
             if (!db) return;
             db.transaction('venues', 'readonly').objectStore('venues').getAll().onsuccess = e => {
-                if (document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) return;
+                if (document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) return;
                 const list = document.getElementById('saved-venues-list');
                 if (!list) return;
-                const recs = (e.target.result || []).sort((a,b) => b.id - a.id);
+                const allRecs = e.target.result || [];
+                const vKw = (document.getElementById('venue-local-search')?.value || '').trim();
+                const vClear = document.getElementById('venue-local-search-clear');
+                if (vClear) vClear.classList.toggle('hidden', !vKw);
+                const recs = filterSortLocalRecords(allRecs, vKw, document.getElementById('venue-local-sort')?.value || 'newest');
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">保存された式場はありません</p>`;
+                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">${allRecs.length === 0 ? '保存された式場はありません' : '該当する式場はありません'}</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -2859,7 +2986,7 @@
                     const alreadyUploaded = isLocalRecordAlreadyUploaded(v);
 
                     const originBadge = v.isSharedCopy
-                        ? `<span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
+                        ? `<span class="text-[8px] leading-tight bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded shrink-0">共有DL</span>`
                         : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
                     const perspBadge = hasPersp
                         ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded shrink-0">パースあり</span>`
@@ -2880,10 +3007,10 @@
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
                             ${!alreadyUploaded ? `
-                            <button type="button" class="up-venue-btn text-emerald-400 hover:text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-700/50 p-1.5 rounded-lg transition" title="共有ドライブへアップロード">
+                            <button type="button" class="up-venue-btn text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-300 p-1.5 rounded-lg transition" title="オンライン共有へアップロード">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </button>` : ''}
-                            <button type="button" class="del-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="マイ保存から削除">
+                            <button type="button" class="del-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="端末内保存から削除">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -4126,15 +4253,19 @@
         }
 
         function renderSavedParts() {
-            if (document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) return;
+            if (document.getElementById('tab-part-shared')?.classList.contains('lib-shared-on')) return;
             if (!db) return;
             db.transaction('parts', 'readonly').objectStore('parts').getAll().onsuccess = e => {
-                if (document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) return;
+                if (document.getElementById('tab-part-shared')?.classList.contains('lib-shared-on')) return;
                 const list = document.getElementById('saved-parts-list');
                 if (!list) return;
-                const recs = (e.target.result || []).sort((a,b) => b.id - a.id);
+                const allRecs = e.target.result || [];
+                const pKw = (document.getElementById('part-local-search')?.value || '').trim();
+                const pClear = document.getElementById('part-local-search-clear');
+                if (pClear) pClear.classList.toggle('hidden', !pKw);
+                const recs = filterSortLocalRecords(allRecs, pKw, document.getElementById('part-local-sort')?.value || 'newest');
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">保存されたパーツはありません</p>`;
+                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">${allRecs.length === 0 ? '保存されたパーツはありません' : '該当するパーツはありません'}</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -4144,7 +4275,7 @@
                     const rDateStr = `${rd.getFullYear()}/${String(rd.getMonth()+1).padStart(2,'0')}/${String(rd.getDate()).padStart(2,'0')} ${String(rd.getHours()).padStart(2,'0')}:${String(rd.getMinutes()).padStart(2,'0')}`;
                     const alreadyUploaded = isLocalRecordAlreadyUploaded(r);
                     const originBadge = r.isSharedCopy
-                        ? `<span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded shrink-0">共有DL</span>`
+                        ? `<span class="text-[8px] leading-tight bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded shrink-0">共有DL</span>`
                         : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
                     const extLabel = (r.ext || (r.imgData && r.imgData.startsWith('data:image/jpeg') ? 'jpg' : 'png')).toUpperCase();
 
@@ -4163,13 +4294,13 @@
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
                             ${!alreadyUploaded ? `
-                            <button type="button" class="up-part-btn text-emerald-400 hover:text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-700/50 p-1.5 rounded-lg transition" title="共有ドライブへアップロード">
+                            <button type="button" class="up-part-btn text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-300 p-1.5 rounded-lg transition" title="オンライン共有へアップロード">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </button>` : ''}
                             <button type="button" class="rename-part-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="名前変更">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button type="button" class="del-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="マイ保存から削除">
+                            <button type="button" class="del-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="端末内保存から削除">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -4223,32 +4354,30 @@
             if (!list) return;
             list.innerHTML = '';
             if (state.items.length === 0) {
-                list.innerHTML = '<p class="text-center text-xs text-gray-500 py-4">追加されたパーツはありません</p>';
+                list.innerHTML = '<p class="text-center text-sm text-gray-500 py-4">追加されたパーツはありません<br><span class="text-[12px]">下の「パーツ追加」から追加できます</span></p>';
                 return;
             }
             [...state.items].reverse().forEach((item, index) => {
                 const realIdx = state.items.length - 1 - index;
                 const isSelected = item.id === state.selectedItemId;
                 const row = document.createElement('div');
-                row.className = `p-2.5 rounded-xl border flex items-center justify-between transition ${isSelected ? 'bg-blue-900/30 border-blue-500' : 'bg-gray-800/60 border-gray-700/60'}`;
+                row.className = `p-3 rounded-xl border-2 flex items-center justify-between transition ${isSelected ? 'bg-blue-50 border-blue-500' : 'bg-[#ffffff] border-[#d9d9d7]'}`;
                 row.innerHTML = `
                     <div class="flex items-center gap-2.5 cursor-pointer flex-1 select-item-target overflow-hidden pr-1">
-                        <div class="w-9 h-9 bg-black rounded-lg overflow-hidden border border-gray-700 flex items-center justify-center shrink-0">
+                        <div class="w-11 h-11 bg-black rounded-lg overflow-hidden border border-[#d9d9d7] flex items-center justify-center shrink-0">
                             <img src="${item.canvas.toDataURL('image/png')}" class="max-w-full max-h-full object-contain">
                         </div>
-                        <span class="text-xs font-bold text-white block truncate">${item.name}</span>
+                        <span class="text-sm font-bold text-white block truncate">${item.name}</span>
                     </div>
-                    <div class="flex items-center gap-1 shrink-0">
-                        <button class="layer-lock-btn p-1.5 rounded-lg ${item.locked ? 'bg-amber-900/60 text-amber-300 border border-amber-500/50' : 'bg-gray-700 text-gray-300 hover:text-white'}" title="${item.locked ? 'ロック解除' : 'ロック'}">
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button class="layer-lock-btn p-2.5 rounded-lg text-base ${item.locked ? 'bg-amber-100 text-amber-700 border border-amber-400' : 'bg-[#ffffff] text-gray-300 border border-[#d9d9d7]'}" title="${item.locked ? 'ロック解除' : 'ロック'}">
                             ${item.locked ? '🔒' : '🔓'}
                         </button>
-                        <button class="layer-dup-btn p-1.5 rounded-lg bg-gray-700 text-cyan-300 hover:text-white" title="複製">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        </button>
-                        <button class="layer-up-btn p-1.5 rounded-lg bg-gray-700 text-gray-300 hover:text-white">▲</button>
-                        <button class="layer-down-btn p-1.5 rounded-lg bg-gray-700 text-gray-300 hover:text-white">▼</button>
-                        <button class="layer-delete-btn p-1.5 rounded-lg bg-red-900/40 text-red-400 border border-red-500/30 ml-1">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <button class="layer-adjust-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-[13px] shadow transition active:scale-95">調整</button>
+                        <button class="layer-up-btn p-2.5 rounded-lg bg-[#ffffff] border border-[#d9d9d7] text-gray-200 text-[13px] font-bold">▲</button>
+                        <button class="layer-down-btn p-2.5 rounded-lg bg-[#ffffff] border border-[#d9d9d7] text-gray-200 text-[13px] font-bold">▼</button>
+                        <button class="layer-delete-btn p-2.5 rounded-lg bg-red-50 text-red-600 border border-red-300 ml-0.5" title="削除">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </div>
                 `;
@@ -4267,9 +4396,15 @@
                     updateAdjustPanel();
                     requestRender();
                 };
-                row.querySelector('.layer-dup-btn').onclick = e => {
+                row.querySelector('.layer-adjust-btn').onclick = e => {
                     e.stopPropagation();
-                    duplicateItem(item, false);
+                    state.selectedItemId = item.id;
+                    updateFloatingDepthSlider();
+                    updateLayersUI();
+                    updateAdjustPanel();
+                    updatePartSaveBox();
+                    requestRender();
+                    openSheet('sheet-adjust');
                 };
                 row.querySelector('.layer-up-btn').onclick = e => {
                     e.stopPropagation();
@@ -4437,6 +4572,7 @@
             if (overlay) overlay.classList.add('active');
             const tb = document.querySelector(`[data-sheet="${id}"]`);
             if (tb) tb.classList.add('active');
+            if (id === 'sheet-layers') { try { updateLayersUI(); } catch(_) {} }
         }
 
         function closeSheet(id) {
@@ -5412,6 +5548,16 @@
 
         const jaCollator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
 
+        function filterSortLocalRecords(recs, searchWord, sortMode) {
+            const kw = (searchWord || '').trim().toLowerCase();
+            const filtered = (recs || []).filter(r => !kw || (r.name || '').toLowerCase().includes(kw));
+            const ts = r => r.timestamp || r.id || 0;
+            if (sortMode === 'oldest') return filtered.sort((a, b) => ts(a) - ts(b));
+            if (sortMode === 'kana') return filtered.sort((a, b) => jaCollator.compare(a.name || '', b.name || ''));
+            if (sortMode === 'kana-desc') return filtered.sort((a, b) => jaCollator.compare(b.name || '', a.name || ''));
+            return filtered.sort((a, b) => ts(b) - ts(a));
+        }
+
         function filterAndSortSharedItems(items, searchWord, sortMode, kanaRow) {
             const kw = (searchWord || '').trim().toLowerCase();
             const filtered = items.filter(it => {
@@ -5425,6 +5571,12 @@
 
             if (sortMode === 'kana') {
                 return [...filtered].sort((a, b) => jaCollator.compare(a.name || '', b.name || ''));
+            }
+            if (sortMode === 'kana-desc') {
+                return [...filtered].sort((a, b) => jaCollator.compare(b.name || '', a.name || ''));
+            }
+            if (sortMode === 'oldest') {
+                return [...filtered].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
             }
             return [...filtered].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
         }
@@ -5503,7 +5655,7 @@
         async function uploadToSharedDrive(payload) {
             const url = await ensureGasUrlConfigured();
             if (!url) {
-                showAlertModal('共有ドライブのURLが未設定です', '設定エラー');
+                showAlertModal('オンライン共有のURLが未設定です', '設定エラー');
                 return null;
             }
             try {
@@ -5638,7 +5790,7 @@
                 renderSharedVenuesListUI();
                 if (hasLoadedSharedVenues && !forceRefresh) return;
             } else {
-                list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
+                list.innerHTML = getInlineLoadingHtml('オンライン共有を読み込み中...');
             }
 
             if (isFetchingSharedVenues) return;
@@ -5647,7 +5799,7 @@
 
             try {
                 const latest = await fetchSharedList('venue', (retryNum, maxNum) => {
-                    if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
+                    if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) {
                         list.innerHTML = getInlineLoadingHtml(`混み合っています。自動再試行中 (${retryNum}/${maxNum})...`);
                     }
                 });
@@ -5657,11 +5809,11 @@
                 hasLoadedSharedVenues = true;
                 setPersistentSharedCache('venue', latest);
 
-                if ((prevSig !== nextSig || !hasWarmCache) && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
+                if ((prevSig !== nextSig || !hasWarmCache) && document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) {
                     renderSharedVenuesListUI();
                 }
             } catch (e) {
-                if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
+                if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) {
                     list.innerHTML = `<p class="text-[13px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
                 }
             } finally {
@@ -5679,7 +5831,7 @@
                 renderSharedPartsListUI();
                 if (hasLoadedSharedParts && !forceRefresh) return;
             } else {
-                list.innerHTML = getInlineLoadingHtml('共有ドライブを読み込み中...');
+                list.innerHTML = getInlineLoadingHtml('オンライン共有を読み込み中...');
             }
 
             if (isFetchingSharedParts) return;
@@ -5688,7 +5840,7 @@
 
             try {
                 const latest = await fetchSharedList('part', (retryNum, maxNum) => {
-                    if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
+                    if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('lib-shared-on')) {
                         list.innerHTML = getInlineLoadingHtml(`混み合っています。自動再試行中 (${retryNum}/${maxNum})...`);
                     }
                 });
@@ -5698,11 +5850,11 @@
                 hasLoadedSharedParts = true;
                 setPersistentSharedCache('part', latest);
 
-                if ((prevSig !== nextSig || !hasWarmCache) && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
+                if ((prevSig !== nextSig || !hasWarmCache) && document.getElementById('tab-part-shared')?.classList.contains('lib-shared-on')) {
                     renderSharedPartsListUI();
                 }
             } catch (e) {
-                if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
+                if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('lib-shared-on')) {
                     list.innerHTML = `<p class="text-[13px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
                 }
             } finally {
@@ -5713,18 +5865,18 @@
 
         async function uploadVenueRecordToShared(venueData) {
             if (isLocalRecordAlreadyUploaded(venueData)) {
-                showAlertModal('この式場はすでに共有ドライブへアップロード済みです。再アップロードする場合は、共有ドライブ側から一度削除してください。', 'アップロード済み');
+                showAlertModal('この式場はすでにオンライン共有へアップロード済みです。再アップロードする場合は、オンライン共有側から一度削除してください。', 'アップロード済み');
                 return;
             }
             const hasPersp = !!(venueData.perspectiveLinesRaw && venueData.perspectiveLinesRaw.length >= 2);
             const name = await showCustomPrompt(
-                '共有ドライブへ式場を登録',
+                'オンライン共有へ式場を登録',
                 `みんなに公開する式場名を入力してください（状態: ${hasPersp ? 'パースあり' : 'パースなし'}）:`,
                 venueData.name || '式場'
             );
             if (!name) return;
 
-            showLoadingModal('共有ドライブへ式場データをアップロードしています...', 'アップロード中');
+            showLoadingModal('オンライン共有へ式場データをアップロードしています...', 'アップロード中');
             const res = await uploadToSharedDrive({
                 type: 'venue',
                 timestamp: Date.now(),
@@ -5742,24 +5894,24 @@
                 markLocalItemAsUploaded(venueData, res.fileId);
                 hasLoadedSharedVenues = false; // 次回またはタブ切替時に最新を取得
                 renderSavedVenues();
-                showAlertModal(`式場「${name}」を共有ドライブに登録しました！`, '共有完了');
+                showAlertModal(`式場「${name}」をオンライン共有に登録しました！`, '共有完了');
                 document.getElementById('tab-venue-shared')?.click();
             }
         }
 
         async function uploadPartRecordToShared(partData) {
             if (isLocalRecordAlreadyUploaded(partData)) {
-                showAlertModal('このパーツはすでに共有ドライブへアップロード済みです。再アップロードする場合は、共有ドライブ側から一度削除してください。', 'アップロード済み');
+                showAlertModal('このパーツはすでにオンライン共有へアップロード済みです。再アップロードする場合は、オンライン共有側から一度削除してください。', 'アップロード済み');
                 return;
             }
             const name = await showCustomPrompt(
-                '共有ドライブへパーツを登録',
+                'オンライン共有へパーツを登録',
                 'みんなに公開するパーツ名を入力してください（透過PNG対応）:',
                 partData.name || 'パーツ'
             );
             if (!name) return;
 
-            showLoadingModal('共有ドライブへパーツデータをアップロードしています...', 'アップロード中');
+            showLoadingModal('オンライン共有へパーツデータをアップロードしています...', 'アップロード中');
             const res = await uploadToSharedDrive({
                 type: 'part',
                 timestamp: Date.now(),
@@ -5774,7 +5926,7 @@
                 markLocalItemAsUploaded(partData, res.fileId);
                 hasLoadedSharedParts = false; // 次回またはタブ切替時に最新を取得
                 renderSavedParts();
-                showAlertModal(`パーツ「${name}」を共有ドライブに登録しました！`, '共有完了');
+                showAlertModal(`パーツ「${name}」をオンライン共有に登録しました！`, '共有完了');
                 document.getElementById('tab-part-shared')?.click();
             }
         }
@@ -5824,11 +5976,11 @@
                     : '';
 
                 const row = document.createElement('div');
-                row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
+                row.className = "bg-[#ffffff] border border-gray-300 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-1 mb-0.5">
-                            <span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
+                            <span class="text-[8px] leading-tight bg-blue-50 text-blue-700 px-1 rounded border border-blue-300 shrink-0">共有</span>
                             ${mineBadge}
                             <span class="text-xs font-bold text-white truncate">${v.name}</span>
                         </div>
@@ -5839,10 +5991,10 @@
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
                         ${canDelete ? `
-                        <button type="button" class="del-shared-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたデータを共有ドライブから削除">
+                        <button type="button" class="del-shared-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたデータをオンライン共有から削除">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>` : ''}
-                        <button type="button" class="dl-venue-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードしてマイ保存へ追加">
+                        <button type="button" class="dl-venue-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードして端末内保存へ追加">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>
                     </div>
@@ -5851,9 +6003,9 @@
                 if (canDelete) {
                     row.querySelector('.del-shared-venue-btn').onclick = async ev => {
                         ev.stopPropagation();
-                        const ok = await showCustomConfirm('共有データの削除', `自分がアップロードした「${v.name}」を共有ドライブから削除しますか？`);
+                        const ok = await showCustomConfirm('共有データの削除', `自分がアップロードした「${v.name}」をオンライン共有から削除しますか？`);
                         if (!ok) return;
-                        showLoadingModal('共有ドライブから削除しています...', '削除中');
+                        showLoadingModal('オンライン共有から削除しています...', '削除中');
                         const deleted = await deleteFromSharedDrive(v.fileId);
                         hideLoadingModal();
                         if (deleted) {
@@ -5862,7 +6014,7 @@
                             cachedSharedVenues = cachedSharedVenues.filter(x => x.fileId !== v.fileId);
                             setPersistentSharedCache('venue', cachedSharedVenues);
                             renderSharedVenuesListUI();
-                            showAlertModal(`「${v.name}」を共有ドライブから削除しました`, '削除完了');
+                            showAlertModal(`「${v.name}」をオンライン共有から削除しました`, '削除完了');
                         } else {
                             showAlertModal('削除に失敗しました。GAS側のコードが最新版か確認してください。', 'エラー');
                         }
@@ -5894,7 +6046,7 @@
                         }
                         hideLoadingModal();
                         document.getElementById('tab-venue-local')?.click();
-                        showAlertModal(`「${fullData.name}」をマイ保存にダウンロードしました。一覧からタップして読み込めます。`, 'ダウンロード完了');
+                        showAlertModal(`「${fullData.name}」を端末内保存にダウンロードしました。一覧からタップして読み込めます。`, 'ダウンロード完了');
                     } catch (err) {
                         hideLoadingModal();
                         showAlertModal('ダウンロードに失敗しました', 'エラー');
@@ -5914,42 +6066,69 @@
         document.getElementById('venue-shared-sort')?.addEventListener('change', renderSharedVenuesListUI);
         document.getElementById('venue-shared-kana-filter')?.addEventListener('change', renderSharedVenuesListUI);
 
-        // 共有ドライブ手動再読込ボタン（式場）
+        // オンライン共有手動再読込ボタン（式場）
         document.getElementById('btn-refresh-venue-shared')?.addEventListener('click', async () => {
             await loadSharedVenuesFromServer(true);
         });
 
-        // 式場タブ切り替え（マイ保存 / 共有ドライブ）
+        // 式場タブ切り替え（端末内保存 / オンライン共有）
+        const LIB_TAB_ON_LOCAL = "py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-local-on";
+        const LIB_TAB_ON_SHARED = "py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-shared-on";
+        const LIB_TAB_OFF = "py-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7] text-gray-300 font-bold text-sm transition";
         document.getElementById('tab-venue-local')?.addEventListener('click', () => {
-            document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition";
-            document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('tab-venue-local').className = LIB_TAB_ON_LOCAL;
+            document.getElementById('tab-venue-shared').className = LIB_TAB_OFF;
+            document.getElementById('venue-local-controls')?.classList.remove('hidden');
             document.getElementById('venue-shared-controls')?.classList.add('hidden');
             document.getElementById('btn-refresh-venue-shared')?.classList.add('hidden');
             renderSavedVenues();
         });
 
         document.getElementById('tab-venue-shared')?.addEventListener('click', async () => {
-            document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-[#ffffff] transition";
-            document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('tab-venue-shared').className = LIB_TAB_ON_SHARED;
+            document.getElementById('tab-venue-local').className = LIB_TAB_OFF;
+            document.getElementById('venue-local-controls')?.classList.add('hidden');
             document.getElementById('venue-shared-controls')?.classList.remove('hidden');
             document.getElementById('btn-refresh-venue-shared')?.classList.remove('hidden');
             await loadSharedVenuesFromServer(false);
         });
 
-        // 選択中のパーツをUP
-        document.getElementById('btn-upload-part-shared')?.addEventListener('click', async () => {
-            const item = state.items.find(i => i.id === state.selectedItemId);
-            if (!item) {
-                showAlertModal('先に画面上のパーツを1つタップして選択するか、マイ保存一覧の雲アイコンからUPしてください', '確認');
+        // パーツをアップロード（表示中パーツの一覧から選ぶ）
+        document.getElementById('btn-upload-part-shared')?.addEventListener('click', () => {
+            if (!state.items || state.items.length === 0) {
+                showAlertModal('画面にパーツがありません。先にパーツを追加してください。', '確認');
                 return;
             }
-            await uploadPartRecordToShared({
-                name: item.name,
-                imgData: item.canvas.toDataURL('image/png'),
-                realMm: item.realMm,
-                rawPxPerMm: item.rawPxPerMm || (item.realMm ? item.canvas.width / item.realMm.w : null)
-            });
+            renderPartUploadPicker();
+            openModal('part-upload-picker-modal');
         });
+
+        function renderPartUploadPicker() {
+            const list = document.getElementById('part-upload-picker-list');
+            if (!list) return;
+            list.innerHTML = '';
+            [...state.items].reverse().forEach(item => {
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-3 border-2 border-gray-200 rounded-xl p-2.5";
+                row.innerHTML = `
+                    <div class="w-12 h-12 bg-black rounded-lg overflow-hidden border border-[#d9d9d7] flex items-center justify-center shrink-0">
+                        <img src="${item.canvas.toDataURL('image/png')}" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <span class="flex-1 text-sm font-bold text-white truncate">${item.name}</span>
+                    <button type="button" class="picker-up-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-[13px] shadow transition active:scale-95 shrink-0">⬆ アップロード</button>
+                `;
+                row.querySelector('.picker-up-btn').onclick = async () => {
+                    closeModal('part-upload-picker-modal');
+                    await uploadPartRecordToShared({
+                        name: item.name,
+                        imgData: item.canvas.toDataURL('image/png'),
+                        realMm: item.realMm,
+                        rawPxPerMm: item.realMm ? (item.rawPxPerMm || item.canvas.width / item.realMm.w) : null
+                    });
+                };
+                list.appendChild(row);
+            });
+        }
 
         function renderSharedPartsListUI() {
             const list = document.getElementById('saved-parts-list');
@@ -5976,11 +6155,11 @@
                     : '';
 
                 const row = document.createElement('div');
-                row.className = "bg-gray-900 border border-emerald-800/60 hover:border-emerald-400 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
+                row.className = "bg-[#ffffff] border border-gray-300 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-1 mb-0.5">
-                            <span class="text-[8px] leading-tight bg-emerald-950 text-emerald-400 px-1 rounded border border-emerald-700 shrink-0">共有</span>
+                            <span class="text-[8px] leading-tight bg-blue-50 text-blue-700 px-1 rounded border border-blue-300 shrink-0">共有</span>
                             ${mineBadge}
                             <span class="text-xs font-bold text-white truncate">${p.name}</span>
                         </div>
@@ -5991,7 +6170,7 @@
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
                         ${canDelete ? `
-                        <button type="button" class="del-shared-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたパーツを共有ドライブから削除">
+                        <button type="button" class="del-shared-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたパーツをオンライン共有から削除">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>` : ''}
                         <button type="button" class="dl-part-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードして配置">
@@ -6003,9 +6182,9 @@
                 if (canDelete) {
                     row.querySelector('.del-shared-part-btn').onclick = async ev => {
                         ev.stopPropagation();
-                        const ok = await showCustomConfirm('共有パーツの削除', `自分がアップロードした「${p.name}」を共有ドライブから削除しますか？`);
+                        const ok = await showCustomConfirm('共有パーツの削除', `自分がアップロードした「${p.name}」をオンライン共有から削除しますか？`);
                         if (!ok) return;
-                        showLoadingModal('共有ドライブから削除しています...', '削除中');
+                        showLoadingModal('オンライン共有から削除しています...', '削除中');
                         const deleted = await deleteFromSharedDrive(p.fileId);
                         hideLoadingModal();
                         if (deleted) {
@@ -6014,7 +6193,7 @@
                             cachedSharedParts = cachedSharedParts.filter(x => x.fileId !== p.fileId);
                             setPersistentSharedCache('part', cachedSharedParts);
                             renderSharedPartsListUI();
-                            showAlertModal(`「${p.name}」を共有ドライブから削除しました`, '削除完了');
+                            showAlertModal(`「${p.name}」をオンライン共有から削除しました`, '削除完了');
                         } else {
                             showAlertModal('削除に失敗しました。GAS側のコードが最新版か確認してください。', 'エラー');
                         }
@@ -6081,27 +6260,48 @@
         document.getElementById('part-shared-sort')?.addEventListener('change', renderSharedPartsListUI);
         document.getElementById('part-shared-kana-filter')?.addEventListener('change', renderSharedPartsListUI);
 
-        // 共有ドライブ手動再読込ボタン（パーツ）
+        // オンライン共有手動再読込ボタン（パーツ）
         document.getElementById('btn-refresh-part-shared')?.addEventListener('click', async () => {
             await loadSharedPartsFromServer(true);
         });
 
-        // パーツタブ切り替え（マイ保存 / 共有ドライブ）
+        // パーツタブ切り替え（端末内保存 / オンライン共有）
         document.getElementById('tab-part-local')?.addEventListener('click', () => {
-            document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition";
-            document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('tab-part-local').className = LIB_TAB_ON_LOCAL;
+            document.getElementById('tab-part-shared').className = LIB_TAB_OFF;
+            document.getElementById('part-local-controls')?.classList.remove('hidden');
             document.getElementById('part-shared-controls')?.classList.add('hidden');
             document.getElementById('btn-refresh-part-shared')?.classList.add('hidden');
             renderSavedParts();
         });
 
         document.getElementById('tab-part-shared')?.addEventListener('click', async () => {
-            document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-[#ffffff] transition";
-            document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
+            document.getElementById('tab-part-shared').className = LIB_TAB_ON_SHARED;
+            document.getElementById('tab-part-local').className = LIB_TAB_OFF;
+            document.getElementById('part-local-controls')?.classList.add('hidden');
             document.getElementById('part-shared-controls')?.classList.remove('hidden');
             document.getElementById('btn-refresh-part-shared')?.classList.remove('hidden');
             await loadSharedPartsFromServer(false);
         });
+
+        // 端末内保存の検索・並び替え（式場）
+        document.getElementById('venue-local-search')?.addEventListener('input', renderSavedVenues);
+        document.getElementById('venue-local-search-clear')?.addEventListener('click', () => {
+            const inp = document.getElementById('venue-local-search');
+            if (inp) inp.value = '';
+            renderSavedVenues();
+        });
+        document.getElementById('venue-local-sort')?.addEventListener('change', renderSavedVenues);
+        // 端末内保存の検索・並び替え（パーツ）
+        document.getElementById('part-local-search')?.addEventListener('input', renderSavedParts);
+        document.getElementById('part-local-search-clear')?.addEventListener('click', () => {
+            const inp = document.getElementById('part-local-search');
+            if (inp) inp.value = '';
+            renderSavedParts();
+        });
+        document.getElementById('part-local-sort')?.addEventListener('change', renderSavedParts);
+        // 案内バルーンをタップしたら式場シートを開く
+        document.getElementById('bg-hint-balloon')?.addEventListener('click', () => openSheet('sheet-bg'));
     </script>
 </body>
 </html>
