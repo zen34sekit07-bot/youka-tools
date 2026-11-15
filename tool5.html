@@ -804,11 +804,17 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block font-bold text-[13px] text-slate-300 mb-0.5">高さ <span class="text-rose-400">*</span></label>
-                        <input type="text" id="reg-height" placeholder="例: 70cm" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none placeholder:text-slate-600">
+                        <div class="relative">
+                            <input type="text" id="reg-height" placeholder="例: 70" inputmode="decimal" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 pr-10 text-white font-bold outline-none placeholder:text-slate-600">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] font-black text-cyan-300 pointer-events-none">cm</span>
+                        </div>
                     </div>
                     <div>
                         <label class="block font-bold text-[13px] text-slate-400 mb-0.5">幅 <span class="text-[13px] text-slate-500">(任意)</span></label>
-                        <input type="text" id="reg-width" placeholder="例: W60cm" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none placeholder:text-slate-600">
+                        <div class="relative">
+                            <input type="text" id="reg-width" placeholder="例: W60" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 pr-10 text-white font-bold outline-none placeholder:text-slate-600">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] font-black text-cyan-300 pointer-events-none">cm</span>
+                        </div>
                     </div>
                 </div>
 
@@ -3113,6 +3119,21 @@
 
             document.getElementById('btn-select-sogisha')?.addEventListener('click', () => {
                 syncCatalogSourceUI(false);
+            });
+
+            const normalizeCmValue = (val) => {
+                const v = String(val || '').trim();
+                if (!v) return v;
+                if (/cm$/i.test(v)) return v;
+                if (/[\d.]$/.test(v)) return v + 'cm';
+                return v;
+            };
+            ['reg-height', 'reg-width'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const applyCm = () => { el.value = normalizeCmValue(el.value); };
+                el.addEventListener('blur', applyCm);
+                el.addEventListener('change', applyCm);
             });
 
             const sogishaInput = document.getElementById('sogisha-search-input');
