@@ -159,116 +159,61 @@
                 <option value="ayase">綾瀬支店</option>
             </select>
         </div>
-        <button id="btn-new-reset" class="px-2.5 py-1 bg-slate-900 hover:bg-rose-950/60 text-rose-300 rounded-lg border border-slate-700 hover:border-rose-500/50 text-[13px] font-bold active:scale-95 transition flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-            <span>リスト全削除</span>
-        </button>
     </div>
 
     <!-- メイン表示領域（タブ切り替え） -->
-    <main class="flex-1 overflow-y-auto px-3 py-3 max-w-lg w-full mx-auto hide-scrollbar">
+    <main class="flex-1 overflow-y-auto px-3 pt-3 pb-44 max-w-lg w-full mx-auto hide-scrollbar">
 
         <!-- ================= TAB 1: 供花検索 ================= -->
         <section id="tab-panel-search" class="space-y-3">
-            <!-- 施工件名クイックバッジ ＆ 発注合計ハイライト枠 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-sm gap-2">
-                <div class="flex-1 min-w-0 pr-1">
-                    <div class="flex items-center justify-between mb-0.5">
-                        <div class="flex items-center gap-1">
-                            <span class="text-[12px] text-slate-400 font-bold">現在の施工件名</span>
-                            <label for="active-project-title" class="text-xs text-indigo-400 hover:text-indigo-300 cursor-pointer" title="クリックして編集">✏️</label>
-                        </div>
-                        <button type="button" id="btn-fav-project" class="text-base text-slate-600 hover:text-amber-600 transition pr-1" title="現在の施工をお気に入り登録/解除">★</button>
-                    </div>
-                    <input type="text" id="active-project-title" placeholder="例: ○○家 本館ご葬儀" class="w-full bg-transparent font-bold text-sm text-white outline-none placeholder:text-slate-600 truncate border-b border-transparent focus:border-indigo-500 transition">
-                </div>
-                <!-- 四角枠で囲み数字を大きく視認性UP -->
-                <div class="bg-indigo-950/90 border-2 border-indigo-500/60 rounded-xl px-3 py-1.5 text-center shrink-0 min-w-[76px] shadow-md">
-                    <span class="text-[13px] text-indigo-300 font-extrabold block tracking-wider">発注合計</span>
-                    <span id="quick-total-count-badge" class="text-lg font-black text-cyan-300 font-mono tracking-tight leading-none block mt-0.5">0 基</span>
-                </div>
+            <!-- キーワード検索（主操作） -->
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none">🔍</span>
+                <input type="text" id="keyword-search-input" placeholder="供花名・コードで探す" autocomplete="off"
+                    class="w-full bg-slate-800 border-2 border-indigo-400 rounded-2xl pl-12 pr-4 py-3.5 text-base font-bold text-slate-100 placeholder:text-slate-500 placeholder:font-normal shadow-sm outline-none focus:border-indigo-300">
             </div>
-
-            <!-- 施工お気に入り ＆ 履歴 分割表示エリア（縦割り2カラム） -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 shadow-sm space-y-1.5">
-                <div class="grid grid-cols-2 divide-x divide-slate-800 text-xs">
-                    <!-- 左列: お気に入り施工 -->
-                    <div class="pr-2 space-y-1.5">
-                        <div class="flex items-center justify-between pb-1 border-b border-slate-800">
-                            <span class="text-[13px] font-black text-amber-700 flex items-center gap-1">
-                                <span>⭐</span> お気に入り
-                            </span>
-                            <span id="quick-fav-projects-count" class="text-[13px] text-slate-400 font-mono">0件</span>
-                        </div>
-                        <div id="quick-fav-projects-list" class="space-y-1 max-h-36 overflow-y-auto hide-scrollbar text-[12px]">
-                            <p class="text-[12px] text-slate-500 text-center py-4">お気に入りなし</p>
-                        </div>
-                    </div>
-                    <!-- 右列: 施工履歴 -->
-                    <div class="pl-2 space-y-1.5">
-                        <div class="flex items-center justify-between pb-1 border-b border-slate-800">
-                            <span class="text-[13px] font-black text-cyan-300 flex items-center gap-1">
-                                <span>🕒</span> 履歴
-                            </span>
-                            <button type="button" id="btn-quick-clear-history" class="text-[13px] text-rose-400 hover:text-rose-300 font-bold">消去</button>
-                        </div>
-                        <div id="quick-history-projects-list" class="space-y-1 max-h-36 overflow-y-auto hide-scrollbar text-[12px]">
-                            <p class="text-[12px] text-slate-500 text-center py-4">履歴なし</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 供花カタログ選択セクション -->
             <div class="space-y-2">
-                <div class="flex items-center justify-between px-1">
-                    <span class="text-[13px] font-extrabold text-slate-200">供花カタログを選ぶ</span>
-                    <span id="filter-status-text" class="hidden"></span>
+                <!-- カタログ切替（セグメント） -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-select-youkaen-master" type="button" class="py-3 px-3 rounded-xl bg-indigo-600 text-[#ffffff] font-black shadow transition active:scale-95">
+                        🌸 ユー花園
+                    </button>
+                    <button id="btn-select-sogisha" type="button" class="py-3 px-3 rounded-xl bg-slate-800 border border-slate-600 text-slate-200 font-black shadow-sm transition active:scale-95">
+                        🏢 葬儀社様
+                    </button>
                 </div>
 
-                <!-- ユー花園のカタログから選ぶ固定ボタン -->
-                <button id="btn-select-youkaen-master" type="button" class="w-full py-2 px-3 bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/50 rounded-xl flex items-center justify-between text-xs font-bold text-indigo-200 transition active:scale-98 shadow-sm">
-                    <span class="flex items-center gap-1.5 font-bold">🌸 ユー花園のカタログから選ぶ</span>
-                    <span id="youkaen-active-badge" class="text-[12px] bg-indigo-600 text-[#ffffff] px-2 py-0.5 rounded-full font-bold">選択中</span>
-                </button>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <!-- 左列: カタログ内カテゴリ（ボタンサイズ完全固定） -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex flex-col justify-between shadow-sm">
-                        <span id="main-catalog-title" class="text-[13px] font-bold text-indigo-300 block mb-1.5 truncate">
-                            🌸 ユー花園カタログ
-                        </span>
-                        <div class="grid grid-cols-2 gap-1">
-                            <button type="button" class="cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm" data-cat="general">一般供花</button>
-                            <button type="button" class="cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="family">家族花</button>
-                            <button type="button" class="cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="chief">喪主花</button>
-                            <button type="button" class="cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="other">その他</button>
-                        </div>
+                <!-- ユー花園パネル: カテゴリ -->
+                <div id="panel-youkaen-cats" class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 shadow-sm">
+                    <span id="main-catalog-title" class="text-[13px] font-bold text-indigo-300 block mb-1.5 truncate">
+                        🌸 ユー花園カタログ
+                    </span>
+                    <div class="grid grid-cols-4 gap-1">
+                        <button type="button" class="cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm" data-cat="general">一般供花</button>
+                        <button type="button" class="cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="family">家族花</button>
+                        <button type="button" class="cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="chief">喪主花</button>
+                        <button type="button" class="cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="other">その他</button>
                     </div>
+                </div>
 
-                    <!-- 右列: 葬儀社様のカタログを選ぶ -->
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex flex-col justify-between shadow-sm relative">
-                        <span class="text-[13px] font-bold text-amber-700 block mb-1.5 truncate">
-                            🏢 葬儀社様のカタログを選ぶ
-                        </span>
-                        <div class="space-y-1 relative">
-                            <!-- お気に入り・履歴ボタン（15文字対応・落ち着いた配色） -->
-                            <button id="btn-toggle-comp-accordion" type="button" class="w-full h-8 px-2 bg-slate-950 hover:bg-slate-850 border border-slate-700/80 rounded-lg flex items-center justify-between text-[12px] font-bold text-slate-200 transition active:scale-95" title="お気に入り・履歴から葬儀社を選択">
-                                <span id="current-selected-company-display" class="truncate pr-1 text-[12px] text-slate-300">⭐ お気に入り・履歴</span>
-                                <span id="comp-accordion-arrow" class="text-[13px] text-slate-400 font-bold shrink-0">▼</span>
-                            </button>
-
-                            <!-- 直下に展開するアコーディオンリスト（検索ボタンの上に被さる配置） -->
-                            <div id="company-accordion-menu" class="hidden absolute left-0 right-0 top-[36px] bg-slate-950 border border-slate-700 rounded-xl p-1.5 z-50 shadow-2xl max-h-48 overflow-y-auto hide-scrollbar space-y-1">
-                                <!-- JSで動的レンダリング -->
-                            </div>
-
-                            <!-- 検索するボタン（🔍アイコン1つのみ） -->
-                            <button id="btn-open-company-modal" type="button" class="w-full h-8 bg-[#2563eb] hover:bg-[#1e40af] border border-[#2563eb] text-[#ffffff] text-[12px] font-bold rounded-lg transition flex items-center justify-center gap-1 active:scale-95 shadow">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <span>検索する</span>
-                            </button>
+                <!-- 葬儀社様パネル -->
+                <div id="panel-sogisha" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-2.5 shadow-sm relative">
+                    <span class="text-[13px] font-bold text-amber-700 block mb-1.5 truncate">
+                        🏢 葬儀社様のカタログを選ぶ
+                    </span>
+                    <div class="space-y-1 relative">
+                        <button id="btn-toggle-comp-accordion" type="button" class="w-full h-11 px-2 bg-slate-950 hover:bg-slate-850 border border-slate-700/80 rounded-lg flex items-center justify-between text-sm font-bold text-slate-200 transition active:scale-95" title="お気に入り・履歴から葬儀社を選択">
+                            <span id="current-selected-company-display" class="truncate pr-1 text-sm text-slate-300">⭐ お気に入り・履歴</span>
+                            <span id="comp-accordion-arrow" class="text-[13px] text-slate-400 font-bold shrink-0">▼</span>
+                        </button>
+                        <div id="company-accordion-menu" class="hidden absolute left-0 right-0 top-[48px] bg-slate-950 border border-slate-700 rounded-xl p-1.5 z-50 shadow-2xl max-h-48 overflow-y-auto hide-scrollbar space-y-1">
+                            <!-- JSで動的レンダリング -->
                         </div>
+                        <button id="btn-open-company-modal" type="button" class="w-full h-11 bg-[#2563eb] hover:bg-[#1e40af] border border-[#2563eb] text-[#ffffff] text-sm font-bold rounded-lg transition flex items-center justify-center gap-1 active:scale-95 shadow">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <span>検索する</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -553,17 +498,21 @@
 
     </main>
 
+    <!-- 合計バー（常時表示） -->
+    <div class="fixed left-0 right-0 z-40 px-3" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 62px)">
+        <div class="max-w-lg mx-auto bg-indigo-600 rounded-2xl shadow-xl flex items-center justify-between px-4 py-2.5">
+            <p class="text-[#ffffff] font-black text-base">合計 <span id="quick-total-count-badge">0 基</span></p>
+            <button type="button" onclick="switchTab('tab-panel-list')" class="bg-slate-800 text-indigo-600 font-black px-4 py-2.5 rounded-xl shadow active:scale-95 transition">リストを見る</button>
+        </div>
+    </div>
+
     <!-- 下部固定ナビゲーションバー -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-50 px-2 pt-1 pb-[max(env(safe-area-inset-bottom,4px),4px)] grid grid-cols-4 gap-1">
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-50 px-2 pt-1 pb-[max(env(safe-area-inset-bottom,4px),4px)] grid grid-cols-3 gap-1">
         <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-indigo-400 active:scale-95 transition" data-target="tab-panel-search">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <span class="text-[12px] font-bold mt-0.5">供花検索</span>
         </button>
-        <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 active:scale-95 transition" data-target="tab-panel-history">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span class="text-[12px] font-bold mt-0.5">お気に入り</span>
-        </button>
-        <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 relative active:scale-95 transition" data-target="tab-panel-list">
+                <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 relative active:scale-95 transition" data-target="tab-panel-list">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             <span id="nav-cart-badge" class="hidden absolute top-1 right-5 w-4 h-4 rounded-full bg-cyan-500 text-slate-950 font-black text-[13px] flex items-center justify-center">0</span>
             <span class="text-[12px] font-bold mt-0.5">発注リスト</span>
@@ -1318,9 +1267,9 @@
             // カテゴリボタンのサイズを一切動かさず、色のみを「一般供花」アクティブにリセット
             document.querySelectorAll('.cat-btn').forEach(b => {
                 if (b.getAttribute('data-cat') === 'general') {
-                    b.className = 'cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm';
+                    b.className = 'cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm';
                 } else {
-                    b.className = 'cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-slate-800 text-slate-300 hover:bg-slate-700';
+                    b.className = 'cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 text-slate-300 hover:bg-slate-700';
                 }
             });
 
@@ -1347,6 +1296,7 @@
                     displayEl.className = 'truncate pr-1 text-[12px] font-bold text-amber-700';
                 }
             }
+            syncCatalogSourceUI(isYoukaen);
             renderFlowerCards();
         }
 
@@ -1933,47 +1883,51 @@
                 }
 
                 return `
-                    <div class="bg-slate-900 border border-slate-800 hover:border-indigo-500/60 rounded-xl p-2.5 transition shadow-sm select-none cursor-pointer" onclick="openFlowerDetail('${item.id}')">
-                        <div class="flex justify-between items-center gap-1.5 mb-1">
-                            <div class="flex items-center gap-1.5 min-w-0 pr-1">
-                                <span class="text-[12px] font-mono font-bold text-slate-200 bg-slate-800 border border-slate-600 px-1.5 py-0.2 rounded shrink-0">${item.code}</span>
-                                <h4 class="text-xs font-black text-white truncate flex items-center">
-                                    <span>${item.name}</span>
-                                    ${colorBadge}
-                                </h4>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm select-none overflow-hidden">
+                        <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="w-full flex items-center justify-between gap-2 px-3 py-3.5 text-left active:bg-slate-800 transition">
+                            <h4 class="text-sm font-black text-white truncate flex items-center min-w-0">
+                                <span class="truncate">${item.name}</span>
+                                ${colorBadge}
+                            </h4>
+                            <span class="text-slate-400 font-black shrink-0">▼</span>
+                        </button>
+
+                        <div id="card-acc-exp-${fIdx}" class="hidden px-3 pb-3">
+                            <div class="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-800">
+                                <span class="text-[12px] font-mono font-bold text-slate-200 bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded shrink-0">${item.code}</span>
+                                <span class="font-black text-white">¥${priceEx} <span class="text-[12px] text-slate-400 font-normal">(込 ¥${priceIn})</span></span>
+                                <span class="text-[12px] text-slate-400 font-bold font-mono shrink-0">${item.height || ''}</span>
                             </div>
-                            <button type="button" onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="text-base ${isFav ? 'text-amber-600' : 'text-slate-600 hover:text-slate-400'} px-1 shrink-0">
-                                ★
-                            </button>
-                        </div>
 
-                        <div class="flex items-center justify-between text-xs py-0.5">
-                            <span class="font-black text-white">¥${priceEx} <span class="text-[12px] text-slate-400 font-normal">(込 ¥${priceIn})</span></span>
-                            <span class="text-[12px] text-slate-400 font-bold font-mono">${item.height || ''}</span>
-                        </div>
-
-                        <div class="pt-1 mt-1 border-t border-slate-800/80 flex items-center justify-between gap-1">
-                            <div class="flex items-center gap-2">
-                                <button type="button" onclick="event.stopPropagation(); toggleCardAccordion('mat-${fIdx}')" class="text-[12px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-1 rounded-md flex items-center gap-0.5 active:scale-95 transition">
-                                    <span>▼ 花材を見る</span>
+                            <div class="flex items-center gap-2 mt-2.5">
+                                <button type="button" onclick="toggleCardAccordion('mat-${fIdx}')" class="flex-1 text-[13px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-2 rounded-lg active:scale-95 transition">
+                                    ▼ 花材を見る
                                 </button>
                                 ${!isSpecial ? `
-                                <button type="button" onclick="event.stopPropagation(); toggleCardAccordion('pt-${fIdx}')" class="text-[12px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-1 rounded-md flex items-center gap-0.5 active:scale-95 transition">
-                                    <span>▼ ポイントを見る</span>
+                                <button type="button" onclick="toggleCardAccordion('pt-${fIdx}')" class="flex-1 text-[13px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-2 rounded-lg active:scale-95 transition">
+                                    ▼ ポイントを見る
                                 </button>` : ''}
                             </div>
-                            <span class="text-[13px] text-slate-500">タップで発注追加</span>
-                        </div>
 
-                        <div id="card-acc-mat-${fIdx}" class="hidden mt-1.5 p-2 bg-slate-950 rounded-lg border border-slate-800 text-[13px] text-slate-300 leading-relaxed">
-                            <span class="text-[12px] font-bold text-emerald-400 block mb-0.5">🌿 使用花材:</span>
-                            ${renderMaterialCodeBadgeHtml(matText)}
+                            <div id="card-acc-mat-${fIdx}" class="hidden mt-1.5 p-2 bg-slate-950 rounded-lg border border-slate-800 text-[13px] text-slate-300 leading-relaxed">
+                                <span class="text-[12px] font-bold text-emerald-400 block mb-0.5">🌿 使用花材:</span>
+                                ${renderMaterialCodeBadgeHtml(matText)}
+                            </div>
+                            ${!isSpecial ? `
+                            <div id="card-acc-pt-${fIdx}" class="hidden mt-1.5 p-2 bg-indigo-950/40 rounded-lg border border-indigo-900/60 text-[13px] text-slate-200 leading-relaxed">
+                                <span class="text-[12px] font-bold text-slate-100 block mb-0.5">✨ 使用ポイント花:</span>
+                                ${renderMaterialCodeBadgeHtml(ptText || '個別指定なし')}
+                            </div>` : ''}
+
+                            <div class="flex items-center gap-2 mt-3">
+                                <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden shrink-0 bg-slate-800">
+                                    <button type="button" onclick="cardQtyStep(${fIdx}, -1)" class="w-10 h-11 text-lg font-black text-slate-200 active:bg-slate-700">−</button>
+                                    <span id="card-qty-${fIdx}" class="w-8 text-center font-black text-slate-100">1</span>
+                                    <button type="button" onclick="cardQtyStep(${fIdx}, 1)" class="w-10 h-11 text-lg font-black text-slate-200 active:bg-slate-700">＋</button>
+                                </div>
+                                <button type="button" onclick="addToCartFromCard('${item.id}', ${fIdx}, this)" class="flex-1 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-black shadow active:scale-95 transition">＋ リストに追加</button>
+                            </div>
                         </div>
-                        ${!isSpecial ? `
-                        <div id="card-acc-pt-${fIdx}" class="hidden mt-1.5 p-2 bg-indigo-950/40 rounded-lg border border-indigo-900/60 text-[13px] text-slate-200 leading-relaxed">
-                            <span class="text-[12px] font-bold text-slate-100 block mb-0.5">✨ 使用ポイント花:</span>
-                            ${renderMaterialCodeBadgeHtml(ptText || '個別指定なし')}
-                        </div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -2355,6 +2309,41 @@
         window.toggleCardAccordion = function(id) {
             const el = document.getElementById('card-acc-' + id);
             if (el) el.classList.toggle('hidden');
+        };
+
+        window.cardQtyStep = function(idx, delta) {
+            const el = document.getElementById('card-qty-' + idx);
+            if (!el) return;
+            let v = parseInt(el.textContent, 10) || 1;
+            v = Math.min(99, Math.max(1, v + delta));
+            el.textContent = v;
+        };
+
+        window.addToCartFromCard = function(flowerId, idx, btn) {
+            const el = document.getElementById('card-qty-' + idx);
+            const qty = el ? (parseInt(el.textContent, 10) || 1) : 1;
+            addToCart(flowerId, qty);
+            if (btn) {
+                const orig = btn.textContent;
+                btn.textContent = '✓ 追加しました';
+                btn.disabled = true;
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1200);
+            }
+        };
+
+        window.syncCatalogSourceUI = function(isYoukaen) {
+            const youkaenPanel = document.getElementById('panel-youkaen-cats');
+            const sogishaPanel = document.getElementById('panel-sogisha');
+            const segY = document.getElementById('btn-select-youkaen-master');
+            const segS = document.getElementById('btn-select-sogisha');
+            if (youkaenPanel) youkaenPanel.classList.toggle('hidden', !isYoukaen);
+            if (sogishaPanel) sogishaPanel.classList.toggle('hidden', isYoukaen);
+            if (segY) segY.className = isYoukaen
+                ? 'py-3 px-3 rounded-xl bg-indigo-600 text-[#ffffff] font-black shadow transition active:scale-95'
+                : 'py-3 px-3 rounded-xl bg-slate-800 border border-slate-600 text-slate-200 font-black shadow-sm transition active:scale-95';
+            if (segS) segS.className = !isYoukaen
+                ? 'py-3 px-3 rounded-xl bg-indigo-600 text-[#ffffff] font-black shadow transition active:scale-95'
+                : 'py-3 px-3 rounded-xl bg-slate-800 border border-slate-600 text-slate-200 font-black shadow-sm transition active:scale-95';
         };
 
         function updateCartUI() {
@@ -3043,9 +3032,9 @@
                     const cat = e.currentTarget.getAttribute('data-cat');
                     state.activeFilter.category = cat;
                     document.querySelectorAll('.cat-btn').forEach(b => {
-                        b.className = 'cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-slate-800 text-slate-300 hover:bg-slate-700';
+                        b.className = 'cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 text-slate-300 hover:bg-slate-700';
                     });
-                    e.currentTarget.className = 'cat-btn h-8 rounded-lg text-[12px] font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm';
+                    e.currentTarget.className = 'cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm';
                     renderFlowerCards();
                 });
             });
@@ -3056,6 +3045,15 @@
 
             document.getElementById('btn-select-youkaen-master')?.addEventListener('click', () => {
                 selectCompany('all');
+            });
+
+            document.getElementById('btn-select-sogisha')?.addEventListener('click', () => {
+                syncCatalogSourceUI(false);
+            });
+
+            document.getElementById('keyword-search-input')?.addEventListener('input', (e) => {
+                state.activeFilter.keyword = e.target.value;
+                renderFlowerCards();
             });
 
             document.getElementById('btn-sync-database')?.addEventListener('click', () => {
@@ -3211,7 +3209,7 @@
                 switchTab('tab-panel-export');
             });
 
-            document.getElementById('btn-new-reset').addEventListener('click', async () => {
+            document.getElementById('btn-new-reset')?.addEventListener('click', async () => {
                 if (state.cart.length > 0) {
                     const ok = await showConfirmModal('現在のリストを保存して新規施工を作成しますか？\n（履歴には自動で残ります）', '新規作成');
                     if (ok) {
