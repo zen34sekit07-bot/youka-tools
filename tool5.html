@@ -354,11 +354,6 @@
 
         <!-- ================= TAB 3: 発注リスト・ポイント総まとめ ================= -->
         <section id="tab-panel-list" class="hidden space-y-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 shadow-sm space-y-1.5">
-                <label class="text-[13px] font-bold text-indigo-300 block">【施工名・タイトル】</label>
-                <input type="text" id="project-title-input" placeholder="例: 2026/11/05 ○○家様 告別式" class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none">
-            </div>
-
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 shadow-sm space-y-2">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <span class="text-xs font-extrabold text-white flex items-center gap-1.5">
@@ -2307,6 +2302,18 @@
             }
         };
 
+        window.toggleCartDetailAccordion = function(index) {
+            if (!state.cart[index]) return;
+            state.cart[index].showDetail = !state.cart[index].showDetail;
+            updateCartUI();
+            if (state.cart[index].showDetail) {
+                setTimeout(() => {
+                    const el = document.getElementById(`cart-item-${index}`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 50);
+            }
+        };
+
         window.toggleCardAccordion = function(id) {
             const el = document.getElementById('card-acc-' + id);
             if (el) el.classList.toggle('hidden');
@@ -2431,7 +2438,6 @@
                                     <span>${flower.name}</span>
                                     ${colorBadge}
                                 </h4>
-                                <span class="text-[12px] text-slate-400 font-mono">¥${flower.price.toLocaleString()} × ${cartItem.qty}基 = ¥${subTotalEx.toLocaleString()}</span>
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
                                 <button onclick="updateCartQty(${idx}, -1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold active:scale-95 transition">-</button>
@@ -2444,23 +2450,23 @@
 
                         <div class="pt-1.5 border-t border-slate-850 flex justify-between items-center text-[12px]">
                             <div class="flex items-center gap-2">
-                                <button type="button" onclick="toggleCartMaterialsAccordion(${idx})" class="text-[12px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-1 rounded-md flex items-center gap-0.5 active:scale-95 transition">
-                                    <span>${cartItem.showMaterials ? '▲ 花材を閉じる' : '▼ 花材を見る'}</span>
+                                <button type="button" onclick="toggleCartDetailAccordion(${idx})" class="text-[12px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2.5 py-1.5 rounded-md flex items-center gap-0.5 active:scale-95 transition">
+                                    <span>${cartItem.showDetail ? '▲ 内訳を閉じる' : '▼ 内訳を見る（金額・花材・ポイント）'}</span>
                                 </button>
-                                ${!isSpecialCat ? `
-                                <button type="button" onclick="toggleCartPointsAccordion(${idx})" class="text-[12px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-1 rounded-md flex items-center gap-0.5 active:scale-95 transition">
-                                    <span>${cartItem.showPoints ? '▲ ポイントを閉じる' : '▼ ポイントを見る'}</span>
-                                </button>` : ''}
                             </div>
                             <span class="text-slate-400 font-bold font-mono">${flower.height || ''}</span>
                         </div>
 
-                        <div class="${cartItem.showMaterials ? '' : 'hidden'} bg-slate-900/90 border border-slate-800 rounded-lg p-2 text-[13px] text-slate-300 leading-relaxed">
+                        <div class="${cartItem.showDetail ? '' : 'hidden'} bg-slate-900/90 border border-slate-800 rounded-lg p-2 text-[13px] text-slate-300">
+                            <span class="text-[12px] font-bold text-amber-600 block mb-0.5">💴 金額:</span>
+                            <span class="font-mono">¥${flower.price.toLocaleString()} × ${cartItem.qty}基 = <span class="font-black text-white">¥${subTotalEx.toLocaleString()}</span></span>
+                        </div>
+                        <div class="${cartItem.showDetail ? '' : 'hidden'} bg-slate-900/90 border border-slate-800 rounded-lg p-2 text-[13px] text-slate-300 leading-relaxed">
                             <span class="text-[12px] font-bold text-emerald-400 block mb-0.5">🌿 花材内訳:</span>
                             ${renderMaterialCodeBadgeHtml(fullMatText)}
                         </div>
                         ${!isSpecialCat ? `
-                        <div class="${cartItem.showPoints ? '' : 'hidden'} bg-indigo-950/40 border border-indigo-900/60 rounded-lg p-2 space-y-1">
+                        <div class="${cartItem.showDetail ? '' : 'hidden'} bg-indigo-950/40 border border-indigo-900/60 rounded-lg p-2 space-y-1">
                             <span class="text-[12px] font-bold text-cyan-300 block mb-0.5">✨ ポイント花内訳:</span>
                             ${ptDetailList}
                         </div>` : ''}
@@ -2515,9 +2521,9 @@
             if (summaryGrid) {
                 if (pointKeys.length > 0) {
                     summaryGrid.innerHTML = pointKeys.map(pName => `
-                        <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between shadow-inner">
-                            <span class="text-xs font-extrabold text-slate-200 truncate pr-1 flex items-center">${renderMaterialCodeBadgeHtml(pName)}</span>
-                            <span class="text-base font-black text-cyan-300 font-mono shrink-0">${pointsSummary[pName]} <span class="text-[12px] text-slate-400">本</span></span>
+                        <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner">
+                            <span class="text-xs font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(pName)}</span>
+                            <span class="text-base font-black text-cyan-300 font-mono shrink-0 ml-1">${pointsSummary[pName]} <span class="text-[12px] text-slate-400">本</span></span>
                         </div>
                     `).join('');
                 } else {
@@ -2537,8 +2543,8 @@
             if (matSummaryGrid) {
                 if (matKeys.length > 0) {
                     matSummaryGrid.innerHTML = matKeys.map(mName => `
-                        <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between shadow-inner" title="${mName}">
-                            <span class="text-xs font-extrabold text-slate-200 truncate pr-1 flex items-center">${renderMaterialCodeBadgeHtml(formatDisplayName(mName))}</span>
+                        <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner" title="${mName}">
+                            <span class="text-xs font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(formatDisplayName(mName))}</span>
                             <span class="text-base font-black text-cyan-300 font-mono shrink-0">${materialsSummary[mName]} <span class="text-[12px] text-slate-400">本</span></span>
                         </div>
                     `).join('');
