@@ -62,7 +62,7 @@
       font-size: 14px;
       font-weight: 600;
       background: linear-gradient(180deg, #ebebe9 0%, #fcfcfb 100%);
-      color: #171717;
+      color: #3d3d3d;
       border: 1px solid #c6c6c4;
       border-radius: 8px;
       box-shadow: 0 2px 0 #ebebe9;
@@ -73,7 +73,7 @@
       transform: translateY(1px);
       box-shadow: 0 1px 0 #ebebe9;
       background: #d9d9d7;
-      color: #171717;
+      color: #fff;
     }
 
     /* 最新更新バー（一番最新の1件のみ上部にコンパクト表示） */
@@ -106,7 +106,7 @@
       text-overflow: ellipsis;
     }
     .latest-update-date {
-      color: #171717;
+      color: #6f6f6f;
       font-family: monospace;
       font-size: 12.5px;
       white-space: nowrap;
@@ -114,7 +114,7 @@
     }
     .latest-update-msg {
       font-size: 12.5px;
-      color: #171717;
+      color: #6f6f6f;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -175,17 +175,17 @@
     .card h2 {
       font-size: 1.12rem;
       margin: 0 0 4px 0;
-      color: #171717;
+      color: #2563eb;
       font-weight: 700;
     }
     .card p {
       font-size: 0.92rem;
       margin: 0;
-      color: #171717;
+      color: #3d3d3d;
       line-height: 1.35;
     }
     .card-arrow {
-      color: #2563eb;
+      color: #8f8f8f;
       font-size: 26px;
       font-weight: 700;
       flex-shrink: 0;
@@ -196,7 +196,7 @@
       background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
       border: 1px solid #c6c6c4;
       border-radius: 12px;
-      color: #171717;
+      color: #3d3d3d;
       font-size: 14px;
       font-weight: 700;
       display: flex;
@@ -218,7 +218,7 @@
       transform: translateY(2px);
       box-shadow: 0 1px 0 #e8e8e6;
       background: #e3e3e1;
-      color: #171717;
+      color: #fff;
     }
 
     /* モーダル共通 */
@@ -249,7 +249,7 @@
   <!-- 一番最新の更新内容のみ上部に表示 -->
   <div id="latest-update-bar" class="latest-update-bar">
     <div class="latest-update-top">
-      <span id="latest-update-tool" class="latest-update-tool" style="color: #171717;">🔄 最新更新を確認中...</span>
+      <span id="latest-update-tool" class="latest-update-tool" style="color: #6f6f6f;">🔄 最新更新を確認中...</span>
       <span id="latest-update-date" class="latest-update-date"></span>
     </div>
     <div id="latest-update-msg" class="latest-update-msg" style="display: none;"></div>
@@ -351,12 +351,12 @@
       </div>
       <div style="background: #eeeeec; border: 1px solid #d9d9d7; border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: left;">
         <p style="font-size: 14px; font-weight: 700; color: #2563eb; margin: 0 0 4px 0;">【目的】</p>
-        <p id="desc-modal-purpose" style="font-size: 15px; color: #171717; line-height: 1.55; margin: 0 0 12px 0;"></p>
+        <p id="desc-modal-purpose" style="font-size: 15px; color: #262626; line-height: 1.55; margin: 0 0 12px 0;"></p>
         <p style="font-size: 14px; font-weight: 700; color: #2563eb; margin: 0 0 6px 0;">【主な機能・できること】</p>
-        <ul id="desc-modal-features" style="font-size: 15px; color: #171717; line-height: 1.55; margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px;"></ul>
+        <ul id="desc-modal-features" style="font-size: 15px; color: #3d3d3d; line-height: 1.55; margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px;"></ul>
       </div>
       <div>
-        <button id="btn-close-desc" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+        <button id="btn-close-desc" style="width: 100%; background: #ffffff; color: #3d3d3d; font-weight: bold; padding: 12px 0; border-radius: 10px; border: 1px solid #c6c6c4; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
       </div>
     </div>
   </div>
@@ -370,10 +370,10 @@
       </div>
       <h3 style="font-size: 18px; font-weight: bold; color: #171717; margin: 0 0 2px 0;">ユー花園社内業務支援ツール</h3>
       <p style="font-size: 13px; color: #2563eb; font-family: monospace; margin: 0 0 14px 0;">ポータル</p>
-      <div style="font-size: 15px; color: #171717; border-top: 1px solid #d9d9d7; padding-top: 10px; margin-bottom: 14px; text-align: left; background: #eeeeec; padding: 10px; border-radius: 10px;">
-        <p style="margin: 0 0 4px 0;"><span style="color: #171717;">製作者:</span> <b style="color: #171717;">関貴文</b></p>
-        <p style="margin: 0 0 4px 0;"><span style="color: #171717;">AIアシスタント:</span> <b style="color: #1d4ed8;">Gemini (Google)</b></p>
-        <p style="margin: 0;"><span style="color: #171717;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
+      <div style="font-size: 15px; color: #3d3d3d; border-top: 1px solid #d9d9d7; padding-top: 10px; margin-bottom: 14px; text-align: left; background: #eeeeec; padding: 10px; border-radius: 10px;">
+        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">製作者:</span> <b style="color: #171717;">関貴文</b></p>
+        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">AIアシスタント:</span> <b style="color: #1d4ed8;">Gemini (Google)</b></p>
+        <p style="margin: 0;"><span style="color: #6f6f6f;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
       </div>
       <button id="btn-close-credit" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
     </div>
