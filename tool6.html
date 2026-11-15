@@ -132,7 +132,7 @@ AIアシスタント: Gemini (Google)
 
     <!-- 最上段ナビバー（ツール一覧へ: 確認画面なしで直接遷移） -->
     <div id="top-nav-bar" class="flex items-center bg-slate-900 px-3 pt-[max(env(safe-area-inset-top,8px),8px)] pb-1.5 shrink-0 z-40">
-        <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
+        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
             ← ツール一覧へ
         </a>
     </div>
@@ -628,7 +628,7 @@ AIアシスタント: Gemini (Google)
             <p class="text-xs text-slate-400 leading-relaxed">保存されていないデータは破棄されます。</p>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="closeModals()" class="w-full bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs">キャンセル</button>
-                <button onclick="window.location.href='index.html'" class="w-full bg-sky-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">OK</button>
+                <button onclick="exitToPortal()" class="w-full bg-sky-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">OK</button>
             </div>
         </div>
     </div>
@@ -2108,6 +2108,24 @@ AIアシスタント: Gemini (Google)
             resolveCustomConfirm(false);
         }
 
+        // ポータルから開かれた場合は、終了時に履歴をさかのぼってポータルへ戻る（ツール側の履歴を残さない＝「戻る」でツールに戻ってしまうループ防止）
+        try {
+            if (document.referrer && /\/youka-tools\/(index\.html)?([?#].*)?$/.test(document.referrer)) sessionStorage.setItem('yk_from_portal', '1');
+            else sessionStorage.removeItem('yk_from_portal');
+        } catch (e) {}
+        function exitToPortal() {
+            let left = false;
+            window.addEventListener('pagehide', () => { left = true; }, { once: true });
+            try {
+                if (sessionStorage.getItem('yk_from_portal') === '1') {
+                    sessionStorage.removeItem('yk_from_portal');
+                    history.go(-2);
+                    setTimeout(() => { if (!left) location.replace('index.html'); }, 500);
+                    return;
+                }
+            } catch (e) {}
+            location.href = 'index.html';
+        }
         window.addEventListener('popstate', () => {
             ensureHistoryGuards();
             const exitModal = document.getElementById('modal-exit');

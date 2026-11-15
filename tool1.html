@@ -266,7 +266,7 @@
 <body>
 
     <div id="top-nav-bar" class="flex justify-between items-center">
-        <a href="index.html" class="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1 font-bold">
+        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1 font-bold">
             ← ツール一覧へ
         </a>
         <!-- メニューボタン真上に配置したプロジェクト名 -->
@@ -372,7 +372,7 @@
         <!-- モード選択全画面オーバーレイ（下部メニューを完全に覆い、上部にツール一覧戻るを配置） -->
         <div id="start-screen-overlay" class="fixed inset-0 bg-gray-950 z-[150] flex flex-col items-center justify-center p-5 text-center overflow-y-auto">
             <div class="absolute top-0 left-0 right-0 p-4 pt-[max(env(safe-area-inset-top,8px),12px)] flex items-center justify-between z-10">
-                <a href="index.html" class="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1 font-bold">
+                <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1 font-bold">
                     ← ツール一覧へ
                 </a>
             </div>
@@ -4374,6 +4374,24 @@
             return false;
         }
 
+        // ポータルから開かれた場合は、終了時に履歴をさかのぼってポータルへ戻る（ツール側の履歴を残さない＝「戻る」でツールに戻ってしまうループ防止）
+        try {
+            if (document.referrer && /\/youka-tools\/(index\.html)?([?#].*)?$/.test(document.referrer)) sessionStorage.setItem('yk_from_portal', '1');
+            else sessionStorage.removeItem('yk_from_portal');
+        } catch (e) {}
+        function exitToPortal() {
+            let left = false;
+            window.addEventListener('pagehide', () => { left = true; }, { once: true });
+            try {
+                if (sessionStorage.getItem('yk_from_portal') === '1') {
+                    sessionStorage.removeItem('yk_from_portal');
+                    history.go(-2);
+                    setTimeout(() => { if (!left) location.replace('index.html'); }, 500);
+                    return;
+                }
+            } catch (e) {}
+            location.href = 'index.html';
+        }
         window.addEventListener('popstate', () => {
             ensureHistoryGuards();
 
@@ -4400,7 +4418,7 @@
                 isExitConfirmOpen = false;
                 if (ok) {
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        exitToPortal();
                     }, 60);
                 }
             });

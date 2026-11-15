@@ -127,7 +127,7 @@
   
  <!-- Top Navigation Bar -->  
  <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-4 pt-[max(env(safe-area-inset-top,8px),8px)] pb-1.5 shrink-0 z-50 border-b border-slate-800">
- <a href="index.html" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">
+ <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">
  ← ツール一覧へ
  </a>
  <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-slate-300 font-bold bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700 max-w-[190px] sm:max-w-[260px]">
@@ -1781,6 +1781,24 @@
    return true;
  }
 
+        // ポータルから開かれた場合は、終了時に履歴をさかのぼってポータルへ戻る（ツール側の履歴を残さない＝「戻る」でツールに戻ってしまうループ防止）
+        try {
+            if (document.referrer && /\/youka-tools\/(index\.html)?([?#].*)?$/.test(document.referrer)) sessionStorage.setItem('yk_from_portal', '1');
+            else sessionStorage.removeItem('yk_from_portal');
+        } catch (e) {}
+        function exitToPortal() {
+            let left = false;
+            window.addEventListener('pagehide', () => { left = true; }, { once: true });
+            try {
+                if (sessionStorage.getItem('yk_from_portal') === '1') {
+                    sessionStorage.removeItem('yk_from_portal');
+                    history.go(-2);
+                    setTimeout(() => { if (!left) location.replace('index.html'); }, 500);
+                    return;
+                }
+            } catch (e) {}
+            location.href = 'index.html';
+        }
  window.addEventListener('popstate', () => {
    ensureHistoryGuards();
    const exitModal = document.getElementById('exit-modal');
@@ -1804,7 +1822,7 @@
    if (exitModal) exitModal.classList.add('active');
  });  
   
- bindClick('exit-ok-btn', () => { window.location.href = 'index.html'; });  
+ bindClick('exit-ok-btn', () => { exitToPortal(); });  
  bindClick('exit-cancel-btn', () => {  
  const exitModal = document.getElementById('exit-modal');  
  if (exitModal) exitModal.classList.remove('active');  
