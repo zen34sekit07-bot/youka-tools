@@ -149,7 +149,7 @@ AIアシスタント: Gemini (Google)
     <header id="app-header" class="flex items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-800 shrink-0 z-40">
         <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5 whitespace-nowrap min-w-0 pr-1 truncate">
             <span class="truncate">花材提案ツール</span>
-            <span class="text-[12px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-400/60 shrink-0">v2.0</span>
+            <span class="text-[12px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-700 border border-sky-400/60 shrink-0">v2.0</span>
         </h1>
         <button onclick="syncFlowersDB()" class="text-xs bg-sky-600 hover:bg-sky-500 text-[#ffffff] font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-sky-400 shadow active:scale-95 transition shrink-0">
             <i class="fa-solid fa-cloud-arrow-down text-xs" id="sync-icon"></i>
@@ -377,12 +377,12 @@ AIアシスタント: Gemini (Google)
                 </div>
                 <div class="flex justify-between items-center mt-2 pt-1.5 border-t border-slate-800 text-xs text-slate-300 font-bold px-1">
                     <span>目標枠: ¥<span id="res-target-cost">0</span> (<span id="res-target-rate">30</span>%)</span>
-                    <span id="res-condition-tag" class="text-sky-300 truncate ml-2"></span>
+                    <span id="res-condition-tag" class="text-sky-700 truncate ml-2"></span>
                 </div>
             </div>
 
             <!-- 再抽選ボタン（大型・押しやすさ重視） -->
-            <button onclick="rerollFlowers()" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-95 text-sky-300 border-2 border-sky-400/60 font-black py-2.5 rounded-xl transition text-sm flex justify-center items-center gap-2 shadow-md">
+            <button onclick="rerollFlowers()" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-95 text-sky-700 border-2 border-sky-500/70 font-black py-2.5 rounded-xl transition text-sm flex justify-center items-center gap-2 shadow-md">
                 <i class="fa-solid fa-arrows-rotate text-base"></i>
                 <span>未ロックの花材を再抽選する</span>
             </button>
@@ -522,7 +522,7 @@ AIアシスタント: Gemini (Google)
                     <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
                         <i class="fa-solid fa-image text-sky-400"></i>出力プレビュー
                     </span>
-                    <span id="order-preview-title" class="text-xs font-black text-sky-300 truncate max-w-[200px]"></span>
+                    <span id="order-preview-title" class="text-xs font-black text-sky-700 truncate max-w-[200px]"></span>
                 </div>
                 <div id="order-capture-render-area" class="p-1 bg-slate-950 rounded-xl border border-slate-800 flex justify-center overflow-hidden">
                     <!-- Canvas描画領域 -->
@@ -536,11 +536,11 @@ AIアシスタント: Gemini (Google)
                     <span>他アプリへ画像共有（LINE・写真等）</span>
                 </button>
                 <div class="grid grid-cols-2 gap-2">
-                    <button type="button" onclick="downloadOrderImage('jpeg')" class="bg-slate-800 hover:bg-slate-700 text-amber-300 py-2.5 rounded-xl text-xs font-bold border border-slate-700 shadow transition active:scale-95 flex items-center justify-center gap-1.5">
+                    <button type="button" onclick="downloadOrderImage('jpeg')" class="bg-slate-800 hover:bg-slate-700 text-amber-700 py-2.5 rounded-xl text-xs font-bold border border-slate-300 shadow transition active:scale-95 flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-download"></i>
                         <span>JPG保存</span>
                     </button>
-                    <button type="button" onclick="downloadOrderImage('png')" class="bg-slate-800 hover:bg-slate-700 text-sky-300 py-2.5 rounded-xl text-xs font-bold border border-slate-700 shadow transition active:scale-95 flex items-center justify-center gap-1.5">
+                    <button type="button" onclick="downloadOrderImage('png')" class="bg-slate-800 hover:bg-slate-700 text-sky-700 py-2.5 rounded-xl text-xs font-bold border border-slate-300 shadow transition active:scale-95 flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-file-image"></i>
                         <span>PNG保存</span>
                     </button>
@@ -654,8 +654,8 @@ AIアシスタント: Gemini (Google)
         };
         const roleColors = {
             "main": "bg-rose-500/20 text-rose-300 border-rose-500/40",
-            "sub": "bg-amber-500/20 text-amber-300 border-amber-500/40",
-            "filler": "bg-sky-500/20 text-sky-300 border-sky-500/40",
+            "sub": "bg-amber-500/20 text-amber-700 border-amber-500/40",
+            "filler": "bg-sky-500/20 text-sky-700 border-sky-500/40",
             "green": "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
         };
 
