@@ -11,7 +11,7 @@
  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
  <meta name="apple-mobile-web-app-title" content="重ねてチェッカー">  
  <meta name="application-name" content="写真重ねてチェッカー">  
- <meta name="theme-color" content="#141413">  
+ <meta name="theme-color" content="#f4f4f2">  
  <meta name="color-scheme" content="dark">  
    
  <!-- アプリアイコン & マニフェスト -->  
@@ -32,10 +32,10 @@
  theme: {  
  extend: {  
  colors: {  
- gray: { 100: '#f3ecd7', 200: '#e7dfc6', 300: '#d8d2ba', 400: '#b5b09a', 500: '#8f8b76', 600: '#605d4e', 700: '#454338', 800: '#2c2b26', 850: '#24231f', 900: '#171716', 950: '#0b0b0a' },
-                        cyan: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#4a3d22', 900: '#332913', 950: '#241d10' },  
- blue: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#6e5626', 900: '#3a2f1c', 950: '#241d10' },  
- slate: { 50: '#f7f4ea', 100: '#f3ecd7', 200: '#e7dfc6', 300: '#ddd8c2', 400: '#b3bfa8', 500: '#8f957e', 600: '#5f5f52', 700: '#43433a', 800: '#2a2a26', 850: '#1d1d1a', 900: '#141413', 950: '#0b0b0a' }  
+ gray: { 100: '#262626', 200: '#333333', 300: '#454545', 400: '#6f6f6f', 500: '#8f8f8f', 600: '#bcbcbc', 700: '#d9d9d7', 800: '#ffffff', 850: '#f7f7f5', 900: '#f4f4f2', 950: '#fbfbfa' },
+                        cyan: { 100: '#1e3a8a', 200: '#1e40af', 300: '#1d4ed8', 400: '#2563eb', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af', 800: '#93c5fd', 900: '#dbeafe', 950: '#eff6ff' },  
+ blue: { 100: '#1e3a8a', 200: '#1e40af', 300: '#1d4ed8', 400: '#2563eb', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af', 800: '#93c5fd', 900: '#dbeafe', 950: '#eff6ff' },  
+ white: '#1c1c1c', slate: { 50: '#171717', 100: '#262626', 200: '#333333', 300: '#454545', 400: '#6f6f6f', 500: '#8f8f8f', 600: '#bcbcbc', 700: '#d9d9d7', 800: '#ffffff', 850: '#f7f7f5', 900: '#f4f4f2', 950: '#fbfbfa' }  
  }  
  }  
  }  
@@ -43,8 +43,8 @@
  </script>  
  <style>  
  :root {  
- color-scheme: dark;  
- supported-color-schemes: dark;  
+ color-scheme: light;  
+ supported-color-schemes: light;  
  }  
  body {  
  overscroll-behavior: none;  
@@ -52,42 +52,42 @@
  user-select: none;  
  -webkit-tap-highlight-color: transparent;  
  touch-action: none;  
- background: #141413;  
- color: #fbf7ea;  
+ background: #f4f4f2;  
+ color: #171717;  
  display: flex;  
  flex-direction: column;  
  height: 100dvh;  
  overflow: hidden;  
- accent-color: #d9bc7a;  
+ accent-color: #2563eb;  
  }  
  canvas { display: block; touch-action: none; outline: none; }  
  .hide-scrollbar::-webkit-scrollbar { display: none; }  
  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }  
  select, input, textarea {  
- color-scheme: dark;  
+ color-scheme: light;  
  }  
  select option {  
- background-color: #141413;  
+ background-color: #f4f4f2;  
  color: #ffffff;  
  }  
  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }  
  input[type="number"] { -moz-appearance: textfield; }  
  button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }  
    
- input[type="range"] { accent-color: #d9bc7a; -webkit-appearance: none; width: 100%; background: transparent; }  
+ input[type="range"] { accent-color: #2563eb; -webkit-appearance: none; width: 100%; background: transparent; }  
  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; cursor: pointer; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }  
- input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #43433a; border-radius: 2px; }  
+ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #d9d9d7; border-radius: 2px; }  
   
  /* Layout */  
- #app-header { flex-shrink: 0; background: #141413; border-bottom: 1px solid #2a2a26; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
+ #app-header { flex-shrink: 0; background: #f4f4f2; border-bottom: 1px solid #ffffff; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
  #workspace { flex: 1; position: relative; background: #000; overflow: hidden; }  
- #bottom-toolbar { flex-shrink: 0; background: #141413; border-top: 1px solid #2a2a26; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
+ #bottom-toolbar { flex-shrink: 0; background: #f4f4f2; border-top: 1px solid #ffffff; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
   
  /* Bottom Sheets */  
  .bottom-sheet {  
  position: fixed; bottom: 0; left: 0; width: 100%;  
  background: rgba(20, 20, 19, 0.98); backdrop-filter: blur(16px);  
- border-top: 1px solid #2a2a26; border-radius: 20px 20px 0 0;  
+ border-top: 1px solid #ffffff; border-radius: 20px 20px 0 0;  
  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);  
  z-index: 60; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);  
  max-height: 75vh; display: flex; flex-direction: column;  
@@ -96,8 +96,8 @@
  .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.3s; }  
  .sheet-overlay.active { opacity: 1; pointer-events: auto; }  
   
- .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #b3bfa8; font-size: 10px; font-weight: bold; gap: 4px; width: 64px; border-radius: 12px; padding: 8px 0; transition: all 0.2s; }  
- .toolbar-btn.active { color: #d9bc7a; background: rgba(217, 188, 122, 0.1); }  
+ .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6f6f6f; font-size: 10px; font-weight: bold; gap: 4px; width: 64px; border-radius: 12px; padding: 8px 0; transition: all 0.2s; }  
+ .toolbar-btn.active { color: #2563eb; background: rgba(37, 99, 235, 0.1); }  
  .toolbar-btn svg { width: 24px; height: 24px; margin: 0 auto; }  
  .toolbar-btn.disabled-btn { opacity: 0.25; pointer-events: none; }
   
@@ -109,21 +109,22 @@
  .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; }  
  .modal.active { display: flex; }  
    
- .tab-btn { border-bottom: 2px solid transparent; color: #b3bfa8; padding-bottom: 8px; transition: color 0.2s; }  
- .tab-btn.active { color: #fff; border-bottom-color: #d9bc7a; }  
+ .tab-btn { border-bottom: 2px solid transparent; color: #6f6f6f; padding-bottom: 8px; transition: color 0.2s; }  
+ .tab-btn.active { color: #fff; border-bottom-color: #2563eb; }  
  .tab-content { display: none; }  
  .tab-content.active { display: block; }  
   
  /* Eye Toggle Button */  
  #toggle-ui-btn {   
  position: absolute; bottom: calc(80px + max(env(safe-area-inset-bottom, 0px), 28px)); right: 20px;   
- width: 48px; height: 48px; background: rgba(20, 20, 19, 0.85); border: 1px solid #43433a; border-radius: 24px;   
+ width: 48px; height: 48px; background: rgba(20, 20, 19, 0.85); border: 1px solid #d9d9d7; border-radius: 24px;   
  z-index: 40; display: none; align-items: center; justify-content: center; color: #fff;   
  backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.5);   
  transition: transform 0.1s, background-color 0.1s; user-select: none; -webkit-touch-callout: none;  
  }  
- #toggle-ui-btn:active { transform: scale(0.9); background: rgba(217, 188, 122, 0.8); border-color: #d9bc7a; }  
+ #toggle-ui-btn:active { transform: scale(0.9); background: rgba(37, 99, 235, 0.8); border-color: #2563eb; }  
  </style>  
+<style>html { font-size: 18px; }</style>
 </head>  
 <body class="bg-slate-950 text-slate-100 flex flex-col h-[100dvh] overflow-hidden font-sans">  
   
@@ -134,7 +135,7 @@
  </a>
  <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-slate-300 font-bold bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-700 max-w-[190px] sm:max-w-[260px]">
  <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
- <span id="current-project-name-text" class="truncate text-[10px]">新規比較</span>
+ <span id="current-project-name-text" class="truncate text-[12px]">新規比較</span>
  </div>
  </div>
 
@@ -144,7 +145,7 @@
  <div id="header-start" class="flex w-full justify-between items-center">  
  <div>  
  <h1 class="text-base font-bold text-white tracking-wide">写真重ねてチェッカー</h1>  
- <p class="text-[10px] text-gray-400 mt-0.5">写真の選択または履歴</p>  
+ <p class="text-[12px] text-gray-400 mt-0.5">写真の選択または履歴</p>  
  </div>  
  <div class='flex items-center gap-2'>
  <button class='settings-btn px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700 text-xs text-white font-bold flex items-center gap-1.5 shadow'>
@@ -157,17 +158,17 @@
  <!-- Editor Header -->  
  <div id="header-editor" class="hidden flex w-full justify-between items-center">  
  <div class="flex items-center gap-1.5">  
- <button id="header-history-btn" class="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-[10px] text-white font-bold shadow flex items-center gap-1 transition">
+ <button id="header-history-btn" class="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 text-[12px] text-white font-bold shadow flex items-center gap-1 transition">
  <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
  📁 プロジェクト・履歴
  </button>
  </div>  
  <div class="flex items-center gap-2">  
- <button id="camera-toggle-btn" class="px-3 py-2 bg-green-600/20 text-green-400 border border-green-500/30 rounded-lg text-[10px] font-bold shadow flex items-center gap-1 transition">  
+ <button id="camera-toggle-btn" class="px-3 py-2 bg-green-600/20 text-green-400 border border-green-500/30 rounded-lg text-[12px] font-bold shadow flex items-center gap-1 transition">  
  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>  
  カメラ比較  
  </button>  
- <button class="settings-btn px-3 py-2 bg-gray-800 rounded-lg border border-gray-700 text-[10px] text-gray-300 font-bold shadow flex items-center gap-1">  
+ <button class="settings-btn px-3 py-2 bg-gray-800 rounded-lg border border-gray-700 text-[12px] text-gray-300 font-bold shadow flex items-center gap-1">  
  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>  
  設定  
  </button>  
@@ -200,7 +201,7 @@
  <div class="px-6 pt-10 pb-6 text-center shrink-0">  
  <div class='bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-300 shadow-sm text-left mb-3'>
    <p class='text-xs font-black text-blue-400 mb-2'>📐 写真重ねてチェッカーの使い方</p>
-   <ul class='text-[11px] leading-relaxed space-y-1.5 text-slate-300'>
+   <ul class='text-[13px] leading-relaxed space-y-1.5 text-slate-300'>
      <li>・<strong class='text-white'>2枚写真の比較:</strong> 基準画像(1)と比較画像(2)を選択し、透過度や差分抽出でズレを確認します。</li>
      <li>・<strong class='text-white'>カメラ比較:</strong> 基準画像(1)のみ設定時に利用可能。現場の実物に設計図・基準写真を重ねて位置合わせします（2枚選択時は非表示）。</li>
      <li>・<strong class='text-white'>グリッドカメラ:</strong> 写真なしですぐ起動。画面上に基準グリッド・センター線を表示して現場を撮影・確認できます。</li>
@@ -210,7 +211,7 @@
    <button id='top-history-btn-sub' onclick='openModal("history-modal")' class='bg-slate-900 hover:bg-slate-850 border border-slate-700 text-white font-bold py-3 rounded-xl shadow flex items-center justify-center gap-1.5 text-xs transition active:scale-95'>
      📁 プロジェクト・履歴
    </button>
-   <button onclick='startGridCamera()' class='bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow flex items-center justify-center gap-1.5 text-xs transition active:scale-95'>
+   <button onclick='startGridCamera()' class='bg-emerald-600 hover:bg-emerald-500 text-[#ffffff] font-bold py-3 rounded-xl shadow flex items-center justify-center gap-1.5 text-xs transition active:scale-95'>
      📷 グリッドカメラ起動
    </button>
  </div>  
@@ -220,16 +221,16 @@
  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 relative transition" id="upload-box-1">  
  <div class="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center text-blue-500 mb-1"><span class="font-bold text-xl">1</span></div>  
  <p class="text-sm font-bold text-white">基準となる画像をアップロード</p>  
- <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full max-w-[200px] mt-2 load-img-btn" data-target="1">画像を選択</button>  
+ <button class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 px-6 rounded-xl w-full max-w-[200px] mt-2 load-img-btn" data-target="1">画像を選択</button>  
  </div>  
   
  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 relative transition opacity-50 pointer-events-none" id="upload-box-2">  
  <div class="w-12 h-12 bg-blue-900/30 rounded-full flex items-center justify-center text-blue-500 mb-1"><span class="font-bold text-xl">2</span></div>  
  <p class="text-sm font-bold text-white">比較する画像をアップロード</p>  
- <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl w-full max-w-[200px] mt-2 load-img-btn" data-target="2">画像を選択</button>  
+ <button class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 px-6 rounded-xl w-full max-w-[200px] mt-2 load-img-btn" data-target="2">画像を選択</button>  
  </div>  
    
- <button id="start-editor-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg mt-2 hidden opacity-0 transition-opacity duration-300">  
+ <button id="start-editor-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-3.5 rounded-xl shadow-lg mt-2 hidden opacity-0 transition-opacity duration-300">  
  調整画面へ進む  
  </button>  
  </div>  
@@ -282,7 +283,7 @@
  <div id="tab-img1" class="tab-content active space-y-4">  
  <div class="flex items-center justify-between bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 gap-2">  
  <div class="overflow-hidden flex-1 min-w-0">  
- <span class="text-[10px] text-gray-400 block mb-0.5">ファイル名</span>  
+ <span class="text-[12px] text-gray-400 block mb-0.5">ファイル名</span>  
  <span id="name-img1" class="text-xs font-bold text-white truncate block">未設定</span>  
  </div>  
  <button class="load-img-btn px-3 py-1.5 bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600/50 text-blue-300 rounded-lg text-xs font-bold shrink-0 transition" data-target="1">
@@ -295,7 +296,7 @@
  <input type="checkbox" id="vis-img1" checked class="accent-blue-500 w-5 h-5">  
  </div>  
  <div>  
- <div class="flex justify-between text-[10px] text-gray-400 mb-2"><span>透明度</span><span id="val-alpha1">100%</span></div>  
+ <div class="flex justify-between text-[12px] text-gray-400 mb-2"><span>透明度</span><span id="val-alpha1">100%</span></div>  
  <input type="range" id="alpha-img1" min="0" max="1" step="0.01" value="1">  
  </div>  
  <div class="flex gap-2 pt-2 border-t border-gray-700/50">  
@@ -323,7 +324,7 @@
  <div id="tab-img2" class="tab-content space-y-4">  
  <div class="flex items-center justify-between bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 gap-2">  
  <div class="overflow-hidden flex-1 min-w-0">  
- <span class="text-[10px] text-gray-400 block mb-0.5">ファイル名</span>  
+ <span class="text-[12px] text-gray-400 block mb-0.5">ファイル名</span>  
  <span id="name-img2" class="text-xs font-bold text-white truncate block">未設定</span>  
  </div>  
  <button class="load-img-btn px-3 py-1.5 bg-green-600/30 border border-green-500/50 hover:bg-green-600/50 text-green-300 rounded-lg text-xs font-bold shrink-0 transition" data-target="2">
@@ -336,7 +337,7 @@
  <input type="checkbox" id="vis-img2" checked class="accent-blue-500 w-5 h-5">  
  </div>  
  <div>  
- <div class="flex justify-between text-[10px] text-gray-400 mb-2"><span>透明度</span><span id="val-alpha2">50%</span></div>  
+ <div class="flex justify-between text-[12px] text-gray-400 mb-2"><span>透明度</span><span id="val-alpha2">50%</span></div>  
  <input type="range" id="alpha-img2" min="0" max="1" step="0.01" value="0.5">  
  </div>  
  <div class="flex gap-2 pt-2 border-t border-gray-700/50">  
@@ -362,27 +363,27 @@
   
  <!-- Blend Tab -->  
  <div id="tab-blend" class="tab-content space-y-2">  
- <p class="text-[10px] text-gray-400 mb-2">2つの画像をどのように重ねて比較するかを選択します。</p>  
+ <p class="text-[12px] text-gray-400 mb-2">2つの画像をどのように重ねて比較するかを選択します。</p>  
  <div class="grid grid-cols-1 gap-2">  
  <label class="flex items-center gap-3 bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 cursor-pointer">  
  <input type="radio" name="blend-mode" value="normal" checked class="accent-blue-500 w-4 h-4">  
  <div>  
  <span class="text-sm font-bold text-white block">通常 (半透明)</span>  
- <span class="text-[10px] text-gray-400 block mt-0.5">上の画像の透明度を下げて透かします。</span>  
+ <span class="text-[12px] text-gray-400 block mt-0.5">上の画像の透明度を下げて透かします。</span>  
  </div>  
  </label>  
  <label class="flex items-center gap-3 bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 cursor-pointer">  
  <input type="radio" name="blend-mode" value="difference" class="accent-blue-500 w-4 h-4">  
  <div>  
  <span class="text-sm font-bold text-white block">差分抽出 (Difference)</span>  
- <span class="text-[10px] text-gray-400 block mt-0.5">一致する部分が黒くなり、ズレている箇所が浮き出ます。</span>  
+ <span class="text-[12px] text-gray-400 block mt-0.5">一致する部分が黒くなり、ズレている箇所が浮き出ます。</span>  
  </div>  
  </label>  
  <label class="flex items-center gap-3 bg-gray-800/50 p-3 rounded-xl border border-gray-700/50 cursor-pointer">  
  <input type="radio" name="blend-mode" value="flicker" class="accent-blue-500 w-4 h-4">  
  <div>  
  <span class="text-sm font-bold text-white block">フリッカー (交互点滅)</span>  
- <span class="text-[10px] text-gray-400 block mt-0.5">2枚の画像を高速で切り替え、変化した部分を見つけます。</span>  
+ <span class="text-[12px] text-gray-400 block mt-0.5">2枚の画像を高速で切り替え、変化した部分を見つけます。</span>  
  </div>  
  </label>  
  </div>  
@@ -391,7 +392,7 @@
  <span class="text-xs font-bold text-gray-200">輪郭線(エッジ)を抽出して重ねる</span>  
  <input type="checkbox" id="edge-mode" class="accent-blue-500 w-5 h-5">  
  </label>  
- <p class="text-[9px] text-gray-400 mt-1">※画像1の輪郭線を抽出し、緑色の線として重ねます。</p>  
+ <p class="text-[13px] text-gray-400 mt-1">※画像1の輪郭線を抽出し、緑色の線として重ねます。</p>  
  </div>  
  </div>  
  </div>  
@@ -402,21 +403,21 @@
  <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>  
  <div class="px-4 pb-2 border-b border-gray-800 shrink-0 flex items-center justify-between">  
  <h3 class="text-sm font-bold text-white">テキスト入れ</h3>  
- <span class="text-[10px] text-gray-400">文字を直接ドラッグ移動可能</span>  
+ <span class="text-[12px] text-gray-400">文字を直接ドラッグ移動可能</span>  
  </div>  
  <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-2.5 relative">  
- <button id="add-text-btn" class="w-full bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600/50 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2 mb-2 text-xs">  
+ <button id="add-text-btn" class="w-full bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600/50 text-[#ffffff] font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2 mb-2 text-xs">  
  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>  
  新しいテキストを追加  
  </button>  
    
  <div id="text-list-box" class="mb-2">  
  <div class="flex items-center justify-between mb-1 px-1">  
- <span class="text-[10px] text-slate-400 font-bold">配置済みテキスト一覧</span>  
- <button id="text-deselect-btn" class="text-[9px] text-blue-400 hover:text-white">選択解除</button>  
+ <span class="text-[12px] text-slate-400 font-bold">配置済みテキスト一覧</span>  
+ <button id="text-deselect-btn" class="text-[13px] text-blue-400 hover:text-white">選択解除</button>  
  </div>  
  <div id="text-layer-list" class="flex flex-col gap-1 max-h-24 overflow-y-auto hide-scrollbar p-1 bg-slate-900/90 rounded-lg border border-slate-800">  
- <p id="text-layer-empty" class="text-[10px] text-slate-500 text-center py-2">テキストはありません</p>  
+ <p id="text-layer-empty" class="text-[12px] text-slate-500 text-center py-2">テキストはありません</p>  
  </div>  
  </div>  
    
@@ -428,7 +429,7 @@
  <!-- キーボード表示時に自動折りたたみされる詳細オプション -->
  <div id="text-details-container" class="space-y-2.5">
  <div class="flex items-center gap-2">  
- <label class="text-[10px] text-slate-400 w-12">フォント</label>  
+ <label class="text-[12px] text-slate-400 w-12">フォント</label>  
  <select id="text-font" class="flex-1 bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
  <option value="'Noto Sans JP', sans-serif">角ゴシック体 (標準)</option>  
  <option value="'Noto Serif JP', serif">明朝体 (格式)</option>  
@@ -438,24 +439,24 @@
  </div>  
   
  <div class="flex items-center gap-2">  
- <label class="text-[10px] text-slate-400 w-12">サイズ</label>  
+ <label class="text-[12px] text-slate-400 w-12">サイズ</label>  
  <input type="range" id="text-size" min="10" max="300" step="1" value="40" class="flex-1">  
  <span id="text-size-val" class="text-xs font-mono text-blue-400 w-9 text-right">40</span>  
  </div>  
   
  <div class="flex items-center gap-2">  
- <label class="text-[10px] text-slate-400 w-12">縁取り幅</label>  
+ <label class="text-[12px] text-slate-400 w-12">縁取り幅</label>  
  <input type="range" id="text-stroke-width" min="0" max="50" step="1" value="4" class="flex-1">  
  <span id="text-stroke-val" class="text-xs font-mono text-blue-400 w-9 text-right">4</span>  
  </div>  
   
  <div class="flex justify-between items-center pt-1">  
  <div class="flex items-center gap-2">  
- <label class="text-[10px] text-slate-400">文字色</label>  
+ <label class="text-[12px] text-slate-400">文字色</label>  
  <input type="color" id="text-color" value="#ffffff" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
  </div>  
  <div class="flex items-center gap-2">  
- <label class="text-[10px] text-slate-400">縁取り色</label>  
+ <label class="text-[12px] text-slate-400">縁取り色</label>  
  <input type="color" id="text-stroke" value="#000000" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
  </div>  
  <button id="text-delete-btn" class="bg-[#450a0a] text-[#fca5a5] hover:bg-[#5c0f0f] px-2.5 py-1 rounded-lg text-xs font-bold border border-[#ef4444] transition">削除</button>  
@@ -550,7 +551,7 @@
        <option value="#ef4444" selected>赤色 (Red)</option>
        <option value="#eab308">黄色 (Yellow)</option>
        <option value="#22c55e">緑色 (Green)</option>
-       <option value="#d9bc7a">青色 (Blue)</option>
+       <option value="#2563eb">青色 (Blue)</option>
        <option value="#ffffff">白色 (White)</option>
        <option value="eraser">消しゴム (Eraser)</option>
      </select>
@@ -568,7 +569,7 @@
      <button id="pen-clear" class="bg-[#450a0a] px-4 py-2 rounded-lg text-xs font-bold text-[#fca5a5] border border-[#ef4444] transition active:bg-[#5c0f0f]">すべて消去</button>
    </div>
  </div>  
- <p class="text-[10px] text-gray-400 leading-relaxed px-1">※ペン入力中は画像の移動や拡大ができません。書き終わったらオフにしてください。</p>  
+ <p class="text-[12px] text-gray-400 leading-relaxed px-1">※ペン入力中は画像の移動や拡大ができません。書き終わったらオフにしてください。</p>  
  </div>  
  </div>  
   
@@ -587,7 +588,7 @@
  </button>  
  </div> 
  <div class="flex gap-2 mb-2 bg-slate-950 p-1 rounded-xl border border-slate-800 shrink-0 text-xs font-bold">
-   <button id="tab-btn-saved" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white">⭐ 保存プロジェクト</button>
+   <button id="tab-btn-saved" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-[#ffffff]">⭐ 保存プロジェクト</button>
    <button id="tab-btn-recent" class="flex-1 py-1.5 rounded-lg text-slate-400">🕒 最近の履歴</button>
  </div>
  <div id="modal-saved-list" class="overflow-y-auto hide-scrollbar flex-1 space-y-2 min-h-[180px]"></div>
@@ -652,12 +653,12 @@
  </label>  
  </div>  
   
- <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
+ <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>  
  他アプリへ共有（LINE・フォト等）  
  </button>  
  <div class="grid grid-cols-2 gap-2 mb-2 shrink-0">  
- <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+ <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>  
  ファイル保存  
  </button> <button class='close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs active:scale-95'>
@@ -673,7 +674,7 @@
    <input type="text" id="proj-name-input" placeholder="例: 祭壇チェック1" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white text-center font-bold outline-none focus:border-indigo-500">
    <div class="grid grid-cols-2 gap-2 pt-1">
      <button id="btn-proj-cancel" class="bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-bold active:scale-95 transition">キャンセル</button>
-     <button id="btn-proj-ok" class="bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold active:scale-95 transition">保存</button>
+     <button id="btn-proj-ok" class="bg-indigo-600 text-[#ffffff] py-2 rounded-xl text-xs font-bold active:scale-95 transition">保存</button>
    </div>
  </div>
  </div>  
@@ -683,7 +684,7 @@
  <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">
  <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>
  <p id="alert-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>
- <button onclick="if(alertModalResolve){alertModalResolve(); alertModalResolve=null;} closeModal('alert-modal');" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>
+ <button onclick="if(alertModalResolve){alertModalResolve(); alertModalResolve=null;} closeModal('alert-modal');" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>
  </div>
  </div>
 
@@ -694,7 +695,7 @@
  <p id="confirm-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>
  <div class="grid grid-cols-2 gap-2 pt-2">
  <button onclick="if(confirmModalResolve){confirmModalResolve(false); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition active:scale-95">キャンセル</button>
- <button onclick="if(confirmModalResolve){confirmModalResolve(true); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow active:scale-95">削除</button>
+ <button onclick="if(confirmModalResolve){confirmModalResolve(true); confirmModalResolve=null;} closeModal('confirm-modal');" class="w-full bg-red-600 hover:bg-red-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs transition shadow active:scale-95">削除</button>
  </div>
  </div>
  </div>  
@@ -708,7 +709,7 @@
  <button id="exit-cancel-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition">  
  キャンセル  
  </button>  
- <button id="exit-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">  
+ <button id="exit-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs transition shadow">  
  OK  
  </button>  
  </div>  
@@ -748,9 +749,9 @@
  // --- PWA Setup ---  
  (function setupPWA() {  
  const appSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">  
- <rect width="512" height="512" rx="110" fill="#141413"/>  
+ <rect width="512" height="512" rx="110" fill="#f4f4f2"/>  
  <defs>  
- <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d9bc7a"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>  
+ <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>  
  <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>  
  </defs>  
  <rect x="96" y="80" width="250" height="250" rx="24" fill="url(#g1)" opacity="0.85"/>  
@@ -766,7 +767,7 @@
   
  const manifest = {  
  name: "写真重ねてチェッカー", short_name: "重ねてチェッカー", description: "2枚の写真を重ねて比較・位置合わせできる現場向けチェックツール",  
- start_url: "./", scope: "./", display: "standalone", orientation: "portrait", background_color: "#141413", theme_color: "#141413",  
+ start_url: "./", scope: "./", display: "standalone", orientation: "portrait", background_color: "#f4f4f2", theme_color: "#f4f4f2",  
  icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]  
  };  
  const mLink = document.getElementById('manifest-link');  
@@ -1014,7 +1015,7 @@
            <img src='${r.thumbnail}' class='w-11 h-11 rounded-lg object-cover bg-black shrink-0'>
            <div class='min-w-0 flex-1'>
              <p class='text-xs font-bold text-white truncate'>${r.name || r.img1Name}</p>
-             <p class='text-[10px] text-slate-400'>${new Date(r.timestamp).toLocaleDateString('ja-JP')} ${new Date(r.timestamp).toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})}</p>
+             <p class='text-[12px] text-slate-400'>${new Date(r.timestamp).toLocaleDateString('ja-JP')} ${new Date(r.timestamp).toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})}</p>
            </div>
          </div>
          <div class='flex gap-1.5 ml-2 shrink-0'>
@@ -1086,7 +1087,7 @@
  if (ub1) ub1.innerHTML = `  
  <img src="${ev.target.result}" class="w-full h-full object-cover rounded-2xl opacity-50 absolute inset-0">  
  <div class="relative z-10 flex flex-col items-center">  
- <span class="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-2">基準画像セット完了</span>  
+ <span class="bg-green-600 text-[#ffffff] text-[12px] font-bold px-2 py-1 rounded mb-2">基準画像セット完了</span>  
  <button class="bg-gray-800 border border-gray-600 text-white text-xs px-3 py-1 rounded-lg load-img-btn" data-target="1">変更</button>  
  </div>`;  
  document.getElementById('upload-box-2')?.classList.remove('opacity-50', 'pointer-events-none');  
@@ -1097,7 +1098,7 @@
  if (ub2) ub2.innerHTML = `  
  <img src="${ev.target.result}" class="w-full h-full object-cover rounded-2xl opacity-50 absolute inset-0">  
  <div class="relative z-10 flex flex-col items-center">  
- <span class="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-2">比較画像セット完了</span>  
+ <span class="bg-green-600 text-[#ffffff] text-[12px] font-bold px-2 py-1 rounded mb-2">比較画像セット完了</span>  
  <button class="bg-gray-800 border border-gray-600 text-white text-xs px-3 py-1 rounded-lg load-img-btn" data-target="2">変更</button>  
  </div>`;  
  const p2 = document.getElementById('panel-img2');  
@@ -1515,7 +1516,7 @@
  ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = `bold ${t.size}px ${t.font}`;  
  let w = ctx.measureText(t.text).width;  
  ctx.fillRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
- ctx.strokeStyle = '#d9bc7a'; ctx.lineWidth = 2;  
+ ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2;  
  ctx.strokeRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
  }  
  ctx.translate(t.x, t.y); ctx.font = `bold ${t.size}px ${t.font}`;  
@@ -1648,13 +1649,13 @@
  if (!list) return;  
  list.innerHTML = '';  
  if (!state.texts || state.texts.length === 0) {  
- list.innerHTML = '<p id="text-layer-empty" class="text-[10px] text-slate-500 text-center py-2">テキストはありません</p>';  
+ list.innerHTML = '<p id="text-layer-empty" class="text-[12px] text-slate-500 text-center py-2">テキストはありません</p>';  
  return;  
  }  
  state.texts.forEach((t, idx) => {  
  const isSel = t.id === state.selectedTextId;  
  const item = document.createElement('div');  
- item.className = `flex items-center justify-between px-2 py-1.5 rounded text-xs transition cursor-pointer ${isSel ? 'bg-blue-600/30 border border-blue-500 text-white font-bold' : 'bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-800'}`;  
+ item.className = `flex items-center justify-between px-2 py-1.5 rounded text-xs transition cursor-pointer ${isSel ? 'bg-blue-600/30 border border-blue-500 text-[#ffffff] font-bold' : 'bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-800'}`;  
  item.onclick = () => { state.selectedTextId = t.id; updateTextPanel(); render(); };  
  item.innerHTML = `  
  <span class="truncate max-w-[170px]">T${idx + 1}: ${t.text || '(空)'}</span>  

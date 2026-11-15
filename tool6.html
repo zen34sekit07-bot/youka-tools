@@ -18,13 +18,13 @@ AIアシスタント: Gemini (Google)
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="花材提案">
-    <meta name="theme-color" content="#141413">
+    <meta name="theme-color" content="#f4f4f2">
     <meta name="color-scheme" content="dark">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { theme: { extend: { colors: {
-            slate: { 50: '#f7f4ea', 100: '#f3ecd7', 200: '#e7dfc6', 300: '#ddd8c2', 400: '#b3bfa8', 500: '#8f957e', 600: '#5f5f52', 700: '#43433a', 800: '#2a2a26', 850: '#1d1d1a', 900: '#141413', 950: '#0b0b0a' },
-            sky: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#6e5626', 900: '#3a2f1c', 950: '#241d10' }
+            white: '#1c1c1c', slate: { 50: '#171717', 100: '#262626', 200: '#333333', 300: '#454545', 400: '#6f6f6f', 500: '#8f8f8f', 600: '#bcbcbc', 700: '#d9d9d7', 800: '#ffffff', 850: '#f7f7f5', 900: '#f4f4f2', 950: '#fbfbfa' },
+            sky: { 100: '#1e3a8a', 200: '#1e40af', 300: '#1d4ed8', 400: '#2563eb', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af', 800: '#93c5fd', 900: '#dbeafe', 950: '#eff6ff' }
         } } } };
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,11 +32,11 @@ AIアシスタント: Gemini (Google)
     <style>
         :root {
             --app-height: 100dvh;
-            color-scheme: dark;
+            color-scheme: light;
         }
         body {
-            background-color: #0f0f0e;
-            color: #efe9d6;
+            background-color: #eeeeec;
+            color: #262626;
             height: var(--app-height);
             width: 100vw;
             overflow: hidden;
@@ -45,10 +45,10 @@ AIアシスタント: Gemini (Google)
             font-size: 15px;
         }
         select, input, textarea {
-            color-scheme: dark;
+            color-scheme: light;
         }
         select option {
-            background-color: #2a2a26;
+            background-color: #ffffff;
             color: #ffffff;
         }
         input[type="number"]::-webkit-inner-spin-button, 
@@ -64,29 +64,29 @@ AIアシスタント: Gemini (Google)
         }
         
         .card-solid {
-            background-color: #2a2a26;
-            border: 2px solid #43433a;
+            background-color: #ffffff;
+            border: 2px solid #d9d9d7;
             border-radius: 14px;
         }
         
         .card-input {
-            background-color: #141413;
-            border: 2px solid #5f5f52;
+            background-color: #f4f4f2;
+            border: 2px solid #c6c6c4;
             color: #ffffff;
             border-radius: 10px;
         }
         .card-input:focus {
             outline: none;
-            border-color: #ecd28f;
-            box-shadow: 0 0 0 3px rgba(236, 210, 143, 0.3);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
         }
 
         .step-chip {
             padding: 10px 14px;
             border-radius: 10px;
-            background-color: #2a2a26;
-            border: 2px solid #43433a;
-            color: #ddd8c2;
+            background-color: #ffffff;
+            border: 2px solid #d9d9d7;
+            color: #3d3d3d;
             font-size: 15px;
             font-weight: 600;
             transition: all 0.15s ease;
@@ -96,10 +96,10 @@ AIアシスタント: Gemini (Google)
             transform: scale(0.97);
         }
         .step-chip.active {
-            background-color: #8a6d3b;
-            border-color: #ecd28f;
+            background-color: #2563eb;
+            border-color: #2563eb;
             color: #ffffff;
-            box-shadow: 0 0 0 2px #8a6d3b;
+            box-shadow: 0 0 0 2px #2563eb;
         }
 
         .btn-qty {
@@ -108,15 +108,15 @@ AIアシスタント: Gemini (Google)
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #43433a;
+            background-color: #d9d9d7;
             color: #ffffff;
             border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
-            border: 1px solid #5f5f52;
+            border: 1px solid #c6c6c4;
         }
         .btn-qty:active {
-            background-color: #8a6d3b;
+            background-color: #2563eb;
         }
 
         .slide-up {
@@ -133,6 +133,7 @@ AIアシスタント: Gemini (Google)
             display: none;
         }
     </style>
+<style>html { font-size: 18px; }</style>
 </head>
 <body class="flex flex-col">
 
@@ -147,9 +148,9 @@ AIアシスタント: Gemini (Google)
     <header id="app-header" class="flex items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-800 shrink-0 z-40">
         <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-1.5 whitespace-nowrap min-w-0 pr-1 truncate">
             <span class="truncate">花材提案ツール</span>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-400/60 shrink-0">v2.0</span>
+            <span class="text-[12px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-400/60 shrink-0">v2.0</span>
         </h1>
-        <button onclick="syncFlowersDB()" class="text-xs bg-sky-600 hover:bg-sky-500 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-sky-400 shadow active:scale-95 transition shrink-0">
+        <button onclick="syncFlowersDB()" class="text-xs bg-sky-600 hover:bg-sky-500 text-[#ffffff] font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-sky-400 shadow active:scale-95 transition shrink-0">
             <i class="fa-solid fa-cloud-arrow-down text-xs" id="sync-icon"></i>
             <span id="db-status-text">最新花材取得</span>
         </button>
@@ -184,14 +185,14 @@ AIアシスタント: Gemini (Google)
                     <div class="flex justify-between items-center bg-slate-900/90 px-2.5 py-2 rounded-lg border border-slate-700">
                         <div>
                             <p class="font-bold text-white text-xs">おまかせ枠数</p>
-                            <p class="text-[10px] text-slate-400">予算から自動配分</p>
+                            <p class="text-[12px] text-slate-400">予算から自動配分</p>
                         </div>
                         <input type="checkbox" id="toggle-auto-count" class="w-4 h-4 accent-sky-500 cursor-pointer"/>
                     </div>
                     <div class="flex justify-between items-center bg-slate-900/90 px-2.5 py-2 rounded-lg border border-slate-700">
                         <div>
                             <p class="font-bold text-white text-xs">原価リミット</p>
-                            <p class="text-[10px] text-slate-400">予算超過を自動削減</p>
+                            <p class="text-[12px] text-slate-400">予算超過を自動削減</p>
                         </div>
                         <input type="checkbox" id="toggle-strict-cost" class="w-4 h-4 accent-sky-500 cursor-pointer" checked/>
                     </div>
@@ -202,7 +203,7 @@ AIアシスタント: Gemini (Google)
                     <div class="flex justify-between items-center bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-700">
                         <div>
                             <span class="text-xs font-bold text-rose-300 block">主役 (大輪)</span>
-                            <span class="text-[9px] text-slate-400 block -mt-0.5">メインの花</span>
+                            <span class="text-[13px] text-slate-400 block -mt-0.5">メインの花</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <button onclick="updateCount('main', -1)" class="btn-qty !w-6 !h-6 text-xs"><i class="fa-solid fa-minus"></i></button>
@@ -213,7 +214,7 @@ AIアシスタント: Gemini (Google)
                     <div class="flex justify-between items-center bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-700">
                         <div>
                             <span class="text-xs font-bold text-amber-300 block">脇役 (中輪)</span>
-                            <span class="text-[9px] text-slate-400 block -mt-0.5">サブの花</span>
+                            <span class="text-[13px] text-slate-400 block -mt-0.5">サブの花</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <button onclick="updateCount('sub', -1)" class="btn-qty !w-6 !h-6 text-xs"><i class="fa-solid fa-minus"></i></button>
@@ -224,7 +225,7 @@ AIアシスタント: Gemini (Google)
                     <div class="flex justify-between items-center bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-700">
                         <div>
                             <span class="text-xs font-bold text-sky-300 block">小花 (かすみ等)</span>
-                            <span class="text-[9px] text-slate-400 block -mt-0.5">フィラー・小輪</span>
+                            <span class="text-[13px] text-slate-400 block -mt-0.5">フィラー・小輪</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <button onclick="updateCount('filler', -1)" class="btn-qty !w-6 !h-6 text-xs"><i class="fa-solid fa-minus"></i></button>
@@ -235,7 +236,7 @@ AIアシスタント: Gemini (Google)
                     <div class="flex justify-between items-center bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-700">
                         <div>
                             <span class="text-xs font-bold text-emerald-300 block">葉もの (枝等)</span>
-                            <span class="text-[9px] text-slate-400 block -mt-0.5">グリーン・枝</span>
+                            <span class="text-[13px] text-slate-400 block -mt-0.5">グリーン・枝</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <button onclick="updateCount('green', -1)" class="btn-qty !w-6 !h-6 text-xs"><i class="fa-solid fa-minus"></i></button>
@@ -263,11 +264,11 @@ AIアシスタント: Gemini (Google)
                 <div>
                     <label class="block text-slate-300 text-xs font-bold mb-1">用途</label>
                     <div class="grid grid-cols-5 gap-1.5" id="filter-use">
-                        <button class="step-chip active !text-[11px] !py-2 !px-1" data-val="指定なし">指定なし</button>
-                        <button class="step-chip !text-[11px] !py-2 !px-1" data-val="お供え/法事">お供え</button>
-                        <button class="step-chip !text-[11px] !py-2 !px-1" data-val="お祝い">お祝い</button>
-                        <button class="step-chip !text-[11px] !py-2 !px-1" data-val="ウェディング">挙式</button>
-                        <button class="step-chip !text-[11px] !py-2 !px-1" data-val="送別">送別</button>
+                        <button class="step-chip active !text-[13px] !py-2 !px-1" data-val="指定なし">指定なし</button>
+                        <button class="step-chip !text-[13px] !py-2 !px-1" data-val="お供え/法事">お供え</button>
+                        <button class="step-chip !text-[13px] !py-2 !px-1" data-val="お祝い">お祝い</button>
+                        <button class="step-chip !text-[13px] !py-2 !px-1" data-val="ウェディング">挙式</button>
+                        <button class="step-chip !text-[13px] !py-2 !px-1" data-val="送別">送別</button>
                     </div>
                 </div>
 
@@ -315,18 +316,18 @@ AIアシスタント: Gemini (Google)
                     <div>
                         <label class="block text-slate-300 text-xs font-bold mb-1">対象の性別</label>
                         <div class="grid grid-cols-3 gap-1" id="filter-gender">
-                            <button class="step-chip active !text-[11px] !py-1.5 !px-0.5" data-val="指定なし">なし</button>
-                            <button class="step-chip !text-[11px] !py-1.5 !px-0.5" data-val="女性">女性</button>
-                            <button class="step-chip !text-[11px] !py-1.5 !px-0.5" data-val="男性">男性</button>
+                            <button class="step-chip active !text-[13px] !py-1.5 !px-0.5" data-val="指定なし">なし</button>
+                            <button class="step-chip !text-[13px] !py-1.5 !px-0.5" data-val="女性">女性</button>
+                            <button class="step-chip !text-[13px] !py-1.5 !px-0.5" data-val="男性">男性</button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-slate-300 text-xs font-bold mb-1">年齢層</label>
                         <div class="grid grid-cols-4 gap-1" id="filter-age">
-                            <button class="step-chip active !text-[10px] !py-1.5 !px-0.5" data-val="指定なし">なし</button>
-                            <button class="step-chip !text-[10px] !py-1.5 !px-0.5" data-val="若年層">若年</button>
-                            <button class="step-chip !text-[10px] !py-1.5 !px-0.5" data-val="ミドル">中年</button>
-                            <button class="step-chip !text-[10px] !py-1.5 !px-0.5" data-val="シニア">高齢</button>
+                            <button class="step-chip active !text-[12px] !py-1.5 !px-0.5" data-val="指定なし">なし</button>
+                            <button class="step-chip !text-[12px] !py-1.5 !px-0.5" data-val="若年層">若年</button>
+                            <button class="step-chip !text-[12px] !py-1.5 !px-0.5" data-val="ミドル">中年</button>
+                            <button class="step-chip !text-[12px] !py-1.5 !px-0.5" data-val="シニア">高齢</button>
                         </div>
                     </div>
                 </div>
@@ -351,7 +352,7 @@ AIアシスタント: Gemini (Google)
                     <button onclick="openOrderModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 shadow active:scale-95 transition">
                         <i class="fa-solid fa-file-invoice"></i>発注・画像保存
                     </button>
-                    <button onclick="openSaveModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 shadow active:scale-95 transition">
+                    <button onclick="openSaveModal()" class="bg-emerald-600 hover:bg-emerald-500 text-[#ffffff] font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 shadow active:scale-95 transition">
                         <i class="fa-solid fa-floppy-disk"></i>保存
                     </button>
                 </div>
@@ -361,15 +362,15 @@ AIアシスタント: Gemini (Google)
             <div class="card-solid p-3 bg-slate-900 border-sky-500/50">
                 <div class="grid grid-cols-3 gap-2 text-center items-center">
                     <div class="border-r border-slate-700">
-                        <p class="text-[11px] text-slate-400 font-bold">販売予算</p>
+                        <p class="text-[13px] text-slate-400 font-bold">販売予算</p>
                         <p class="text-lg font-black text-white mt-0.5">¥<span id="res-budget">0</span></p>
                     </div>
                     <div class="border-r border-slate-700">
-                        <p class="text-[11px] text-slate-400 font-bold">仕入原価計</p>
+                        <p class="text-[13px] text-slate-400 font-bold">仕入原価計</p>
                         <p class="text-lg font-black text-yellow-300 mt-0.5">¥<span id="res-actual-cost">0</span></p>
                     </div>
                     <div>
-                        <p class="text-[11px] text-slate-400 font-bold">実質原価率</p>
+                        <p class="text-[13px] text-slate-400 font-bold">実質原価率</p>
                         <p class="text-2xl font-black text-sky-400 mt-0.5" id="res-actual-rate">0%</p>
                     </div>
                 </div>
@@ -392,7 +393,7 @@ AIアシスタント: Gemini (Google)
 
         <!-- ================= VIEW: DICTIONARY (花材図鑑) ================= -->
         <section id="view-dict" class="max-w-lg mx-auto hidden-safe pb-8 flex flex-col h-[calc(100dvh-125px)]">
-            <div class="shrink-0 bg-[#141413] pt-1 pb-3 border-b-2 border-slate-700 space-y-3">
+            <div class="shrink-0 bg-[#f4f4f2] pt-1 pb-3 border-b-2 border-slate-700 space-y-3">
                 <div class="flex justify-between items-center px-1">
                     <h2 class="font-bold text-lg text-white flex items-center gap-2">
                         <i class="fa-solid fa-book-open text-sky-400"></i>登録花材一覧
@@ -457,7 +458,7 @@ AIアシスタント: Gemini (Google)
     </nav>
 
     <!-- モーダル：花材詳細・写真 -->
-    <div id="modal-flower" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-lg mx-auto bg-[#2a2a26] rounded-t-2xl shadow-2xl border-t-2 border-slate-600 flex flex-col max-h-[85dvh]">
+    <div id="modal-flower" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-lg mx-auto bg-[#ffffff] rounded-t-2xl shadow-2xl border-t-2 border-slate-600 flex flex-col max-h-[85dvh]">
         <div class="w-full flex justify-center py-2.5 cursor-pointer" onclick="closeModals()"><div class="w-12 h-1.5 bg-slate-600 rounded-full"></div></div>
         <div class="px-5 pb-6 overflow-y-auto flex-1 space-y-4">
             <div class="flex justify-between items-start">
@@ -490,7 +491,7 @@ AIアシスタント: Gemini (Google)
     </div>
 
     <!-- モーダル：花材の手動追加（ピッカー） -->
-    <div id="modal-picker" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-lg mx-auto bg-[#2a2a26] rounded-t-2xl shadow-2xl border-t-2 border-slate-600 flex flex-col h-[85dvh]">
+    <div id="modal-picker" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-lg mx-auto bg-[#ffffff] rounded-t-2xl shadow-2xl border-t-2 border-slate-600 flex flex-col h-[85dvh]">
         <div class="flex justify-between items-center p-4 border-b border-slate-700 shrink-0">
             <div>
                 <h3 class="font-bold text-lg text-white">花材を追加</h3>
@@ -504,7 +505,7 @@ AIアシスタント: Gemini (Google)
     </div>
 
     <!-- モーダル：発注・提案画像出力 (tool5準拠プレビュー＆JPG保存) -->
-    <div id="modal-order" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-lg mx-auto bg-[#2a2a26] rounded-t-2xl shadow-2xl border-t-2 border-slate-600 flex flex-col max-h-[92dvh]">
+    <div id="modal-order" class="fixed inset-x-0 bottom-0 z-50 slide-up w-full max-w-lg mx-auto bg-[#ffffff] rounded-t-2xl shadow-2xl border-t-2 border-slate-600 flex flex-col max-h-[92dvh]">
         <div class="flex justify-between items-center px-4 py-3 border-b border-slate-700 shrink-0">
             <h3 class="font-bold text-base text-white flex items-center gap-2">
                 <i class="fa-solid fa-file-invoice text-amber-400"></i>発注・画像出力
@@ -529,7 +530,7 @@ AIアシスタント: Gemini (Google)
 
             <!-- 保存・共有ボタン群 -->
             <div class="space-y-2">
-                <button type="button" onclick="shareOrderImage()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-extrabold py-3 rounded-xl transition shadow flex items-center justify-center gap-2 text-xs active:scale-95">
+                <button type="button" onclick="shareOrderImage()" class="w-full bg-sky-600 hover:bg-sky-500 text-[#ffffff] font-extrabold py-3 rounded-xl transition shadow flex items-center justify-center gap-2 text-xs active:scale-95">
                     <i class="fa-solid fa-share-nodes text-sm"></i>
                     <span>他アプリへ画像共有（LINE・写真等）</span>
                 </button>
@@ -547,7 +548,7 @@ AIアシスタント: Gemini (Google)
                 <button type="button" onclick="toggleOrderTextPanel()" class="w-full bg-slate-900 hover:bg-slate-850 border border-slate-700 text-slate-300 hover:text-white py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-bars-staggered text-slate-400"></i>
                     <span>📋 発注テキスト・詳細表示</span>
-                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400" id="order-text-arrow"></i>
+                    <i class="fa-solid fa-chevron-down text-[12px] text-slate-400" id="order-text-arrow"></i>
                 </button>
 
                 <div id="order-text-panel" class="hidden bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2.5 text-xs">
@@ -567,7 +568,7 @@ AIアシスタント: Gemini (Google)
 
     <!-- 共通アラートモーダル (ナイトモード対応) -->
     <div id="modal-alert" class="fixed inset-0 z-[120] hidden-safe flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="card-solid w-full max-w-xs p-5 text-center space-y-3 bg-[#2a2a26] border-2 border-slate-700 shadow-2xl">
+        <div class="card-solid w-full max-w-xs p-5 text-center space-y-3 bg-[#ffffff] border-2 border-slate-700 shadow-2xl">
             <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 mx-auto flex items-center justify-center text-lg font-bold border border-sky-400/30">
                 <i class="fa-solid fa-circle-info"></i>
             </div>
@@ -579,7 +580,7 @@ AIアシスタント: Gemini (Google)
 
     <!-- 共通確認モーダル (ナイトモード対応) -->
     <div id="modal-confirm" class="fixed inset-0 z-[120] hidden-safe flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="card-solid w-full max-w-xs p-5 text-center space-y-3 bg-[#2a2a26] border-2 border-slate-700 shadow-2xl">
+        <div class="card-solid w-full max-w-xs p-5 text-center space-y-3 bg-[#ffffff] border-2 border-slate-700 shadow-2xl">
             <div class="w-10 h-10 rounded-full bg-rose-500/20 text-rose-400 mx-auto flex items-center justify-center text-lg font-bold border border-rose-400/30">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
@@ -587,7 +588,7 @@ AIアシスタント: Gemini (Google)
             <p id="confirm-desc" class="text-xs text-slate-300 leading-relaxed whitespace-pre-line"></p>
             <div class="grid grid-cols-2 gap-2 pt-1">
                 <button onclick="resolveCustomConfirm(false)" class="w-full bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs border border-slate-700 active:scale-95">キャンセル</button>
-                <button onclick="resolveCustomConfirm(true)" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs shadow active:scale-95">実行</button>
+                <button onclick="resolveCustomConfirm(true)" class="w-full bg-rose-600 hover:bg-rose-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow active:scale-95">実行</button>
             </div>
         </div>
     </div>
@@ -604,7 +605,7 @@ AIアシスタント: Gemini (Google)
             </div>
             <div class="flex gap-2">
                 <button onclick="closeModals()" class="flex-1 py-2.5 rounded-lg bg-slate-800 text-slate-300 font-bold text-sm">キャンセル</button>
-                <button onclick="executeSave()" class="flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-bold text-sm shadow">保存する</button>
+                <button onclick="executeSave()" class="flex-1 py-2.5 rounded-lg bg-emerald-600 text-[#ffffff] font-bold text-sm shadow">保存する</button>
             </div>
         </div>
     </div>
@@ -622,7 +623,7 @@ AIアシスタント: Gemini (Google)
             </div>
             <div class="flex gap-2">
                 <button onclick="closeModals()" class="flex-1 py-2.5 rounded-lg bg-slate-800 text-slate-300 font-bold text-sm">キャンセル</button>
-                <button onclick="executeUpdateHistoryTitle()" class="flex-1 py-2.5 rounded-lg bg-sky-600 text-white font-bold text-sm shadow">更新する</button>
+                <button onclick="executeUpdateHistoryTitle()" class="flex-1 py-2.5 rounded-lg bg-sky-600 text-[#ffffff] font-bold text-sm shadow">更新する</button>
             </div>
         </div>
     </div>
@@ -1256,7 +1257,7 @@ AIアシスタント: Gemini (Google)
                             ${roleLabels[g]}
                         </span>
                         <button onclick="openPickerForGroup('${g}')" class="text-xs font-bold text-sky-300 bg-slate-800 hover:bg-slate-700 border border-sky-400/50 px-2.5 py-1 rounded-lg flex items-center gap-1 active:scale-95 shadow">
-                            <i class="fa-solid fa-plus text-[10px]"></i>花材を追加
+                            <i class="fa-solid fa-plus text-[12px]"></i>花材を追加
                         </button>
                     </div>
                 `;
@@ -1277,7 +1278,7 @@ AIアシスタント: Gemini (Google)
                             <div class="flex justify-between items-start mb-1.5 cursor-pointer" onclick="openFlowerModal(${idx}, true)">
                                 <h4 class="font-bold text-white text-base leading-snug flex-1 pr-2 break-words">${f.name}</h4>
                                 <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
-                                    <button onclick="toggleLock(${idx})" class="w-8 h-8 rounded-lg flex items-center justify-center border ${f.locked ? 'bg-sky-600 border-sky-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-400'} transition active:scale-90" title="ロック固定">
+                                    <button onclick="toggleLock(${idx})" class="w-8 h-8 rounded-lg flex items-center justify-center border ${f.locked ? 'bg-sky-600 border-sky-400 text-[#ffffff]' : 'bg-slate-800 border-slate-700 text-slate-400'} transition active:scale-90" title="ロック固定">
                                         <i class="fa-solid ${f.locked ? 'fa-lock' : 'fa-lock-open'} text-xs"></i>
                                     </button>
                                     <button onclick="removeFlower(${idx})" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-400 bg-slate-800 border border-slate-700 active:scale-90 transition" title="削除">
@@ -1294,9 +1295,9 @@ AIアシスタント: Gemini (Google)
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
-                                        <button onclick="updateQty(${idx}, -1)" class="w-7 h-7 flex items-center justify-center text-slate-300 font-bold active:bg-slate-700 rounded"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                                        <button onclick="updateQty(${idx}, -1)" class="w-7 h-7 flex items-center justify-center text-slate-300 font-bold active:bg-slate-700 rounded"><i class="fa-solid fa-minus text-[12px]"></i></button>
                                         <span class="w-6 text-center font-bold text-white text-sm">${f.qty}</span>
-                                        <button onclick="updateQty(${idx}, 1)" class="w-7 h-7 flex items-center justify-center text-slate-300 font-bold active:bg-slate-700 rounded"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                                        <button onclick="updateQty(${idx}, 1)" class="w-7 h-7 flex items-center justify-center text-slate-300 font-bold active:bg-slate-700 rounded"><i class="fa-solid fa-plus text-[12px]"></i></button>
                                     </div>
                                     <div class="w-16 text-right font-black text-yellow-300 text-sm">
                                         ¥${(f.wholesale * f.qty).toLocaleString()}
@@ -1527,13 +1528,13 @@ AIアシスタント: Gemini (Google)
             ctx.fillRect(0, 0, width, contentHeight);
 
             // タイトル部
-            ctx.fillStyle = '#141413';
+            ctx.fillStyle = '#f4f4f2';
             ctx.font = 'bold 15px sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText(title, 14, 26);
 
             ctx.font = '11px sans-serif';
-            ctx.fillStyle = '#5f5f52';
+            ctx.fillStyle = '#c6c6c4';
             ctx.fillText(`作成: ${dateStr}  |  総本数: ${totalStems}本  |  予算: ¥${budget.toLocaleString()}`, 14, 46);
 
             const tableWidth = width - 28;
@@ -1541,7 +1542,7 @@ AIアシスタント: Gemini (Google)
             let curY = headerHeight;
 
             // 1. 花材一覧テーブル
-            ctx.fillStyle = '#8a6d3b';
+            ctx.fillStyle = '#2563eb';
             ctx.fillRect(startX, curY, tableWidth, 22);
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 11px sans-serif';
@@ -1553,13 +1554,13 @@ AIアシスタント: Gemini (Google)
             const colTotalW = 65;
             const colNameW = tableWidth - (colQtyW + colPriceW + colTotalW);
 
-            ctx.fillStyle = '#efe9d6';
+            ctx.fillStyle = '#262626';
             ctx.fillRect(startX, curY, tableWidth, rowHeight);
-            ctx.strokeStyle = '#b3bfa8';
+            ctx.strokeStyle = '#6f6f6f';
             ctx.lineWidth = 1;
             ctx.strokeRect(startX, curY, tableWidth, rowHeight);
 
-            ctx.fillStyle = '#43433a';
+            ctx.fillStyle = '#d9d9d7';
             ctx.font = 'bold 11px sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText('花材名 / 役割', startX + 6, curY + 18);
@@ -1574,9 +1575,9 @@ AIアシスタント: Gemini (Google)
             groupsOrder.forEach(g => {
                 const grpFlowers = flowers.filter(f => getGroup(f) === g);
                 grpFlowers.forEach(f => {
-                    ctx.fillStyle = (rowIndex % 2 === 1) ? '#fbf7ea' : '#ffffff';
+                    ctx.fillStyle = (rowIndex % 2 === 1) ? '#171717' : '#ffffff';
                     ctx.fillRect(startX, curY, tableWidth, rowHeight);
-                    ctx.strokeStyle = '#ddd8c2';
+                    ctx.strokeStyle = '#3d3d3d';
                     ctx.strokeRect(startX, curY, tableWidth, rowHeight);
 
                     ctx.beginPath();
@@ -1588,7 +1589,7 @@ AIアシスタント: Gemini (Google)
                     ctx.lineTo(startX + colNameW + colPriceW + colQtyW, curY + rowHeight);
                     ctx.stroke();
 
-                    ctx.fillStyle = '#141413';
+                    ctx.fillStyle = '#f4f4f2';
                     ctx.font = 'bold 11px sans-serif';
                     ctx.textAlign = 'left';
                     const rolePrefix = g === 'main' ? '[主]' : (g === 'sub' ? '[脇]' : (g === 'filler' ? '[小]' : '[葉]'));
@@ -1616,7 +1617,7 @@ AIアシスタント: Gemini (Google)
             curY += 8;
 
             // 2. サマリーテーブル
-            ctx.fillStyle = '#5f5f52';
+            ctx.fillStyle = '#c6c6c4';
             ctx.fillRect(startX, curY, tableWidth, 22);
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 11px sans-serif';
@@ -1627,14 +1628,14 @@ AIアシスタント: Gemini (Google)
             const halfW = tableWidth / 2;
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(startX, curY, tableWidth, rowHeight);
-            ctx.strokeStyle = '#ddd8c2';
+            ctx.strokeStyle = '#3d3d3d';
             ctx.strokeRect(startX, curY, tableWidth, rowHeight);
             ctx.beginPath();
             ctx.moveTo(startX + halfW, curY);
             ctx.lineTo(startX + halfW, curY + rowHeight);
             ctx.stroke();
 
-            ctx.fillStyle = '#43433a';
+            ctx.fillStyle = '#d9d9d7';
             ctx.font = '11px sans-serif';
             ctx.fillText('販売予算:', startX + 6, curY + 18);
             ctx.font = 'bold 12px monospace';
@@ -1649,9 +1650,9 @@ AIアシスタント: Gemini (Google)
             ctx.fillText(`¥${targetCost}`, startX + tableWidth - 8, curY + 18);
             curY += rowHeight;
 
-            ctx.fillStyle = '#fbf7ea';
+            ctx.fillStyle = '#171717';
             ctx.fillRect(startX, curY, tableWidth, 32);
-            ctx.strokeStyle = '#b3bfa8';
+            ctx.strokeStyle = '#6f6f6f';
             ctx.lineWidth = 1.5;
             ctx.strokeRect(startX, curY, tableWidth, 32);
             ctx.beginPath();
@@ -1660,7 +1661,7 @@ AIアシスタント: Gemini (Google)
             ctx.stroke();
 
             ctx.textAlign = 'left';
-            ctx.fillStyle = '#141413';
+            ctx.fillStyle = '#f4f4f2';
             ctx.font = 'bold 12px sans-serif';
             ctx.fillText('仕入原価計:', startX + 6, curY + 20);
             ctx.font = 'bold 15px monospace';
@@ -1671,7 +1672,7 @@ AIアシスタント: Gemini (Google)
             ctx.font = 'bold 12px sans-serif';
             ctx.fillText('実質原価率:', startX + halfW + 6, curY + 20);
             ctx.font = 'bold 16px monospace';
-            ctx.fillStyle = '#8a6d3b';
+            ctx.fillStyle = '#2563eb';
             ctx.textAlign = 'right';
             ctx.fillText(actualRate, startX + tableWidth - 8, curY + 21);
 
@@ -1743,7 +1744,7 @@ AIアシスタント: Gemini (Google)
                 const isHidden = p.classList.contains('hidden');
                 p.classList.toggle('hidden', !isHidden);
                 if (arrow) {
-                    arrow.className = isHidden ? 'fa-solid fa-chevron-up text-[10px] text-slate-400' : 'fa-solid fa-chevron-down text-[10px] text-slate-400';
+                    arrow.className = isHidden ? 'fa-solid fa-chevron-up text-[12px] text-slate-400' : 'fa-solid fa-chevron-down text-[12px] text-slate-400';
                 }
             }
         }
@@ -2064,7 +2065,7 @@ AIアシスタント: Gemini (Google)
                 el.innerHTML = `
                     <div class="flex-1 min-w-0 pr-2">
                         <div class="flex items-center gap-1.5 mb-1">
-                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${roleColors[group]}">${roleLabels[group].split(' ')[0]}</span>
+                            <span class="text-[12px] font-bold px-1.5 py-0.5 rounded border ${roleColors[group]}">${roleLabels[group].split(' ')[0]}</span>
                             <span class="font-bold text-white text-base truncate">${f.name}</span>
                         </div>
                         <p class="text-xs text-slate-400">¥${f.wholesale} / ${Array.isArray(f.season) ? f.season.join('・') : (f.season || '通年')}</p>

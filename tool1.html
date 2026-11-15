@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="施工シミュレーター">
     <meta name="application-name" content="施工シミュレーター">
-    <meta name="theme-color" content="#141413">
+    <meta name="theme-color" content="#f4f4f2">
     <meta name="color-scheme" content="dark">
     
     <link rel="icon" id="app-favicon" type="image/svg+xml">
@@ -27,10 +27,10 @@
             theme: {
                 extend: {
                     colors: {
-                        gray: { 100: '#f3ecd7', 200: '#e7dfc6', 300: '#d8d2ba', 400: '#b5b09a', 500: '#8f8b76', 600: '#605d4e', 700: '#454338', 800: '#2c2b26', 850: '#24231f', 900: '#171716', 950: '#0b0b0a' },
-                        blue: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#6e5626', 900: '#3a2f1c', 950: '#241d10' },
-                        cyan: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#4a3d22', 900: '#332913', 950: '#241d10' },
-                        slate: { 50: '#f7f4ea', 100: '#f3ecd7', 200: '#e7dfc6', 300: '#ddd8c2', 400: '#b3bfa8', 500: '#8f957e', 600: '#5f5f52', 700: '#43433a', 800: '#2a2a26', 850: '#1d1d1a', 900: '#141413', 950: '#0b0b0a' }
+                        gray: { 100: '#262626', 200: '#333333', 300: '#454545', 400: '#6f6f6f', 500: '#8f8f8f', 600: '#bcbcbc', 700: '#d9d9d7', 800: '#ffffff', 850: '#f7f7f5', 900: '#f4f4f2', 950: '#fbfbfa' },
+                        blue: { 100: '#1e3a8a', 200: '#1e40af', 300: '#1d4ed8', 400: '#2563eb', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af', 800: '#93c5fd', 900: '#dbeafe', 950: '#eff6ff' },
+                        cyan: { 100: '#1e3a8a', 200: '#1e40af', 300: '#1d4ed8', 400: '#2563eb', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af', 800: '#93c5fd', 900: '#dbeafe', 950: '#eff6ff' },
+                        white: '#1c1c1c', slate: { 50: '#171717', 100: '#262626', 200: '#333333', 300: '#454545', 400: '#6f6f6f', 500: '#8f8f8f', 600: '#bcbcbc', 700: '#d9d9d7', 800: '#ffffff', 850: '#f7f7f5', 900: '#f4f4f2', 950: '#fbfbfa' }
                     }
                 }
             }
@@ -38,8 +38,8 @@
     </script>
     <style>
         :root {
-            color-scheme: dark;
-            supported-color-schemes: dark;
+            color-scheme: light;
+            supported-color-schemes: light;
         }
         body { 
             overscroll-behavior: none; 
@@ -47,23 +47,23 @@
             user-select: none; 
             -webkit-tap-highlight-color: transparent; 
             touch-action: none; 
-            background: #141413; 
-            color: #fbf7ea; 
+            background: #f4f4f2; 
+            color: #171717; 
             display: flex; 
             flex-direction: column; 
             height: 100dvh; 
             overflow: hidden; 
-            accent-color: #d9bc7a;
+            accent-color: #2563eb;
         }
         canvas { display: block; touch-action: none; outline: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         select, input, textarea {
-            color-scheme: dark;
+            color-scheme: light;
         }
         select option {
-            background-color: #141413;
+            background-color: #f4f4f2;
             color: #ffffff;
         }
         
@@ -73,7 +73,7 @@
         }
 
         input[type="range"] { 
-            accent-color: #d9bc7a; 
+            accent-color: #2563eb; 
             -webkit-appearance: none; 
             width: 100%; 
             background: transparent; 
@@ -87,26 +87,26 @@
             background: #ffffff; 
             cursor: pointer; 
             margin-top: -9px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.8), 0 0 0 2px #d9bc7a; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.8), 0 0 0 2px #2563eb; 
         }
         input[type=range]::-webkit-slider-runnable-track { 
             width: 100%; 
             height: 6px; 
             cursor: pointer; 
-            background: #5f5f52; 
+            background: #c6c6c4; 
             border-radius: 3px; 
-            border: 1px solid #8f957e;
+            border: 1px solid #8f8f8f;
         }
 
         #top-nav-bar {
             flex-shrink: 0;
-            background: #141413;
+            background: #f4f4f2;
             padding: max(env(safe-area-inset-top, 8px), 8px) 16px 4px 16px;
         }
         #app-header { 
             flex-shrink: 0; 
-            background: #141413; 
-            border-bottom: 1px solid #2a2a26; 
+            background: #f4f4f2; 
+            border-bottom: 1px solid #ffffff; 
             z-index: 50; 
             display: flex; 
             align-items: center; 
@@ -118,8 +118,8 @@
         
         #bottom-toolbar { 
             flex-shrink: 0; 
-            background: #141413; 
-            border-top: 1px solid #2a2a26; 
+            background: #f4f4f2; 
+            border-top: 1px solid #ffffff; 
             z-index: 50; 
             padding-top: 6px;
             padding-left: 4px;
@@ -142,7 +142,7 @@
         .bottom-sheet {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(20, 20, 19, 0.98); backdrop-filter: blur(16px);
-            border-top: 1px solid #2a2a26; border-radius: 20px 20px 0 0;
+            border-top: 1px solid #ffffff; border-radius: 20px 20px 0 0;
             transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 60; 
             padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);
@@ -152,8 +152,8 @@
         .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
         .sheet-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #b3bfa8; font-size: 9px; line-height: 1.1; font-weight: bold; gap: 2px; border-radius: 8px; padding: 3px 0; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
-        .toolbar-btn.active { color: #d9bc7a; background: rgba(217, 188, 122, 0.15); }
+        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6f6f6f; font-size: 9px; line-height: 1.1; font-weight: bold; gap: 2px; border-radius: 8px; padding: 3px 0; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
+        .toolbar-btn.active { color: #2563eb; background: rgba(37, 99, 235, 0.15); }
         .toolbar-btn svg { width: 18px; height: 18px; margin: 0 auto; flex-shrink: 0; }
 
         .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 12px; }
@@ -165,7 +165,7 @@
             right: 16px; 
             width: 46px; height: 46px; 
             background: rgba(20, 20, 19, 0.85); 
-            border: 1px solid #43433a; 
+            border: 1px solid #d9d9d7; 
             border-radius: 23px; 
             z-index: 40; 
             display: none; 
@@ -176,7 +176,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
             transition: transform 0.1s; 
         }
-        #toggle-ui-btn:active { transform: scale(0.9); background: rgba(217, 188, 122, 0.8); }
+        #toggle-ui-btn:active { transform: scale(0.9); background: rgba(37, 99, 235, 0.8); }
 
         #view-zoom-badge {
             position: absolute;
@@ -184,12 +184,12 @@
             right: 12px;
             z-index: 30;
             background: rgba(20, 20, 19, 0.85);
-            border: 1px solid #43433a;
+            border: 1px solid #d9d9d7;
             backdrop-filter: blur(6px);
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
-            color: #b3bfa8;
+            color: #6f6f6f;
             font-weight: bold;
             display: none;
             align-items: center;
@@ -202,8 +202,8 @@
             top: 50%;
             transform: translateY(-50%);
             z-index: 45;
-            background: rgba(20, 20, 19, 0.95);
-            border: 1.5px solid #d9bc7a;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1.5px solid #2563eb;
             backdrop-filter: blur(8px);
             border-radius: 20px;
             padding: 10px 6px;
@@ -220,9 +220,9 @@
             position: relative;
             width: 16px;
             height: 150px;
-            background: #2a2a26;
+            background: #ffffff;
             border-radius: 8px;
-            border: 1px solid #5f5f52;
+            border: 1px solid #c6c6c4;
             cursor: pointer;
             touch-action: none;
         }
@@ -234,7 +234,7 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: #ecd28f;
+            background: #2563eb;
             border: 2px solid #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.8);
             pointer-events: none;
@@ -251,19 +251,20 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            border: 3px solid #ecd28f;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.85), 0 0 0 2px #141413;
+            border: 3px solid #2563eb;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.85), 0 0 0 2px #f4f4f2;
             overflow: hidden;
             pointer-events: none;
             display: none;
             z-index: 60;
-            background: #141413;
+            background: #f4f4f2;
         }
         #crop-loupe-canvas {
             width: 100%;
             height: 100%;
         }
     </style>
+<style>html { font-size: 18px; }</style>
 </head>
 <body>
 
@@ -274,14 +275,14 @@
         <!-- メニューボタン真上に配置したプロジェクト名 -->
         <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-gray-300 font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[180px] sm:max-w-[240px]">
             <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-            <span id="current-project-name-text" class="truncate text-[10px]">新規プロジェクト</span>
+            <span id="current-project-name-text" class="truncate text-[12px]">新規プロジェクト</span>
         </div>
     </div>
 
     <header id="app-header">
         <div class="flex items-center gap-1.5 min-w-0 pr-1">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-tight whitespace-nowrap truncate">施工シミュレーター</h1>
-            <span id="current-mode-badge" class="hidden text-[9px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0"></span>
+            <span id="current-mode-badge" class="hidden text-[13px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0"></span>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
             <button id="btn-guide" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-xs text-blue-400 font-bold flex items-center gap-1 shadow transition whitespace-nowrap shrink-0">
@@ -301,7 +302,7 @@
             <button id="btn-quick-grid" class="flex items-center gap-1.5 px-2.5 py-1 text-xs text-cyan-300 font-bold hover:text-white transition active:scale-95">  
                 <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>  
                 <span>グリッド</span>  
-                <span id="quick-grid-status" class="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 font-mono">OFF</span>  
+                <span id="quick-grid-status" class="text-[12px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 font-mono">OFF</span>  
             </button>  
             <button id="btn-quick-grid-gear" class="p-1 text-gray-400 hover:text-cyan-300 border-l border-gray-700 pl-1.5 transition active:scale-95" title="グリッド詳細設定">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -320,16 +321,16 @@
         </div>
 
         <div id="floating-depth-controller">
-            <span class="text-[9px] font-bold text-cyan-300 select-none">奥</span>
+            <span class="text-[13px] font-bold text-cyan-300 select-none">奥</span>
             <div id="depth-track-container">
                 <div id="depth-track-thumb" style="top: 15%;"></div>
             </div>
-            <span class="text-[9px] font-bold text-cyan-300 select-none">手前</span>
+            <span class="text-[13px] font-bold text-cyan-300 select-none">手前</span>
         </div>
 
         <div id="measure-banner" class="hidden absolute top-2 left-2 right-2 bg-gray-900/90 text-white text-xs p-2.5 rounded-xl shadow-2xl border border-blue-500/80 z-40 backdrop-blur-md flex flex-col gap-1.5">
             <div class="flex justify-between items-center">
-                <div class="flex items-center gap-2 text-[10px] flex-wrap">
+                <div class="flex items-center gap-2 text-[12px] flex-wrap">
                     <span class="font-bold text-blue-300">【基準寸法】</span>
                     <span class="text-red-300 font-bold">●赤線:実寸を合わせる</span>
                     <span id="measure-blue-line-desc" class="text-cyan-300 font-bold">●青線:測った場所の奥行き</span>
@@ -339,23 +340,23 @@
             
             <div class="flex items-center gap-1.5">
                 <div class="flex-1 flex items-center bg-gray-950 border border-gray-700 rounded-lg px-2.5 py-1 focus-within:border-blue-500">
-                    <span class="text-[11px] text-gray-400 font-bold mr-1.5 whitespace-nowrap">実寸</span>
+                    <span class="text-[13px] text-gray-400 font-bold mr-1.5 whitespace-nowrap">実寸</span>
                     <input type="number" id="inline-bg-dim-input" placeholder="例: 1200" class="w-full bg-transparent text-white font-bold text-sm outline-none text-right pr-1">
-                    <span class="text-[11px] text-gray-400 font-bold whitespace-nowrap">mm</span>
+                    <span class="text-[13px] text-gray-400 font-bold whitespace-nowrap">mm</span>
                 </div>
-                <button id="inline-bg-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition active:scale-95 whitespace-nowrap">
+                <button id="inline-bg-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition active:scale-95 whitespace-nowrap">
                     決定
                 </button>
             </div>
 
             <div id="bg-depth-select-box" class="pt-1 border-t border-gray-800/80 flex items-center justify-between gap-2">
-                <span class="text-[10px] text-cyan-300 font-bold whitespace-nowrap">青線の奥行き:</span>
+                <span class="text-[12px] text-cyan-300 font-bold whitespace-nowrap">青線の奥行き:</span>
                 <div class="flex-1 flex items-center gap-1.5">
-                    <span class="text-[10px] text-gray-400 whitespace-nowrap">手前</span>
+                    <span class="text-[12px] text-gray-400 whitespace-nowrap">手前</span>
                     <input type="range" id="bg-baseline-depth-slider" min="0" max="1" step="0.01" value="0.9">
-                    <span class="text-[10px] text-cyan-300 font-bold whitespace-nowrap">奥</span>
+                    <span class="text-[12px] text-cyan-300 font-bold whitespace-nowrap">奥</span>
                 </div>
-                <span id="val-bg-baseline-depth" class="text-[10px] font-mono text-cyan-400 w-10 text-right font-bold whitespace-nowrap">奥(90%)</span>
+                <span id="val-bg-baseline-depth" class="text-[12px] font-mono text-cyan-400 w-10 text-right font-bold whitespace-nowrap">奥(90%)</span>
             </div>
         </div>
 
@@ -365,7 +366,7 @@
                 <button id="perspective-cancel-btn" class="text-gray-400 hover:text-white text-xs px-2 py-0.5">✕</button>
             </div>
             <div class="flex items-center gap-2">
-                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 rounded-lg text-xs shadow transition active:scale-95">
+                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-lg text-xs shadow transition active:scale-95">
                     この奥行きラインで設定完了
                 </button>
             </div>
@@ -394,9 +395,9 @@
                             <span class="text-sm font-bold text-white group-hover:text-blue-400 flex items-center gap-2">
                                 ⚡ かんたんモード
                             </span>
-                            <span class="text-[10px] bg-gray-700 text-gray-300 px-2 py-0.5 rounded font-bold">手軽・標準</span>
+                            <span class="text-[12px] bg-gray-700 text-gray-300 px-2 py-0.5 rounded font-bold">手軽・標準</span>
                         </div>
-                        <p class="text-[11px] text-gray-400 leading-relaxed mt-1">
+                        <p class="text-[13px] text-gray-400 leading-relaxed mt-1">
                             奥行き（パース）の複雑な設定を行わず、直感的にサクサク配置できるモードです。<br>
                             ※凸型式場や奥行きが極端に深い会場では、手前と奥で若干のサイズ感の差が生じる場合があります。
                         </p>
@@ -407,16 +408,16 @@
                             <span class="text-sm font-bold text-white group-hover:text-cyan-400 flex items-center gap-2">
                                 📐 精密モード（パース対応）
                             </span>
-                            <span class="text-[10px] bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-bold">推奨</span>
+                            <span class="text-[12px] bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-bold">推奨</span>
                         </div>
-                        <p class="text-[11px] text-gray-400 leading-relaxed mt-1">
+                        <p class="text-[13px] text-gray-400 leading-relaxed mt-1">
                             床と壁のラインから奥行き比率を算出し、手前と奥の遠近感を考慮した正確な縮尺シミュレーションが可能です。<br>
                             ※パース設定を行わずに標準の遠近感のまま使用することも可能です。
                         </p>
                     </button>
                 </div>
 
-                <div class="bg-gray-950/80 p-3 rounded-xl border border-gray-800 text-[10px] text-gray-400 text-left leading-relaxed">
+                <div class="bg-gray-950/80 p-3 rounded-xl border border-gray-800 text-[12px] text-gray-400 text-left leading-relaxed">
                     💡 選択したモードは自動保存され、次回からは直接作業画面が開きます。モードはいつでも右上の<strong>「メニュー」＞「動作モードの変更」</strong>から切り替え可能です。
                 </div>
                 <button id="mode-select-cancel-btn" class="hidden w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition">
@@ -458,7 +459,7 @@
         <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
         <div class="px-5 pb-2 border-b border-gray-800 shrink-0 flex justify-between items-center">
             <h3 class="text-sm font-bold text-white">式場(背景)の設定</h3>
-            <span id="bg-status-label" class="text-[10px] text-gray-400 font-mono">未読み込み</span>
+            <span id="bg-status-label" class="text-[12px] text-gray-400 font-mono">未読み込み</span>
         </div>
         <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1 space-y-4">
             <div class="bg-gray-900 border border-gray-800 rounded-xl p-3.5 space-y-2">
@@ -473,7 +474,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <span class="text-xs font-bold text-white block">奥行き基準ライン</span>
-                        <span id="bg-perspective-status" class="text-[10px] text-gray-400 block mt-0.5">未設定（標準遠近）</span>
+                        <span id="bg-perspective-status" class="text-[12px] text-gray-400 block mt-0.5">未設定（標準遠近）</span>
                     </div>
                     <button id="bg-perspective-setup-trigger" class="bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/50 text-cyan-300 font-bold py-1.5 px-3 rounded-lg text-xs transition">
                         📐 設定・再調整
@@ -492,15 +493,15 @@
                 </button>
             </div>
 
-            <button id="bg-upload-new-trigger" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
+            <button id="bg-upload-new-trigger" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow transition">
                 写真から式場を読み込む / 変更
             </button>
 
             <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
                 <div class="flex items-center justify-between gap-1">
                     <div class="flex items-center gap-1 shrink-0">
-                        <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
-                            <button type="button" id="tab-venue-local" class="px-2 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
+                        <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[13px] font-bold shrink-0">
+                            <button type="button" id="tab-venue-local" class="px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition">マイ保存</button>
                             <button type="button" id="tab-venue-shared" class="px-2 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
                         </div>
                         <button type="button" class="btn-library-help bg-gray-800 hover:bg-gray-700 border border-gray-700 text-blue-400 p-1.5 rounded-lg transition shrink-0" title="マイ保存・共有ドライブの説明">
@@ -510,7 +511,7 @@
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                     </div>
-                    <button type="button" id="btn-upload-venue-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
+                    <button type="button" id="btn-upload-venue-shared" class="bg-emerald-700 hover:bg-emerald-600 text-[#ffffff] text-[12px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
                         現在の式場をUP
                     </button>
                 </div>
@@ -518,15 +519,15 @@
                 <div id="venue-shared-controls" class="hidden space-y-1.5 pt-1 border-t border-gray-800/80">
                     <div class="flex items-center gap-1.5">
                         <div class="relative flex-1">
-                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[11px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
+                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[13px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
                             <svg class="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <button type="button" id="venue-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[10px] absolute right-2 top-1.5">✕</button>
+                            <button type="button" id="venue-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[12px] absolute right-2 top-1.5">✕</button>
                         </div>
-                        <select id="venue-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[10px] font-bold text-cyan-300 outline-none shrink-0">
+                        <select id="venue-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[12px] font-bold text-cyan-300 outline-none shrink-0">
                             <option value="newest">新着順</option>
                             <option value="kana">あいうえお順</option>
                         </select>
-                        <select id="venue-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[10px] font-bold text-gray-200 outline-none shrink-0">
+                        <select id="venue-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[12px] font-bold text-gray-200 outline-none shrink-0">
                             <option value="all">全行</option>
                             <option value="a">あ行</option>
                             <option value="ka">か行</option>
@@ -543,7 +544,7 @@
                     </div>
                 </div>
                 <div id="saved-venues-list" class="space-y-1.5 max-h-44 overflow-y-auto hide-scrollbar">
-                    <p class="text-[11px] text-gray-500 text-center py-2">保存された式場はありません</p>
+                    <p class="text-[13px] text-gray-500 text-center py-2">保存された式場はありません</p>
                 </div>
             </div>
         </div>
@@ -562,15 +563,15 @@
             <div class="overflow-y-auto hide-scrollbar space-y-3.5 flex-1">
                 <div id="modal-save-part-box" class="hidden bg-blue-950/40 border border-blue-500/40 rounded-xl p-3 flex items-center justify-between">
                     <div class="overflow-hidden pr-2">
-                        <span class="text-[10px] text-blue-300 block">選択中のパーツ</span>
+                        <span class="text-[12px] text-blue-300 block">選択中のパーツ</span>
                         <span id="modal-selected-part-name" class="text-xs font-bold text-white truncate block"></span>
                     </div>
-                    <button id="modal-save-part-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow whitespace-nowrap transition active:scale-95">
+                    <button id="modal-save-part-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3 py-1.5 rounded-lg text-xs shadow whitespace-nowrap transition active:scale-95">
                         ライブラリに保存
                     </button>
                 </div>
 
-                <button id="upload-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold p-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition active:scale-98">
+                <button id="upload-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold p-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition active:scale-98">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     写真からパーツを作成（切り抜き）
                 </button>
@@ -578,8 +579,8 @@
                 <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-2">
                     <div class="flex items-center justify-between gap-1">
                         <div class="flex items-center gap-1 shrink-0">
-                            <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[11px] font-bold shrink-0">
-                                <button type="button" id="tab-part-local" class="px-2 py-1 rounded-md bg-blue-600 text-white transition">マイ保存</button>
+                            <div class="flex bg-gray-900 p-0.5 rounded-lg border border-gray-800 text-[13px] font-bold shrink-0">
+                                <button type="button" id="tab-part-local" class="px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition">マイ保存</button>
                                 <button type="button" id="tab-part-shared" class="px-2 py-1 rounded-md text-gray-400 hover:text-white transition">共有ドライブ</button>
                             </div>
                             <button type="button" class="btn-library-help bg-gray-800 hover:bg-gray-700 border border-gray-700 text-blue-400 p-1.5 rounded-lg transition shrink-0" title="マイ保存・共有ドライブの説明">
@@ -589,7 +590,7 @@
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                             </button>
                         </div>
-                        <button type="button" id="btn-upload-part-shared" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
+                        <button type="button" id="btn-upload-part-shared" class="bg-emerald-700 hover:bg-emerald-600 text-[#ffffff] text-[12px] font-bold px-2 py-1.5 rounded-lg shadow whitespace-nowrap shrink-0">
                             選択パーツをUP
                         </button>
                     </div>
@@ -597,15 +598,15 @@
                     <div id="part-shared-controls" class="hidden space-y-1.5 pt-1 border-t border-gray-800/80">
                         <div class="flex items-center gap-1.5">
                             <div class="relative flex-1">
-                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[11px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
+                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-7 pr-6 py-1 text-[13px] text-white placeholder-gray-500 outline-none focus:border-cyan-500">
                                 <svg class="w-3.5 h-3.5 text-gray-500 absolute left-2 top-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <button type="button" id="part-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[10px] absolute right-2 top-1.5">✕</button>
+                                <button type="button" id="part-shared-search-clear" class="hidden text-gray-400 hover:text-white text-[12px] absolute right-2 top-1.5">✕</button>
                             </div>
-                            <select id="part-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[10px] font-bold text-cyan-300 outline-none shrink-0">
+                            <select id="part-shared-sort" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-[12px] font-bold text-cyan-300 outline-none shrink-0">
                                 <option value="newest">新着順</option>
                                 <option value="kana">あいうえお順</option>
                             </select>
-                            <select id="part-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[10px] font-bold text-gray-200 outline-none shrink-0">
+                            <select id="part-shared-kana-filter" class="bg-gray-900 border border-gray-700 rounded-lg px-1.5 py-1 text-[12px] font-bold text-gray-200 outline-none shrink-0">
                                 <option value="all">全行</option>
                                 <option value="a">あ行</option>
                                 <option value="ka">か行</option>
@@ -622,14 +623,14 @@
                         </div>
                     </div>
                     <div id="saved-parts-list" class="space-y-1.5 max-h-44 overflow-y-auto hide-scrollbar">
-                        <p class="text-[11px] text-gray-500 text-center py-2">保存されたパーツはありません</p>
+                        <p class="text-[13px] text-gray-500 text-center py-2">保存されたパーツはありません</p>
                     </div>
                 </div>
 
                 <div class="bg-gray-950 border border-gray-800 rounded-xl p-3">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold text-gray-200" id="catalog-crumb">素材カテゴリ選択</span>
-                        <button id="catalog-back-btn" class="hidden text-[10px] text-blue-400 font-bold bg-gray-800 px-2 py-0.5 rounded border border-gray-700">← 戻る</button>
+                        <button id="catalog-back-btn" class="hidden text-[12px] text-blue-400 font-bold bg-gray-800 px-2 py-0.5 rounded border border-gray-700">← 戻る</button>
                     </div>
                     <div id="catalog-tree-container" class="space-y-2"></div>
                 </div>
@@ -642,7 +643,7 @@
         <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
         <div class="px-5 pb-2 border-b border-gray-800 shrink-0 flex justify-between items-center">
             <h3 class="text-sm font-bold text-white">重ね合わせレイヤー</h3>
-            <span class="text-[10px] text-gray-400">上が手前に表示</span>
+            <span class="text-[12px] text-gray-400">上が手前に表示</span>
         </div>
         <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1">
             <div id="layers-list" class="space-y-2"></div>
@@ -655,7 +656,7 @@
             <h3 class="text-sm font-bold text-white">選択パーツの微調整</h3>
             <button id="selected-item-title-btn" class="text-xs text-blue-400 font-bold bg-blue-950/40 border border-blue-500/40 px-2.5 py-1 rounded-lg flex items-center gap-1 hover:bg-blue-900/60 transition active:scale-95" title="レイヤー一覧で切り替え">
                 <span id="selected-item-title">未選択</span>
-                <span class="text-[10px] text-blue-300">▼切替</span>
+                <span class="text-[12px] text-blue-300">▼切替</span>
             </button>
         </div>
         <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1 space-y-4" id="adjust-panel">
@@ -670,7 +671,7 @@
                             <span id="val-item-depth" class="font-mono text-cyan-400 font-bold">奥側</span>
                         </div>
                         <input type="range" id="item-depth-slider" min="0" max="1" step="0.01" value="0.9">
-                        <div class="flex justify-between text-[9px] text-gray-500 px-1 mt-0.5 font-mono">
+                        <div class="flex justify-between text-[13px] text-gray-500 px-1 mt-0.5 font-mono">
                             <span>手前側 (0%)</span>
                             <span>中央</span>
                             <span>最奥側 (100%)</span>
@@ -682,7 +683,7 @@
                             <span class="font-bold">サイズ微調整 (倍率)</span>
                             <div class="flex items-center gap-2">
                                 <span id="val-item-scale" class="font-mono text-blue-400 font-bold">100%</span>
-                                <button id="reset-scale-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[10px]">100%</button>
+                                <button id="reset-scale-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[12px]">100%</button>
                             </div>
                         </div>
                         <input type="range" id="item-scale-slider" min="0.2" max="1.8" step="0.01" value="1.0">
@@ -693,7 +694,7 @@
                             <span class="font-bold">角度 (回転)</span>
                             <div class="flex items-center gap-2">
                                 <span id="val-item-rotate" class="font-mono text-blue-400 font-bold">0°</span>
-                                <button id="reset-rotate-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[10px]">0°</button>
+                                <button id="reset-rotate-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[12px]">0°</button>
                             </div>
                         </div>
                         <input type="range" id="item-rotate-slider" min="-180" max="180" step="1" value="0">
@@ -704,7 +705,7 @@
                             <span class="font-bold">不透明度</span>
                             <div class="flex items-center gap-2">
                                 <span id="val-item-alpha" class="font-mono text-blue-400 font-bold">100%</span>
-                                <button id="reset-alpha-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[10px]">100%</button>
+                                <button id="reset-alpha-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[12px]">100%</button>
                             </div>
                         </div>
                         <input type="range" id="item-alpha-slider" min="0.1" max="1.0" step="0.02" value="1.0">
@@ -714,27 +715,27 @@
                 <div class="grid grid-cols-6 gap-1.5">
                     <button id="item-lock-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
                         <span id="item-lock-icon" class="text-xs">🔒</span>
-                        <span id="item-lock-label" class="text-[10px]">ロック</span>
+                        <span id="item-lock-label" class="text-[12px]">ロック</span>
                     </button>
                     <button id="item-flip-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                        <span class="text-[10px]">反転</span>
+                        <span class="text-[12px]">反転</span>
                     </button>
                     <button id="item-duplicate-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-cyan-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        <span class="text-[10px]">複製</span>
+                        <span class="text-[12px]">複製</span>
                     </button>
                     <button id="item-mirror-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-teal-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow" title="式場中心で左右対称に複製">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m-7-9l7-7 7 7M5 12l7 7 7-7"></path></svg>
-                        <span class="text-[10px]">対称</span>
+                        <span class="text-[12px]">対称</span>
                     </button>
                     <button id="re-measure-part-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-400 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        <span class="text-[10px]">寸法</span>
+                        <span class="text-[12px]">寸法</span>
                     </button>
                     <button id="save-part-library-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-green-400 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                        <span class="text-[10px]">保存</span>
+                        <span class="text-[12px]">保存</span>
                     </button>
                 </div>
                 <button id="item-delete-btn" class="w-full mt-2 bg-[#450a0a] hover:bg-[#5c0f0f] border border-[#ef4444] text-[#fca5a5] font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
@@ -753,19 +754,19 @@
             </div>
             
             <div class="flex items-center bg-gray-950 p-1 rounded-xl mb-2 gap-1 border border-gray-800 shrink-0">
-                <button id="crop-mode-poly" class="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-blue-600 transition">点タップ囲み (頂点ドラッグ調整)</button>
+                <button id="crop-mode-poly" class="flex-1 py-2 rounded-lg text-xs font-bold text-[#ffffff] bg-blue-600 transition">点タップ囲み (頂点ドラッグ調整)</button>
                 <button id="crop-mode-pen" class="flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">ペン自由なぞり</button>
             </div>
 
             <div class="bg-gray-950 px-3 py-1.5 rounded-xl border border-gray-800 mb-2 flex items-center justify-between gap-2 shrink-0">
-                <span class="text-[10px] text-gray-300 font-bold whitespace-nowrap">選択範囲の微調整:</span>
+                <span class="text-[12px] text-gray-300 font-bold whitespace-nowrap">選択範囲の微調整:</span>
                 <div class="flex items-center gap-1.5 flex-1">
-                    <button id="mask-expand-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[10px] font-bold border border-gray-700 active:scale-95 transition">＋ 選択を広げる</button>
-                    <button id="mask-shrink-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[10px] font-bold border border-gray-700 active:scale-95 transition">ー 選択を狭める</button>
+                    <button id="mask-expand-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[12px] font-bold border border-gray-700 active:scale-95 transition">＋ 選択を広げる</button>
+                    <button id="mask-shrink-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[12px] font-bold border border-gray-700 active:scale-95 transition">ー 選択を狭める</button>
                 </div>
             </div>
 
-            <p class="text-[10px] text-gray-400 mb-1.5 shrink-0" id="crop-instruction-text">
+            <p class="text-[12px] text-gray-400 mb-1.5 shrink-0" id="crop-instruction-text">
                 2本指で画像を拡大・移動できます。輪郭を順番にタップして囲んでください。
             </p>
             
@@ -783,7 +784,7 @@
 
             <div class="grid grid-cols-2 gap-2 shrink-0 relative z-30" style="touch-action: manipulation;">
                 <button id="crop-cancel-btn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-xs active:scale-95 transition">切り抜かず次へ</button>
-                <button id="crop-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg active:scale-95 transition">囲んだ部分を抽出</button>
+                <button id="crop-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow-lg active:scale-95 transition">囲んだ部分を抽出</button>
             </div>
         </div>
     </div>
@@ -794,7 +795,7 @@
                 <h3 class="text-sm font-bold text-white" id="item-scale-modal-title">パーツの実寸設定</h3>
                 <button class="close-modal-btn text-gray-400 hover:text-white p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <p class="text-[11px] text-blue-300 mb-2 shrink-0">
+            <p class="text-[13px] text-blue-300 mb-2 shrink-0">
                 2本指でピンチ拡大できます。赤線の端の近くをスライドして寸法位置に合わせてください。
             </p>
             
@@ -812,7 +813,7 @@
 
             <div class="grid grid-cols-2 gap-2 shrink-0">
                 <button id="item-scale-skip-btn" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl text-xs">寸法なしで配置</button>
-                <button id="item-scale-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg">実寸で自動合成！</button>
+                <button id="item-scale-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow-lg">実寸で自動合成！</button>
             </div>
         </div>
     </div>
@@ -824,7 +825,7 @@
             <input type="text" id="custom-prompt-input" class="w-full bg-gray-950 border border-gray-700 text-white rounded-lg p-2.5 text-sm font-bold outline-none mb-4 text-center focus:border-blue-500">
             <div class="grid grid-cols-2 gap-2">
                 <button id="custom-prompt-cancel" class="bg-gray-800 text-gray-300 py-2.5 rounded-xl text-xs font-bold border border-gray-700">キャンセル</button>
-                <button id="custom-prompt-ok" class="bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold shadow">OK</button>
+                <button id="custom-prompt-ok" class="bg-blue-600 text-[#ffffff] py-2.5 rounded-xl text-xs font-bold shadow">OK</button>
             </div>
         </div>
     </div>
@@ -834,7 +835,7 @@
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">  
             <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>  
             <p id="alert-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>  
-            <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>  
+            <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>  
         </div>  
     </div>
 
@@ -856,7 +857,7 @@
             <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden border border-gray-700/80">
                 <div id="loading-modal-bar" class="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-300" style="width: 35%;"></div>
             </div>
-            <p class="text-[10px] text-gray-400">完了までそのままお待ちください</p>
+            <p class="text-[12px] text-gray-400">完了までそのままお待ちください</p>
         </div>
     </div>
 
@@ -873,26 +874,26 @@
             <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3 text-xs text-gray-300 leading-relaxed">
                 <div class="bg-blue-950/40 border border-blue-500/30 p-3 rounded-xl space-y-1">
                     <p class="font-bold text-blue-300">📁 マイ保存（端末内ライブラリ）</p>
-                    <p class="text-[11px] text-gray-300">
+                    <p class="text-[13px] text-gray-300">
                         お使いのスマホ・PC内に保存される自分専用の保管場所です。電波の届かない式場や地下でもすぐに呼び出せます。
                     </p>
                 </div>
 
                 <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-xl space-y-1.5">
                     <p class="font-bold text-emerald-300">☁ 共有ドライブ（全員と共有）</p>
-                    <p class="text-[11px] text-gray-300">
+                    <p class="text-[13px] text-gray-300">
                         登録した式場やパーツをチーム全員で共有できるクラウド保管庫です。初回読み込み後はキャッシュされるため通信量を節約でき、最新状態にしたい時は右上の<strong>更新ボタン（↻）</strong>で再読込できます。
                     </p>
-                    <div class="bg-gray-950/70 p-2 rounded-lg border border-gray-800 text-[10px] text-amber-300/90">
+                    <div class="bg-gray-950/70 p-2 rounded-lg border border-gray-800 text-[12px] text-amber-300/90">
                         ※重複防止のため、<strong>一度共有ドライブへUP済みのデータは「マイ保存」のUPボタンが非表示</strong>になります（名前や基準線を変更しても同一データ扱いとなります）。再アップロードしたい場合は、先に共有ドライブ側のゴミ箱から削除してください。
                     </div>
                 </div>
 
                 <div class="bg-gray-950 border border-gray-800 p-3 rounded-xl space-y-1.5">
                     <p class="font-bold text-gray-200">🏷 バッジ・ボタンの見方</p>
-                    <ul class="space-y-1 text-[11px] text-gray-300">
-                        <li>・<span class="text-[9px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
-                        <li>・<span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded">パースあり</span> / <span class="text-[9px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded">パースなし</span>：奥行き基準ラインの設定有無</li>
+                    <ul class="space-y-1 text-[13px] text-gray-300">
+                        <li>・<span class="text-[13px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-[13px] bg-emerald-950 text-emerald-400 border border-emerald-700/70 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
+                        <li>・<span class="text-[13px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded">パースあり</span> / <span class="text-[13px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded">パースなし</span>：奥行き基準ラインの設定有無</li>
                         <li>・<strong>クラウドUPボタン</strong>：マイ保存のデータを共有ドライブへ公開</li>
                         <li>・<strong>ダウンロードボタン（↓）</strong>：共有ドライブのデータを端末のマイ保存へ取り込み</li>
                         <li>・<strong>ゴミ箱ボタン</strong>：データの削除（共有ドライブでは自分がUPしたデータのみ削除可能）</li>
@@ -909,7 +910,7 @@
             <p id="custom-confirm-desc" class="text-xs text-slate-400 mb-6 leading-relaxed whitespace-pre-line"></p>
             <div class="grid grid-cols-2 gap-2.5">
                 <button id="custom-confirm-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">キャンセル</button>
-                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">OK</button>
+                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] py-2.5 rounded-xl text-xs font-bold shadow transition">OK</button>
             </div>
         </div>
     </div>
@@ -926,10 +927,10 @@
             <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3.5 text-xs text-gray-300">
                 <div class="bg-blue-900/25 border border-blue-500/40 p-3.5 rounded-xl space-y-2">
                     <p class="font-bold text-blue-300 text-xs">【ツールの目的】</p>
-                    <p class="text-gray-200 leading-relaxed text-[11px]">
+                    <p class="text-gray-200 leading-relaxed text-[13px]">
                         式場やセレモニー現場の写真に基準寸法を設定し、花祭壇や供花などの生花装飾を現実と同じ縮尺で合成・配置することで、施工後の仕上がりイメージを素早く可視化・共有できるシミュレーターです。
                     </p>
-                    <div class="bg-gray-950/60 p-2 rounded-lg border border-gray-800 text-[10px] text-gray-400 leading-relaxed">
+                    <div class="bg-gray-950/60 p-2 rounded-lg border border-gray-800 text-[12px] text-gray-400 leading-relaxed">
                         ※本ツールは平面写真を用いた参考用ツールです。遠近感やカメラの画角による誤差を含むため、正確な施工寸法を保証するものではありません。事前提案や検討用のイメージ（目安）としてご活用ください。
                     </div>
                 </div>
@@ -940,7 +941,7 @@
 
                 <div class="bg-gray-950 p-3 rounded-xl border border-gray-800 space-y-2">
                     <p class="font-bold text-gray-200">【画面操作のポイント】</p>
-                    <ul class="space-y-1 text-gray-300 text-[11px]">
+                    <ul class="space-y-1 text-gray-300 text-[13px]">
                         <li>・<strong>対称複製機能</strong>：供花や盛花を式場中心から左右対称にワンタップで配置できます。</li>
                         <li>・<strong>ロック機能</strong>：台や棺などの大きなパーツをロックすると、画面上で触れても動かなくなり、上の小物を楽に操作できます。</li>
                         <li>・<strong>上部固定の拡大鏡</strong>：ペンでなぞったり点を打つ際、画面上部中央の小窓に指先の拡大映像が表示され、境界を精密になぞれます。</li>
@@ -978,10 +979,10 @@
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-1.5 cursor-pointer">
                             <input type="checkbox" id="export-include-footer" checked class="accent-blue-500 w-4 h-4 rounded">
-                            <span class="text-[11px] font-bold text-gray-200">施工情報帯を印字</span>
+                            <span class="text-[13px] font-bold text-gray-200">施工情報帯を印字</span>
                         </label>
                     </div>
-                    <div id="footer-options-panel" class="space-y-2.5 bg-gray-950/70 p-2.5 rounded-lg border border-gray-800 text-[11px]">
+                    <div id="footer-options-panel" class="space-y-2.5 bg-gray-950/70 p-2.5 rounded-lg border border-gray-800 text-[13px]">
                         <div class="grid grid-cols-2 gap-2">
                             <label class="flex items-center gap-1.5 cursor-pointer">
                                 <input type="checkbox" id="footer-include-watermark" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">
@@ -993,23 +994,23 @@
                             </label>
                         </div>
                         <div class="space-y-1.5 pt-1.5 border-t border-gray-800/80">
-                            <span class="text-[10px] text-gray-400 font-bold block">自由入力（空欄なら帯のみ表示）:</span>
+                            <span class="text-[12px] text-gray-400 font-bold block">自由入力（空欄なら帯のみ表示）:</span>
                             <input type="text" id="footer-custom-1" placeholder="枠1: (例) 施工担当: 関" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-xs outline-none">
                             <input type="text" id="footer-custom-2" placeholder="枠2: (例) 生花祭壇 6尺2段仕立" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-xs outline-none">
                             <input type="text" id="footer-custom-3" placeholder="枠3: (例) 式場持込確認済" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-xs outline-none">
                         </div>
                     </div>
                 </div>
-            </div>            <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
+            </div>            <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>  
                 他アプリへ共有（LINE・フォト等）  
             </button>  
             <div class="grid grid-cols-2 gap-2 mb-2">  
-                <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+                <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>  
                     ファイル保存  
                 </button>  
-                <button id="save-scene-project-btn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+                <button id="save-scene-project-btn" class="w-full bg-green-600 hover:bg-green-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>  
                     プロジェクト保存  
                 </button>  
@@ -1031,14 +1032,14 @@
                         <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                         動作モードの変更
                     </span>
-                    <span id="menu-current-mode-text" class="text-[10px] bg-cyan-900 text-cyan-200 px-2 py-0.5 rounded font-bold">精密</span>
+                    <span id="menu-current-mode-text" class="text-[12px] bg-cyan-900 text-cyan-200 px-2 py-0.5 rounded font-bold">精密</span>
                 </button>
                 <button id="menu-grid-settings-btn" class="w-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 text-left px-4 py-3 rounded-xl text-xs font-bold text-cyan-300 transition flex items-center justify-between">
                     <span class="flex items-center gap-2.5">
                         <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>
                         📐 実寸方眼グリッド設定
                     </span>
-                    <span id="menu-grid-status-badge" class="text-[10px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-bold">OFF</span>
+                    <span id="menu-grid-status-badge" class="text-[12px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-bold">OFF</span>
                 </button>
                 <button id="menu-new-project-btn" class="w-full bg-blue-900/40 hover:bg-blue-900/60 border border-blue-500/40 text-left px-4 py-3 rounded-xl text-xs font-bold text-blue-300 transition flex items-center gap-3">
                     <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -1087,13 +1088,13 @@
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
                         <span class="font-bold text-gray-300">1マスの実寸 (mm)</span>
-                        <span class="text-[10px] text-cyan-400 font-mono" id="grid-size-hint">300mm (1.0尺)</span>
+                        <span class="text-[12px] text-cyan-400 font-mono" id="grid-size-hint">300mm (1.0尺)</span>
                     </div>
                     <div class="flex gap-1.5">
                         <input type="number" id="grid-size-input" value="300" step="10" min="10" max="5000" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-2.5 py-1 text-white font-bold text-xs outline-none">
-                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[10px] font-bold border border-gray-700 whitespace-nowrap" data-val="300">1尺</button>
-                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[10px] font-bold border border-gray-700 whitespace-nowrap" data-val="600">2尺</button>
-                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[10px] font-bold border border-gray-700 whitespace-nowrap" data-val="900">3尺</button>
+                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[12px] font-bold border border-gray-700 whitespace-nowrap" data-val="300">1尺</button>
+                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[12px] font-bold border border-gray-700 whitespace-nowrap" data-val="600">2尺</button>
+                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[12px] font-bold border border-gray-700 whitespace-nowrap" data-val="900">3尺</button>
                     </div>
                 </div>
 
@@ -1119,7 +1120,7 @@
                 </div>
 
                 <div class="space-y-1 bg-gray-950/70 p-2 rounded-xl border border-gray-800">
-                    <div class="flex justify-between items-center text-[11px]">
+                    <div class="flex justify-between items-center text-[13px]">
                         <span class="font-bold text-gray-300">不透明度</span>
                         <span id="val-grid-alpha" class="font-mono text-cyan-400 font-bold">50%</span>
                     </div>
@@ -1130,44 +1131,44 @@
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-1.5 cursor-pointer">
                             <input type="checkbox" id="grid-subline-toggle" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">
-                            <span class="text-[11px] font-bold text-gray-200">補助線 (点線)</span>
+                            <span class="text-[13px] font-bold text-gray-200">補助線 (点線)</span>
                         </label>
                         <div class="flex items-center gap-1">
-                            <span class="text-[10px] text-gray-400">1マスを</span>
+                            <span class="text-[12px] text-gray-400">1マスを</span>
                             <input type="number" id="grid-subdiv-input" value="2" min="2" max="10" class="w-10 bg-gray-900 border border-gray-700 text-cyan-300 font-bold rounded px-1 text-center text-xs outline-none">
-                            <span class="text-[10px] text-gray-400">等分</span>
+                            <span class="text-[12px] text-gray-400">等分</span>
                         </div>
                     </div>
                     <div class="flex items-center justify-between pt-1 border-t border-gray-800">
                         <label class="flex items-center gap-1.5 cursor-pointer">
                             <input type="checkbox" id="grid-centerline-toggle" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">
-                            <span class="text-[11px] text-rose-300 font-bold">センター線強調 (赤実線)</span>
+                            <span class="text-[13px] text-rose-300 font-bold">センター線強調 (赤実線)</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="space-y-2 bg-gray-950/70 p-2.5 rounded-xl border border-gray-800">
-                    <span class="font-bold text-gray-300 text-[11px] block">基準位置・微調整</span>
+                    <span class="font-bold text-gray-300 text-[13px] block">基準位置・微調整</span>
                     <select id="grid-center-select" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-1.5 text-xs text-white outline-none">
                         <option value="center">式場中央 (中心)</option>
                         <option value="bottom_center">式場中央・下端 (床面)</option>
                         <option value="baseline">寸法基準線の中心</option>
                     </select>
                     <div class="flex items-center justify-between gap-1 pt-1">
-                        <span class="text-[10px] text-gray-400">位置移動:</span>
+                        <span class="text-[12px] text-gray-400">位置移動:</span>
                         <div class="flex items-center gap-1">
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[11px] text-white font-bold transition active:scale-95" data-dx="-50" data-dy="0">←</button>
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[11px] text-white font-bold transition active:scale-95" data-dx="50" data-dy="0">→</button>
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[11px] text-white font-bold transition active:scale-95" data-dx="0" data-dy="-50">↑</button>
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[11px] text-white font-bold transition active:scale-95" data-dx="0" data-dy="50">↓</button>
-                            <button id="grid-offset-reset-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-[10px] text-gray-300">原点</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="-50" data-dy="0">←</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="50" data-dy="0">→</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="0" data-dy="-50">↑</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="0" data-dy="50">↓</button>
+                            <button id="grid-offset-reset-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-[12px] text-gray-300">原点</button>
                         </div>
                     </div>
-                    <div class="text-[9px] text-gray-500 font-mono text-right" id="grid-offset-display">オフセット: X:0mm / Y:0mm</div>
+                    <div class="text-[13px] text-gray-500 font-mono text-right" id="grid-offset-display">オフセット: X:0mm / Y:0mm</div>
                 </div>
             </div>
 
-            <button class="close-modal-btn w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 rounded-xl text-xs shadow transition active:scale-95">設定を完了</button>
+            <button class="close-modal-btn w-full bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-xl text-xs shadow transition active:scale-95">設定を完了</button>
         </div>
     </div>
 
@@ -1190,7 +1191,7 @@
             <div class="space-y-4 max-h-[50vh] overflow-y-auto text-xs text-gray-300 pr-2 hide-scrollbar">
                 <div>
                     <p class="font-bold text-blue-400">v3.4.0 (完全安定版)</p>
-                    <p class="text-[11px] mt-1 text-gray-400 leading-relaxed">
+                    <p class="text-[13px] mt-1 text-gray-400 leading-relaxed">
                         ・画面回転・リサイズ時のパースおよび縮尺完全連動（背景原寸座標系へ刷新）<br>
                         ・微調整シートからレイヤー一覧への切替ボタン修正<br>
                         ・供花や小物の「左右対称（シンメトリー）複製」機能の追加<br>
@@ -1210,7 +1211,7 @@
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-white mb-1">施工シミュレーター</h3>
-            <p class="text-[11px] text-blue-400 font-mono mb-4">v3.4.0</p>
+            <p class="text-[13px] text-blue-400 font-mono mb-4">v3.4.0</p>
             <div class="text-xs text-gray-300 space-y-2 mb-6 border-t border-gray-700/50 pt-4 text-left bg-gray-950/60 p-4 rounded-xl">
                 <p><span class="text-gray-400">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
                 <p><span class="text-gray-400">AIアシスタント:</span> <span class="font-bold text-blue-400">Gemini (Google)</span></p>
@@ -1240,9 +1241,9 @@
 
         (function setupPWA() {
             const appSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <rect width="512" height="512" rx="110" fill="#141413"/>
-                <rect x="80" y="80" width="352" height="240" rx="16" fill="#2a2a26" stroke="#d9bc7a" stroke-width="12"/>
-                <path d="M120 280 L200 180 L280 250 L340 190 L400 280 Z" fill="#d9bc7a" opacity="0.6"/>
+                <rect width="512" height="512" rx="110" fill="#f4f4f2"/>
+                <rect x="80" y="80" width="352" height="240" rx="16" fill="#ffffff" stroke="#2563eb" stroke-width="12"/>
+                <path d="M120 280 L200 180 L280 250 L340 190 L400 280 Z" fill="#2563eb" opacity="0.6"/>
                 <rect x="180" y="240" width="152" height="180" rx="12" fill="#10b981" opacity="0.85" stroke="#ffffff" stroke-width="8"/>
                 <line x1="80" y1="360" x2="432" y2="360" stroke="#f59e0b" stroke-width="8" stroke-dasharray="16 12"/>
             </svg>`;
@@ -1258,8 +1259,8 @@
                 scope: "./",
                 display: "standalone",
                 orientation: "portrait",
-                background_color: "#141413",
-                theme_color: "#141413",
+                background_color: "#f4f4f2",
+                theme_color: "#f4f4f2",
                 icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]
             };
             const manifestDataUri = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
@@ -1763,7 +1764,7 @@
                 box.className = "bg-cyan-950/40 border border-cyan-500/40 p-3 rounded-xl space-y-2";
                 box.innerHTML = `
                     <p class="font-bold text-cyan-300 text-xs">【📐 精密モード（パース対応）の使い方】</p>
-                    <div class="space-y-1.5 text-gray-300 text-[11px] leading-relaxed">
+                    <div class="space-y-1.5 text-gray-300 text-[13px] leading-relaxed">
                         <p><strong>1. 床と左右の壁の境目に線を合わせる：</strong><br>
                         「式場(背景)」から「📐設定・再調整」を開き、青い2本の線を左右それぞれの「床と壁が接している境目（巾木ライン）」にぴったり合わせます。</p>
                         <p><strong>2. 画面上の線を見ながら基準位置を決める：</strong><br>
@@ -1776,7 +1777,7 @@
                 box.className = "bg-blue-950/40 border border-blue-500/40 p-3 rounded-xl space-y-2";
                 box.innerHTML = `
                     <p class="font-bold text-blue-300 text-xs">【⚡ かんたんモードの使い方】</p>
-                    <div class="space-y-1.5 text-gray-300 text-[11px] leading-relaxed">
+                    <div class="space-y-1.5 text-gray-300 text-[13px] leading-relaxed">
                         <p><strong>1. 背景の基準寸法を設定する：</strong><br>
                         「式場(背景)」から写真を読み込み、祭壇幅や床の目地など分かっている寸法（例: 1200mm）を入力するだけで準備完了です。</p>
                         <p><strong>2. パーツを直感的に配置：</strong><br>
@@ -1818,8 +1819,8 @@
                 badge.style.display = 'inline-block';
                 badge.textContent = isPrecision ? '精密' : 'かんたん';
                 badge.className = isPrecision 
-                    ? 'text-[9px] font-bold px-1.5 py-0.5 rounded bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 whitespace-nowrap shrink-0'
-                    : 'text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-500/30 whitespace-nowrap shrink-0';
+                    ? 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-cyan-900/60 text-cyan-300 border border-cyan-500/30 whitespace-nowrap shrink-0'
+                    : 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-500/30 whitespace-nowrap shrink-0';
             }
             if (menuText) {
                 menuText.textContent = isPrecision ? '精密' : 'かんたん';
@@ -1975,7 +1976,7 @@
                 ctx.drawImage(state.bg.obj, r.x, r.y, r.w, r.h);
                 ctx.restore();
             } else {
-                ctx.fillStyle = '#5f5f52';
+                ctx.fillStyle = '#c6c6c4';
                 ctx.font = 'bold 13px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('下部の「式場(背景)」から写真を読み込んでください', canvas.width / 2, canvas.height / 2);
@@ -2138,7 +2139,7 @@
 
                     // 選択枠
                     if (item.id === state.selectedItemId && !state.bgMeasuring && !state.perspectiveSetting) {
-                        ctx.strokeStyle = item.locked ? '#f59e0b' : '#d9bc7a';
+                        ctx.strokeStyle = item.locked ? '#f59e0b' : '#2563eb';
                         ctx.lineWidth = 2 / effScale;
                         ctx.setLineDash([6 / effScale, 4 / effScale]);
                         ctx.strokeRect(-cw / 2 - 4, -ch / 2 - 4, cw + 8, ch + 8);
@@ -2846,7 +2847,7 @@
                 if (!list) return;
                 const recs = (e.target.result || []).sort((a,b) => b.id - a.id);
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-2">保存された式場はありません</p>`;
+                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">保存された式場はありません</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -2874,7 +2875,7 @@
                             </div>
                             <div class="flex items-center gap-1 overflow-hidden">
                                 ${perspBadge}
-                                <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">${v.measureRealMm}mm設定済 ${vDateStr}</span>
+                                <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">${v.measureRealMm}mm設定済 ${vDateStr}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
@@ -3097,7 +3098,7 @@
 
                         t.heights.forEach(h => {
                             const hBtn = document.createElement('button');
-                            hBtn.className = "bg-gray-800 hover:bg-blue-600 text-white font-mono text-[11px] py-1.5 rounded border border-gray-700 transition";
+                            hBtn.className = "bg-gray-800 hover:bg-blue-600 text-[#ffffff] font-mono text-[13px] py-1.5 rounded border border-gray-700 transition";
                             hBtn.textContent = `H${h}cm`;
                             hBtn.onclick = () => {
                                 closeModal('add-item-modal');
@@ -3151,7 +3152,7 @@
                 flowers.forEach(f => {
                     const btn = document.createElement('button');
                     btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-xs font-bold text-white transition flex items-center justify-between";
-                    btn.innerHTML = `<span>${f.name} <span class="text-gray-400 text-[10px]">(W60×H120cm・花頭H70)</span></span><span class="text-xs text-blue-400 font-bold">配置</span>`;
+                    btn.innerHTML = `<span>${f.name} <span class="text-gray-400 text-[12px]">(W60×H120cm・花頭H70)</span></span><span class="text-xs text-blue-400 font-bold">配置</span>`;
                     btn.onclick = () => {
                         closeModal('add-item-modal');
                         createFlowerPart(f.name, f.flowerW, f.flowerH, f.bucketW, f.bucketH, f.fudaW, f.fudaH);
@@ -3166,20 +3167,20 @@
                 form.className = "bg-gray-900 border border-gray-800 p-3.5 rounded-xl space-y-3";
                 form.innerHTML = `
                     <div>
-                        <label class="text-[11px] text-gray-400 block mb-1">名称 (省略可)</label>
+                        <label class="text-[13px] text-gray-400 block mb-1">名称 (省略可)</label>
                         <input type="text" id="cust-name" placeholder="パーツ名" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-xs outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-[11px] text-gray-400 block mb-1">幅 (W mm)</label>
+                            <label class="text-[13px] text-gray-400 block mb-1">幅 (W mm)</label>
                             <input type="number" id="cust-w" placeholder="例: 900" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-xs outline-none">
                         </div>
                         <div>
-                            <label class="text-[11px] text-gray-400 block mb-1">高さ (H mm)</label>
+                            <label class="text-[13px] text-gray-400 block mb-1">高さ (H mm)</label>
                             <input type="number" id="cust-h" placeholder="例: 600" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-xs outline-none">
                         </div>
                     </div>
-                    <button id="cust-create-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg text-xs shadow mt-2">この実寸(mm)で作成</button>
+                    <button id="cust-create-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-lg text-xs shadow mt-2">この実寸(mm)で作成</button>
                 `;
                 container.appendChild(form);
 
@@ -3267,9 +3268,9 @@
             cvs.height = hMm * rawPxPerMm;
             const pctx = cvs.getContext('2d');
 
-            pctx.fillStyle = '#efe9d6';
+            pctx.fillStyle = '#262626';
             pctx.fillRect(2, 2, cvs.width - 4, cvs.height - 4);
-            pctx.strokeStyle = '#b3bfa8';
+            pctx.strokeStyle = '#6f6f6f';
             pctx.lineWidth = 3;
             pctx.strokeRect(2, 2, cvs.width - 4, cvs.height - 4);
 
@@ -3311,8 +3312,8 @@
             const bTopWPx = bucketWTop * rawPxPerMm;
             const bBotWPx = bucketWBottom * rawPxPerMm;
 
-            pctx.fillStyle = '#141413';
-            pctx.strokeStyle = '#43433a';
+            pctx.fillStyle = '#f4f4f2';
+            pctx.strokeStyle = '#d9d9d7';
             pctx.lineWidth = Math.max(1.2, 1.5 * rawPxPerMm);
             pctx.beginPath();
             pctx.moveTo(cx - bTopWPx / 2, bucketTopY);
@@ -3332,7 +3333,7 @@
                 const fx = cx - fudaWPx / 2;
                 const fy = 0;
 
-                pctx.strokeStyle = '#5f5f52';
+                pctx.strokeStyle = '#c6c6c4';
                 pctx.lineWidth = Math.max(2, 3 * rawPxPerMm);
                 pctx.beginPath();
                 pctx.moveTo(cx, fudaHPx);
@@ -3367,17 +3368,17 @@
 
             const grad = pctx.createRadialGradient(cx - rx * 0.2, cy - ry * 0.2, rx * 0.1, cx, cy, rx);
             grad.addColorStop(0, '#ffffff');
-            grad.addColorStop(0.75, '#fbf7ea');
-            grad.addColorStop(1, '#f3ecd7');
+            grad.addColorStop(0.75, '#171717');
+            grad.addColorStop(1, '#262626');
             pctx.fillStyle = grad;
-            pctx.strokeStyle = '#ddd8c2';
+            pctx.strokeStyle = '#3d3d3d';
             pctx.lineWidth = Math.max(1.2, 1.6 * rawPxPerMm);
             pctx.beginPath();
             pctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
             pctx.fill();
             pctx.stroke();
 
-            pctx.strokeStyle = '#f3ecd7';
+            pctx.strokeStyle = '#262626';
             pctx.lineWidth = Math.max(0.8, 1 * rawPxPerMm);
             for (let rFactor = 0.82; rFactor >= 0.25; rFactor -= 0.18) {
                 pctx.beginPath();
@@ -3400,8 +3401,8 @@
             cvs.height = hMm * rawPxPerMm;
             const pctx = cvs.getContext('2d');
 
-            pctx.fillStyle = 'rgba(217, 188, 122, 0.3)';
-            pctx.strokeStyle = '#d9bc7a';
+            pctx.fillStyle = 'rgba(37, 99, 235, 0.3)';
+            pctx.strokeStyle = '#2563eb';
             pctx.lineWidth = 3;
             pctx.fillRect(2, 2, cvs.width - 4, cvs.height - 4);
             pctx.strokeRect(2, 2, cvs.width - 4, cvs.height - 4);
@@ -3430,7 +3431,7 @@
                 const btn = document.getElementById(`crop-mode-${m}`);
                 if (btn) {
                     if (m === mode) {
-                        btn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-white bg-blue-600 transition";
+                        btn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-[#ffffff] bg-blue-600 transition";
                     } else {
                         btn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition";
                     }
@@ -3469,8 +3470,8 @@
             cropCtx.drawImage(img, ox, oy, w, h);
 
             if (state.cropPoints.length > 0) {
-                cropCtx.fillStyle = 'rgba(217, 188, 122, 0.25)';
-                cropCtx.strokeStyle = '#ecd28f';
+                cropCtx.fillStyle = 'rgba(37, 99, 235, 0.25)';
+                cropCtx.strokeStyle = '#2563eb';
                 cropCtx.lineWidth = 2 / state.cropView.zoom;
                 cropCtx.beginPath();
                 state.cropPoints.forEach((p, idx) => {
@@ -4133,7 +4134,7 @@
                 if (!list) return;
                 const recs = (e.target.result || []).sort((a,b) => b.id - a.id);
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-2">保存されたパーツはありません</p>`;
+                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">保存されたパーツはありません</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -4157,7 +4158,7 @@
                             </div>
                             <div class="flex items-center gap-1 overflow-hidden">
                                 <span class="text-[8px] leading-tight bg-gray-800 text-gray-300 px-1 rounded font-mono shrink-0">${extLabel}</span>
-                                <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">${rDateStr}</span>
+                                <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">${rDateStr}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
@@ -4580,7 +4581,7 @@
                 row.innerHTML = `
                     <div class="flex-1 overflow-hidden pr-2">
                         <span class="text-xs font-bold text-white block truncate">${p.name}</span>
-                        <span class="text-[10px] text-gray-400 font-mono">${dtStr} / パーツ: ${p.items.length}件</span>
+                        <span class="text-[12px] text-gray-400 font-mono">${dtStr} / パーツ: ${p.items.length}件</span>
                     </div>
                         <button class="del-proj-btn text-red-400 hover:text-red-300 p-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     `;
@@ -4717,7 +4718,7 @@
             eCanvas.height = outH;
             const eCtx = eCanvas.getContext('2d');
 
-            eCtx.fillStyle = '#141413';
+            eCtx.fillStyle = '#f4f4f2';
             eCtx.fillRect(0, 0, outW, outH);
             eCtx.save();
             eCtx.globalAlpha = state.bg.alpha ?? 1.0;
@@ -4908,11 +4909,11 @@
             const isEn = state.grid.enabled;
             if (qBadge) {
                 qBadge.textContent = isEn ? 'ON' : 'OFF';
-                qBadge.className = isEn ? 'text-[10px] px-1.5 py-0.2 rounded bg-cyan-900 text-cyan-300 font-bold' : 'text-[10px] px-1.5 py-0.2 rounded bg-gray-800 text-gray-400';
+                qBadge.className = isEn ? 'text-[12px] px-1.5 py-0.2 rounded bg-cyan-900 text-cyan-300 font-bold' : 'text-[12px] px-1.5 py-0.2 rounded bg-gray-800 text-gray-400';
             }
             if (mBadge) {
                 mBadge.textContent = isEn ? 'ON' : 'OFF';
-                mBadge.className = isEn ? 'text-[10px] bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded font-bold' : 'text-[10px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-bold';
+                mBadge.className = isEn ? 'text-[12px] bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded font-bold' : 'text-[12px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-bold';
             }
             if (toggle) toggle.checked = isEn;
         }
@@ -5375,7 +5376,7 @@
                             <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
-                    <span class="text-[11px] font-bold text-cyan-300">${text}</span>
+                    <span class="text-[13px] font-bold text-cyan-300">${text}</span>
                     <div class="w-40 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
                         <div class="h-full w-2/3 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full animate-pulse"></div>
                     </div>
@@ -5661,7 +5662,7 @@
                 }
             } catch (e) {
                 if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('bg-emerald-600')) {
-                    list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
+                    list.innerHTML = `<p class="text-[13px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
                 }
             } finally {
                 isFetchingSharedVenues = false;
@@ -5702,7 +5703,7 @@
                 }
             } catch (e) {
                 if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('bg-emerald-600')) {
-                    list.innerHTML = `<p class="text-[11px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
+                    list.innerHTML = `<p class="text-[13px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
                 }
             } finally {
                 isFetchingSharedParts = false;
@@ -5807,7 +5808,7 @@
 
             const items = filterAndSortSharedItems(cachedSharedVenues, searchWord, sortMode, kanaRow);
             if (items.length === 0) {
-                list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-3">該当する共有式場はありません</p>`;
+                list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-3">該当する共有式場はありません</p>`;
                 return;
             }
 
@@ -5833,7 +5834,7 @@
                         </div>
                         <div class="flex items-center gap-1 overflow-hidden">
                             ${perspBadge}
-                            <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">基準:${v.measureRealMm}mm ${vDateStr}</span>
+                            <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">基準:${v.measureRealMm}mm ${vDateStr}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
@@ -5920,7 +5921,7 @@
 
         // 式場タブ切り替え（マイ保存 / 共有ドライブ）
         document.getElementById('tab-venue-local')?.addEventListener('click', () => {
-            document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md bg-blue-600 text-white transition";
+            document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition";
             document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
             document.getElementById('venue-shared-controls')?.classList.add('hidden');
             document.getElementById('btn-refresh-venue-shared')?.classList.add('hidden');
@@ -5928,7 +5929,7 @@
         });
 
         document.getElementById('tab-venue-shared')?.addEventListener('click', async () => {
-            document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-white transition";
+            document.getElementById('tab-venue-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-[#ffffff] transition";
             document.getElementById('tab-venue-local').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
             document.getElementById('venue-shared-controls')?.classList.remove('hidden');
             document.getElementById('btn-refresh-venue-shared')?.classList.remove('hidden');
@@ -5962,7 +5963,7 @@
 
             const items = filterAndSortSharedItems(cachedSharedParts, searchWord, sortMode, kanaRow);
             if (items.length === 0) {
-                list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-3">該当する共有パーツはありません</p>`;
+                list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-3">該当する共有パーツはありません</p>`;
                 return;
             }
 
@@ -5985,7 +5986,7 @@
                         </div>
                         <div class="flex items-center gap-1 overflow-hidden">
                             <span class="text-[8px] leading-tight bg-gray-800 text-gray-300 px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
-                            <span class="text-[9px] leading-tight text-gray-400 font-mono truncate">${pDateStr}</span>
+                            <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">${pDateStr}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
@@ -6087,7 +6088,7 @@
 
         // パーツタブ切り替え（マイ保存 / 共有ドライブ）
         document.getElementById('tab-part-local')?.addEventListener('click', () => {
-            document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md bg-blue-600 text-white transition";
+            document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md bg-blue-600 text-[#ffffff] transition";
             document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
             document.getElementById('part-shared-controls')?.classList.add('hidden');
             document.getElementById('btn-refresh-part-shared')?.classList.add('hidden');
@@ -6095,7 +6096,7 @@
         });
 
         document.getElementById('tab-part-shared')?.addEventListener('click', async () => {
-            document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-white transition";
+            document.getElementById('tab-part-shared').className = "px-2 py-1 rounded-md bg-emerald-600 text-[#ffffff] transition";
             document.getElementById('tab-part-local').className = "px-2 py-1 rounded-md text-gray-400 hover:text-white transition";
             document.getElementById('part-shared-controls')?.classList.remove('hidden');
             document.getElementById('btn-refresh-part-shared')?.classList.remove('hidden');

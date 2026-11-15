@@ -6,7 +6,7 @@
   <title>ユー花園社内業務支援ツール</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="pwa_icon_192.png">
-  <meta name="theme-color" content="#141413">
+  <meta name="theme-color" content="#f4f4f2">
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
@@ -16,7 +16,7 @@
     html {
       overflow-y: scroll;
       scrollbar-width: thin;
-      scrollbar-color: #5f5f52 #141413;
+      scrollbar-color: #c6c6c4 #f4f4f2;
     }
     html::-webkit-scrollbar,
     body::-webkit-scrollbar {
@@ -25,18 +25,18 @@
     }
     html::-webkit-scrollbar-track,
     body::-webkit-scrollbar-track {
-      background: #141413;
+      background: #f4f4f2;
     }
     html::-webkit-scrollbar-thumb,
     body::-webkit-scrollbar-thumb {
-      background: #5f5f52;
+      background: #c6c6c4;
       border-radius: 9999px;
-      border: 1px solid #2a2a26;
+      border: 1px solid #ffffff;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #141413;
-      color: #fbf7ea;
+      background-color: #f4f4f2;
+      color: #171717;
       margin: 0;
       padding: 20px 14px 36px;
       display: flex;
@@ -59,20 +59,20 @@
       align-items: center;
       gap: 4px;
       padding: 5px 9px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 600;
-      background: linear-gradient(180deg, #34342e 0%, #22221e 100%);
-      color: #ddd8c2;
-      border: 1px solid #5f5f52;
+      background: linear-gradient(180deg, #ebebe9 0%, #fcfcfb 100%);
+      color: #3d3d3d;
+      border: 1px solid #c6c6c4;
       border-radius: 8px;
-      box-shadow: 0 2px 0 #0d0d0c;
+      box-shadow: 0 2px 0 #ebebe9;
       cursor: pointer;
       touch-action: manipulation;
     }
     .btn-credit:active {
       transform: translateY(1px);
-      box-shadow: 0 1px 0 #0d0d0c;
-      background: #43433a;
+      box-shadow: 0 1px 0 #ebebe9;
+      background: #d9d9d7;
       color: #fff;
     }
 
@@ -81,9 +81,9 @@
       width: 100%;
       max-width: 420px;
       margin-bottom: 14px;
-      background: #1d1d1a;
-      border: 1px solid #43433a;
-      border-left: 3px solid #ecd28f;
+      background: #ffffff;
+      border: 1px solid #d9d9d7;
+      border-left: 3px solid #2563eb;
       border-radius: 10px;
       padding: 8px 12px;
       box-sizing: border-box;
@@ -96,33 +96,33 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      font-size: 11px;
+      font-size: 13px;
     }
     .latest-update-tool {
-      color: #fbf7ea;
+      color: #171717;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .latest-update-date {
-      color: #b3bfa8;
+      color: #6f6f6f;
       font-family: monospace;
-      font-size: 10px;
+      font-size: 12px;
       white-space: nowrap;
       flex-shrink: 0;
     }
     .latest-update-msg {
       font-size: 10.5px;
-      color: #b3bfa8;
+      color: #6f6f6f;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .badge-new {
-      background: #b08d4f;
+      background: #1d4ed8;
       color: #fff;
-      font-size: 9px;
+      font-size: 11px;
       font-weight: 700;
       padding: 1px 5px;
       border-radius: 4px;
@@ -146,8 +146,8 @@
     .card {
       flex: 1;
       min-width: 0;
-      background: linear-gradient(180deg, #31312b 0%, #20201c 100%);
-      border: 1px solid #5f5f52;
+      background: linear-gradient(180deg, #f1f1ef 0%, #ffffff 100%);
+      border: 1px solid #c6c6c4;
       border-radius: 12px;
       padding: 14px 14px;
       text-decoration: none;
@@ -156,17 +156,17 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      box-shadow: 0 3px 0 #0c0c0b, 0 4px 10px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 3px 0 #e8e8e6, 0 4px 10px rgba(0, 0, 0, 0.35);
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
       touch-action: manipulation;
     }
     .card:hover {
-      border-color: #ecd28f;
+      border-color: #2563eb;
     }
     .card:active {
       transform: translateY(2px);
-      box-shadow: 0 1px 0 #0c0c0b;
-      background: #3a3a32;
+      box-shadow: 0 1px 0 #e8e8e6;
+      background: #e3e3e1;
     }
     .card-body {
       min-width: 0;
@@ -175,29 +175,29 @@
     .card h2 {
       font-size: 1.03rem;
       margin: 0 0 4px 0;
-      color: #ecd28f;
+      color: #2563eb;
       font-weight: 700;
     }
     .card p {
       font-size: 0.8rem;
       margin: 0;
-      color: #ddd8c2;
+      color: #3d3d3d;
       line-height: 1.35;
     }
     .card-arrow {
-      color: #8f957e;
-      font-size: 18px;
+      color: #8f8f8f;
+      font-size: 20px;
       font-weight: 700;
       flex-shrink: 0;
     }
     .btn-desc {
       width: 54px;
       flex-shrink: 0;
-      background: linear-gradient(180deg, #2a2a26 0%, #1a1a18 100%);
-      border: 1px solid #5f5f52;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      border: 1px solid #c6c6c4;
       border-radius: 12px;
-      color: #ddd8c2;
-      font-size: 11px;
+      color: #3d3d3d;
+      font-size: 13px;
       font-weight: 700;
       display: flex;
       flex-direction: column;
@@ -205,19 +205,19 @@
       justify-content: center;
       gap: 3px;
       cursor: pointer;
-      box-shadow: 0 3px 0 #0c0c0b, 0 4px 10px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 3px 0 #e8e8e6, 0 4px 10px rgba(0, 0, 0, 0.35);
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
       touch-action: manipulation;
       padding: 0 4px;
     }
     .btn-desc:hover {
-      border-color: #ecd28f;
-      color: #ecd28f;
+      border-color: #2563eb;
+      color: #2563eb;
     }
     .btn-desc:active {
       transform: translateY(2px);
-      box-shadow: 0 1px 0 #0c0c0b;
-      background: #3a3a32;
+      box-shadow: 0 1px 0 #e8e8e6;
+      background: #e3e3e1;
       color: #fff;
     }
 
@@ -249,7 +249,7 @@
   <!-- 一番最新の更新内容のみ上部に表示 -->
   <div id="latest-update-bar" class="latest-update-bar">
     <div class="latest-update-top">
-      <span id="latest-update-tool" class="latest-update-tool" style="color: #b3bfa8;">🔄 最新更新を確認中...</span>
+      <span id="latest-update-tool" class="latest-update-tool" style="color: #6f6f6f;">🔄 最新更新を確認中...</span>
       <span id="latest-update-date" class="latest-update-date"></span>
     </div>
     <div id="latest-update-msg" class="latest-update-msg" style="display: none;"></div>
@@ -343,39 +343,39 @@
 
   <!-- ツール説明モーダル -->
   <div id="desc-modal" class="credit-modal">
-    <div style="background: #141413; border: 1px solid #5f5f52; border-radius: 16px; width: 100%; max-width: 370px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.85); position: relative; box-sizing: border-box;">
-      <button id="btn-close-desc-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #b3bfa8; cursor: pointer; padding: 4px; font-size: 16px;" type="button">✕</button>
+    <div style="background: #f4f4f2; border: 1px solid #c6c6c4; border-radius: 16px; width: 100%; max-width: 370px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.85); position: relative; box-sizing: border-box;">
+      <button id="btn-close-desc-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #6f6f6f; cursor: pointer; padding: 4px; font-size: 18px;" type="button">✕</button>
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-right: 24px;">
-        <span id="desc-modal-badge" style="background: rgba(176,141,79,0.25); color: #ecd28f; border: 1px solid rgba(236,210,143,0.4); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; flex-shrink: 0;">ツール解説</span>
-        <h3 id="desc-modal-title" style="font-size: 15px; font-weight: 700; color: #fff; margin: 0;"></h3>
+        <span id="desc-modal-badge" style="background: rgba(37,99,235,0.18); color: #2563eb; border: 1px solid rgba(37,99,235,0.35); font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; flex-shrink: 0;">ツール解説</span>
+        <h3 id="desc-modal-title" style="font-size: 17px; font-weight: 700; color: #fff; margin: 0;"></h3>
       </div>
-      <div style="background: #0f0f0e; border: 1px solid #43433a; border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: left;">
-        <p style="font-size: 11px; font-weight: 700; color: #ecd28f; margin: 0 0 4px 0;">【目的】</p>
-        <p id="desc-modal-purpose" style="font-size: 12px; color: #f3ecd7; line-height: 1.55; margin: 0 0 12px 0;"></p>
-        <p style="font-size: 11px; font-weight: 700; color: #ecd28f; margin: 0 0 6px 0;">【主な機能・できること】</p>
-        <ul id="desc-modal-features" style="font-size: 12px; color: #ddd8c2; line-height: 1.55; margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px;"></ul>
+      <div style="background: #eeeeec; border: 1px solid #d9d9d7; border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: left;">
+        <p style="font-size: 13px; font-weight: 700; color: #2563eb; margin: 0 0 4px 0;">【目的】</p>
+        <p id="desc-modal-purpose" style="font-size: 14px; color: #262626; line-height: 1.55; margin: 0 0 12px 0;"></p>
+        <p style="font-size: 13px; font-weight: 700; color: #2563eb; margin: 0 0 6px 0;">【主な機能・できること】</p>
+        <ul id="desc-modal-features" style="font-size: 14px; color: #3d3d3d; line-height: 1.55; margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px;"></ul>
       </div>
       <div>
-        <button id="btn-close-desc" style="width: 100%; background: #2a2a26; color: #ddd8c2; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #5f5f52; font-size: 12px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+        <button id="btn-close-desc" style="width: 100%; background: #ffffff; color: #3d3d3d; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #c6c6c4; font-size: 14px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
       </div>
     </div>
   </div>
 
   <!-- クレジットモーダル -->
   <div id="credit-modal" class="credit-modal">
-    <div style="background: #141413; border: 1px solid #43433a; border-radius: 16px; width: 100%; max-width: 340px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); text-align: center; position: relative; box-sizing: border-box;">
-      <button id="btn-close-credit-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #b3bfa8; cursor: pointer; padding: 4px; font-size: 16px;">✕</button>
-      <div style="width: 44px; height: 44px; background: #a67c44; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+    <div style="background: #f4f4f2; border: 1px solid #d9d9d7; border-radius: 16px; width: 100%; max-width: 340px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); text-align: center; position: relative; box-sizing: border-box;">
+      <button id="btn-close-credit-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #6f6f6f; cursor: pointer; padding: 4px; font-size: 18px;">✕</button>
+      <div style="width: 44px; height: 44px; background: #1e40af; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
         <svg style="width: 24px; height: 24px; color: #fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       </div>
-      <h3 style="font-size: 14px; font-weight: bold; color: #fff; margin: 0 0 2px 0;">ユー花園社内業務支援ツール</h3>
-      <p style="font-size: 10px; color: #ecd28f; font-family: monospace; margin: 0 0 14px 0;">ポータル</p>
-      <div style="font-size: 11px; color: #ddd8c2; border-top: 1px solid #43433a; padding-top: 10px; margin-bottom: 14px; text-align: left; background: #0f0f0e; padding: 10px; border-radius: 10px;">
-        <p style="margin: 0 0 4px 0;"><span style="color: #b3bfa8;">製作者:</span> <b style="color: #fff;">関貴文</b></p>
-        <p style="margin: 0 0 4px 0;"><span style="color: #b3bfa8;">AIアシスタント:</span> <b style="color: #f4e3ac;">Gemini (Google)</b></p>
-        <p style="margin: 0;"><span style="color: #b3bfa8;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
+      <h3 style="font-size: 16px; font-weight: bold; color: #fff; margin: 0 0 2px 0;">ユー花園社内業務支援ツール</h3>
+      <p style="font-size: 12px; color: #2563eb; font-family: monospace; margin: 0 0 14px 0;">ポータル</p>
+      <div style="font-size: 13px; color: #3d3d3d; border-top: 1px solid #d9d9d7; padding-top: 10px; margin-bottom: 14px; text-align: left; background: #eeeeec; padding: 10px; border-radius: 10px;">
+        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">製作者:</span> <b style="color: #fff;">関貴文</b></p>
+        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">AIアシスタント:</span> <b style="color: #1d4ed8;">Gemini (Google)</b></p>
+        <p style="margin: 0;"><span style="color: #6f6f6f;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
       </div>
-      <button id="btn-close-credit" style="width: 100%; background: #2a2a26; color: #fff; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #43433a; font-size: 12px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+      <button id="btn-close-credit" style="width: 100%; background: #ffffff; color: #fff; font-weight: bold; padding: 10px 0; border-radius: 10px; border: 1px solid #d9d9d7; font-size: 14px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
     </div>
   </div>
 
@@ -566,8 +566,8 @@
       const dateStr = `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
       const isNew = (now - latest.ts) < threeDaysMs;
 
-      toolEl.style.color = '#fbf7ea';
-      toolEl.innerHTML = `${isNew ? '<span class="badge-new">NEW</span>' : '<span style="color:#ecd28f;margin-right:4px;">最新</span>'}${latest.name}`;
+      toolEl.style.color = '#171717';
+      toolEl.innerHTML = `${isNew ? '<span class="badge-new">NEW</span>' : '<span style="color:#2563eb;margin-right:4px;">最新</span>'}${latest.name}`;
       if (dateEl) dateEl.textContent = dateStr;
       if (msgEl && latest.message) {
         msgEl.textContent = `内容: ${latest.message}`;
