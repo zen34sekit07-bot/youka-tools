@@ -385,7 +385,6 @@
                     <span class="text-xs font-extrabold text-white flex items-center gap-1.5">
                         <span>💐</span> 選択済みリスト (<span id="cart-item-count">0</span>件)
                     </span>
-                    <button id="btn-clear-cart" class="bg-[#dc2626] hover:bg-[#b91c1c] text-[#ffffff] text-[12px] font-black px-3 py-1.5 rounded-lg shadow active:scale-95 transition">リスト全削除</button>
                 </div>
 
                 <div id="cart-items-container" class="space-y-2">
@@ -449,7 +448,7 @@
             <div id="export-preview-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                     <h3 class="text-xs font-bold text-slate-300">出力プレビュー</h3>
-                    <span id="preview-project-name" class="text-xs font-black text-cyan-300 truncate max-w-[200px]">新規施工</span>
+                    <input type="text" id="active-project-title" placeholder="タイトルを入力" autocomplete="off" class="bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg px-2.5 py-1.5 text-xs font-bold text-white outline-none w-[64%] text-right placeholder:text-slate-500 placeholder:font-normal">
                 </div>
                 <div id="capture-render-area" class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-3 text-xs"></div>
             </div>
@@ -1190,13 +1189,7 @@
             if (!includeYoukaen) {
                 comps = comps.filter(c => c.id !== 'all' && c.id !== 'youkaen');
             }
-            comps.sort((a, b) => {
-                const aFav = state.favCompanies.includes(a.id);
-                const bFav = state.favCompanies.includes(b.id);
-                if (aFav && !bFav) return -1;
-                if (!aFav && bFav) return 1;
-                return a.name.localeCompare(b.name, 'ja');
-            });
+            comps.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
             return comps;
         }
 
@@ -1280,22 +1273,19 @@
                 list.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-2">該当する葬儀社がありません</p>';
             } else {
                 list.innerHTML = comps.slice(0, 30).map(c => {
-                    const isFav = state.favCompanies.includes(c.id);
                     const cName = c.name.replace(/様+$/, '') + ' 様';
                     return `
-                    <div class="flex items-center justify-between p-2 rounded-lg text-[13px] cursor-pointer bg-slate-900 hover:bg-slate-850 text-slate-200 transition select-none" onclick="selectCompany('${c.id}')">
-                        <div class="flex items-center gap-1.5 min-w-0 pr-1">
-                            <button type="button" onclick="toggleCompanyFav('${c.id}', event)" class="text-sm shrink-0 ${isFav ? 'text-amber-600' : 'text-slate-600 hover:text-slate-400'}" title="お気に入り登録/解除">
-                                ${isFav ? '★' : '☆'}
-                            </button>
-                            <span class="truncate">${cName}</span>
-                        </div>
+                    <div class="p-2.5 rounded-lg text-[13px] cursor-pointer bg-slate-900 hover:bg-slate-850 text-slate-200 transition select-none" onclick="selectCompany('${c.id}')">
+                        <span class="truncate block">${cName}</span>
                     </div>`;
                 }).join('');
             }
             const wasHidden = list.classList.contains('hidden');
             list.classList.remove('hidden');
-            if (wasHidden) list.scrollIntoView({ block: 'nearest' });
+            if (wasHidden) {
+                const panel = document.getElementById('panel-sogisha');
+                if (panel) panel.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
         }
 
         function syncSogishaPanelUI(isYoukaen, compId) {
@@ -1438,9 +1428,6 @@
                             ${isSel ? '<span class="text-[13px] bg-indigo-500 text-[#ffffff] font-black px-1.5 py-0.2 rounded shrink-0">選択中</span>' : ''}
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <button type="button" onclick="toggleCompanyFav('${c.id}', event)" class="p-1 text-base ${isFav ? 'text-amber-600' : 'text-slate-600 hover:text-slate-400'}">
-                                ${isFav ? '★' : '☆'}
-                            </button>
                             <span class="text-[13px] font-bold text-cyan-400">決定</span>
                         </div>
                     </div>
@@ -3070,8 +3057,8 @@
             
             const handleTitleChange = (val) => {
                 state.projectTitle = val;
-                if (titleInput) titleInput.value = val;
-                if (quickTitleInput) quickTitleInput.value = val;
+                if (titleInput && titleInput.value !== val) titleInput.value = val;
+                if (quickTitleInput && quickTitleInput.value !== val) quickTitleInput.value = val;
                 saveCartState();
                 updateFavProjectButtonState();
                 renderExportPreview();
@@ -3130,7 +3117,11 @@
 
             const sogishaInput = document.getElementById('sogisha-search-input');
             sogishaInput?.addEventListener('input', () => renderSogishaSuggestions());
-            sogishaInput?.addEventListener('focus', () => renderSogishaSuggestions());
+            sogishaInput?.addEventListener('focus', () => {
+                renderSogishaSuggestions();
+                const panel = document.getElementById('panel-sogisha');
+                if (panel) setTimeout(() => panel.scrollIntoView({ block: 'start', behavior: 'smooth' }), 250);
+            });
 
             document.getElementById('btn-clear-sogisha-search')?.addEventListener('click', () => {
                 const input = document.getElementById('sogisha-search-input');
@@ -3293,7 +3284,7 @@
                 if (state.selectedFlower) toggleFavorite(state.selectedFlower.id);
             });
 
-            document.getElementById('btn-clear-cart').addEventListener('click', async () => {
+            document.getElementById('btn-clear-cart-top')?.addEventListener('click', async () => {
                 if (state.cart.length === 0) return;
                 const ok = await showConfirmModal('選択済みリストの供花をすべて削除しますか？', '全削除');
                 if (ok) {
@@ -3301,10 +3292,6 @@
                     saveCartState();
                     updateCartUI();
                 }
-            });
-
-            document.getElementById('btn-clear-cart-top')?.addEventListener('click', () => {
-                document.getElementById('btn-clear-cart')?.click();
             });
 
             document.getElementById('btn-clear-all-history')?.addEventListener('click', async () => {
