@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="施工シミュレーター">
     <meta name="application-name" content="施工シミュレーター">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#141413">
     <meta name="color-scheme" content="dark">
     
     <link rel="icon" id="app-favicon" type="image/svg+xml">
@@ -27,8 +27,10 @@
             theme: {
                 extend: {
                     colors: {
-                        gray: { 850: '#1f2937', 900: '#111827', 950: '#030712' },
-                        blue: { 500: '#3b82f6', 600: '#2563eb' }
+                        gray: { 100: '#f3ecd7', 200: '#e7dfc6', 300: '#d8d2ba', 400: '#b5b09a', 500: '#8f8b76', 600: '#605d4e', 700: '#454338', 800: '#2c2b26', 850: '#24231f', 900: '#171716', 950: '#0b0b0a' },
+                        blue: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#6e5626', 900: '#3a2f1c', 950: '#241d10' },
+                        cyan: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#4a3d22', 900: '#332913', 950: '#241d10' },
+                        slate: { 50: '#f7f4ea', 100: '#f3ecd7', 200: '#e7dfc6', 300: '#ddd8c2', 400: '#b3bfa8', 500: '#8f957e', 600: '#5f5f52', 700: '#43433a', 800: '#2a2a26', 850: '#1d1d1a', 900: '#141413', 950: '#0b0b0a' }
                     }
                 }
             }
@@ -45,13 +47,13 @@
             user-select: none; 
             -webkit-tap-highlight-color: transparent; 
             touch-action: none; 
-            background: #0f172a; 
-            color: #f8fafc; 
+            background: #141413; 
+            color: #fbf7ea; 
             display: flex; 
             flex-direction: column; 
             height: 100dvh; 
             overflow: hidden; 
-            accent-color: #3b82f6;
+            accent-color: #d9bc7a;
         }
         canvas { display: block; touch-action: none; outline: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -61,7 +63,7 @@
             color-scheme: dark;
         }
         select option {
-            background-color: #0f172a;
+            background-color: #141413;
             color: #ffffff;
         }
         
@@ -71,7 +73,7 @@
         }
 
         input[type="range"] { 
-            accent-color: #3b82f6; 
+            accent-color: #d9bc7a; 
             -webkit-appearance: none; 
             width: 100%; 
             background: transparent; 
@@ -85,26 +87,26 @@
             background: #ffffff; 
             cursor: pointer; 
             margin-top: -9px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.8), 0 0 0 2px #3b82f6; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.8), 0 0 0 2px #d9bc7a; 
         }
         input[type=range]::-webkit-slider-runnable-track { 
             width: 100%; 
             height: 6px; 
             cursor: pointer; 
-            background: #475569; 
+            background: #5f5f52; 
             border-radius: 3px; 
-            border: 1px solid #64748b;
+            border: 1px solid #8f957e;
         }
 
         #top-nav-bar {
             flex-shrink: 0;
-            background: #0f172a;
+            background: #141413;
             padding: max(env(safe-area-inset-top, 8px), 8px) 16px 4px 16px;
         }
         #app-header { 
             flex-shrink: 0; 
-            background: #0f172a; 
-            border-bottom: 1px solid #1e293b; 
+            background: #141413; 
+            border-bottom: 1px solid #2a2a26; 
             z-index: 50; 
             display: flex; 
             align-items: center; 
@@ -116,8 +118,8 @@
         
         #bottom-toolbar { 
             flex-shrink: 0; 
-            background: #0f172a; 
-            border-top: 1px solid #1e293b; 
+            background: #141413; 
+            border-top: 1px solid #2a2a26; 
             z-index: 50; 
             padding-top: 6px;
             padding-left: 4px;
@@ -139,8 +141,8 @@
 
         .bottom-sheet {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(16px);
-            border-top: 1px solid #1e293b; border-radius: 20px 20px 0 0;
+            background: rgba(20, 20, 19, 0.98); backdrop-filter: blur(16px);
+            border-top: 1px solid #2a2a26; border-radius: 20px 20px 0 0;
             transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 60; 
             padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);
@@ -150,8 +152,8 @@
         .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
         .sheet-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 9px; line-height: 1.1; font-weight: bold; gap: 2px; border-radius: 8px; padding: 3px 0; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
-        .toolbar-btn.active { color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
+        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #b3bfa8; font-size: 9px; line-height: 1.1; font-weight: bold; gap: 2px; border-radius: 8px; padding: 3px 0; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
+        .toolbar-btn.active { color: #d9bc7a; background: rgba(217, 188, 122, 0.15); }
         .toolbar-btn svg { width: 18px; height: 18px; margin: 0 auto; flex-shrink: 0; }
 
         .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 12px; }
@@ -162,8 +164,8 @@
             bottom: calc(64px + max(env(safe-area-inset-bottom, 0px), 8px)); 
             right: 16px; 
             width: 46px; height: 46px; 
-            background: rgba(15, 23, 42, 0.85); 
-            border: 1px solid #334155; 
+            background: rgba(20, 20, 19, 0.85); 
+            border: 1px solid #43433a; 
             border-radius: 23px; 
             z-index: 40; 
             display: none; 
@@ -174,20 +176,20 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
             transition: transform 0.1s; 
         }
-        #toggle-ui-btn:active { transform: scale(0.9); background: rgba(59, 130, 246, 0.8); }
+        #toggle-ui-btn:active { transform: scale(0.9); background: rgba(217, 188, 122, 0.8); }
 
         #view-zoom-badge {
             position: absolute;
             top: 12px;
             right: 12px;
             z-index: 30;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid #334155;
+            background: rgba(20, 20, 19, 0.85);
+            border: 1px solid #43433a;
             backdrop-filter: blur(6px);
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
-            color: #94a3b8;
+            color: #b3bfa8;
             font-weight: bold;
             display: none;
             align-items: center;
@@ -200,8 +202,8 @@
             top: 50%;
             transform: translateY(-50%);
             z-index: 45;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1.5px solid #06b6d4;
+            background: rgba(20, 20, 19, 0.95);
+            border: 1.5px solid #d9bc7a;
             backdrop-filter: blur(8px);
             border-radius: 20px;
             padding: 10px 6px;
@@ -218,9 +220,9 @@
             position: relative;
             width: 16px;
             height: 150px;
-            background: #1e293b;
+            background: #2a2a26;
             border-radius: 8px;
-            border: 1px solid #475569;
+            border: 1px solid #5f5f52;
             cursor: pointer;
             touch-action: none;
         }
@@ -232,7 +234,7 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: #38bdf8;
+            background: #ecd28f;
             border: 2px solid #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.8);
             pointer-events: none;
@@ -249,13 +251,13 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            border: 3px solid #38bdf8;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.85), 0 0 0 2px #0f172a;
+            border: 3px solid #ecd28f;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.85), 0 0 0 2px #141413;
             overflow: hidden;
             pointer-events: none;
             display: none;
             z-index: 60;
-            background: #0f172a;
+            background: #141413;
         }
         #crop-loupe-canvas {
             width: 100%;
@@ -1238,9 +1240,9 @@
 
         (function setupPWA() {
             const appSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <rect width="512" height="512" rx="110" fill="#0f172a"/>
-                <rect x="80" y="80" width="352" height="240" rx="16" fill="#1e293b" stroke="#3b82f6" stroke-width="12"/>
-                <path d="M120 280 L200 180 L280 250 L340 190 L400 280 Z" fill="#3b82f6" opacity="0.6"/>
+                <rect width="512" height="512" rx="110" fill="#141413"/>
+                <rect x="80" y="80" width="352" height="240" rx="16" fill="#2a2a26" stroke="#d9bc7a" stroke-width="12"/>
+                <path d="M120 280 L200 180 L280 250 L340 190 L400 280 Z" fill="#d9bc7a" opacity="0.6"/>
                 <rect x="180" y="240" width="152" height="180" rx="12" fill="#10b981" opacity="0.85" stroke="#ffffff" stroke-width="8"/>
                 <line x1="80" y1="360" x2="432" y2="360" stroke="#f59e0b" stroke-width="8" stroke-dasharray="16 12"/>
             </svg>`;
@@ -1256,8 +1258,8 @@
                 scope: "./",
                 display: "standalone",
                 orientation: "portrait",
-                background_color: "#0f172a",
-                theme_color: "#0f172a",
+                background_color: "#141413",
+                theme_color: "#141413",
                 icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]
             };
             const manifestDataUri = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
@@ -1973,7 +1975,7 @@
                 ctx.drawImage(state.bg.obj, r.x, r.y, r.w, r.h);
                 ctx.restore();
             } else {
-                ctx.fillStyle = '#475569';
+                ctx.fillStyle = '#5f5f52';
                 ctx.font = 'bold 13px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('下部の「式場(背景)」から写真を読み込んでください', canvas.width / 2, canvas.height / 2);
@@ -2136,7 +2138,7 @@
 
                     // 選択枠
                     if (item.id === state.selectedItemId && !state.bgMeasuring && !state.perspectiveSetting) {
-                        ctx.strokeStyle = item.locked ? '#f59e0b' : '#3b82f6';
+                        ctx.strokeStyle = item.locked ? '#f59e0b' : '#d9bc7a';
                         ctx.lineWidth = 2 / effScale;
                         ctx.setLineDash([6 / effScale, 4 / effScale]);
                         ctx.strokeRect(-cw / 2 - 4, -ch / 2 - 4, cw + 8, ch + 8);
@@ -3265,9 +3267,9 @@
             cvs.height = hMm * rawPxPerMm;
             const pctx = cvs.getContext('2d');
 
-            pctx.fillStyle = '#f1f5f9';
+            pctx.fillStyle = '#efe9d6';
             pctx.fillRect(2, 2, cvs.width - 4, cvs.height - 4);
-            pctx.strokeStyle = '#94a3b8';
+            pctx.strokeStyle = '#b3bfa8';
             pctx.lineWidth = 3;
             pctx.strokeRect(2, 2, cvs.width - 4, cvs.height - 4);
 
@@ -3309,8 +3311,8 @@
             const bTopWPx = bucketWTop * rawPxPerMm;
             const bBotWPx = bucketWBottom * rawPxPerMm;
 
-            pctx.fillStyle = '#0f172a';
-            pctx.strokeStyle = '#334155';
+            pctx.fillStyle = '#141413';
+            pctx.strokeStyle = '#43433a';
             pctx.lineWidth = Math.max(1.2, 1.5 * rawPxPerMm);
             pctx.beginPath();
             pctx.moveTo(cx - bTopWPx / 2, bucketTopY);
@@ -3330,7 +3332,7 @@
                 const fx = cx - fudaWPx / 2;
                 const fy = 0;
 
-                pctx.strokeStyle = '#475569';
+                pctx.strokeStyle = '#5f5f52';
                 pctx.lineWidth = Math.max(2, 3 * rawPxPerMm);
                 pctx.beginPath();
                 pctx.moveTo(cx, fudaHPx);
@@ -3365,17 +3367,17 @@
 
             const grad = pctx.createRadialGradient(cx - rx * 0.2, cy - ry * 0.2, rx * 0.1, cx, cy, rx);
             grad.addColorStop(0, '#ffffff');
-            grad.addColorStop(0.75, '#f8fafc');
-            grad.addColorStop(1, '#e2e8f0');
+            grad.addColorStop(0.75, '#fbf7ea');
+            grad.addColorStop(1, '#f3ecd7');
             pctx.fillStyle = grad;
-            pctx.strokeStyle = '#cbd5e1';
+            pctx.strokeStyle = '#ddd8c2';
             pctx.lineWidth = Math.max(1.2, 1.6 * rawPxPerMm);
             pctx.beginPath();
             pctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
             pctx.fill();
             pctx.stroke();
 
-            pctx.strokeStyle = '#e2e8f0';
+            pctx.strokeStyle = '#f3ecd7';
             pctx.lineWidth = Math.max(0.8, 1 * rawPxPerMm);
             for (let rFactor = 0.82; rFactor >= 0.25; rFactor -= 0.18) {
                 pctx.beginPath();
@@ -3398,8 +3400,8 @@
             cvs.height = hMm * rawPxPerMm;
             const pctx = cvs.getContext('2d');
 
-            pctx.fillStyle = 'rgba(59, 130, 246, 0.3)';
-            pctx.strokeStyle = '#3b82f6';
+            pctx.fillStyle = 'rgba(217, 188, 122, 0.3)';
+            pctx.strokeStyle = '#d9bc7a';
             pctx.lineWidth = 3;
             pctx.fillRect(2, 2, cvs.width - 4, cvs.height - 4);
             pctx.strokeRect(2, 2, cvs.width - 4, cvs.height - 4);
@@ -3467,8 +3469,8 @@
             cropCtx.drawImage(img, ox, oy, w, h);
 
             if (state.cropPoints.length > 0) {
-                cropCtx.fillStyle = 'rgba(59, 130, 246, 0.25)';
-                cropCtx.strokeStyle = '#60a5fa';
+                cropCtx.fillStyle = 'rgba(217, 188, 122, 0.25)';
+                cropCtx.strokeStyle = '#ecd28f';
                 cropCtx.lineWidth = 2 / state.cropView.zoom;
                 cropCtx.beginPath();
                 state.cropPoints.forEach((p, idx) => {
@@ -4715,7 +4717,7 @@
             eCanvas.height = outH;
             const eCtx = eCanvas.getContext('2d');
 
-            eCtx.fillStyle = '#0f172a';
+            eCtx.fillStyle = '#141413';
             eCtx.fillRect(0, 0, outW, outH);
             eCtx.save();
             eCtx.globalAlpha = state.bg.alpha ?? 1.0;

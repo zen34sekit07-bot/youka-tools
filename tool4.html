@@ -11,7 +11,7 @@
  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
  <meta name="apple-mobile-web-app-title" content="重ねてチェッカー">  
  <meta name="application-name" content="写真重ねてチェッカー">  
- <meta name="theme-color" content="#0f172a">  
+ <meta name="theme-color" content="#141413">  
  <meta name="color-scheme" content="dark">  
    
  <!-- アプリアイコン & マニフェスト -->  
@@ -32,8 +32,10 @@
  theme: {  
  extend: {  
  colors: {  
- gray: { 850: '#1f2937', 900: '#111827', 950: '#030712' },  
- blue: { 500: '#3b82f6', 600: '#2563eb' }  
+ gray: { 100: '#f3ecd7', 200: '#e7dfc6', 300: '#d8d2ba', 400: '#b5b09a', 500: '#8f8b76', 600: '#605d4e', 700: '#454338', 800: '#2c2b26', 850: '#24231f', 900: '#171716', 950: '#0b0b0a' },
+                        cyan: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#4a3d22', 900: '#332913', 950: '#241d10' },  
+ blue: { 100: '#f7ecd2', 200: '#f4e3ac', 300: '#f4e3ac', 400: '#ecd28f', 500: '#d9bc7a', 600: '#a67c44', 700: '#8a6d3b', 800: '#6e5626', 900: '#3a2f1c', 950: '#241d10' },  
+ slate: { 50: '#f7f4ea', 100: '#f3ecd7', 200: '#e7dfc6', 300: '#ddd8c2', 400: '#b3bfa8', 500: '#8f957e', 600: '#5f5f52', 700: '#43433a', 800: '#2a2a26', 850: '#1d1d1a', 900: '#141413', 950: '#0b0b0a' }  
  }  
  }  
  }  
@@ -50,13 +52,13 @@
  user-select: none;  
  -webkit-tap-highlight-color: transparent;  
  touch-action: none;  
- background: #0f172a;  
- color: #f8fafc;  
+ background: #141413;  
+ color: #fbf7ea;  
  display: flex;  
  flex-direction: column;  
  height: 100dvh;  
  overflow: hidden;  
- accent-color: #3b82f6;  
+ accent-color: #d9bc7a;  
  }  
  canvas { display: block; touch-action: none; outline: none; }  
  .hide-scrollbar::-webkit-scrollbar { display: none; }  
@@ -65,27 +67,27 @@
  color-scheme: dark;  
  }  
  select option {  
- background-color: #0f172a;  
+ background-color: #141413;  
  color: #ffffff;  
  }  
  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }  
  input[type="number"] { -moz-appearance: textfield; }  
  button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }  
    
- input[type="range"] { accent-color: #3b82f6; -webkit-appearance: none; width: 100%; background: transparent; }  
+ input[type="range"] { accent-color: #d9bc7a; -webkit-appearance: none; width: 100%; background: transparent; }  
  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; cursor: pointer; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }  
- input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }  
+ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #43433a; border-radius: 2px; }  
   
  /* Layout */  
- #app-header { flex-shrink: 0; background: #0f172a; border-bottom: 1px solid #1e293b; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
+ #app-header { flex-shrink: 0; background: #141413; border-bottom: 1px solid #2a2a26; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
  #workspace { flex: 1; position: relative; background: #000; overflow: hidden; }  
- #bottom-toolbar { flex-shrink: 0; background: #0f172a; border-top: 1px solid #1e293b; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
+ #bottom-toolbar { flex-shrink: 0; background: #141413; border-top: 1px solid #2a2a26; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
   
  /* Bottom Sheets */  
  .bottom-sheet {  
  position: fixed; bottom: 0; left: 0; width: 100%;  
- background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(16px);  
- border-top: 1px solid #1e293b; border-radius: 20px 20px 0 0;  
+ background: rgba(20, 20, 19, 0.98); backdrop-filter: blur(16px);  
+ border-top: 1px solid #2a2a26; border-radius: 20px 20px 0 0;  
  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);  
  z-index: 60; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);  
  max-height: 75vh; display: flex; flex-direction: column;  
@@ -94,8 +96,8 @@
  .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.3s; }  
  .sheet-overlay.active { opacity: 1; pointer-events: auto; }  
   
- .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; font-weight: bold; gap: 4px; width: 64px; border-radius: 12px; padding: 8px 0; transition: all 0.2s; }  
- .toolbar-btn.active { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }  
+ .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #b3bfa8; font-size: 10px; font-weight: bold; gap: 4px; width: 64px; border-radius: 12px; padding: 8px 0; transition: all 0.2s; }  
+ .toolbar-btn.active { color: #d9bc7a; background: rgba(217, 188, 122, 0.1); }  
  .toolbar-btn svg { width: 24px; height: 24px; margin: 0 auto; }  
  .toolbar-btn.disabled-btn { opacity: 0.25; pointer-events: none; }
   
@@ -107,20 +109,20 @@
  .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; }  
  .modal.active { display: flex; }  
    
- .tab-btn { border-bottom: 2px solid transparent; color: #94a3b8; padding-bottom: 8px; transition: color 0.2s; }  
- .tab-btn.active { color: #fff; border-bottom-color: #3b82f6; }  
+ .tab-btn { border-bottom: 2px solid transparent; color: #b3bfa8; padding-bottom: 8px; transition: color 0.2s; }  
+ .tab-btn.active { color: #fff; border-bottom-color: #d9bc7a; }  
  .tab-content { display: none; }  
  .tab-content.active { display: block; }  
   
  /* Eye Toggle Button */  
  #toggle-ui-btn {   
  position: absolute; bottom: calc(80px + max(env(safe-area-inset-bottom, 0px), 28px)); right: 20px;   
- width: 48px; height: 48px; background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; border-radius: 24px;   
+ width: 48px; height: 48px; background: rgba(20, 20, 19, 0.85); border: 1px solid #43433a; border-radius: 24px;   
  z-index: 40; display: none; align-items: center; justify-content: center; color: #fff;   
  backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.5);   
  transition: transform 0.1s, background-color 0.1s; user-select: none; -webkit-touch-callout: none;  
  }  
- #toggle-ui-btn:active { transform: scale(0.9); background: rgba(59, 130, 246, 0.8); border-color: #3b82f6; }  
+ #toggle-ui-btn:active { transform: scale(0.9); background: rgba(217, 188, 122, 0.8); border-color: #d9bc7a; }  
  </style>  
 </head>  
 <body class="bg-slate-950 text-slate-100 flex flex-col h-[100dvh] overflow-hidden font-sans">  
@@ -548,7 +550,7 @@
        <option value="#ef4444" selected>赤色 (Red)</option>
        <option value="#eab308">黄色 (Yellow)</option>
        <option value="#22c55e">緑色 (Green)</option>
-       <option value="#3b82f6">青色 (Blue)</option>
+       <option value="#d9bc7a">青色 (Blue)</option>
        <option value="#ffffff">白色 (White)</option>
        <option value="eraser">消しゴム (Eraser)</option>
      </select>
@@ -746,9 +748,9 @@
  // --- PWA Setup ---  
  (function setupPWA() {  
  const appSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">  
- <rect width="512" height="512" rx="110" fill="#0f172a"/>  
+ <rect width="512" height="512" rx="110" fill="#141413"/>  
  <defs>  
- <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>  
+ <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d9bc7a"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>  
  <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>  
  </defs>  
  <rect x="96" y="80" width="250" height="250" rx="24" fill="url(#g1)" opacity="0.85"/>  
@@ -764,7 +766,7 @@
   
  const manifest = {  
  name: "写真重ねてチェッカー", short_name: "重ねてチェッカー", description: "2枚の写真を重ねて比較・位置合わせできる現場向けチェックツール",  
- start_url: "./", scope: "./", display: "standalone", orientation: "portrait", background_color: "#0f172a", theme_color: "#0f172a",  
+ start_url: "./", scope: "./", display: "standalone", orientation: "portrait", background_color: "#141413", theme_color: "#141413",  
  icons: [{ src: iconDataUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]  
  };  
  const mLink = document.getElementById('manifest-link');  
@@ -1513,7 +1515,7 @@
  ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = `bold ${t.size}px ${t.font}`;  
  let w = ctx.measureText(t.text).width;  
  ctx.fillRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
- ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2;  
+ ctx.strokeStyle = '#d9bc7a'; ctx.lineWidth = 2;  
  ctx.strokeRect(t.x - w/2 - 10, t.y - t.size/2 - 10, w + 20, t.size + 20);  
  }  
  ctx.translate(t.x, t.y); ctx.font = `bold ${t.size}px ${t.font}`;  
