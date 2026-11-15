@@ -68,26 +68,26 @@
  }  
  select option {  
  background-color: #f4f4f2;  
- color: #ffffff;  
+ color: #171717;  
  }  
  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }  
  input[type="number"] { -moz-appearance: textfield; }  
  button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }  
    
  input[type="range"] { accent-color: #2563eb; -webkit-appearance: none; width: 100%; background: transparent; }  
- input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; cursor: pointer; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }  
+ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #2563eb; cursor: pointer; margin-top: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.6); }  
  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #d9d9d7; border-radius: 2px; }  
   
  /* Layout */  
- #app-header { flex-shrink: 0; background: #f4f4f2; border-bottom: 1px solid #ffffff; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
+ #app-header { flex-shrink: 0; background: #f4f4f2; border-bottom: 1px solid #d9d9d7; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 12px) 16px 12px 16px; transition: transform 0.3s; }  
  #workspace { flex: 1; position: relative; background: #000; overflow: hidden; }  
- #bottom-toolbar { flex-shrink: 0; background: #f4f4f2; border-top: 1px solid #ffffff; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
+ #bottom-toolbar { flex-shrink: 0; background: #f4f4f2; border-top: 1px solid #d9d9d7; z-index: 50; padding: 8px 12px calc(8px + max(env(safe-area-inset-bottom, 0px), 24px)); display: flex; align-items: center; justify-content: space-around; transition: transform 0.3s; }  
   
  /* Bottom Sheets */  
  .bottom-sheet {  
  position: fixed; bottom: 0; left: 0; width: 100%;  
- background: rgba(20, 20, 19, 0.98); backdrop-filter: blur(16px);  
- border-top: 1px solid #ffffff; border-radius: 20px 20px 0 0;  
+ background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(16px);  
+ border-top: 1px solid #d9d9d7; border-radius: 20px 20px 0 0;  
  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);  
  z-index: 60; padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);  
  max-height: 75vh; display: flex; flex-direction: column;  
@@ -110,7 +110,7 @@
  .modal.active { display: flex; }  
    
  .tab-btn { border-bottom: 2px solid transparent; color: #6f6f6f; padding-bottom: 8px; transition: color 0.2s; }  
- .tab-btn.active { color: #fff; border-bottom-color: #2563eb; }  
+ .tab-btn.active { color: #2563eb; border-bottom-color: #2563eb; }  
  .tab-content { display: none; }  
  .tab-content.active { display: block; }  
   
@@ -191,7 +191,23 @@
  </button>  
  </div>  
   
- <!-- Eye Toggle Button -->  
+ 
+<!-- カメラ用フローティングUI（透明度・画面固定・保存） -->
+<div id="camera-ui" class="hidden absolute left-3 right-3 bottom-3 z-40">
+  <div class="rounded-2xl px-3 py-2.5 shadow-2xl" style="background: rgba(15,17,23,0.88); backdrop-filter: blur(10px);">
+    <div class="flex items-center gap-2">
+      <span id="camera-opacity-label" class="text-[12px] font-bold whitespace-nowrap" style="color:#ffffff;">透明度</span>
+      <input type="range" id="camera-opacity-slider" min="0" max="100" step="1" value="100" class="flex-1">
+      <span id="camera-opacity-val" class="text-[12px] font-mono font-bold w-11 text-right" style="color:#ffffff;">100%</span>
+    </div>
+    <div class="flex gap-2 mt-2">
+      <button id="camera-freeze-btn" class="flex-1 py-2.5 rounded-xl font-black text-sm text-[#ffffff]" style="background:#2563eb;">⏸ 画面固定</button>
+      <button id="camera-save-btn" class="flex-1 py-2.5 rounded-xl font-black text-sm text-[#ffffff]" style="background:#059669;">📸 この画面を保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Eye Toggle Button -->  
  <button id="toggle-ui-btn" title="押している間対象画像を非表示">  
  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>  
  </button>  
@@ -1138,7 +1154,8 @@
  updateToolbarAccessForGridCamera();
  updateEyeTargetBoxes();  
  history.pushState({ inEditor: true }, '');
- resize();  
+ resize();
+ if (state.img1.loaded && !state.img2.loaded) { const cb = document.getElementById('camera-toggle-btn'); if (cb) setTimeout(() => cb.click(), 350); }  
  }); 
  
  bindClick('top-history-btn', () => openModal('history-modal'));
@@ -1174,6 +1191,7 @@
  }
  state.mode = 'photo';  
  state.isGridCameraMode = false;
+ setCameraUI(false); setCameraFrozen(false); if (canvas) canvas.style.opacity = '';
  updateToolbarAccessForGridCamera();
  
  const b = document.getElementById('camera-toggle-btn');  
@@ -1898,6 +1916,7 @@
      document.getElementById('bottom-toolbar')?.classList.remove('hidden');
      updateToolbarAccessForGridCamera();
      updateProjectBadge('グリッドカメラ');
+     setCameraUI(true); setCameraFrozen(false);
      history.pushState({ inEditor: true }, '');
      resize();
    } catch(err) { showAlertModal('カメラの起動に失敗しました。カメラへのアクセスを許可してください。', 'カメラエラー'); }
@@ -1956,7 +1975,81 @@
    };
  });
 
- // Camera Toggle Button (グリッドカメラ時と画像比較時で分岐)
+ 
+// ------------------ Camera floating UI ------------------
+let cameraFrozen = false;
+function setCameraUI(visible) {
+  const ui = document.getElementById('camera-ui');
+  if (!ui) return;
+  ui.classList.toggle('hidden', !visible);
+  if (visible) {
+    const slider = document.getElementById('camera-opacity-slider');
+    const label = document.getElementById('camera-opacity-label');
+    const val = document.getElementById('camera-opacity-val');
+    let v = 100;
+    if (state.img1.loaded) {
+      if (label) label.textContent = '画像の透明度';
+      v = Math.round((state.img1.alpha ?? 1) * 100);
+    } else {
+      if (label) label.textContent = 'グリッドの透明度';
+      v = Math.round(parseFloat(canvas.style.opacity || '1') * 100);
+    }
+    if (slider) slider.value = v;
+    if (val) val.textContent = v + '%';
+  }
+}
+function setCameraFrozen(frozen) {
+  cameraFrozen = frozen;
+  const btn = document.getElementById('camera-freeze-btn');
+  if (btn) {
+    btn.innerHTML = frozen ? '▶ 固定を解除' : '⏸ 画面固定';
+    btn.style.background = frozen ? '#dc2626' : '#2563eb';
+  }
+}
+bindInput('camera-opacity-slider', e => {
+  const v = parseInt(e.target.value, 10);
+  const val = document.getElementById('camera-opacity-val');
+  if (val) val.textContent = v + '%';
+  if (state.img1.loaded) {
+    const panel = document.getElementById('alpha-img1');
+    if (panel) { panel.value = (v / 100).toString(); panel.dispatchEvent(new Event('input', { bubbles: true })); }
+    else { state.img1.alpha = v / 100; render(); }
+  } else {
+    canvas.style.opacity = (v / 100).toString();
+  }
+});
+bindClick('camera-freeze-btn', () => {
+  if (!cameraStream) return;
+  if (cameraFrozen) { video.play(); setCameraFrozen(false); }
+  else { video.pause(); setCameraFrozen(true); }
+});
+bindClick('camera-save-btn', () => {
+  const ws = document.getElementById('workspace');
+  if (!ws || !ws.clientWidth) return;
+  const scale = 2;
+  const out = document.createElement('canvas');
+  out.width = ws.clientWidth * scale; out.height = ws.clientHeight * scale;
+  const octx = out.getContext('2d');
+  if (video.videoWidth) {
+    const s = Math.max(out.width / video.videoWidth, out.height / video.videoHeight);
+    const dw = video.videoWidth * s, dh = video.videoHeight * s;
+    octx.drawImage(video, (out.width - dw) / 2, (out.height - dh) / 2, dw, dh);
+  } else { octx.fillStyle = '#000000'; octx.fillRect(0, 0, out.width, out.height); }
+  octx.drawImage(canvas, 0, 0, out.width, out.height);
+  out.toBlob(b => {
+    if (!b) return;
+    const a = document.createElement('a');
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    a.download = 'camera_' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '_' + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds()) + '.jpg';
+    a.href = URL.createObjectURL(b);
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    showAlertModal('カメラ画面を画像として保存しました。', '保存完了');
+  }, 'image/jpeg', 0.92);
+});
+
+// Camera Toggle Button (グリッドカメラ時と画像比較時で分岐)
  bindClick('camera-toggle-btn', async () => {  
  if (state.mode === 'photo') {  
  try {  
@@ -1973,6 +2066,7 @@
  const vEl = document.getElementById('vis-img2'); if(vEl) vEl.checked = false;  
  state.target = 1;   
  const tgtEl = document.querySelector(`input[name="target-img"][value="1"]`); if(tgtEl) tgtEl.click();  
+ setCameraUI(true); setCameraFrozen(false);  
  } catch(err) { showAlertModal('カメラへのアクセスが拒否されたか、エラーが発生しました。', 'カメラエラー'); }  
  } else {  
    // カメラ終了時
@@ -1996,6 +2090,7 @@
        b.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>カメラ比較';
      }
      if (canvas) canvas.style.backgroundColor = '';
+     setCameraUI(false); setCameraFrozen(false); canvas.style.opacity = '';
      if (state.img2.loaded) {
        state.img2.vis = true;
        const vEl = document.getElementById('vis-img2'); if(vEl) vEl.checked = true;

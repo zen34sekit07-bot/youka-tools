@@ -63,7 +63,7 @@
         }
         select option {
             background-color: #f4f4f2;
-            color: #ffffff;
+            color: #171717;
         }
         button {
             touch-action: manipulation;
@@ -2840,13 +2840,13 @@
             ctx.fillRect(0, 0, width, contentHeight);
 
             // タイトル部
-            ctx.fillStyle = '#f4f4f2';
+            ctx.fillStyle = '#171717';
             ctx.font = 'bold 15px sans-serif';
             ctx.textAlign = 'left';
             ctx.fillText(title, 12, 24);
 
             ctx.font = '11px sans-serif';
-            ctx.fillStyle = '#c6c6c4';
+            ctx.fillStyle = '#6f6f6f';
             ctx.fillText(`作成: ${dateStr}  |  供花計: ${totalStands}基`, 12, 44);
 
             const tableWidth = width - 24;
@@ -2883,7 +2883,7 @@
                 curY += rowHeight;
 
                 rows.forEach((r, idx) => {
-                    ctx.fillStyle = (idx % 2 === 1) ? '#171717' : '#ffffff';
+                    ctx.fillStyle = (idx % 2 === 1) ? '#f1f1ef' : '#ffffff';
                     ctx.fillRect(startX, curY, tableWidth, rowHeight);
                     ctx.strokeStyle = '#3d3d3d';
                     ctx.strokeRect(startX, curY, tableWidth, rowHeight);
@@ -2894,7 +2894,7 @@
                     ctx.stroke();
 
                     // 名称（左寄せ）
-                    ctx.fillStyle = '#f4f4f2';
+                    ctx.fillStyle = '#171717';
                     ctx.font = 'bold 12px sans-serif';
                     ctx.textAlign = 'left';
                     ctx.fillText(r[0], startX + 6, curY + 19);
@@ -2914,7 +2914,7 @@
                     const f = state.flowers.find(x => x.id === c.flowerId);
                     return [f ? `[${f.code}] ${f.name}` : c.flowerId, `${c.qty} 基`];
                 });
-                drawSheetTable('💐 発注供花一覧', '供花名', '数量', flowerRows, 65, '#c6c6c4');
+                drawSheetTable('💐 発注供花一覧', '供花名', '数量', flowerRows, 65, '#2563eb');
             }
 
             if (showMats && matEntries.length > 0) {
