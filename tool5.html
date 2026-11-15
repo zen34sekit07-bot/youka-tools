@@ -159,6 +159,7 @@
                 <option value="ayase">綾瀬支店</option>
             </select>
         </div>
+        <button id="btn-clear-cart-top" type="button" class="bg-[#dc2626] hover:bg-[#b91c1c] text-[#ffffff] text-[13px] font-black px-3 py-1.5 rounded-lg shadow active:scale-95 transition shrink-0">リスト全削除</button>
     </div>
 
     <!-- メイン表示領域（タブ切り替え） -->
@@ -206,9 +207,9 @@
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none">🔍</span>
                         <input type="text" id="sogisha-search-input" placeholder="葬儀社名を入力すると候補が出ます" autocomplete="off" class="w-full h-11 bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg pl-9 pr-8 text-sm font-bold text-white outline-none placeholder:text-slate-500 placeholder:font-normal">
                         <button id="btn-clear-sogisha-search" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white font-bold text-sm">✕</button>
-                        <div id="sogisha-suggest-list" class="hidden absolute left-0 right-0 top-[48px] bg-slate-950 border border-slate-700 rounded-xl p-1.5 z-50 shadow-2xl max-h-56 overflow-y-auto hide-scrollbar space-y-1">
-                            <!-- JSで動的レンダリング -->
-                        </div>
+                    </div>
+                    <div id="sogisha-suggest-list" class="hidden mt-1.5 bg-slate-950 border border-slate-700 rounded-xl p-1.5 shadow-2xl max-h-56 overflow-y-auto hide-scrollbar space-y-1">
+                        <!-- JSで動的レンダリング -->
                     </div>
                     <div id="sogisha-selected-row" class="hidden mt-2 flex items-center justify-between bg-indigo-950/50 border border-indigo-500/40 rounded-lg px-2.5 py-2">
                         <span id="sogisha-selected-name" class="text-[13px] font-bold text-indigo-200 truncate"></span>
@@ -382,9 +383,9 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 shadow-sm space-y-2">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <span class="text-xs font-extrabold text-white flex items-center gap-1.5">
-                        <span>💐</span> 追加供花リスト (<span id="cart-item-count">0</span>件)
+                        <span>💐</span> 選択済みリスト (<span id="cart-item-count">0</span>件)
                     </span>
-                    <button id="btn-clear-cart" class="text-[12px] text-rose-400 hover:text-rose-300 font-bold">リスト全削除</button>
+                    <button id="btn-clear-cart" class="bg-[#dc2626] hover:bg-[#b91c1c] text-[#ffffff] text-[12px] font-black px-3 py-1.5 rounded-lg shadow active:scale-95 transition">リスト全削除</button>
                 </div>
 
                 <div id="cart-items-container" class="space-y-2">
@@ -535,7 +536,7 @@
                 <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 relative active:scale-95 transition" data-target="tab-panel-list">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             <span id="nav-cart-badge" class="hidden absolute top-1 right-5 w-4 h-4 rounded-full bg-cyan-500 text-slate-950 font-black text-[13px] flex items-center justify-center">0</span>
-            <span class="text-[12px] font-bold mt-0.5">発注リスト</span>
+            <span class="text-[12px] font-bold mt-0.5">選択済みリスト</span>
         </button>
         <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 active:scale-95 transition" data-target="tab-panel-export">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -942,11 +943,11 @@
                 <div class="space-y-2">
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span class="text-indigo-400 font-bold block mb-0.5">1. カタログ・葬儀社様から素早く選定</span>
-                        <p class="text-[12px] text-slate-400">ユー花園公式カタログや各提携葬儀社様の供花を絞り込み。「+1基」「+1対（2基）」で素早く発注リストへ追加できます。</p>
+                        <p class="text-[12px] text-slate-400">ユー花園公式カタログや各提携葬儀社様の供花を絞り込み。「+1基」「+1対（2基）」で素早く選択済みリストへ追加できます。</p>
                     </div>
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span class="text-cyan-400 font-bold block mb-0.5">2. ポイント花と全花材を自動集計</span>
-                        <p class="text-[12px] text-slate-400">発注リスト・保存画面では、コチョウラン等の「ポイント花まとめ」と、仕分けや仕入れに必要な「全花材まとめ」をタブで瞬時に切り替え確認できます。</p>
+                        <p class="text-[12px] text-slate-400">選択済みリスト・保存画面では、コチョウラン等の「ポイント花まとめ」と、仕分けや仕入れに必要な「全花材まとめ」をタブで瞬時に切り替え確認できます。</p>
                     </div>
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span class="text-amber-700 font-bold block mb-0.5">3. 喪主花・家族花の仕様</span>
@@ -1292,7 +1293,9 @@
                     </div>`;
                 }).join('');
             }
+            const wasHidden = list.classList.contains('hidden');
             list.classList.remove('hidden');
+            if (wasHidden) list.scrollIntoView({ block: 'nearest' });
         }
 
         function syncSogishaPanelUI(isYoukaen, compId) {
@@ -2649,7 +2652,7 @@
 
             const canvas = await prepareCaptureCanvas();
             if (!canvas) {
-                previewCard.innerHTML = '<p class="text-xs text-slate-500 text-center py-4">発注リストがありません</p>';
+                previewCard.innerHTML = '<p class="text-xs text-slate-500 text-center py-4">選択済みリストがありません</p>';
                 return;
             }
             canvas.style.width = '100%';
@@ -2749,7 +2752,7 @@
                             <span class="text-cyan-300 font-mono text-sm font-black">計 ${totalStands} 基</span>
                         </div>
                         <div class="rounded-2xl border border-slate-800 overflow-hidden divide-y divide-slate-800/60 bg-slate-950 shadow-sm">
-                            ${itemsHtml || '<p class="text-slate-500 text-center py-4 text-xs">発注リストがありません</p>'}
+                            ${itemsHtml || '<p class="text-slate-500 text-center py-4 text-xs">選択済みリストがありません</p>'}
                         </div>
                     </div>
                 `;
@@ -3292,12 +3295,16 @@
 
             document.getElementById('btn-clear-cart').addEventListener('click', async () => {
                 if (state.cart.length === 0) return;
-                const ok = await showConfirmModal('発注リストの供花をすべて削除しますか？', '全削除');
+                const ok = await showConfirmModal('選択済みリストの供花をすべて削除しますか？', '全削除');
                 if (ok) {
                     state.cart = [];
                     saveCartState();
                     updateCartUI();
                 }
+            });
+
+            document.getElementById('btn-clear-cart-top')?.addEventListener('click', () => {
+                document.getElementById('btn-clear-cart')?.click();
             });
 
             document.getElementById('btn-clear-all-history')?.addEventListener('click', async () => {
