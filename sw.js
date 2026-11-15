@@ -1,10 +1,11 @@
 // sw.js
-const CACHE_NAME = 'youkaen-tools-v9';
+const CACHE_NAME = 'youkaen-tools-v10';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  './updates.json',
   './pwa_icon_192.png',
   './pwa_icon_512.png',
   './tool1.html',

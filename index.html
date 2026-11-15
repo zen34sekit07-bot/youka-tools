@@ -536,30 +536,23 @@
       const msgEl = document.getElementById('latest-update-msg');
       if (!toolEl) return;
 
-      const hostParts = location.hostname.split('.');
-      const owner = hostParts[0] || '34sekit07-bot';
-      const pathSegs = location.pathname.split('/').filter(Boolean);
-      const repo = (pathSegs.length > 0 && !pathSegs[0].endsWith('.html')) ? pathSegs[0] : location.hostname;
+      // 更新情報は同一オリジンの updates.json から取得する（GitHub API はモバイル回線の
+      // 共用IPだと未認証レート制限に当たりやすく「オフライン（取得不可）」になるため）
+      let results = [];
+      try {
+        const res = await fetch('./updates.json', { cache: 'no-cache' });
+        if (res.ok) {
+          const data = await res.json();
+          const list = Array.isArray(data && data.tools) ? data.tools : [];
+          results = list.map((e) => {
+            const ts = Date.parse(e.date || '');
+            if (isNaN(ts)) return null;
+            return { file: e.file, name: e.name || e.file, ts, message: (e.message || '').split('\n')[0].trim() };
+          }).filter(Boolean);
+        }
+      } catch (_) {}
 
-      const results = await Promise.all(tools.map(async (t) => {
-        try {
-          const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?path=${t.file}&per_page=1`;
-          const res = await fetch(apiUrl, { cache: 'no-cache' });
-          if (res.ok) {
-            const data = await res.json();
-            const commit = data?.[0]?.commit;
-            const dateIso = commit?.committer?.date || commit?.author?.date;
-            const message = (commit?.message || '').split('\n')[0].trim();
-            if (dateIso) {
-              const ts = Date.parse(dateIso);
-              if (!isNaN(ts)) return { ...t, ts, message };
-            }
-          }
-        } catch (_) {}
-        return null;
-      }));
-
-      const valid = results.filter(Boolean).sort((a, b) => b.ts - a.ts);
+      const valid = results.sort((a, b) => b.ts - a.ts);
       if (valid.length === 0) {
         toolEl.textContent = '🔄 最新更新: オフライン（取得不可）';
         return;
