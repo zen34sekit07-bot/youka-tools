@@ -792,12 +792,20 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-[13px] text-slate-200 mb-0.5">供花名称 <span class="text-rose-400">*</span></label>
-                    <input type="text" id="reg-name" placeholder="例: 家族花" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none placeholder:text-slate-600">
-                    <select id="reg-name-select" class="hidden w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none text-xs">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <label class="font-bold text-[13px] text-slate-200">供花名称 <span class="text-rose-400">*</span></label>
+                        <label class="flex items-center gap-1.5 cursor-pointer text-[12px] font-bold text-slate-300">
+                            <input type="checkbox" id="reg-name-free-chk" class="accent-indigo-500 w-4 h-4"> 自由入力
+                        </label>
+                    </div>
+                    <input type="text" id="reg-name" placeholder="供花名称を自由に入力" class="hidden w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none placeholder:text-slate-600">
+                    <select id="reg-name-select" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none text-xs">
                         <option value="洋花">洋花</option>
                         <option value="ミックス">ミックス</option>
                         <option value="菊">菊</option>
+                        <option value="家族花">家族花</option>
+                        <option value="喪主花">喪主花</option>
+                        <option value="その他">その他</option>
                     </select>
                 </div>
 
@@ -3586,6 +3594,10 @@
                 syncRegNameField();
             });
 
+            document.getElementById('reg-name-free-chk')?.addEventListener('change', () => {
+                syncRegNameField();
+            });
+
             document.getElementById('btn-reg-add-new-company')?.addEventListener('click', () => {
                 const inp = document.getElementById('new-company-name-input');
                 if (inp) inp.value = '';
@@ -3928,15 +3940,16 @@
             const cat = document.getElementById('reg-category')?.value;
             const inp = document.getElementById('reg-name');
             const sel = document.getElementById('reg-name-select');
+            const chk = document.getElementById('reg-name-free-chk');
             if (!inp || !sel) return;
-            if (cat === 'general') {
-                sel.classList.remove('hidden');
-                inp.classList.add('hidden');
-            } else {
-                sel.classList.add('hidden');
-                inp.classList.remove('hidden');
-                if (cat === 'family') inp.value = '家族花';
-                else if (cat === 'chief') inp.value = '喪主花';
+            const free = !!chk?.checked;
+            sel.classList.toggle('hidden', free);
+            inp.classList.toggle('hidden', !free);
+            if (!free) {
+                if (cat === 'family') sel.value = '家族花';
+                else if (cat === 'chief') sel.value = '喪主花';
+                else if (cat === 'other') sel.value = 'その他';
+                else if (!['洋花', 'ミックス', '菊'].includes(sel.value)) sel.value = '洋花';
             }
         }
 
@@ -3949,9 +3962,10 @@
             const branch = document.getElementById('reg-branch')?.value || 'all';
             const cat = document.getElementById('reg-category').value;
             const code = document.getElementById('reg-code').value.trim();
-            const name = (cat === 'general')
-                ? (document.getElementById('reg-name-select')?.value || '洋花')
-                : document.getElementById('reg-name').value.trim();
+            const nameFree = !!document.getElementById('reg-name-free-chk')?.checked;
+            const name = nameFree
+                ? document.getElementById('reg-name').value.trim()
+                : (document.getElementById('reg-name-select')?.value || '洋花');
             const price = parseInt(document.getElementById('reg-price').value, 10);
             const height = document.getElementById('reg-height').value.trim();
             const width = document.getElementById('reg-width')?.value.trim() || '';
