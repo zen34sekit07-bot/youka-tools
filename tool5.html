@@ -390,12 +390,12 @@
                     </label>
                 </div>
 
-                <div id="points-summary-grid" class="grid grid-cols-2 gap-2">
+                <div id="points-summary-grid" class="space-y-1.5">
                     <p class="text-xs text-slate-400 col-span-2 text-center py-3">供花を追加すると必要本数がここに自動集計されます</p>
                 </div>
 
                 <div id="materials-summary-grid" class="hidden space-y-2">
-                    <div id="materials-summary-subgrid" class="grid grid-cols-2 gap-2">
+                    <div id="materials-summary-subgrid" class="space-y-1.5">
                         <p class="text-xs text-slate-400 col-span-2 text-center py-3">供花を追加すると花材の内訳がここに自動集計されます</p>
                     </div>
                     <button type="button" id="btn-copy-materials-summary" class="w-full py-2 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 text-emerald-300 font-bold rounded-xl text-xs active:scale-95 transition flex items-center justify-center gap-1.5 shadow-sm">
@@ -844,7 +844,12 @@
 
                 <div>
                     <label class="block font-bold text-[13px] text-slate-200 mb-0.5">供花名称 <span class="text-rose-400">*</span></label>
-                    <input type="text" id="reg-name" placeholder="例: 洋花供花（ピンク）" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none placeholder:text-slate-600">
+                    <input type="text" id="reg-name" placeholder="例: 家族花" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none placeholder:text-slate-600">
+                    <select id="reg-name-select" class="hidden w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none text-xs">
+                        <option value="洋花">洋花</option>
+                        <option value="ミックス">ミックス</option>
+                        <option value="菊">菊</option>
+                    </select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
@@ -887,10 +892,13 @@
             <div class="space-y-2.5 pt-2 border-t border-slate-800 shrink-0">
                 <div>
                     <button id="btn-export-flower-json" type="button" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-black rounded-xl text-xs border border-slate-700 shadow active:scale-95 transition flex items-center justify-center gap-1.5">
-                        <span>📋 申請JSON書出</span>
+                        <span>📋 申請コードをコピー</span>
+                    </button>
+                    <button id="btn-mail-flower-json" type="button" class="w-full py-2.5 mt-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-black rounded-xl text-xs border border-slate-700 shadow active:scale-95 transition flex items-center justify-center gap-1.5">
+                        <span>📧 メールで申請する</span>
                     </button>
                     <p class="text-[12px] text-slate-400 mt-1 leading-normal px-1">
-                        ※データベースへ正式登録申請をする為、コピーした内容を所沢支店施工課の関貴文へ送付してください。
+                        ※申請は短い「申請コード」に変換されます。コピーして関貴文へ送るか、メールで申請してください。型番は任意です（空欄のまま申請できます）。
                     </p>
                 </div>
                 <div>
@@ -1844,6 +1852,7 @@
                 const priceIn = Math.round(item.price * 1.10).toLocaleString();
                 const priceEx = item.price.toLocaleString();
                 const isSpecial = isFamilyOrChief(item);
+                const inCart = state.cart.some(c => c.flowerId === item.id);
                 
                 const colors = detectFlowerColors(item);
                 const colorBadge = renderColorChipsHtml(colors);
@@ -1879,28 +1888,41 @@
 
                 return `
                     <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm select-none overflow-hidden">
-                        <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="w-full px-3 py-3 text-left active:bg-slate-800 transition">
-                            <div class="flex items-center justify-between gap-2">
-                                <h4 class="text-sm font-black text-white truncate flex items-center min-w-0">
-                                    <span class="truncate">${item.name}</span>
-                                    ${colorBadge}
-                                </h4>
-                                <span class="text-slate-400 font-black shrink-0">▼</span>
+                        <div class="px-3 py-3">
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="flex-1 min-w-0 text-left active:opacity-70 transition">
+                                    <h4 class="text-sm font-black text-white truncate flex items-center min-w-0">
+                                        <span class="truncate">${displayFlowerName(item.name)}</span>
+                                        ${colorBadge}
+                                    </h4>
+                                </button>
+                                <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden shrink-0 bg-slate-800">
+                                    <button type="button" onclick="cardQtyStep(${fIdx}, -1)" class="w-11 h-11 text-xl font-black text-slate-100 active:bg-slate-700">−</button>
+                                    <span id="card-qty-h-${fIdx}" class="w-9 text-center font-black text-white text-lg">1</span>
+                                    <button type="button" onclick="cardQtyStep(${fIdx}, 1)" class="w-11 h-11 text-xl font-black text-slate-100 active:bg-slate-700">＋</button>
+                                </div>
+                                <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="text-slate-400 font-black shrink-0 px-1 text-lg active:opacity-70 transition">▼</button>
                             </div>
-                            <div class="flex items-center gap-2 mt-1.5">
-                                <span class="text-[12px] font-mono font-bold text-slate-200 bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded shrink-0">${item.code}</span>
+                            <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="w-full flex items-center gap-2 mt-1.5 text-left active:opacity-70 transition">
+                                ${item.code ? `<span class="text-[12px] font-mono font-bold text-slate-200 bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded shrink-0">${item.code}</span>` : ''}
                                 <span class="font-black text-white text-[13px]">¥${priceEx} <span class="text-[12px] text-slate-400 font-normal">(込 ¥${priceIn})</span></span>
                                 <span class="text-[12px] text-slate-400 font-bold font-mono ml-auto shrink-0">${item.height || ''}</span>
-                            </div>
-                        </button>
+                            </button>
+                        </div>
 
                         <div id="card-acc-exp-${fIdx}" class="hidden px-3 pb-3">
                             <div class="flex items-center gap-2 mt-2.5">
-                                <button type="button" onclick="toggleCardAccordion('mat-${fIdx}')" class="flex-1 text-[13px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-2 rounded-lg active:scale-95 transition">
+                                <span class="text-[12px] font-bold text-slate-400 shrink-0">数量を足す:</span>
+                                <button type="button" onclick="cardQtyStep(${fIdx}, 10)" class="flex-1 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 font-black text-[13px] active:scale-95 transition">+10</button>
+                                <button type="button" onclick="cardQtyStep(${fIdx}, 50)" class="flex-1 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 font-black text-[13px] active:scale-95 transition">+50</button>
+                                <button type="button" onclick="cardQtyStep(${fIdx}, 100)" class="flex-1 py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 font-black text-[13px] active:scale-95 transition">+100</button>
+                            </div>
+                            <div class="flex flex-col gap-2 mt-2.5">
+                                <button type="button" onclick="toggleCardAccordion('mat-${fIdx}')" class="w-full text-left text-[13px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-2 rounded-lg active:scale-95 transition">
                                     ▼ 花材を見る
                                 </button>
                                 ${!isSpecial ? `
-                                <button type="button" onclick="toggleCardAccordion('pt-${fIdx}')" class="flex-1 text-[13px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-2 rounded-lg active:scale-95 transition">
+                                <button type="button" onclick="toggleCardAccordion('pt-${fIdx}')" class="w-full text-left text-[13px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-2 rounded-lg active:scale-95 transition">
                                     ▼ ポイントを見る
                                 </button>` : ''}
                             </div>
@@ -1922,6 +1944,7 @@
                                     <button type="button" onclick="cardQtyStep(${fIdx}, 1)" class="w-10 h-11 text-lg font-black text-slate-200 active:bg-slate-700">＋</button>
                                 </div>
                                 <button type="button" onclick="addToCartFromCard('${item.id}', ${fIdx}, this)" class="flex-1 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-black shadow active:scale-95 transition">＋ リストに追加</button>
+                                ${inCart ? `<button type="button" onclick="removeFlowerFromCart('${item.id}')" class="h-11 px-3.5 rounded-xl bg-[#450a0a] border border-[#ef4444] text-[#fca5a5] font-black active:scale-95 transition shrink-0">リストから削除</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -1936,7 +1959,7 @@
 
             document.getElementById('modal-flower-code').textContent = item.code;
             const mColors = detectFlowerColors(item);
-            document.getElementById('modal-flower-name').innerHTML = `${item.name} ${renderColorChipsHtml(mColors)}`;
+            document.getElementById('modal-flower-name').innerHTML = `${displayFlowerName(item.name)} ${renderColorChipsHtml(mColors)}`;
             const priceIn = Math.round(item.price * 1.10).toLocaleString();
             document.getElementById('modal-flower-price').textContent = `¥${item.price.toLocaleString()} (税込 ¥${priceIn})`;
             document.getElementById('modal-flower-height').textContent = item.height || '標準規格';
@@ -2090,7 +2113,7 @@
                         <div class="flex-1 min-w-0 pr-2">
                             <span class="text-[12px] font-mono font-bold text-cyan-400">${f.code}</span>
                             <div class="flex items-center gap-1 truncate">
-                                <span class="text-xs font-bold text-white truncate">${f.name}</span>
+                                <span class="text-xs font-bold text-white truncate">${displayFlowerName(f.name)}</span>
                                 ${colorBadge}
                             </div>
                         </div>
@@ -2319,23 +2342,38 @@
             if (el) el.classList.toggle('hidden');
         };
 
+        function displayFlowerName(name) {
+            if (!name) return '';
+            return String(name).replace(/洋花供花/g, '洋花').replace(/ミックス供花/g, 'ミックス').replace(/菊供花/g, '菊');
+        }
+
         window.cardQtyStep = function(idx, delta) {
+            const elH = document.getElementById('card-qty-h-' + idx);
             const el = document.getElementById('card-qty-' + idx);
-            if (!el) return;
-            let v = parseInt(el.textContent, 10) || 1;
-            v = Math.min(99, Math.max(1, v + delta));
-            el.textContent = v;
+            const src = el || elH;
+            if (!src) return;
+            let v = parseInt(src.textContent, 10) || 1;
+            v = Math.min(999, Math.max(1, v + delta));
+            if (elH) elH.textContent = v;
+            if (el) el.textContent = v;
+        };
+
+        window.removeFlowerFromCart = function(flowerId) {
+            state.cart = state.cart.filter(c => c.flowerId !== flowerId);
+            saveCartState();
+            updateCartUI();
+            renderFlowerCards();
         };
 
         window.addToCartFromCard = function(flowerId, idx, btn) {
-            const el = document.getElementById('card-qty-' + idx);
+            const el = document.getElementById('card-qty-' + idx) || document.getElementById('card-qty-h-' + idx);
             const qty = el ? (parseInt(el.textContent, 10) || 1) : 1;
             addToCart(flowerId, qty);
             if (btn) {
                 const orig = btn.textContent;
                 btn.textContent = '✓ 追加しました';
                 btn.disabled = true;
-                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1200);
+                setTimeout(() => { renderFlowerCards(); }, 1250);
             }
         };
 
@@ -2435,7 +2473,7 @@
                             <div class="flex-1 min-w-0">
                                 <span class="text-[12px] font-mono font-bold text-slate-300">${flower.code}</span>
                                 <h4 class="text-xs sm:text-sm font-extrabold text-white truncate flex items-center">
-                                    <span>${flower.name}</span>
+                                    <span>${displayFlowerName(flower.name)}</span>
                                     ${colorBadge}
                                 </h4>
                             </div>
@@ -2521,8 +2559,8 @@
             if (summaryGrid) {
                 if (pointKeys.length > 0) {
                     summaryGrid.innerHTML = pointKeys.map(pName => `
-                        <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner">
-                            <span class="text-xs font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(pName)}</span>
+                        <div class="bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner">
+                            <span class="text-[13px] font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(pName)}</span>
                             <span class="text-base font-black text-cyan-300 font-mono shrink-0 ml-1">${pointsSummary[pName]} <span class="text-[12px] text-slate-400">本</span></span>
                         </div>
                     `).join('');
@@ -2543,8 +2581,8 @@
             if (matSummaryGrid) {
                 if (matKeys.length > 0) {
                     matSummaryGrid.innerHTML = matKeys.map(mName => `
-                        <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner" title="${mName}">
-                            <span class="text-xs font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(formatDisplayName(mName))}</span>
+                        <div class="bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner" title="${mName}">
+                            <span class="text-[13px] font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(formatDisplayName(mName))}</span>
                             <span class="text-base font-black text-cyan-300 font-mono shrink-0">${materialsSummary[mName]} <span class="text-[12px] text-slate-400">本</span></span>
                         </div>
                     `).join('');
@@ -2918,7 +2956,7 @@
             if (showFlowers && state.cart.length > 0) {
                 const flowerRows = state.cart.map(c => {
                     const f = state.flowers.find(x => x.id === c.flowerId);
-                    return [f ? `[${f.code}] ${f.name}` : c.flowerId, `${c.qty} 基`];
+                    return [f ? `[${f.code}] ${displayFlowerName(f.name)}` : c.flowerId, `${c.qty} 基`];
                 });
                 drawSheetTable('💐 発注供花一覧', '供花名', '数量', flowerRows, 65, '#2563eb');
             }
@@ -3413,7 +3451,7 @@
                         if (flower) {
                             const colors = detectFlowerColors(flower);
                             const colorTxt = colors.length > 0 ? `（${colors.join('・')}）` : '';
-                            lines.push(`・[${flower.code}] ${flower.name}${colorTxt}: ${c.qty} 基 (¥${(flower.price * c.qty).toLocaleString()})`);
+                            lines.push(`・[${flower.code}] ${displayFlowerName(flower.name)}${colorTxt}: ${c.qty} 基 (¥${(flower.price * c.qty).toLocaleString()})`);
                             if (chkDetail) {
                                 const isSp = isFamilyOrChief(flower);
                                 let mTxt = formatMaterialsText(flower.materials);
@@ -3473,11 +3511,13 @@
                         comps.map(c => `<option value="${c.id}">${c.name.replace(/様+$/, '')} 様</option>`).join('');
                 }
                 renderRegisterFormLists();
+                syncRegNameField();
                 openModal('register-flower-modal');
             });
 
             document.getElementById('reg-category')?.addEventListener('change', () => {
                 renderRegisterFormLists();
+                syncRegNameField();
             });
 
             document.getElementById('btn-reg-add-new-company')?.addEventListener('click', () => {
@@ -3556,6 +3596,20 @@
                 openModal('credits-modal');
             });
 
+            function encodeFlowerRequest(flower) {
+                const bytes = new TextEncoder().encode(JSON.stringify(flower));
+                let bin = '';
+                bytes.forEach(b => { bin += String.fromCharCode(b); });
+                return 'YKF1:' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            }
+            function decodeFlowerRequest(str) {
+                const b64 = String(str).trim().replace(/^YKF1:/, '').replace(/-/g, '+').replace(/_/g, '/');
+                const bin = atob(b64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                return JSON.parse(new TextDecoder().decode(bytes));
+            }
+
             document.getElementById('btn-save-flower-local').addEventListener('click', () => {
                 const flower = buildFlowerFromRegisterForm();
                 if (!flower) return;
@@ -3569,16 +3623,24 @@
             document.getElementById('btn-export-flower-json').addEventListener('click', () => {
                 const flower = buildFlowerFromRegisterForm();
                 if (!flower) return;
-                const jsonStr = JSON.stringify(flower, null, 2);
-                copyTextToClipboard(jsonStr);
-                showAlertModal('供花申請JSONをコピーしました！\nLINEやメールで管理者に送信してください。', '申請JSON生成');
+                copyTextToClipboard(encodeFlowerRequest(flower));
+                showAlertModal('申請コードをコピーしました！\nこのコードを関貴文へ送ってください。そのまま貼るだけでOKです。', '申請コード生成');
+            });
+
+            document.getElementById('btn-mail-flower-json')?.addEventListener('click', () => {
+                const flower = buildFlowerFromRegisterForm();
+                if (!flower) return;
+                const code = encodeFlowerRequest(flower);
+                const subject = encodeURIComponent('【供花追加申請】' + (flower.name || '新規供花'));
+                const body = encodeURIComponent('供花の追加申請です。下の申請コードはそのまま消さずに送信してください。\n\n' + code);
+                location.href = 'mailto:zen34sekit07@gmail.com?subject=' + subject + '&body=' + body;
             });
 
             document.getElementById('btn-admin-apply-json').addEventListener('click', () => {
                 const raw = document.getElementById('admin-json-input').value.trim();
                 if (!raw) return showAlertModal('JSONデータを入力してください', 'エラー');
                 try {
-                    const parsed = JSON.parse(raw);
+                    const parsed = raw.startsWith('YKF1:') ? decodeFlowerRequest(raw) : JSON.parse(raw);
                     const toAdd = Array.isArray(parsed) ? parsed : [parsed];
                     let count = 0;
                     toAdd.forEach(item => {
@@ -3773,6 +3835,22 @@
             }
         };
 
+        function syncRegNameField() {
+            const cat = document.getElementById('reg-category')?.value;
+            const inp = document.getElementById('reg-name');
+            const sel = document.getElementById('reg-name-select');
+            if (!inp || !sel) return;
+            if (cat === 'general') {
+                sel.classList.remove('hidden');
+                inp.classList.add('hidden');
+            } else {
+                sel.classList.add('hidden');
+                inp.classList.remove('hidden');
+                if (cat === 'family') inp.value = '家族花';
+                else if (cat === 'chief') inp.value = '喪主花';
+            }
+        }
+
         function buildFlowerFromRegisterForm() {
             const companySel = document.getElementById('reg-company');
             const company = companySel?.value || 'all';
@@ -3782,7 +3860,9 @@
             const branch = document.getElementById('reg-branch')?.value || 'all';
             const cat = document.getElementById('reg-category').value;
             const code = document.getElementById('reg-code').value.trim();
-            const name = document.getElementById('reg-name').value.trim();
+            const name = (cat === 'general')
+                ? (document.getElementById('reg-name-select')?.value || '洋花')
+                : document.getElementById('reg-name').value.trim();
             const price = parseInt(document.getElementById('reg-price').value, 10);
             const height = document.getElementById('reg-height').value.trim();
             const width = document.getElementById('reg-width')?.value.trim() || '';
@@ -3836,10 +3916,10 @@
                 });
             }
 
-            const finalCode = code || ((cat === 'chief' ? 'MO-' : cat === 'family' ? 'FA-' : 'AY-') + Date.now().toString().slice(-4));
+            const finalCode = code;
 
             return {
-                id: finalCode,
+                id: finalCode || ('CUSTOM_' + Date.now()),
                 code: finalCode,
                 name: name,
                 category: cat,
@@ -3885,7 +3965,7 @@
                             <div class="flex items-center gap-1.5">
                                 <span class="text-[12px] font-mono text-cyan-400 font-bold bg-cyan-950 px-1.5 py-0.2 rounded">${f.code}</span>
                                 <span class="text-xs font-bold text-white truncate flex items-center">
-                                    <span>${f.name}</span>
+                                    <span>${displayFlowerName(f.name)}</span>
                                     ${renderColorChipsHtml(detectFlowerColors(f))}
                                 </span>
                             </div>
