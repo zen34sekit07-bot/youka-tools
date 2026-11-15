@@ -152,18 +152,18 @@
         .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
         .sheet-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #525252; font-size: 12.5px; line-height: 1.15; font-weight: bold; gap: 3px; border-radius: 12px; padding: 9px 0 8px; min-height: 62px; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; position: relative; }
+        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #1c1c1c; font-size: 14px; line-height: 1.15; font-weight: bold; gap: 3px; border-radius: 12px; padding: 7px 0 6px; min-height: 62px; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; position: relative; }
         .toolbar-btn.active { color: #2563eb; background: rgba(37, 99, 235, 0.15); }
-        .toolbar-btn svg { width: 25px; height: 25px; margin: 0 auto; flex-shrink: 0; }
+        .toolbar-btn svg { width: 29px; height: 29px; margin: 0 auto; flex-shrink: 0; }
         @keyframes tabGlowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.55); background: rgba(37,99,235,0.12); } 50% { box-shadow: 0 0 0 7px rgba(37,99,235,0); background: rgba(37,99,235,0.28); } }
         .toolbar-btn.attention { color: #1d4ed8; animation: tabGlowPulse 1.6s ease-in-out infinite; }
-        .toolbar-btn.attention::after { content: '▼'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); color: #2563eb; font-size: 13px; animation: tabArrowBounce 0.9s ease-in-out infinite; }
+        .toolbar-btn.attention::after { content: '▼'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); color: #2563eb; font-size: 16px; animation: tabArrowBounce 0.9s ease-in-out infinite; }
         @keyframes tabArrowBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(4px); } }
-        #bg-hint-balloon { position: fixed; left: 10px; bottom: calc(96px + max(env(safe-area-inset-bottom, 0px), 10px)); z-index: 45; background: #ffffff; color: #1c1c1c; border: 2px solid #2563eb; border-radius: 14px; padding: 10px 14px; font-size: 13.5px; font-weight: bold; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,0.35); max-width: 78vw; cursor: pointer; animation: balloonFloat 1.8s ease-in-out infinite; }
+        #bg-hint-balloon { position: fixed; left: 10px; bottom: calc(96px + max(env(safe-area-inset-bottom, 0px), 10px)); z-index: 45; background: #ffffff; color: #1c1c1c; border: 2px solid #2563eb; border-radius: 14px; padding: 10px 14px; font-size: 15px; font-weight: bold; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,0.35); max-width: 78vw; cursor: pointer; animation: balloonFloat 1.8s ease-in-out infinite; }
         #bg-hint-balloon::after { content: ''; position: absolute; left: 34px; bottom: -9px; width: 16px; height: 16px; background: #ffffff; border-right: 2px solid #2563eb; border-bottom: 2px solid #2563eb; transform: rotate(45deg); }
-        #bg-hint-balloon .balloon-sub { display: block; font-size: 12px; color: #2563eb; margin-top: 2px; }
+        #bg-hint-balloon .balloon-sub { display: block; font-size: 13px; color: #2563eb; margin-top: 2px; }
         @keyframes balloonFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-        .step-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 9999px; background: #2563eb; color: #ffffff; font-size: 14px; font-weight: bold; flex-shrink: 0; }
+        .step-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9999px; background: #2563eb; color: #ffffff; font-size: 16px; font-weight: bold; flex-shrink: 0; }
 
         .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 12px; }
         .modal.active { display: flex; }
@@ -273,33 +273,33 @@
             height: 100%;
         }
     </style>
-<style>html { font-size: 18px; }</style>
+<style>html { font-size: 19px; }</style>
 </head>
 <body>
 
     <div id="top-nav-bar" class="flex justify-between items-center">
-        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1 font-bold">
+        <a href="index.html" onclick="exitToPortal(); return false;" class="text-[13px] text-white hover:text-white inline-flex items-center gap-1 font-bold">
             ← ツール一覧へ
         </a>
         <!-- メニューボタン真上に配置したプロジェクト名 -->
-        <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-gray-300 font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[180px] sm:max-w-[240px]">
+        <div id="current-project-badge" class="flex items-center gap-1.5 text-[13px] text-white font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[180px] sm:max-w-[240px]">
             <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-            <span id="current-project-name-text" class="truncate text-[12px]">新規プロジェクト</span>
+            <span id="current-project-name-text" class="truncate text-[13px]">新規プロジェクト</span>
         </div>
     </div>
 
     <header id="app-header">
         <div class="flex items-center gap-1.5 min-w-0 pr-1">
-            <h1 class="text-sm sm:text-base font-bold text-white tracking-tight whitespace-nowrap truncate">施工シミュレーター</h1>
-            <span id="current-mode-badge" class="hidden text-[13px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0"></span>
+            <h1 class="text-[15px] font-bold text-white tracking-tight whitespace-nowrap shrink-0">施工シミュレーター</h1>
+            <span id="current-mode-badge" class="hidden text-sm font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0"></span>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
-            <button id="btn-guide" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-xs text-blue-400 font-bold flex items-center gap-1 shadow transition whitespace-nowrap shrink-0">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <button id="btn-guide" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-[13px] text-blue-400 font-bold flex items-center gap-1 shadow transition whitespace-nowrap shrink-0">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span>説明</span>
             </button>
-            <button id="btn-settings-menu" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-xs text-white font-bold flex items-center gap-1 shadow transition whitespace-nowrap shrink-0">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <button id="btn-settings-menu" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg border border-gray-700 text-[13px] text-white font-bold flex items-center gap-1 shadow transition whitespace-nowrap shrink-0">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 <span>メニュー</span>
             </button>
         </div>
@@ -308,12 +308,12 @@
     <section id="workspace">
         <canvas id="main-canvas"></canvas>        <!-- 施工シミュレーター文字下のフローティンググリッドコントロール -->  
         <div id="floating-quick-grid-bar" class="absolute top-3 left-3 z-30 flex items-center bg-gray-900/90 border border-gray-700 rounded-xl p-1 shadow-lg backdrop-blur-md">  
-            <button id="btn-quick-grid" class="flex items-center gap-1.5 px-2.5 py-1 text-xs text-cyan-300 font-bold hover:text-white transition active:scale-95">  
+            <button id="btn-quick-grid" class="flex items-center gap-1.5 px-2.5 py-1 text-[13px] text-cyan-300 font-bold hover:text-white transition active:scale-95">  
                 <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>  
                 <span>グリッド</span>  
-                <span id="quick-grid-status" class="text-[12px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 font-mono">OFF</span>  
+                <span id="quick-grid-status" class="text-[13px] px-1.5 py-0.5 rounded bg-gray-800 text-white font-mono">OFF</span>  
             </button>  
-            <button id="btn-quick-grid-gear" class="p-1 text-gray-400 hover:text-cyan-300 border-l border-gray-700 pl-1.5 transition active:scale-95" title="グリッド詳細設定">
+            <button id="btn-quick-grid-gear" class="p-1 text-white hover:text-cyan-300 border-l border-gray-700 pl-1.5 transition active:scale-95" title="グリッド詳細設定">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             </button>
         </div>
@@ -330,52 +330,52 @@
         </div>
 
         <div id="floating-depth-controller">
-            <span class="text-[13px] font-bold text-cyan-300 select-none">奥</span>
+            <span class="text-sm font-bold text-cyan-300 select-none">奥</span>
             <div id="depth-track-container">
                 <div id="depth-track-thumb" style="top: 15%;"></div>
             </div>
-            <span class="text-[13px] font-bold text-cyan-300 select-none">手前</span>
+            <span class="text-sm font-bold text-cyan-300 select-none">手前</span>
         </div>
 
-        <div id="measure-banner" class="hidden absolute top-2 left-2 right-2 bg-gray-900/90 text-white text-xs p-2.5 rounded-xl shadow-2xl border border-blue-500/80 z-40 backdrop-blur-md flex flex-col gap-1.5">
+        <div id="measure-banner" class="hidden absolute top-2 left-2 right-2 bg-gray-900/90 text-white text-[13px] p-2.5 rounded-xl shadow-2xl border border-blue-500/80 z-40 backdrop-blur-md flex flex-col gap-1.5">
             <div class="flex justify-between items-center">
-                <div class="flex items-center gap-2 text-[12px] flex-wrap">
+                <div class="flex items-center gap-2 text-[13px] flex-wrap">
                     <span class="font-bold text-blue-300">【基準寸法】</span>
                     <span class="text-red-300 font-bold">●赤線:実寸を合わせる</span>
                     <span id="measure-blue-line-desc" class="text-cyan-300 font-bold">●青線:測った場所の奥行き</span>
                 </div>
-                <button id="measure-cancel-btn" class="text-gray-400 hover:text-white text-xs px-1.5 shrink-0">✕</button>
+                <button id="measure-cancel-btn" class="text-white hover:text-white text-[13px] px-1.5 shrink-0">✕</button>
             </div>
             
             <div class="flex items-center gap-1.5">
                 <div class="flex-1 flex items-center bg-gray-950 border border-gray-700 rounded-lg px-2.5 py-1 focus-within:border-blue-500">
-                    <span class="text-[13px] text-gray-400 font-bold mr-1.5 whitespace-nowrap">実寸</span>
+                    <span class="text-sm text-white font-bold mr-1.5 whitespace-nowrap">実寸</span>
                     <input type="number" id="inline-bg-dim-input" placeholder="例: 1200" class="w-full bg-transparent text-white font-bold text-sm outline-none text-right pr-1">
-                    <span class="text-[13px] text-gray-400 font-bold whitespace-nowrap">mm</span>
+                    <span class="text-sm text-white font-bold whitespace-nowrap">mm</span>
                 </div>
-                <button id="inline-bg-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition active:scale-95 whitespace-nowrap">
+                <button id="inline-bg-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-1.5 rounded-lg text-[13px] shadow transition active:scale-95 whitespace-nowrap">
                     決定
                 </button>
             </div>
 
             <div id="bg-depth-select-box" class="pt-1 border-t border-gray-800/80 flex items-center justify-between gap-2">
-                <span class="text-[12px] text-cyan-300 font-bold whitespace-nowrap">青線の奥行き:</span>
+                <span class="text-[13px] text-cyan-300 font-bold whitespace-nowrap">青線の奥行き:</span>
                 <div class="flex-1 flex items-center gap-1.5">
-                    <span class="text-[12px] text-gray-400 whitespace-nowrap">手前</span>
+                    <span class="text-[13px] text-white whitespace-nowrap">手前</span>
                     <input type="range" id="bg-baseline-depth-slider" min="0" max="1" step="0.01" value="0.9">
-                    <span class="text-[12px] text-cyan-300 font-bold whitespace-nowrap">奥</span>
+                    <span class="text-[13px] text-cyan-300 font-bold whitespace-nowrap">奥</span>
                 </div>
-                <span id="val-bg-baseline-depth" class="text-[12px] font-mono text-cyan-400 w-10 text-right font-bold whitespace-nowrap">奥(90%)</span>
+                <span id="val-bg-baseline-depth" class="text-[13px] font-mono text-cyan-400 w-10 text-right font-bold whitespace-nowrap">奥(90%)</span>
             </div>
         </div>
 
-        <div id="perspective-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-xs p-3.5 rounded-xl shadow-2xl border border-cyan-500 z-40 backdrop-blur-md flex flex-col gap-2.5">
-            <div class="flex justify-between items-center text-gray-300">
+        <div id="perspective-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-[13px] p-3.5 rounded-xl shadow-2xl border border-cyan-500 z-40 backdrop-blur-md flex flex-col gap-2.5">
+            <div class="flex justify-between items-center text-white">
                 <span class="font-bold text-cyan-300">【奥行き基準】左右の「床と壁の境目」に2本の線を合わせます</span>
-                <button id="perspective-cancel-btn" class="text-gray-400 hover:text-white text-xs px-2 py-0.5">✕</button>
+                <button id="perspective-cancel-btn" class="text-white hover:text-white text-[13px] px-2 py-0.5">✕</button>
             </div>
             <div class="flex items-center gap-2">
-                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-lg text-xs shadow transition active:scale-95">
+                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-lg text-[13px] shadow transition active:scale-95">
                     この奥行きラインで設定完了
                 </button>
             </div>
@@ -384,18 +384,18 @@
         <!-- モード選択全画面オーバーレイ（下部メニューを完全に覆い、上部にツール一覧戻るを配置） -->
         <div id="start-screen-overlay" class="fixed inset-0 bg-gray-950 z-[150] flex flex-col items-center justify-center p-5 text-center overflow-y-auto">
             <div class="absolute top-0 left-0 right-0 p-4 pt-[max(env(safe-area-inset-top,8px),12px)] flex items-center justify-between z-10">
-                <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1 font-bold">
+                <a href="index.html" onclick="exitToPortal(); return false;" class="text-[13px] text-white hover:text-white inline-flex items-center gap-1 font-bold">
                     ← ツール一覧へ
                 </a>
             </div>
             <div class="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-2xl space-y-5 my-auto relative">
                 <!-- 既存作業中のキャンセルボタン -->
-                <button id="mode-select-cancel-x" class="hidden absolute top-4 right-4 text-gray-400 hover:text-white p-1">
+                <button id="mode-select-cancel-x" class="hidden absolute top-4 right-4 text-white hover:text-white p-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
                 <div>
                     <h2 class="text-lg font-bold text-white tracking-wide">施工シミュレーター</h2>
-                    <p class="text-xs text-gray-400 mt-1">作業スタイルに合わせて動作モードを選択してください</p>
+                    <p class="text-[13px] text-white mt-1">作業スタイルに合わせて動作モードを選択してください</p>
                 </div>
 
                 <div class="space-y-3 text-left">
@@ -404,9 +404,9 @@
                             <span class="text-sm font-bold text-white group-hover:text-blue-400 flex items-center gap-2">
                                 ⚡ かんたんモード
                             </span>
-                            <span class="text-[12px] bg-gray-700 text-gray-300 px-2 py-0.5 rounded font-bold">手軽・標準</span>
+                            <span class="text-[13px] bg-gray-700 text-white px-2 py-0.5 rounded font-bold">手軽・標準</span>
                         </div>
-                        <p class="text-[13px] text-gray-400 leading-relaxed mt-1">
+                        <p class="text-sm text-white leading-relaxed mt-1">
                             奥行き（パース）の複雑な設定を行わず、直感的にサクサク配置できるモードです。<br>
                             ※凸型式場や奥行きが極端に深い会場では、手前と奥で若干のサイズ感の差が生じる場合があります。
                         </p>
@@ -417,19 +417,19 @@
                             <span class="text-sm font-bold text-white group-hover:text-cyan-400 flex items-center gap-2">
                                 📐 精密モード（パース対応）
                             </span>
-                            <span class="text-[12px] bg-blue-600 text-[#ffffff] px-2 py-0.5 rounded font-bold">推奨</span>
+                            <span class="text-[13px] bg-blue-600 text-[#ffffff] px-2 py-0.5 rounded font-bold">推奨</span>
                         </div>
-                        <p class="text-[13px] text-gray-400 leading-relaxed mt-1">
+                        <p class="text-sm text-white leading-relaxed mt-1">
                             床と壁のラインから奥行き比率を算出し、手前と奥の遠近感を考慮した正確な縮尺シミュレーションが可能です。<br>
                             ※パース設定を行わずに標準の遠近感のまま使用することも可能です。
                         </p>
                     </button>
                 </div>
 
-                <div class="bg-gray-950/80 p-3 rounded-xl border border-gray-800 text-[12px] text-gray-400 text-left leading-relaxed">
+                <div class="bg-gray-950/80 p-3 rounded-xl border border-gray-800 text-[13px] text-white text-left leading-relaxed">
                     💡 選択したモードは自動保存され、次回からは直接作業画面が開きます。モードはいつでも右上の<strong>「メニュー」＞「動作モードの変更」</strong>から切り替え可能です。
                 </div>
-                <button id="mode-select-cancel-btn" class="hidden w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl border border-gray-700 text-xs transition">
+                <button id="mode-select-cancel-btn" class="hidden w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-[13px] transition">
                     キャンセルして作業に戻る
                 </button>
             </div>
@@ -468,80 +468,38 @@
     <div class="bottom-sheet" id="sheet-bg">
         <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
         <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
-            <h3 class="text-base font-bold text-white">式場（背景）の設定</h3>
-            <span id="bg-status-label" class="text-[13px] text-gray-500 font-mono">未読み込み</span>
+            <h3 class="text-lg font-bold text-white">式場（背景）の設定</h3>
+            <span id="bg-status-label" class="text-sm text-white font-mono">未読み込み</span>
         </div>
-        <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1 space-y-4">
-            <div class="border-2 border-blue-200 rounded-2xl p-4 space-y-2.5">
-                <div class="flex items-center gap-2">
-                    <span class="step-num">1</span>
-                    <span class="text-base font-bold text-white">画像を選ぶ</span>
-                </div>
-                <p class="text-[13px] text-gray-400 leading-relaxed">式場の写真を読み込みます。まずはここから始めてください。</p>
-                <button id="bg-upload-new-trigger" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm shadow transition active:scale-[0.98]">
-                    📷 写真から式場を読み込む / 変更
-                </button>
-            </div>
-
-            <div id="bg-perspective-box" class="border-2 border-[#d9d9d7] rounded-2xl p-4 space-y-2.5">
-                <div class="flex items-center gap-2">
-                    <span class="step-num">2</span>
-                    <span class="text-base font-bold text-white">パース設定（奥行き）</span>
-                </div>
-                <p class="text-[13px] text-gray-400 leading-relaxed">式場の奥行きを設定します。床と壁の境目にラインを合わせると、手前と奥でパーツの大きさが正確に変わります。</p>
-                <div class="flex items-center justify-between gap-2">
-                    <span id="bg-perspective-status" class="text-[13px] text-gray-500">未設定（標準遠近）</span>
-                    <button id="bg-perspective-setup-trigger" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 px-4 rounded-xl text-sm transition active:scale-95 shrink-0">
-                        📐 設定・再調整
-                    </button>
-                </div>
-            </div>
-
-            <div class="border-2 border-[#d9d9d7] rounded-2xl p-4 space-y-2.5">
-                <div class="flex items-center gap-2">
-                    <span class="step-num">3</span>
-                    <span class="text-base font-bold text-white">基準寸法</span>
-                </div>
-                <p class="text-[13px] text-gray-400 leading-relaxed">画像に写る実際の寸法を測ります。祭壇の幅など、分かっている長さを写真の上で2点指定してください。</p>
-                <button id="bg-remeasure-trigger" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-blue-600 text-blue-700 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                    基準寸法を設定・再設定
-                </button>
-                <button id="bg-save-library-trigger" class="w-full bg-[#ffffff] hover:bg-gray-50 border-2 border-[#d9d9d7] text-gray-100 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                    この式場を保存する
-                </button>
-                <p class="text-[12px] text-gray-400">保存した式場は、下の「端末内保存」からいつでも呼び出せます。</p>
-            </div>
-
-            <div class="border-2 border-[#d9d9d7] rounded-2xl p-3.5 space-y-3">
+        <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-3">
+            <div class="border-2 border-[#d9d9d7] rounded-2xl p-3 space-y-2.5">
                 <div class="flex items-center justify-between">
-                    <span class="text-base font-bold text-white">保存した式場</span>
+                    <span class="text-lg font-bold text-white">保存した式場</span>
                     <div class="flex items-center gap-1.5">
-                        <button type="button" class="btn-library-help bg-[#ffffff] border border-[#d9d9d7] text-blue-600 px-2.5 py-1.5 rounded-lg transition shrink-0 text-[13px] font-bold" title="端末内保存・オンライン共有の説明">
+                        <button type="button" class="btn-library-help bg-[#ffffff] border border-[#d9d9d7] text-blue-600 px-2.5 py-1.5 rounded-lg transition shrink-0 text-sm font-bold" title="端末内保存・オンライン共有の説明">
                             ？ 説明
                         </button>
-                        <button type="button" id="btn-refresh-venue-shared" class="hidden bg-[#ffffff] border border-blue-600 text-blue-700 px-2.5 py-1.5 rounded-lg transition active:scale-95 shrink-0 text-[13px] font-bold" title="オンライン共有を再読込">
+                        <button type="button" id="btn-refresh-venue-shared" class="hidden bg-[#ffffff] border border-blue-600 text-blue-700 px-2.5 py-1.5 rounded-lg transition active:scale-95 shrink-0 text-sm font-bold" title="オンライン共有を再読込">
                             ↻ 再読込
                         </button>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" id="tab-venue-local" class="py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-local-on">端末内保存</button>
-                    <button type="button" id="tab-venue-shared" class="py-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7] text-gray-300 font-bold text-sm transition">オンライン共有</button>
+                <div class="flex bg-[#e4e4e2] rounded-xl p-1 gap-1">
+                    <button type="button" id="tab-venue-local" class="flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition lib-local-on">端末内保存</button>
+                    <button type="button" id="tab-venue-shared" class="flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition">オンライン共有</button>
                 </div>
-                <button type="button" id="btn-upload-venue-shared" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] text-sm font-bold py-3 rounded-xl shadow transition active:scale-[0.98]">
+                <button type="button" id="btn-upload-venue-shared" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] text-base font-bold py-2.5 rounded-xl shadow transition active:scale-[0.98]">
                     ⬆ 式場をアップロード
                 </button>
                 <!-- 端末内保存の検索・並び替え（式場） -->
                 <div id="venue-local-controls" class="space-y-1.5">
                     <div class="flex items-center gap-1.5">
                         <div class="relative flex-1">
-                            <input type="text" id="venue-local-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
-                            <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <button type="button" id="venue-local-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
+                            <input type="text" id="venue-local-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                            <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="venue-local-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
                         </div>
-                        <select id="venue-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                        <select id="venue-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
                             <option value="newest">新しい順</option>
                             <option value="oldest">古い順</option>
                             <option value="kana">あいうえお昇順</option>
@@ -553,17 +511,17 @@
                 <div id="venue-shared-controls" class="hidden space-y-1.5">
                     <div class="flex items-center gap-1.5">
                         <div class="relative flex-1">
-                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
-                            <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <button type="button" id="venue-shared-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
+                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                            <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="venue-shared-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
                         </div>
-                        <select id="venue-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                        <select id="venue-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
                             <option value="newest">新しい順</option>
                             <option value="oldest">古い順</option>
                             <option value="kana">あいうえお昇順</option>
                             <option value="kana-desc">あいうえお降順</option>
                         </select>
-                        <select id="venue-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                        <select id="venue-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
                             <option value="all">全行</option>
                             <option value="a">あ行</option>
                             <option value="ka">か行</option>
@@ -580,10 +538,52 @@
                     </div>
                 </div>
                 <div id="saved-venues-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
-                    <p class="text-[13px] text-gray-500 text-center py-2">保存された式場はありません</p>
+                    <p class="text-sm text-white text-center py-2">保存された式場はありません</p>
                 </div>
             </div>
-            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeSheet('sheet-bg')">閉じる</button>
+            <div class="border-2 border-blue-200 rounded-2xl p-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="step-num">1</span>
+                    <span class="text-lg font-bold text-white">画像を選ぶ</span>
+                </div>
+                <p class="text-sm text-white leading-relaxed">式場の写真を読み込みます。まずはここから始めてください。</p>
+                <button id="bg-upload-new-trigger" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-base shadow transition active:scale-[0.98]">
+                    📷 写真から式場を読み込む / 変更
+                </button>
+            </div>
+
+            <div id="bg-perspective-box" class="border-2 border-[#d9d9d7] rounded-2xl p-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="step-num">2</span>
+                    <span class="text-lg font-bold text-white">パース設定（奥行き）</span>
+                </div>
+                <p class="text-sm text-white leading-relaxed">式場の奥行きを設定します。床と壁の境目にラインを合わせると、手前と奥でパーツの大きさが正確に変わります。</p>
+                <div class="flex items-center justify-between gap-2">
+                    <span id="bg-perspective-status" class="text-sm text-white">未設定（標準遠近）</span>
+                    <button id="bg-perspective-setup-trigger" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2 px-4 rounded-xl text-base transition active:scale-95 shrink-0">
+                        📐 設定・再調整
+                    </button>
+                </div>
+            </div>
+
+            <div class="border-2 border-[#d9d9d7] rounded-2xl p-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="step-num">3</span>
+                    <span class="text-lg font-bold text-white">基準寸法</span>
+                </div>
+                <p class="text-sm text-white leading-relaxed">画像に写る実際の寸法を測ります。祭壇の幅など、分かっている長さを写真の上で2点指定してください。</p>
+                <button id="bg-remeasure-trigger" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-blue-600 text-blue-700 font-bold py-2.5 rounded-xl text-base flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    基準寸法を設定・再設定
+                </button>
+                <button id="bg-save-library-trigger" class="w-full bg-[#ffffff] hover:bg-gray-50 border-2 border-[#d9d9d7] text-gray-100 font-bold py-2.5 rounded-xl text-base flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    この式場を保存する
+                </button>
+                <p class="text-[13px] text-white">保存した式場は、上の「保存した式場」からいつでも呼び出せます。</p>
+            </div>
+
+            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3 rounded-xl text-base transition active:scale-[0.98]" onclick="closeSheet('sheet-bg')">閉じる</button>
         </div>
     </div>
 
@@ -594,53 +594,53 @@
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     パーツの追加
                 </h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             
             <div class="overflow-y-auto hide-scrollbar space-y-3.5 flex-1">
                 <div id="modal-save-part-box" class="hidden bg-blue-950/40 border border-blue-500/40 rounded-xl p-3 flex items-center justify-between">
                     <div class="overflow-hidden pr-2">
-                        <span class="text-[12px] text-blue-300 block">選択中のパーツ</span>
-                        <span id="modal-selected-part-name" class="text-xs font-bold text-white truncate block"></span>
+                        <span class="text-[13px] text-blue-300 block">選択中のパーツ</span>
+                        <span id="modal-selected-part-name" class="text-[13px] font-bold text-white truncate block"></span>
                     </div>
-                    <button id="modal-save-part-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3 py-1.5 rounded-lg text-xs shadow whitespace-nowrap transition active:scale-95">
+                    <button id="modal-save-part-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3 py-1.5 rounded-lg text-[13px] shadow whitespace-nowrap transition active:scale-95">
                         ライブラリに保存
                     </button>
                 </div>
 
-                <button id="upload-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold p-3.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg transition active:scale-98">
+                <button id="upload-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold p-3 rounded-xl text-base flex items-center justify-center gap-2 shadow-lg transition active:scale-98">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     写真からパーツを作成（切り抜き）
                 </button>
 
-                <div class="border-2 border-[#d9d9d7] rounded-2xl p-3.5 space-y-3">
+                <div class="border-2 border-[#d9d9d7] rounded-2xl p-3 space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-base font-bold text-white">保存したパーツ</span>
+                        <span class="text-lg font-bold text-white">保存したパーツ</span>
                         <div class="flex items-center gap-1.5">
-                            <button type="button" class="btn-library-help bg-[#ffffff] border border-[#d9d9d7] text-blue-600 px-2.5 py-1.5 rounded-lg transition shrink-0 text-[13px] font-bold" title="端末内保存・オンライン共有の説明">
+                            <button type="button" class="btn-library-help bg-[#ffffff] border border-[#d9d9d7] text-blue-600 px-2.5 py-1.5 rounded-lg transition shrink-0 text-sm font-bold" title="端末内保存・オンライン共有の説明">
                                 ？ 説明
                             </button>
-                            <button type="button" id="btn-refresh-part-shared" class="hidden bg-[#ffffff] border border-blue-600 text-blue-700 px-2.5 py-1.5 rounded-lg transition active:scale-95 shrink-0 text-[13px] font-bold" title="オンライン共有を再読込">
+                            <button type="button" id="btn-refresh-part-shared" class="hidden bg-[#ffffff] border border-blue-600 text-blue-700 px-2.5 py-1.5 rounded-lg transition active:scale-95 shrink-0 text-sm font-bold" title="オンライン共有を再読込">
                                 ↻ 再読込
                             </button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="tab-part-local" class="py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-local-on">端末内保存</button>
-                        <button type="button" id="tab-part-shared" class="py-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7] text-gray-300 font-bold text-sm transition">オンライン共有</button>
+                    <div class="flex bg-[#e4e4e2] rounded-xl p-1 gap-1">
+                        <button type="button" id="tab-part-local" class="flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition lib-local-on">端末内保存</button>
+                        <button type="button" id="tab-part-shared" class="flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition">オンライン共有</button>
                     </div>
-                    <button type="button" id="btn-upload-part-shared" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] text-sm font-bold py-3 rounded-xl shadow transition active:scale-[0.98]">
+                    <button type="button" id="btn-upload-part-shared" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] text-base font-bold py-2.5 rounded-xl shadow transition active:scale-[0.98]">
                         ⬆ パーツをアップロード
                     </button>
                     <!-- 端末内保存の検索・並び替え（パーツ） -->
                     <div id="part-local-controls" class="space-y-1.5">
                         <div class="flex items-center gap-1.5">
                             <div class="relative flex-1">
-                                <input type="text" id="part-local-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
-                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <button type="button" id="part-local-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
+                                <input type="text" id="part-local-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                                <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <button type="button" id="part-local-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
                             </div>
-                            <select id="part-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                            <select id="part-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
                                 <option value="newest">新しい順</option>
                                 <option value="oldest">古い順</option>
                                 <option value="kana">あいうえお昇順</option>
@@ -652,17 +652,17 @@
                     <div id="part-shared-controls" class="hidden space-y-1.5">
                         <div class="flex items-center gap-1.5">
                             <div class="relative flex-1">
-                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-400 outline-none focus:border-blue-500">
-                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <button type="button" id="part-shared-search-clear" class="hidden text-gray-500 text-sm absolute right-2 top-2">✕</button>
+                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                                <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <button type="button" id="part-shared-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
                             </div>
-                            <select id="part-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                            <select id="part-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
                                 <option value="newest">新しい順</option>
                                 <option value="oldest">古い順</option>
                                 <option value="kana">あいうえお昇順</option>
                                 <option value="kana-desc">あいうえお降順</option>
                             </select>
-                            <select id="part-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-[13px] font-bold text-gray-100 outline-none shrink-0">
+                            <select id="part-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
                                 <option value="all">全行</option>
                                 <option value="a">あ行</option>
                                 <option value="ka">か行</option>
@@ -679,49 +679,49 @@
                         </div>
                     </div>
                     <div id="saved-parts-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
-                        <p class="text-[13px] text-gray-500 text-center py-2">保存されたパーツはありません</p>
+                        <p class="text-sm text-white text-center py-2">保存されたパーツはありません</p>
                     </div>
                 </div>
 
                 <div class="bg-gray-950 border border-gray-800 rounded-xl p-3">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-gray-200" id="catalog-crumb">素材カテゴリ選択</span>
-                        <button id="catalog-back-btn" class="hidden text-[12px] text-blue-400 font-bold bg-gray-800 px-2 py-0.5 rounded border border-gray-700">← 戻る</button>
+                        <span class="text-[13px] font-bold text-gray-200" id="catalog-crumb">素材カテゴリ選択</span>
+                        <button id="catalog-back-btn" class="hidden text-[13px] text-blue-400 font-bold bg-gray-800 px-2 py-0.5 rounded border border-gray-700">← 戻る</button>
                     </div>
                     <div id="catalog-tree-container" class="space-y-2"></div>
                 </div>
             </div>
-            <button class="close-modal-btn w-full mt-3 bg-gray-100 text-[#ffffff] font-bold py-3 rounded-xl text-sm shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-3 bg-gray-100 text-[#ffffff] font-bold py-3 rounded-xl text-base shrink-0">閉じる</button>
         </div>
     </div>
 
     <div id="part-upload-picker-modal" class="modal" style="z-index: 130;">
         <div class="bg-[#ffffff] border border-gray-300 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center mb-2 shrink-0 border-b border-[#d9d9d7] pb-2">
-                <h3 class="text-base font-bold text-white">アップロードするパーツを選ぶ</h3>
-                <button class="close-modal-btn text-gray-500 hover:text-gray-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <h3 class="text-lg font-bold text-white">アップロードするパーツを選ぶ</h3>
+                <button class="close-modal-btn text-white hover:text-gray-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <p class="text-[13px] text-gray-400 mb-3 shrink-0">今、画面に表示中のパーツ一覧です。アップロードすると「オンライン共有」に入り、他の端末からも使えるようになります。</p>
+            <p class="text-sm text-white mb-3 shrink-0">今、画面に表示中のパーツ一覧です。アップロードすると「オンライン共有」に入り、他の端末からも使えるようになります。</p>
             <div id="part-upload-picker-list" class="overflow-y-auto hide-scrollbar space-y-2 flex-1"></div>
-            <button class="close-modal-btn w-full mt-3 bg-gray-100 text-[#ffffff] font-bold py-3 rounded-xl text-sm shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-3 bg-gray-100 text-[#ffffff] font-bold py-3 rounded-xl text-base shrink-0">閉じる</button>
         </div>
     </div>
 
     <div class="bottom-sheet" id="sheet-layers">
         <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
         <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
-            <h3 class="text-base font-bold text-white">レイヤー・調整</h3>
-            <span class="text-[12px] text-gray-500">上が手前に表示</span>
+            <h3 class="text-lg font-bold text-white">レイヤー・調整</h3>
+            <span class="text-[13px] text-white">上が手前に表示</span>
         </div>
-        <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1">
-            <p class="text-[12px] text-gray-400 mb-2">パーツの「調整」ボタンで、大きさ・位置・傾きを変えられます。</p>
+        <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1">
+            <p class="text-[13px] text-white mb-2">パーツの「調整」ボタンで、大きさ・位置・傾きを変えられます。</p>
             <div id="layers-list" class="space-y-2"></div>
         </div>
         <div class="px-5 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0 space-y-3">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-lg overflow-hidden border border-[#d9d9d7] bg-black flex items-center justify-center shrink-0">
                     <img id="layer-bg-thumb" class="max-w-full max-h-full object-contain hidden">
-                    <span id="layer-bg-thumb-empty" class="text-[10px] text-gray-400 font-bold">背景</span>
+                    <span id="layer-bg-thumb-empty" class="text-[10px] text-white font-bold">背景</span>
                 </div>
                 <div class="flex-1">
                     <div class="flex justify-between items-center">
@@ -729,35 +729,35 @@
                         <span id="val-bg-alpha" class="font-mono text-blue-600 font-bold text-sm">100%</span>
                     </div>
                     <input type="range" id="bg-alpha-slider" min="0.1" max="1.0" step="0.02" value="1.0" class="w-full">
-                    <span class="text-[11px] text-gray-400">背景の不透明度（薄くするとパーツが見やすくなります）</span>
+                    <span class="text-[11px] text-white">背景の不透明度（薄くするとパーツが見やすくなります）</span>
                 </div>
             </div>
-            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeSheet('sheet-layers')">閉じる</button>
+            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3 rounded-xl text-base transition active:scale-[0.98]" onclick="closeSheet('sheet-layers')">閉じる</button>
         </div>
     </div>
 
     <div class="bottom-sheet" id="sheet-adjust">
         <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
         <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
-            <h3 class="text-base font-bold text-white">パーツの調整</h3>
-            <button id="selected-item-title-btn" class="text-[13px] text-blue-700 font-bold bg-blue-50 border border-blue-300 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-blue-100 transition active:scale-95" title="レイヤー一覧で切り替え">
+            <h3 class="text-lg font-bold text-white">パーツの調整</h3>
+            <button id="selected-item-title-btn" class="text-sm text-blue-700 font-bold bg-blue-50 border border-blue-300 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-blue-100 transition active:scale-95" title="レイヤー一覧で切り替え">
                 <span id="selected-item-title">未選択</span>
-                <span class="text-[12px] text-blue-600">▼切替</span>
+                <span class="text-[13px] text-blue-600">▼切替</span>
             </button>
         </div>
-        <div class="overflow-y-auto px-5 py-4 hide-scrollbar flex-1 space-y-4" id="adjust-panel">
-            <div id="no-item-selected" class="text-center py-6 text-xs text-gray-500">
+        <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-4" id="adjust-panel">
+            <div id="no-item-selected" class="text-center py-6 text-[13px] text-white">
                 画面上のパーツをタップして選択してください。
             </div>
             <div id="has-item-selected" class="hidden space-y-4">
                 <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-4">
                     <div id="adjust-depth-box">
-                        <div class="flex justify-between items-center text-xs text-gray-300 mb-1.5">
+                        <div class="flex justify-between items-center text-[13px] text-white mb-1.5">
                             <span class="font-bold text-cyan-300">設置する奥行き</span>
                             <span id="val-item-depth" class="font-mono text-cyan-400 font-bold">奥側</span>
                         </div>
                         <input type="range" id="item-depth-slider" min="0" max="1" step="0.01" value="0.9">
-                        <div class="flex justify-between text-[13px] text-gray-500 px-1 mt-0.5 font-mono">
+                        <div class="flex justify-between text-sm text-white px-1 mt-0.5 font-mono">
                             <span>手前側 (0%)</span>
                             <span>中央</span>
                             <span>最奥側 (100%)</span>
@@ -765,33 +765,33 @@
                     </div>
 
                     <div class="pt-2 border-t border-gray-800">
-                        <div class="flex justify-between items-center text-xs text-gray-300 mb-1.5">
+                        <div class="flex justify-between items-center text-[13px] text-white mb-1.5">
                             <span class="font-bold">サイズ微調整 (倍率)</span>
                             <div class="flex items-center gap-2">
                                 <span id="val-item-scale" class="font-mono text-blue-400 font-bold">100%</span>
-                                <button id="reset-scale-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[12px]">100%</button>
+                                <button id="reset-scale-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-700 text-[13px]">100%</button>
                             </div>
                         </div>
                         <input type="range" id="item-scale-slider" min="0.2" max="1.8" step="0.01" value="1.0">
                     </div>
 
                     <div class="pt-2 border-t border-gray-800">
-                        <div class="flex justify-between items-center text-xs text-gray-300 mb-1.5">
+                        <div class="flex justify-between items-center text-[13px] text-white mb-1.5">
                             <span class="font-bold">角度 (回転)</span>
                             <div class="flex items-center gap-2">
                                 <span id="val-item-rotate" class="font-mono text-blue-400 font-bold">0°</span>
-                                <button id="reset-rotate-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[12px]">0°</button>
+                                <button id="reset-rotate-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-700 text-[13px]">0°</button>
                             </div>
                         </div>
                         <input type="range" id="item-rotate-slider" min="-180" max="180" step="1" value="0">
                     </div>
 
                     <div class="pt-2 border-t border-gray-800">
-                        <div class="flex justify-between items-center text-xs text-gray-300 mb-1.5">
+                        <div class="flex justify-between items-center text-[13px] text-white mb-1.5">
                             <span class="font-bold">不透明度</span>
                             <div class="flex items-center gap-2">
                                 <span id="val-item-alpha" class="font-mono text-blue-400 font-bold">100%</span>
-                                <button id="reset-alpha-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700 text-[12px]">100%</button>
+                                <button id="reset-alpha-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-700 text-[13px]">100%</button>
                             </div>
                         </div>
                         <input type="range" id="item-alpha-slider" min="0.1" max="1.0" step="0.02" value="1.0">
@@ -799,39 +799,39 @@
                 </div>
 
                 <div class="grid grid-cols-6 gap-1.5">
-                    <button id="item-lock-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
-                        <span id="item-lock-icon" class="text-xs">🔒</span>
-                        <span id="item-lock-label" class="text-[12px]">ロック</span>
+                    <button id="item-lock-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-amber-300 font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow">
+                        <span id="item-lock-icon" class="text-[13px]">🔒</span>
+                        <span id="item-lock-label" class="text-[13px]">ロック</span>
                     </button>
-                    <button id="item-flip-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
+                    <button id="item-flip-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                        <span class="text-[12px]">反転</span>
+                        <span class="text-[13px]">反転</span>
                     </button>
-                    <button id="item-duplicate-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-cyan-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
+                    <button id="item-duplicate-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-cyan-300 font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        <span class="text-[12px]">複製</span>
+                        <span class="text-[13px]">複製</span>
                     </button>
-                    <button id="item-mirror-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-teal-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow" title="式場中心で左右対称に複製">
+                    <button id="item-mirror-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-teal-300 font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow" title="式場中心で左右対称に複製">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m-7-9l7-7 7 7M5 12l7 7 7-7"></path></svg>
-                        <span class="text-[12px]">対称</span>
+                        <span class="text-[13px]">対称</span>
                     </button>
-                    <button id="re-measure-part-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-300 text-amber-700 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
+                    <button id="re-measure-part-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-300 text-amber-700 font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        <span class="text-[12px]">寸法</span>
+                        <span class="text-[13px]">寸法</span>
                     </button>
-                    <button id="save-part-library-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-300 text-green-700 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow">
+                    <button id="save-part-library-btn" class="bg-gray-800 hover:bg-gray-700 border border-gray-300 text-green-700 font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                        <span class="text-[12px]">保存</span>
+                        <span class="text-[13px]">保存</span>
                     </button>
                 </div>
-                <button id="item-delete-btn" class="w-full mt-2 bg-[#450a0a] hover:bg-[#5c0f0f] border border-[#ef4444] text-[#fca5a5] font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
+                <button id="item-delete-btn" class="w-full mt-2 bg-[#450a0a] hover:bg-[#5c0f0f] border border-[#ef4444] text-[#fca5a5] font-bold py-2.5 rounded-xl text-[13px] flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     <span>このパーツを削除</span>
                 </button>
             </div>
         </div>
         <div class="px-5 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0">
-            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeSheet('sheet-adjust')">閉じる</button>
+            <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3 rounded-xl text-base transition active:scale-[0.98]" onclick="closeSheet('sheet-adjust')">閉じる</button>
         </div>
     </div>
 
@@ -839,23 +839,23 @@
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-lg p-4 shadow-2xl flex flex-col max-h-[96vh] relative">
             <div class="flex justify-between items-center mb-1.5 shrink-0">
                 <h3 class="text-sm font-bold text-white">パーツの切り抜き</h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             
             <div class="flex items-center bg-gray-950 p-1 rounded-xl mb-2 gap-1 border border-gray-800 shrink-0">
-                <button id="crop-mode-poly" class="flex-1 py-2 rounded-lg text-xs font-bold text-[#ffffff] bg-blue-600 transition">点タップ囲み (頂点ドラッグ調整)</button>
-                <button id="crop-mode-pen" class="flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">ペン自由なぞり</button>
+                <button id="crop-mode-poly" class="flex-1 py-2 rounded-lg text-[13px] font-bold text-[#ffffff] bg-blue-600 transition">点タップ囲み (頂点ドラッグ調整)</button>
+                <button id="crop-mode-pen" class="flex-1 py-2 rounded-lg text-[13px] font-bold text-white hover:text-white transition">ペン自由なぞり</button>
             </div>
 
             <div class="bg-gray-950 px-3 py-1.5 rounded-xl border border-gray-800 mb-2 flex items-center justify-between gap-2 shrink-0">
-                <span class="text-[12px] text-gray-300 font-bold whitespace-nowrap">選択範囲の微調整:</span>
+                <span class="text-[13px] text-white font-bold whitespace-nowrap">選択範囲の微調整:</span>
                 <div class="flex items-center gap-1.5 flex-1">
-                    <button id="mask-expand-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[12px] font-bold border border-gray-700 active:scale-95 transition">＋ 選択を広げる</button>
-                    <button id="mask-shrink-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[12px] font-bold border border-gray-700 active:scale-95 transition">ー 選択を狭める</button>
+                    <button id="mask-expand-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[13px] font-bold border border-gray-700 active:scale-95 transition">＋ 選択を広げる</button>
+                    <button id="mask-shrink-btn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-blue-300 py-1 rounded text-[13px] font-bold border border-gray-700 active:scale-95 transition">ー 選択を狭める</button>
                 </div>
             </div>
 
-            <p class="text-[12px] text-gray-400 mb-1.5 shrink-0" id="crop-instruction-text">
+            <p class="text-[13px] text-white mb-1.5 shrink-0" id="crop-instruction-text">
                 2本指で画像を拡大・移動できます。輪郭を順番にタップして囲んでください。
             </p>
             
@@ -867,13 +867,13 @@
             </div>
 
             <div class="flex gap-2 my-2 shrink-0 relative z-30" style="touch-action: manipulation;">
-                <button id="crop-undo-point" class="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-xs py-2 rounded-lg text-white font-bold active:scale-95 transition">1点戻す</button>
-                <button id="crop-reset-points" class="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-xs py-2 rounded-lg text-gray-300 font-bold active:scale-95 transition">やり直す</button>
+                <button id="crop-undo-point" class="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-[13px] py-2 rounded-lg text-white font-bold active:scale-95 transition">1点戻す</button>
+                <button id="crop-reset-points" class="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-[13px] py-2 rounded-lg text-white font-bold active:scale-95 transition">やり直す</button>
             </div>
 
             <div class="grid grid-cols-2 gap-2 shrink-0 relative z-30" style="touch-action: manipulation;">
-                <button id="crop-cancel-btn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-xs active:scale-95 transition">切り抜かず次へ</button>
-                <button id="crop-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow-lg active:scale-95 transition">囲んだ部分を抽出</button>
+                <button id="crop-cancel-btn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-[13px] active:scale-95 transition">切り抜かず次へ</button>
+                <button id="crop-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-[13px] shadow-lg active:scale-95 transition">囲んだ部分を抽出</button>
             </div>
         </div>
     </div>
@@ -882,9 +882,9 @@
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-lg p-4 shadow-2xl flex flex-col max-h-[95vh]">
             <div class="flex justify-between items-center mb-1 shrink-0">
                 <h3 class="text-sm font-bold text-white" id="item-scale-modal-title">パーツの実寸設定</h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <p class="text-[13px] text-blue-300 mb-2 shrink-0">
+            <p class="text-sm text-blue-300 mb-2 shrink-0">
                 2本指でピンチ拡大できます。赤線の端の近くをスライドして寸法位置に合わせてください。
             </p>
             
@@ -893,16 +893,16 @@
             </div>
 
             <div class="bg-gray-950 border border-gray-800 rounded-xl p-3 my-2 flex items-center justify-between shrink-0">
-                <span class="text-xs font-bold text-gray-300">基準線の実寸：</span>
+                <span class="text-[13px] font-bold text-white">基準線の実寸：</span>
                 <div class="flex items-center gap-1.5 w-32">
                     <input type="number" id="item-real-dim-input" placeholder="例: 450" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-center font-bold text-sm outline-none">
-                    <span class="text-xs text-gray-400">mm</span>
+                    <span class="text-[13px] text-white">mm</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2 shrink-0">
-                <button id="item-scale-skip-btn" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2.5 rounded-xl text-xs">寸法なしで配置</button>
-                <button id="item-scale-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs shadow-lg">実寸で自動合成！</button>
+                <button id="item-scale-skip-btn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl text-[13px]">寸法なしで配置</button>
+                <button id="item-scale-confirm-btn" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-[13px] shadow-lg">実寸で自動合成！</button>
             </div>
         </div>
     </div>
@@ -910,11 +910,11 @@
     <div id="custom-prompt-modal" class="modal" style="z-index: 200;">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl text-center">
             <h3 id="custom-prompt-title" class="text-sm font-bold text-white mb-2">入力</h3>
-            <p id="custom-prompt-desc" class="text-xs text-gray-400 mb-4"></p>
+            <p id="custom-prompt-desc" class="text-[13px] text-white mb-4"></p>
             <input type="text" id="custom-prompt-input" class="w-full bg-gray-950 border border-gray-700 text-white rounded-lg p-2.5 text-sm font-bold outline-none mb-4 text-center focus:border-blue-500">
             <div class="grid grid-cols-2 gap-2">
-                <button id="custom-prompt-cancel" class="bg-gray-800 text-gray-300 py-2.5 rounded-xl text-xs font-bold border border-gray-700">キャンセル</button>
-                <button id="custom-prompt-ok" class="bg-blue-600 text-[#ffffff] py-2.5 rounded-xl text-xs font-bold shadow">OK</button>
+                <button id="custom-prompt-cancel" class="bg-gray-800 text-white py-2.5 rounded-xl text-[13px] font-bold border border-gray-700">キャンセル</button>
+                <button id="custom-prompt-ok" class="bg-blue-600 text-[#ffffff] py-2.5 rounded-xl text-[13px] font-bold shadow">OK</button>
             </div>
         </div>
     </div>
@@ -923,8 +923,8 @@
     <div id="alert-modal" class="modal" style="z-index: 210;">  
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">  
             <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>  
-            <p id="alert-modal-desc" class="text-xs text-gray-300 leading-relaxed"></p>  
-            <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">OK</button>  
+            <p id="alert-modal-desc" class="text-[13px] text-white leading-relaxed"></p>  
+            <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-[13px] transition shadow mt-2">OK</button>  
         </div>  
     </div>
 
@@ -941,12 +941,12 @@
             </div>
             <div>
                 <h3 id="loading-modal-title" class="text-sm font-bold text-white">読み込み中</h3>
-                <p id="loading-modal-desc" class="text-xs text-gray-300 mt-1 leading-relaxed">処理しています...</p>
+                <p id="loading-modal-desc" class="text-[13px] text-white mt-1 leading-relaxed">処理しています...</p>
             </div>
             <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden border border-gray-700/80">
                 <div id="loading-modal-bar" class="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-300" style="width: 35%;"></div>
             </div>
-            <p class="text-[12px] text-gray-400">完了までそのままお待ちください</p>
+            <p class="text-[13px] text-white">完了までそのままお待ちください</p>
         </div>
     </div>
 
@@ -958,48 +958,48 @@
                     <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     端末内保存・オンライン共有の使い方
                 </h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3 text-xs text-gray-300 leading-relaxed">
+            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3 text-[13px] text-white leading-relaxed">
                 <div class="bg-blue-950/40 border border-blue-500/30 p-3 rounded-xl space-y-1">
                     <p class="font-bold text-blue-300">📁 端末内保存（端末内ライブラリ）</p>
-                    <p class="text-[13px] text-gray-300">
+                    <p class="text-sm text-white">
                         お使いのスマホ・PC内に保存される自分専用の保管場所です。電波の届かない式場や地下でもすぐに呼び出せます。
                     </p>
                 </div>
 
                 <div class="bg-blue-50 border border-blue-300 p-3 rounded-xl space-y-1.5">
                     <p class="font-bold text-blue-700">☁ オンライン共有（全員と共有）</p>
-                    <p class="text-[13px] text-gray-300">
+                    <p class="text-sm text-white">
                         登録した式場やパーツをチーム全員で共有できるクラウド保管庫です。初回読み込み後はキャッシュされるため通信量を節約でき、最新状態にしたい時は右上の<strong>更新ボタン（↻）</strong>で再読込できます。
                     </p>
-                    <div class="bg-gray-950/70 p-2 rounded-lg border border-gray-800 text-[12px] text-amber-300/90">
+                    <div class="bg-gray-950/70 p-2 rounded-lg border border-gray-800 text-[13px] text-amber-300/90">
                         ※重複防止のため、<strong>一度オンライン共有へUP済みのデータは「端末内保存」のUPボタンが非表示</strong>になります（名前や基準線を変更しても同一データ扱いとなります）。再アップロードしたい場合は、先にオンライン共有側のゴミ箱から削除してください。
                     </div>
                 </div>
 
                 <div class="bg-gray-950 border border-gray-800 p-3 rounded-xl space-y-1.5">
                     <p class="font-bold text-gray-200">🏷 バッジ・ボタンの見方</p>
-                    <ul class="space-y-1 text-[13px] text-gray-300">
-                        <li>・<span class="text-[13px] bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-[13px] bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
-                        <li>・<span class="text-[13px] bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded">パースあり</span> / <span class="text-[13px] bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded">パースなし</span>：奥行き基準ラインの設定有無</li>
+                    <ul class="space-y-1 text-sm text-white">
+                        <li>・<span class="text-sm bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded">自分</span> / <span class="text-sm bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded">共有DL</span>：自分で作成したか、共有からDLしたかの区別</li>
+                        <li>・<span class="text-sm bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded">パースあり</span> / <span class="text-sm bg-gray-800 text-white border border-gray-700 px-1 rounded">パースなし</span>：奥行き基準ラインの設定有無</li>
                         <li>・<strong>クラウドUPボタン</strong>：端末内保存のデータをオンライン共有へ公開</li>
                         <li>・<strong>ダウンロードボタン（↓）</strong>：オンライン共有のデータを端末の端末内保存へ取り込み</li>
                         <li>・<strong>ゴミ箱ボタン</strong>：データの削除（オンライン共有では自分がUPしたデータのみ削除可能）</li>
                     </ul>
                 </div>
             </div>
-            <button class="close-modal-btn w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-[13px] shrink-0">閉じる</button>
         </div>
     </div>  
   
     <div id="custom-confirm-modal" class="modal" style="z-index: 200;">
         <div class="bg-slate-900/95 border border-slate-700/80 rounded-2xl w-full max-w-xs p-6 shadow-2xl text-center">
             <h3 id="custom-confirm-title" class="text-base font-bold text-white mb-2">確認</h3>
-            <p id="custom-confirm-desc" class="text-xs text-slate-400 mb-6 leading-relaxed whitespace-pre-line"></p>
+            <p id="custom-confirm-desc" class="text-[13px] text-slate-400 mb-6 leading-relaxed whitespace-pre-line"></p>
             <div class="grid grid-cols-2 gap-2.5">
-                <button id="custom-confirm-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">キャンセル</button>
-                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] py-2.5 rounded-xl text-xs font-bold shadow transition">OK</button>
+                <button id="custom-confirm-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-[13px] font-bold border border-slate-700 transition">キャンセル</button>
+                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] py-2.5 rounded-xl text-[13px] font-bold shadow transition">OK</button>
             </div>
         </div>
     </div>
@@ -1011,15 +1011,15 @@
                     <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     施工シミュレーターの使い方ガイド
                 </h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3.5 text-xs text-gray-300">
+            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3.5 text-[13px] text-white">
                 <div class="bg-blue-900/25 border border-blue-500/40 p-3.5 rounded-xl space-y-2">
-                    <p class="font-bold text-blue-300 text-xs">【ツールの目的】</p>
-                    <p class="text-gray-200 leading-relaxed text-[13px]">
+                    <p class="font-bold text-blue-300 text-[13px]">【ツールの目的】</p>
+                    <p class="text-gray-200 leading-relaxed text-sm">
                         式場やセレモニー現場の写真に基準寸法を設定し、花祭壇や供花などの生花装飾を現実と同じ縮尺で合成・配置することで、施工後の仕上がりイメージを素早く可視化・共有できるシミュレーターです。
                     </p>
-                    <div class="bg-gray-950/60 p-2 rounded-lg border border-gray-800 text-[12px] text-gray-400 leading-relaxed">
+                    <div class="bg-gray-950/60 p-2 rounded-lg border border-gray-800 text-[13px] text-white leading-relaxed">
                         ※本ツールは平面写真を用いた参考用ツールです。遠近感やカメラの画角による誤差を含むため、正確な施工寸法を保証するものではありません。事前提案や検討用のイメージ（目安）としてご活用ください。
                     </div>
                 </div>
@@ -1030,7 +1030,7 @@
 
                 <div class="bg-gray-950 p-3 rounded-xl border border-gray-800 space-y-2">
                     <p class="font-bold text-gray-200">【画面操作のポイント】</p>
-                    <ul class="space-y-1 text-gray-300 text-[13px]">
+                    <ul class="space-y-1 text-white text-sm">
                         <li>・<strong>対称複製機能</strong>：供花や盛花を式場中心から左右対称にワンタップで配置できます。</li>
                         <li>・<strong>ロック機能</strong>：台や棺などの大きなパーツをロックすると、画面上で触れても動かなくなり、上の小物を楽に操作できます。</li>
                         <li>・<strong>上部固定の拡大鏡</strong>：ペンでなぞったり点を打つ際、画面上部中央の小窓に指先の拡大映像が表示され、境界を精密になぞれます。</li>
@@ -1038,7 +1038,7 @@
                     </ul>
                 </div>
             </div>
-            <button class="close-modal-btn w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-[13px] shrink-0">閉じる</button>
         </div>
     </div>
 
@@ -1053,25 +1053,25 @@
                 <div class="flex justify-center gap-4">
                     <label class="flex items-center gap-1.5 cursor-pointer">
                         <input type="radio" name="export-format" value="jpeg" checked class="accent-blue-500 w-4 h-4">
-                        <span class="text-xs font-bold text-white">JPG</span>
+                        <span class="text-[13px] font-bold text-white">JPG</span>
                     </label>
                     <label class="flex items-center gap-1.5 cursor-pointer">
                         <input type="radio" name="export-format" value="png" class="accent-blue-500 w-4 h-4">
-                        <span class="text-xs font-bold text-white">PNG</span>
+                        <span class="text-[13px] font-bold text-white">PNG</span>
                     </label>
                     <label class="flex items-center gap-1.5 cursor-pointer">
                         <input type="radio" name="export-format" value="pdf" class="accent-blue-500 w-4 h-4">
-                        <span class="text-xs font-bold text-white">PDF (A4)</span>
+                        <span class="text-[13px] font-bold text-white">PDF (A4)</span>
                     </label>
                 </div>
                 <div class="pt-2 border-t border-gray-700 space-y-2">
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-1.5 cursor-pointer">
                             <input type="checkbox" id="export-include-footer" checked class="accent-blue-500 w-4 h-4 rounded">
-                            <span class="text-[13px] font-bold text-gray-200">施工情報帯を印字</span>
+                            <span class="text-sm font-bold text-gray-200">施工情報帯を印字</span>
                         </label>
                     </div>
-                    <div id="footer-options-panel" class="space-y-2.5 bg-gray-950/70 p-2.5 rounded-lg border border-gray-800 text-[13px]">
+                    <div id="footer-options-panel" class="space-y-2.5 bg-gray-950/70 p-2.5 rounded-lg border border-gray-800 text-sm">
                         <div class="grid grid-cols-2 gap-2">
                             <label class="flex items-center gap-1.5 cursor-pointer">
                                 <input type="checkbox" id="footer-include-watermark" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">
@@ -1083,28 +1083,28 @@
                             </label>
                         </div>
                         <div class="space-y-1.5 pt-1.5 border-t border-gray-800/80">
-                            <span class="text-[12px] text-gray-400 font-bold block">自由入力（空欄なら帯のみ表示）:</span>
-                            <input type="text" id="footer-custom-1" placeholder="枠1: (例) 施工担当: 関" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-xs outline-none">
-                            <input type="text" id="footer-custom-2" placeholder="枠2: (例) 生花祭壇 6尺2段仕立" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-xs outline-none">
-                            <input type="text" id="footer-custom-3" placeholder="枠3: (例) 式場持込確認済" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-xs outline-none">
+                            <span class="text-[13px] text-white font-bold block">自由入力（空欄なら帯のみ表示）:</span>
+                            <input type="text" id="footer-custom-1" placeholder="枠1: (例) 施工担当: 関" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-[13px] outline-none">
+                            <input type="text" id="footer-custom-2" placeholder="枠2: (例) 生花祭壇 6尺2段仕立" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-[13px] outline-none">
+                            <input type="text" id="footer-custom-3" placeholder="枠3: (例) 式場持込確認済" class="w-full bg-gray-900 border border-gray-700 text-white rounded px-2 py-1 text-[13px] outline-none">
                         </div>
                     </div>
                 </div>
-            </div>            <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95 shrink-0">  
+            </div>            <button id="share-file-btn" class="w-full mb-2 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-[13px] active:scale-95 shrink-0">  
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>  
                 他アプリへ共有（LINE・フォト等）  
             </button>  
             <div class="grid grid-cols-2 gap-2 mb-2">  
-                <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+                <button id="download-file-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-[13px] active:scale-95">  
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>  
                     ファイル保存  
                 </button>  
-                <button id="save-scene-project-btn" class="w-full bg-green-600 hover:bg-green-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-xs active:scale-95">  
+                <button id="save-scene-project-btn" class="w-full bg-green-600 hover:bg-green-500 text-[#ffffff] font-bold py-2.5 rounded-xl transition shadow flex items-center justify-center gap-1.5 text-[13px] active:scale-95">  
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>  
                     プロジェクト保存  
                 </button>  
             </div>
-            <button class="close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-xl transition border border-gray-700 text-xs">
+            <button class="close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-xl transition border border-gray-700 text-[13px]">
                 閉じる
             </button>
         </div>
@@ -1112,45 +1112,45 @@
 
     <div id="settings-menu-modal" class="modal">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
-            <button class="close-modal-btn absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            <button class="close-modal-btn absolute top-4 right-4 text-white hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             <h3 class="text-base font-bold text-white mb-4">メニュー</h3>
             
             <div class="space-y-2 mb-4">
-                <button id="menu-switch-mode-btn" class="w-full bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/40 text-left px-4 py-3 rounded-xl text-xs font-bold text-cyan-300 transition flex items-center justify-between">
+                <button id="menu-switch-mode-btn" class="w-full bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/40 text-left px-4 py-3 rounded-xl text-[13px] font-bold text-cyan-300 transition flex items-center justify-between">
                     <span class="flex items-center gap-2.5">
                         <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                         動作モードの変更
                     </span>
-                    <span id="menu-current-mode-text" class="text-[12px] bg-cyan-900 text-cyan-200 px-2 py-0.5 rounded font-bold">精密</span>
+                    <span id="menu-current-mode-text" class="text-[13px] bg-cyan-900 text-cyan-200 px-2 py-0.5 rounded font-bold">精密</span>
                 </button>
-                <button id="menu-grid-settings-btn" class="w-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 text-left px-4 py-3 rounded-xl text-xs font-bold text-cyan-300 transition flex items-center justify-between">
+                <button id="menu-grid-settings-btn" class="w-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 text-left px-4 py-3 rounded-xl text-[13px] font-bold text-cyan-300 transition flex items-center justify-between">
                     <span class="flex items-center gap-2.5">
                         <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>
                         📐 実寸方眼グリッド設定
                     </span>
-                    <span id="menu-grid-status-badge" class="text-[12px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-bold">OFF</span>
+                    <span id="menu-grid-status-badge" class="text-[13px] bg-gray-800 text-white px-2 py-0.5 rounded font-bold">OFF</span>
                 </button>
-                <button id="menu-new-project-btn" class="w-full bg-blue-900/40 hover:bg-blue-900/60 border border-blue-500/40 text-left px-4 py-3 rounded-xl text-xs font-bold text-blue-300 transition flex items-center gap-3">
+                <button id="menu-new-project-btn" class="w-full bg-blue-900/40 hover:bg-blue-900/60 border border-blue-500/40 text-left px-4 py-3 rounded-xl text-[13px] font-bold text-blue-300 transition flex items-center gap-3">
                     <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     ＋ 新規プロジェクト（リセット）
                 </button>
-                <button id="open-projects-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-xs font-medium transition flex items-center gap-3">
+                <button id="open-projects-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-[13px] font-medium transition flex items-center gap-3">
                     <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
                     保存したプロジェクトを開く
                 </button>
-                <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-xs font-medium transition flex items-center gap-3" data-target="updates-modal">
+                <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-[13px] font-medium transition flex items-center gap-3" data-target="updates-modal">
                     <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                     更新履歴
                 </button>
-                <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-xs font-medium transition flex items-center gap-3" data-target="credit-modal">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-[13px] font-medium transition flex items-center gap-3" data-target="credit-modal">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     クレジット・バージョン情報
                 </button>
             </div>
 
             <div class="border-t border-gray-800 pt-3">
                 <label class="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-gray-950/60 border border-gray-800">
-                    <span class="text-xs font-bold text-gray-300">目マークボタン（パーツ非表示）</span>
+                    <span class="text-[13px] font-bold text-white">目マークボタン（パーツ非表示）</span>
                     <input type="checkbox" id="setting-toggle-eyebtn" class="accent-blue-500 w-4 h-4 rounded">
                 </label>
             </div>
@@ -1165,10 +1165,10 @@
                     <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>
                     実寸方眼グリッド設定
                 </h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
 
-            <div class="space-y-3 text-xs text-gray-200">
+            <div class="space-y-3 text-[13px] text-gray-200">
                 <label class="flex items-center justify-between bg-gray-950 p-2 rounded-xl border border-gray-800 cursor-pointer">
                     <span class="font-bold">グリッド表示</span>
                     <input type="checkbox" id="grid-enable-toggle" class="accent-cyan-500 w-4 h-4 rounded">
@@ -1176,21 +1176,21 @@
 
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-300">1マスの実寸 (mm)</span>
-                        <span class="text-[12px] text-cyan-400 font-mono" id="grid-size-hint">300mm (1.0尺)</span>
+                        <span class="font-bold text-white">1マスの実寸 (mm)</span>
+                        <span class="text-[13px] text-cyan-400 font-mono" id="grid-size-hint">300mm (1.0尺)</span>
                     </div>
                     <div class="flex gap-1.5">
-                        <input type="number" id="grid-size-input" value="300" step="10" min="10" max="5000" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-2.5 py-1 text-white font-bold text-xs outline-none">
-                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[12px] font-bold border border-gray-700 whitespace-nowrap" data-val="300">1尺</button>
-                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[12px] font-bold border border-gray-700 whitespace-nowrap" data-val="600">2尺</button>
-                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-[12px] font-bold border border-gray-700 whitespace-nowrap" data-val="900">3尺</button>
+                        <input type="number" id="grid-size-input" value="300" step="10" min="10" max="5000" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-2.5 py-1 text-white font-bold text-[13px] outline-none">
+                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-[13px] font-bold border border-gray-700 whitespace-nowrap" data-val="300">1尺</button>
+                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-[13px] font-bold border border-gray-700 whitespace-nowrap" data-val="600">2尺</button>
+                        <button class="grid-preset-btn px-2 py-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-[13px] font-bold border border-gray-700 whitespace-nowrap" data-val="900">3尺</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="font-bold text-gray-300 block mb-1">線の色</label>
-                        <select id="grid-color-select" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-1.5 text-xs text-white outline-none">
+                        <label class="font-bold text-white block mb-1">線の色</label>
+                        <select id="grid-color-select" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-1.5 text-[13px] text-white outline-none">
                             <option value="#ef4444">赤</option>
                             <option value="#22c55e">緑</option>
                             <option value="#38bdf8" selected>水色</option>
@@ -1199,8 +1199,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="font-bold text-gray-300 block mb-1">線の太さ</label>
-                        <select id="grid-width-select" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-1.5 text-xs text-white outline-none">
+                        <label class="font-bold text-white block mb-1">線の太さ</label>
+                        <select id="grid-width-select" class="w-full bg-gray-950 border border-gray-700 rounded-lg p-1.5 text-[13px] text-white outline-none">
                             <option value="1">1px (細)</option>
                             <option value="1.5" selected>1.5px (中)</option>
                             <option value="2.5">2.5px (太)</option>
@@ -1209,8 +1209,8 @@
                 </div>
 
                 <div class="space-y-1 bg-gray-950/70 p-2 rounded-xl border border-gray-800">
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="font-bold text-gray-300">不透明度</span>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-bold text-white">不透明度</span>
                         <span id="val-grid-alpha" class="font-mono text-cyan-400 font-bold">50%</span>
                     </div>
                     <input type="range" id="grid-alpha-slider" min="0.1" max="1.0" step="0.05" value="0.5">
@@ -1220,44 +1220,44 @@
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-1.5 cursor-pointer">
                             <input type="checkbox" id="grid-subline-toggle" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">
-                            <span class="text-[13px] font-bold text-gray-200">補助線 (点線)</span>
+                            <span class="text-sm font-bold text-gray-200">補助線 (点線)</span>
                         </label>
                         <div class="flex items-center gap-1">
-                            <span class="text-[12px] text-gray-400">1マスを</span>
-                            <input type="number" id="grid-subdiv-input" value="2" min="2" max="10" class="w-10 bg-gray-900 border border-gray-700 text-cyan-300 font-bold rounded px-1 text-center text-xs outline-none">
-                            <span class="text-[12px] text-gray-400">等分</span>
+                            <span class="text-[13px] text-white">1マスを</span>
+                            <input type="number" id="grid-subdiv-input" value="2" min="2" max="10" class="w-10 bg-gray-900 border border-gray-700 text-cyan-300 font-bold rounded px-1 text-center text-[13px] outline-none">
+                            <span class="text-[13px] text-white">等分</span>
                         </div>
                     </div>
                     <div class="flex items-center justify-between pt-1 border-t border-gray-800">
                         <label class="flex items-center gap-1.5 cursor-pointer">
                             <input type="checkbox" id="grid-centerline-toggle" checked class="accent-cyan-500 w-3.5 h-3.5 rounded">
-                            <span class="text-[13px] text-rose-300 font-bold">センター線強調 (赤実線)</span>
+                            <span class="text-sm text-rose-300 font-bold">センター線強調 (赤実線)</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="space-y-2 bg-gray-950/70 p-2.5 rounded-xl border border-gray-800">
-                    <span class="font-bold text-gray-300 text-[13px] block">基準位置・微調整</span>
-                    <select id="grid-center-select" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-1.5 text-xs text-white outline-none">
+                    <span class="font-bold text-white text-sm block">基準位置・微調整</span>
+                    <select id="grid-center-select" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-1.5 text-[13px] text-white outline-none">
                         <option value="center">式場中央 (中心)</option>
                         <option value="bottom_center">式場中央・下端 (床面)</option>
                         <option value="baseline">寸法基準線の中心</option>
                     </select>
                     <div class="flex items-center justify-between gap-1 pt-1">
-                        <span class="text-[12px] text-gray-400">位置移動:</span>
+                        <span class="text-[13px] text-white">位置移動:</span>
                         <div class="flex items-center gap-1">
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="-50" data-dy="0">←</button>
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="50" data-dy="0">→</button>
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="0" data-dy="-50">↑</button>
-                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-[13px] text-[#ffffff] font-bold transition active:scale-95" data-dx="0" data-dy="50">↓</button>
-                            <button id="grid-offset-reset-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-[12px] text-gray-300">原点</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-sm text-[#ffffff] font-bold transition active:scale-95" data-dx="-50" data-dy="0">←</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-sm text-[#ffffff] font-bold transition active:scale-95" data-dx="50" data-dy="0">→</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-sm text-[#ffffff] font-bold transition active:scale-95" data-dx="0" data-dy="-50">↑</button>
+                            <button class="grid-shift-btn px-2.5 py-0.5 bg-gray-800 hover:bg-cyan-600 border border-gray-700 rounded text-sm text-[#ffffff] font-bold transition active:scale-95" data-dx="0" data-dy="50">↓</button>
+                            <button id="grid-offset-reset-btn" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-[13px] text-white">原点</button>
                         </div>
                     </div>
-                    <div class="text-[13px] text-gray-500 font-mono text-right" id="grid-offset-display">オフセット: X:0mm / Y:0mm</div>
+                    <div class="text-sm text-white font-mono text-right" id="grid-offset-display">オフセット: X:0mm / Y:0mm</div>
                 </div>
             </div>
 
-            <button class="close-modal-btn w-full bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-xl text-xs shadow transition active:scale-95">設定を完了</button>
+            <button class="close-modal-btn w-full bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-xl text-[13px] shadow transition active:scale-95">設定を完了</button>
         </div>
     </div>
 
@@ -1265,22 +1265,22 @@
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
                 <h3 class="text-sm font-bold text-white">保存済みプロジェクト</h3>
-                <button class="close-modal-btn text-gray-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div id="projects-list" class="space-y-2 overflow-y-auto hide-scrollbar flex-1">
-                <p class="text-center text-xs text-gray-500 py-6">保存されたプロジェクトはありません</p>
+                <p class="text-center text-[13px] text-white py-6">保存されたプロジェクトはありません</p>
             </div>
-            <button class="close-modal-btn w-full mt-3 bg-gray-800 text-white font-bold py-2 rounded-xl text-xs border border-gray-700 shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-3 bg-gray-800 text-white font-bold py-2 rounded-xl text-[13px] border border-gray-700 shrink-0">閉じる</button>
         </div>
     </div>
 
     <div id="updates-modal" class="modal">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6 shadow-2xl">
             <h3 class="text-base font-bold text-white mb-4">更新履歴</h3>
-            <div class="space-y-4 max-h-[50vh] overflow-y-auto text-xs text-gray-300 pr-2 hide-scrollbar">
+            <div class="space-y-4 max-h-[50vh] overflow-y-auto text-[13px] text-white pr-2 hide-scrollbar">
                 <div>
                     <p class="font-bold text-blue-400">v3.4.0 (完全安定版)</p>
-                    <p class="text-[13px] mt-1 text-gray-400 leading-relaxed">
+                    <p class="text-sm mt-1 text-white leading-relaxed">
                         ・画面回転・リサイズ時のパースおよび縮尺完全連動（背景原寸座標系へ刷新）<br>
                         ・微調整シートからレイヤー一覧への切替ボタン修正<br>
                         ・供花や小物の「左右対称（シンメトリー）複製」機能の追加<br>
@@ -1290,7 +1290,7 @@
                     </p>
                 </div>
             </div>
-            <button class="close-modal-btn w-full mt-6 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs">閉じる</button>
+            <button class="close-modal-btn w-full mt-6 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-[13px]">閉じる</button>
         </div>
     </div>
     
@@ -1300,13 +1300,13 @@
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-white mb-1">施工シミュレーター</h3>
-            <p class="text-[13px] text-blue-400 font-mono mb-4">v3.4.0</p>
-            <div class="text-xs text-gray-300 space-y-2 mb-6 border-t border-gray-700/50 pt-4 text-left bg-gray-950/60 p-4 rounded-xl">
-                <p><span class="text-gray-400">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
-                <p><span class="text-gray-400">AIアシスタント:</span> <span class="font-bold text-blue-400">Gemini (Google)</span></p>
-                <p><span class="text-gray-400">技術スタック:</span> <span class="text-gray-200">HTML5 Canvas / Vanilla JavaScript / Tailwind CSS / IndexedDB / jsPDF</span></p>
+            <p class="text-sm text-blue-400 font-mono mb-4">v3.4.0</p>
+            <div class="text-[13px] text-white space-y-2 mb-6 border-t border-gray-700/50 pt-4 text-left bg-gray-950/60 p-4 rounded-xl">
+                <p><span class="text-white">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
+                <p><span class="text-white">AIアシスタント:</span> <span class="font-bold text-blue-400">Gemini (Google)</span></p>
+                <p><span class="text-white">技術スタック:</span> <span class="text-gray-200">HTML5 Canvas / Vanilla JavaScript / Tailwind CSS / IndexedDB / jsPDF</span></p>
             </div>
-            <button class="close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-xs">閉じる</button>
+            <button class="close-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-[13px]">閉じる</button>
         </div>
     </div>
 
@@ -1598,11 +1598,11 @@
                     if (item.locked) {
                         lockIcon.textContent = '🔒';
                         lockLabel.textContent = '解除';
-                        lockBtn.className = "bg-amber-950/70 border border-amber-500 text-amber-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow";
+                        lockBtn.className = "bg-amber-950/70 border border-amber-500 text-amber-300 font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow";
                     } else {
                         lockIcon.textContent = '🔓';
                         lockLabel.textContent = 'ロック';
-                        lockBtn.className = "bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-bold py-2.5 rounded-xl text-xs flex flex-col items-center justify-center gap-0.5 shadow";
+                        lockBtn.className = "bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold py-2.5 rounded-xl text-[13px] flex flex-col items-center justify-center gap-0.5 shadow";
                     }
                 }
             } else {
@@ -1852,8 +1852,8 @@
             if (state.mode === 'precision') {
                 box.className = "bg-cyan-950/40 border border-cyan-500/40 p-3 rounded-xl space-y-2";
                 box.innerHTML = `
-                    <p class="font-bold text-cyan-300 text-xs">【📐 精密モード（パース対応）の使い方】</p>
-                    <div class="space-y-1.5 text-gray-300 text-[13px] leading-relaxed">
+                    <p class="font-bold text-cyan-300 text-[13px]">【📐 精密モード（パース対応）の使い方】</p>
+                    <div class="space-y-1.5 text-white text-sm leading-relaxed">
                         <p><strong>1. 床と左右の壁の境目に線を合わせる：</strong><br>
                         「式場(背景)」から「📐設定・再調整」を開き、青い2本の線を左右それぞれの「床と壁が接している境目（巾木ライン）」にぴったり合わせます。</p>
                         <p><strong>2. 画面上の線を見ながら基準位置を決める：</strong><br>
@@ -1865,8 +1865,8 @@
             } else {
                 box.className = "bg-blue-950/40 border border-blue-500/40 p-3 rounded-xl space-y-2";
                 box.innerHTML = `
-                    <p class="font-bold text-blue-300 text-xs">【⚡ かんたんモードの使い方】</p>
-                    <div class="space-y-1.5 text-gray-300 text-[13px] leading-relaxed">
+                    <p class="font-bold text-blue-300 text-[13px]">【⚡ かんたんモードの使い方】</p>
+                    <div class="space-y-1.5 text-white text-sm leading-relaxed">
                         <p><strong>1. 背景の基準寸法を設定する：</strong><br>
                         「式場(背景)」から写真を読み込み、祭壇幅や床の目地など分かっている寸法（例: 1200mm）を入力するだけで準備完了です。</p>
                         <p><strong>2. パーツを直感的に配置：</strong><br>
@@ -1908,8 +1908,8 @@
                 badge.style.display = 'inline-block';
                 badge.textContent = isPrecision ? '精密' : 'かんたん';
                 badge.className = isPrecision 
-                    ? 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-blue-600 text-[#ffffff] border border-blue-600 whitespace-nowrap shrink-0'
-                    : 'text-[13px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-300 whitespace-nowrap shrink-0';
+                    ? 'text-sm font-bold px-1.5 py-0.5 rounded bg-blue-600 text-[#ffffff] border border-blue-600 whitespace-nowrap shrink-0'
+                    : 'text-sm font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-300 whitespace-nowrap shrink-0';
             }
             if (menuText) {
                 menuText.textContent = isPrecision ? '精密' : 'かんたん';
@@ -2974,7 +2974,7 @@
                 if (vClear) vClear.classList.toggle('hidden', !vKw);
                 const recs = filterSortLocalRecords(allRecs, vKw, document.getElementById('venue-local-sort')?.value || 'newest');
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">${allRecs.length === 0 ? '保存された式場はありません' : '該当する式場はありません'}</p>`;
+                    list.innerHTML = `<p class="text-sm text-white text-center py-2">${allRecs.length === 0 ? '保存された式場はありません' : '該当する式場はありません'}</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -2990,7 +2990,7 @@
                         : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
                     const perspBadge = hasPersp
                         ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded shrink-0">パースあり</span>`
-                        : `<span class="text-[8px] leading-tight bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+                        : `<span class="text-[8px] leading-tight bg-gray-800 text-white border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
 
                     const row = document.createElement('div');
                     row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2 cursor-pointer transition";
@@ -2998,11 +2998,11 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1 mb-0.5">
                                 ${originBadge}
-                                <span class="text-xs font-bold text-gray-200 truncate">${v.name}</span>
+                                <span class="text-[13px] font-bold text-gray-200 truncate">${v.name}</span>
                             </div>
                             <div class="flex items-center gap-1 overflow-hidden">
                                 ${perspBadge}
-                                <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">${v.measureRealMm}mm設定済 ${vDateStr}</span>
+                                <span class="text-sm leading-tight text-white font-mono truncate">${v.measureRealMm}mm設定済 ${vDateStr}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
@@ -3184,7 +3184,7 @@
 
                 categories.forEach(c => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3 rounded-xl flex items-center justify-between text-xs font-bold text-white transition";
+                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3 rounded-xl flex items-center justify-between text-[13px] font-bold text-white transition";
                     btn.innerHTML = `<span class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${c.icon}"></path></svg>${c.label}</span><span>→</span>`;
                     btn.onclick = () => renderCatalogTree(['root', c.id]);
                     container.appendChild(btn);
@@ -3201,7 +3201,7 @@
                     ];
                     tools.forEach(t => {
                         const btn = document.createElement('button');
-                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3 rounded-xl flex items-center justify-between text-xs font-bold text-white transition";
+                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3 rounded-xl flex items-center justify-between text-[13px] font-bold text-white transition";
                         btn.innerHTML = `<span>${t.label}</span><span>→</span>`;
                         btn.onclick = () => renderCatalogTree(['root', 'tools', t.id]);
                         container.appendChild(btn);
@@ -3219,13 +3219,13 @@
                     tables.forEach(t => {
                         const box = document.createElement('div');
                         box.className = "bg-gray-900 border border-gray-800 p-2.5 rounded-xl space-y-1.5";
-                        box.innerHTML = `<span class="text-xs font-bold text-blue-300 block">${t.name}</span>`;
+                        box.innerHTML = `<span class="text-[13px] font-bold text-blue-300 block">${t.name}</span>`;
                         const hGrid = document.createElement('div');
                         hGrid.className = "grid grid-cols-3 gap-1.5";
 
                         t.heights.forEach(h => {
                             const hBtn = document.createElement('button');
-                            hBtn.className = "bg-gray-800 hover:bg-blue-600 text-[#ffffff] font-mono text-[13px] py-1.5 rounded border border-gray-700 transition";
+                            hBtn.className = "bg-gray-800 hover:bg-blue-600 text-[#ffffff] font-mono text-sm py-1.5 rounded border border-gray-700 transition";
                             hBtn.textContent = `H${h}cm`;
                             hBtn.onclick = () => {
                                 closeModal('add-item-modal');
@@ -3246,7 +3246,7 @@
                     ];
                     kyoList.forEach(k => {
                         const btn = document.createElement('button');
-                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-xs font-bold text-white transition";
+                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-[13px] font-bold text-white transition";
                         btn.textContent = k.label;
                         btn.onclick = () => {
                             closeModal('add-item-modal');
@@ -3259,7 +3259,7 @@
                     backBtn.classList.remove('hidden');
 
                     const btn = document.createElement('button');
-                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-xs font-bold text-white transition";
+                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-[13px] font-bold text-white transition";
                     btn.textContent = '棺 (W180cm × H45cm)';
                     btn.onclick = () => {
                         closeModal('add-item-modal');
@@ -3278,8 +3278,8 @@
                 ];
                 flowers.forEach(f => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-xs font-bold text-white transition flex items-center justify-between";
-                    btn.innerHTML = `<span>${f.name} <span class="text-gray-400 text-[12px]">(W60×H120cm・花頭H70)</span></span><span class="text-xs text-blue-400 font-bold">配置</span>`;
+                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-[13px] font-bold text-white transition flex items-center justify-between";
+                    btn.innerHTML = `<span>${f.name} <span class="text-white text-[13px]">(W60×H120cm・花頭H70)</span></span><span class="text-[13px] text-blue-400 font-bold">配置</span>`;
                     btn.onclick = () => {
                         closeModal('add-item-modal');
                         createFlowerPart(f.name, f.flowerW, f.flowerH, f.bucketW, f.bucketH, f.fudaW, f.fudaH);
@@ -3294,20 +3294,20 @@
                 form.className = "bg-gray-900 border border-gray-800 p-3.5 rounded-xl space-y-3";
                 form.innerHTML = `
                     <div>
-                        <label class="text-[13px] text-gray-400 block mb-1">名称 (省略可)</label>
-                        <input type="text" id="cust-name" placeholder="パーツ名" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-xs outline-none">
+                        <label class="text-sm text-white block mb-1">名称 (省略可)</label>
+                        <input type="text" id="cust-name" placeholder="パーツ名" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-[13px] outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-[13px] text-gray-400 block mb-1">幅 (W mm)</label>
-                            <input type="number" id="cust-w" placeholder="例: 900" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-xs outline-none">
+                            <label class="text-sm text-white block mb-1">幅 (W mm)</label>
+                            <input type="number" id="cust-w" placeholder="例: 900" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-[13px] outline-none">
                         </div>
                         <div>
-                            <label class="text-[13px] text-gray-400 block mb-1">高さ (H mm)</label>
-                            <input type="number" id="cust-h" placeholder="例: 600" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-xs outline-none">
+                            <label class="text-sm text-white block mb-1">高さ (H mm)</label>
+                            <input type="number" id="cust-h" placeholder="例: 600" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-[13px] outline-none">
                         </div>
                     </div>
-                    <button id="cust-create-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-lg text-xs shadow mt-2">この実寸(mm)で作成</button>
+                    <button id="cust-create-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-lg text-[13px] shadow mt-2">この実寸(mm)で作成</button>
                 `;
                 container.appendChild(form);
 
@@ -3558,9 +3558,9 @@
                 const btn = document.getElementById(`crop-mode-${m}`);
                 if (btn) {
                     if (m === mode) {
-                        btn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-[#ffffff] bg-blue-600 transition";
+                        btn.className = "flex-1 py-2 rounded-lg text-[13px] font-bold text-[#ffffff] bg-blue-600 transition";
                     } else {
-                        btn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition";
+                        btn.className = "flex-1 py-2 rounded-lg text-[13px] font-bold text-white hover:text-white transition";
                     }
                 }
             });
@@ -4265,7 +4265,7 @@
                 if (pClear) pClear.classList.toggle('hidden', !pKw);
                 const recs = filterSortLocalRecords(allRecs, pKw, document.getElementById('part-local-sort')?.value || 'newest');
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-2">${allRecs.length === 0 ? '保存されたパーツはありません' : '該当するパーツはありません'}</p>`;
+                    list.innerHTML = `<p class="text-sm text-white text-center py-2">${allRecs.length === 0 ? '保存されたパーツはありません' : '該当するパーツはありません'}</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -4285,11 +4285,11 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1 mb-0.5">
                                 ${originBadge}
-                                <span class="text-xs font-bold text-gray-200 truncate">${r.name}</span>
+                                <span class="text-[13px] font-bold text-gray-200 truncate">${r.name}</span>
                             </div>
                             <div class="flex items-center gap-1 overflow-hidden">
-                                <span class="text-[8px] leading-tight bg-gray-800 text-gray-300 px-1 rounded font-mono shrink-0">${extLabel}</span>
-                                <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">${rDateStr}</span>
+                                <span class="text-[8px] leading-tight bg-gray-800 text-white px-1 rounded font-mono shrink-0">${extLabel}</span>
+                                <span class="text-sm leading-tight text-white font-mono truncate">${rDateStr}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
@@ -4354,7 +4354,7 @@
             if (!list) return;
             list.innerHTML = '';
             if (state.items.length === 0) {
-                list.innerHTML = '<p class="text-center text-sm text-gray-500 py-4">追加されたパーツはありません<br><span class="text-[12px]">下の「パーツ追加」から追加できます</span></p>';
+                list.innerHTML = '<p class="text-center text-sm text-white py-4">追加されたパーツはありません<br><span class="text-[13px]">下の「パーツ追加」から追加できます</span></p>';
                 return;
             }
             [...state.items].reverse().forEach((item, index) => {
@@ -4370,12 +4370,12 @@
                         <span class="text-sm font-bold text-white block truncate">${item.name}</span>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button class="layer-lock-btn p-2.5 rounded-lg text-base ${item.locked ? 'bg-amber-100 text-amber-700 border border-amber-400' : 'bg-[#ffffff] text-gray-300 border border-[#d9d9d7]'}" title="${item.locked ? 'ロック解除' : 'ロック'}">
+                        <button class="layer-lock-btn p-2.5 rounded-lg text-base ${item.locked ? 'bg-amber-100 text-amber-700 border border-amber-400' : 'bg-[#ffffff] text-white border border-[#d9d9d7]'}" title="${item.locked ? 'ロック解除' : 'ロック'}">
                             ${item.locked ? '🔒' : '🔓'}
                         </button>
-                        <button class="layer-adjust-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-[13px] shadow transition active:scale-95">調整</button>
-                        <button class="layer-up-btn p-2.5 rounded-lg bg-[#ffffff] border border-[#d9d9d7] text-gray-200 text-[13px] font-bold">▲</button>
-                        <button class="layer-down-btn p-2.5 rounded-lg bg-[#ffffff] border border-[#d9d9d7] text-gray-200 text-[13px] font-bold">▼</button>
+                        <button class="layer-adjust-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-sm shadow transition active:scale-95">調整</button>
+                        <button class="layer-up-btn p-2.5 rounded-lg bg-[#ffffff] border border-[#d9d9d7] text-gray-200 text-sm font-bold">▲</button>
+                        <button class="layer-down-btn p-2.5 rounded-lg bg-[#ffffff] border border-[#d9d9d7] text-gray-200 text-sm font-bold">▼</button>
                         <button class="layer-delete-btn p-2.5 rounded-lg bg-red-50 text-red-600 border border-red-300 ml-0.5" title="削除">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
@@ -4706,7 +4706,7 @@
                 if (!list) return;
                 const recs = (e.target.result || []).sort((a,b) => b.timestamp - a.timestamp);
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-center text-xs text-gray-500 py-6">保存されたプロジェクトはありません</p>`;
+                    list.innerHTML = `<p class="text-center text-[13px] text-white py-6">保存されたプロジェクトはありません</p>`;
                     return;
                 }
                 list.innerHTML = '';
@@ -4716,8 +4716,8 @@
                 const dtStr = `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}:${String(dt.getSeconds()).padStart(2,'0')}`;
                 row.innerHTML = `
                     <div class="flex-1 overflow-hidden pr-2">
-                        <span class="text-xs font-bold text-white block truncate">${p.name}</span>
-                        <span class="text-[12px] text-gray-400 font-mono">${dtStr} / パーツ: ${p.items.length}件</span>
+                        <span class="text-[13px] font-bold text-white block truncate">${p.name}</span>
+                        <span class="text-[13px] text-white font-mono">${dtStr} / パーツ: ${p.items.length}件</span>
                     </div>
                         <button class="del-proj-btn text-red-400 hover:text-red-300 p-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     `;
@@ -5045,11 +5045,11 @@
             const isEn = state.grid.enabled;
             if (qBadge) {
                 qBadge.textContent = isEn ? 'ON' : 'OFF';
-                qBadge.className = isEn ? 'text-[12px] px-1.5 py-0.2 rounded bg-cyan-900 text-cyan-300 font-bold' : 'text-[12px] px-1.5 py-0.2 rounded bg-gray-800 text-gray-400';
+                qBadge.className = isEn ? 'text-[13px] px-1.5 py-0.2 rounded bg-cyan-900 text-cyan-300 font-bold' : 'text-[13px] px-1.5 py-0.2 rounded bg-gray-800 text-white';
             }
             if (mBadge) {
                 mBadge.textContent = isEn ? 'ON' : 'OFF';
-                mBadge.className = isEn ? 'text-[12px] bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded font-bold' : 'text-[12px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded font-bold';
+                mBadge.className = isEn ? 'text-[13px] bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded font-bold' : 'text-[13px] bg-gray-800 text-white px-2 py-0.5 rounded font-bold';
             }
             if (toggle) toggle.checked = isEn;
         }
@@ -5512,7 +5512,7 @@
                             <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
-                    <span class="text-[13px] font-bold text-cyan-300">${text}</span>
+                    <span class="text-sm font-bold text-cyan-300">${text}</span>
                     <div class="w-40 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
                         <div class="h-full w-2/3 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full animate-pulse"></div>
                     </div>
@@ -5814,7 +5814,7 @@
                 }
             } catch (e) {
                 if (!hasWarmCache && document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) {
-                    list.innerHTML = `<p class="text-[13px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
+                    list.innerHTML = `<p class="text-sm text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
                 }
             } finally {
                 isFetchingSharedVenues = false;
@@ -5855,7 +5855,7 @@
                 }
             } catch (e) {
                 if (!hasWarmCache && document.getElementById('tab-part-shared')?.classList.contains('lib-shared-on')) {
-                    list.innerHTML = `<p class="text-[13px] text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
+                    list.innerHTML = `<p class="text-sm text-red-400 text-center py-2">読み込みに失敗しました（右上の更新ボタンで再試行できます）</p>`;
                 }
             } finally {
                 isFetchingSharedParts = false;
@@ -5960,7 +5960,7 @@
 
             const items = filterAndSortSharedItems(cachedSharedVenues, searchWord, sortMode, kanaRow);
             if (items.length === 0) {
-                list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-3">該当する共有式場はありません</p>`;
+                list.innerHTML = `<p class="text-sm text-white text-center py-3">該当する共有式場はありません</p>`;
                 return;
             }
 
@@ -5970,7 +5970,7 @@
                 const canDelete = isMySharedUpload(v);
                 const perspBadge = v.hasPerspective
                     ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-500/50 px-1 rounded font-bold shrink-0">パースあり</span>`
-                    : `<span class="text-[8px] leading-tight bg-gray-800 text-gray-400 border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+                    : `<span class="text-[8px] leading-tight bg-gray-800 text-white border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
                 const mineBadge = canDelete
                     ? `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分UP</span>`
                     : '';
@@ -5982,11 +5982,11 @@
                         <div class="flex items-center gap-1 mb-0.5">
                             <span class="text-[8px] leading-tight bg-blue-50 text-blue-700 px-1 rounded border border-blue-300 shrink-0">共有</span>
                             ${mineBadge}
-                            <span class="text-xs font-bold text-white truncate">${v.name}</span>
+                            <span class="text-[13px] font-bold text-white truncate">${v.name}</span>
                         </div>
                         <div class="flex items-center gap-1 overflow-hidden">
                             ${perspBadge}
-                            <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">基準:${v.measureRealMm}mm ${vDateStr}</span>
+                            <span class="text-sm leading-tight text-white font-mono truncate">基準:${v.measureRealMm}mm ${vDateStr}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
@@ -6072,9 +6072,9 @@
         });
 
         // 式場タブ切り替え（端末内保存 / オンライン共有）
-        const LIB_TAB_ON_LOCAL = "py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-local-on";
-        const LIB_TAB_ON_SHARED = "py-3 rounded-xl bg-blue-600 text-[#ffffff] font-bold text-sm shadow transition lib-shared-on";
-        const LIB_TAB_OFF = "py-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7] text-gray-300 font-bold text-sm transition";
+        const LIB_TAB_ON_LOCAL = "flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition lib-local-on";
+        const LIB_TAB_ON_SHARED = "flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition lib-shared-on";
+        const LIB_TAB_OFF = "flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition";
         document.getElementById('tab-venue-local')?.addEventListener('click', () => {
             document.getElementById('tab-venue-local').className = LIB_TAB_ON_LOCAL;
             document.getElementById('tab-venue-shared').className = LIB_TAB_OFF;
@@ -6115,7 +6115,7 @@
                         <img src="${item.canvas.toDataURL('image/png')}" class="max-w-full max-h-full object-contain">
                     </div>
                     <span class="flex-1 text-sm font-bold text-white truncate">${item.name}</span>
-                    <button type="button" class="picker-up-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-[13px] shadow transition active:scale-95 shrink-0">⬆ アップロード</button>
+                    <button type="button" class="picker-up-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-sm shadow transition active:scale-95 shrink-0">⬆ アップロード</button>
                 `;
                 row.querySelector('.picker-up-btn').onclick = async () => {
                     closeModal('part-upload-picker-modal');
@@ -6142,7 +6142,7 @@
 
             const items = filterAndSortSharedItems(cachedSharedParts, searchWord, sortMode, kanaRow);
             if (items.length === 0) {
-                list.innerHTML = `<p class="text-[13px] text-gray-500 text-center py-3">該当する共有パーツはありません</p>`;
+                list.innerHTML = `<p class="text-sm text-white text-center py-3">該当する共有パーツはありません</p>`;
                 return;
             }
 
@@ -6161,11 +6161,11 @@
                         <div class="flex items-center gap-1 mb-0.5">
                             <span class="text-[8px] leading-tight bg-blue-50 text-blue-700 px-1 rounded border border-blue-300 shrink-0">共有</span>
                             ${mineBadge}
-                            <span class="text-xs font-bold text-white truncate">${p.name}</span>
+                            <span class="text-[13px] font-bold text-white truncate">${p.name}</span>
                         </div>
                         <div class="flex items-center gap-1 overflow-hidden">
-                            <span class="text-[8px] leading-tight bg-gray-800 text-gray-300 px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
-                            <span class="text-[13px] leading-tight text-gray-400 font-mono truncate">${pDateStr}</span>
+                            <span class="text-[8px] leading-tight bg-gray-800 text-white px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
+                            <span class="text-sm leading-tight text-white font-mono truncate">${pDateStr}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
