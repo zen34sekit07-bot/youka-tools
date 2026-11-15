@@ -218,46 +218,64 @@
                 </div>
             </div>
 
-            <!-- 供花件数・絞り込み・並び替え操作バー（プレーンテキスト件数） -->
+            <!-- 絞り込みフィルター（常時表示・チェックで即反映） -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 space-y-2 shadow-sm">
-                <div class="flex items-center justify-between">
-                    <!-- ボタンに見えないプレーンなテキスト表示 -->
-                    <div class="flex items-baseline gap-1.5 pl-1">
-                        <span class="text-xs text-slate-400 font-bold">該当供花:</span>
-                        <span id="flower-list-count" class="text-sm font-black text-white font-mono">-- 件</span>
+                <div>
+                    <span class="text-[12px] font-bold text-amber-700 block mb-1">■ 金額 (税別)</span>
+                    <div class="grid grid-cols-3 gap-1.5 font-bold text-slate-200 text-[13px]">
+                        <label class="flex items-center justify-center gap-1.5 cursor-pointer bg-slate-950 px-2 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-price-chk accent-indigo-500 w-4 h-4" value="10000-19999"> 1万円代
+                        </label>
+                        <label class="flex items-center justify-center gap-1.5 cursor-pointer bg-slate-950 px-2 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-price-chk accent-indigo-500 w-4 h-4" value="20000-29999"> 2万円代
+                        </label>
+                        <label class="flex items-center justify-center gap-1.5 cursor-pointer bg-slate-950 px-2 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-price-chk accent-indigo-500 w-4 h-4" value="30000-39999"> 3万円代
+                        </label>
                     </div>
-                    <button id="btn-open-advanced-filter" type="button" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 rounded-xl text-xs font-bold active:scale-95 transition flex items-center gap-1.5 shadow-sm">
-                        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                        <span>条件絞り込み</span>
-                        <span id="filter-active-dot" class="hidden w-2 h-2 rounded-full bg-amber-400"></span>
-                    </button>
                 </div>
-                <div class="flex items-center gap-2 pt-1.5 border-t border-slate-800/80">
-                    <span class="text-[13px] font-bold text-slate-400 whitespace-nowrap pl-1">並び替え:</span>
-                    <select id="flower-sort-select" class="flex-1 bg-slate-950 border border-slate-700 text-slate-100 text-xs font-bold py-1.5 px-2.5 rounded-xl outline-none focus:border-slate-400 shadow-inner">
-                        <option value="price_asc" selected>金額: 安い順 (標準)</option>
-                        <option value="price_desc">金額: 高い順</option>
-                        <option value="default">標準 (登録順)</option>
-                        <optgroup label="金額">
-                            <option value="price_asc_opt">金額: 安い順</option>
-                            <option value="price_desc_opt">金額: 高い順</option>
-                        </optgroup>
-                        <optgroup label="型番 (英数字)">
-                            <option value="code_asc">型番: A → Z 順</option>
-                            <option value="code_desc">型番: Z → A 順</option>
-                        </optgroup>
-                        <optgroup label="名称 (あいうえお順)">
-                            <option value="name_asc">名称: 五十音 昇順</option>
-                            <option value="name_desc">名称: 五十音 降順</option>
-                        </optgroup>
-                        <optgroup label="文字種優先順">
-                            <option value="char_hira">ひらがな → カタカナ → 漢字</option>
-                            <option value="char_kata">カタカナ → 漢字 → ひらがな</option>
-                            <option value="char_kanji">漢字 → ひらがな → カタカナ</option>
-                        </optgroup>
-                    </select>
+                <div>
+                    <span class="text-[12px] font-bold text-cyan-300 block mb-1">■ 色合い</span>
+                    <div class="grid grid-cols-5 gap-1 font-bold text-slate-200 text-[13px]">
+                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="白"> 白
+                        </label>
+                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="ピンク"> ピンク
+                        </label>
+                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="青"> 青
+                        </label>
+                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="紫"> 紫
+                        </label>
+                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 py-2 rounded-lg border border-slate-800">
+                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="黄"> 黄色
+                        </label>
+                    </div>
+                </div>
+                <div class="flex items-end gap-2">
+                    <div class="flex-1">
+                        <span class="text-[12px] font-bold text-indigo-300 block mb-1">■ 種類</span>
+                        <div class="grid grid-cols-4 gap-1 font-bold text-slate-200 text-[12px]">
+                            <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 px-1 py-2 rounded-lg border border-slate-800 text-center whitespace-nowrap">
+                                <input type="checkbox" class="filter-type-chk accent-indigo-500 w-4 h-4 shrink-0" value="洋花"> 洋花
+                            </label>
+                            <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 px-1 py-2 rounded-lg border border-slate-800 text-center whitespace-nowrap">
+                                <input type="checkbox" class="filter-type-chk accent-indigo-500 w-4 h-4 shrink-0" value="ミックス"> ミックス
+                            </label>
+                            <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 px-1 py-2 rounded-lg border border-slate-800 text-center whitespace-nowrap">
+                                <input type="checkbox" class="filter-type-chk accent-indigo-500 w-4 h-4 shrink-0" value="菊"> 菊
+                            </label>
+                            <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 px-1 py-2 rounded-lg border border-slate-800 text-center whitespace-nowrap">
+                                <input type="checkbox" class="filter-type-chk accent-indigo-500 w-4 h-4 shrink-0" value="その他"> その他
+                            </label>
+                        </div>
+                    </div>
+                    <button id="btn-reset-inline-filter" type="button" class="px-3 py-2 bg-slate-800 text-rose-300 font-bold rounded-lg text-xs border border-slate-700 active:scale-95 transition shrink-0">リセット</button>
                 </div>
             </div>
+
 
             <!-- 供花カード一覧リスト -->
             <div id="flower-card-list" class="space-y-2 pt-1">
@@ -520,86 +538,6 @@
 
     <!-- ================= モーダル群 ================= -->
 
-    <!-- 詳細絞り込みフィルターモーダル -->
-    <div id="advanced-filter-modal" class="modal">
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-4 shadow-2xl flex flex-col max-h-[85vh] relative space-y-3">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                <h3 class="text-sm font-extrabold text-white flex items-center gap-1.5">
-                    <span>🔍</span> 供花絞り込みフィルター
-                </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
-            </div>
-
-            <div class="overflow-y-auto hide-scrollbar space-y-3 text-xs flex-1 pr-1">
-                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5">
-                    <span class="text-[13px] font-bold text-amber-700 block">金額帯 (税別)</span>
-                    <div class="grid grid-cols-1 gap-1.5 font-bold text-slate-200">
-                        <label class="flex items-center gap-2 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-price-chk accent-indigo-500" value="10000-19999">
-                            <span>1万円代 (¥10,000〜¥19,999)</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-price-chk accent-indigo-500" value="20000-29999">
-                            <span>2万円代 (¥20,000〜¥29,999)</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-price-chk accent-indigo-500" value="30000-39999">
-                            <span>3万円代 (¥30,000〜¥39,999)</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5">
-                    <span class="text-[13px] font-bold text-cyan-300 block">色合い</span>
-                    <div class="grid grid-cols-3 gap-1.5 font-bold text-slate-200">
-                        <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-color-chk accent-indigo-500" value="白"> 白
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-color-chk accent-indigo-500" value="ピンク"> ピンク
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-color-chk accent-indigo-500" value="青"> 青
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-color-chk accent-indigo-500" value="紫"> 紫
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-color-chk accent-indigo-500" value="黄"> 黄色
-                        </label>
-                    </div>
-                </div>
-
-                <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5">
-                    <span class="text-[13px] font-bold text-indigo-300 block">種類</span>
-                    <div class="grid grid-cols-4 gap-1 font-bold text-slate-200 text-[13px]">
-                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800 text-center">
-                            <input type="checkbox" class="filter-type-chk accent-indigo-500" value="洋花"> 洋花
-                        </label>
-                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800 text-center">
-                            <input type="checkbox" class="filter-type-chk accent-indigo-500" value="ミックス"> ミックス
-                        </label>
-                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800 text-center">
-                            <input type="checkbox" class="filter-type-chk accent-indigo-500" value="菊"> 菊
-                        </label>
-                        <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800 text-center">
-                            <input type="checkbox" class="filter-type-chk accent-indigo-500" value="その他"> その他
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
-                <button id="btn-reset-advanced-filter" type="button" class="py-2.5 bg-slate-800 text-rose-300 font-bold rounded-xl text-xs border border-slate-700 active:scale-95 transition">
-                    条件リセット
-                </button>
-                <button id="btn-apply-advanced-filter" type="button" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-extrabold rounded-xl text-xs shadow active:scale-95 transition">
-                    この条件で絞込
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- 葬儀社様選択モーダル（五十音インデックス＆検索） -->
     <div id="company-search-modal" class="modal">
         <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-4 shadow-2xl flex flex-col max-h-[90vh] relative space-y-2.5">
@@ -745,6 +683,10 @@
                 </button>
                 <button id="btn-open-local-data-manage" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-left p-3 rounded-xl font-bold text-cyan-300 transition flex items-center justify-between">
                     <span>📱 端末に登録された情報 (編集・削除)</span>
+                    <span>→</span>
+                </button>
+                <button id="btn-open-admin" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-left p-3 rounded-xl font-bold text-amber-700 transition flex items-center justify-between">
+                    <span>🔐 管理者マスタ同期・認可</span>
                     <span>→</span>
                 </button>
 
@@ -1847,12 +1789,13 @@
                 return;
             }
 
+            window.__cardFlowerIds = filtered.map(f => f.id);
             list.innerHTML = filtered.map((item, fIdx) => {
                 const isFav = state.favorites.includes(item.id);
                 const priceIn = Math.round(item.price * 1.10).toLocaleString();
                 const priceEx = item.price.toLocaleString();
                 const isSpecial = isFamilyOrChief(item);
-                const inCart = state.cart.some(c => c.flowerId === item.id);
+                const cartQty = (state.cart.find(c => c.flowerId === item.id) || {}).qty || 0;
                 
                 const colors = detectFlowerColors(item);
                 const colorBadge = renderColorChipsHtml(colors);
@@ -1898,7 +1841,7 @@
                                 </button>
                                 <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden shrink-0 bg-slate-800">
                                     <button type="button" onclick="cardQtyStep(${fIdx}, -1)" class="w-11 h-11 text-xl font-black text-slate-100 active:bg-slate-700">−</button>
-                                    <span id="card-qty-h-${fIdx}" class="w-9 text-center font-black text-white text-lg">1</span>
+                                    <span id="card-qty-h-${fIdx}" class="w-9 text-center font-black text-white text-lg">${cartQty}</span>
                                     <button type="button" onclick="cardQtyStep(${fIdx}, 1)" class="w-11 h-11 text-xl font-black text-slate-100 active:bg-slate-700">＋</button>
                                 </div>
                                 <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="text-slate-400 font-black shrink-0 px-1 text-lg active:opacity-70 transition">▼</button>
@@ -1936,16 +1879,6 @@
                                 <span class="text-[12px] font-bold text-slate-100 block mb-0.5">✨ 使用ポイント花:</span>
                                 ${renderMaterialCodeBadgeHtml(ptText || '個別指定なし')}
                             </div>` : ''}
-
-                            <div class="flex items-center gap-2 mt-3">
-                                <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden shrink-0 bg-slate-800">
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, -1)" class="w-10 h-11 text-lg font-black text-slate-200 active:bg-slate-700">−</button>
-                                    <span id="card-qty-${fIdx}" class="w-8 text-center font-black text-slate-100">1</span>
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, 1)" class="w-10 h-11 text-lg font-black text-slate-200 active:bg-slate-700">＋</button>
-                                </div>
-                                <button type="button" onclick="addToCartFromCard('${item.id}', ${fIdx}, this)" class="flex-1 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-black shadow active:scale-95 transition">＋ リストに追加</button>
-                                ${inCart ? `<button type="button" onclick="removeFlowerFromCart('${item.id}')" class="h-11 px-3.5 rounded-xl bg-[#450a0a] border border-[#ef4444] text-[#fca5a5] font-black active:scale-95 transition shrink-0">リストから削除</button>` : ''}
-                            </div>
                         </div>
                     </div>
                 `;
@@ -2348,14 +2281,22 @@
         }
 
         window.cardQtyStep = function(idx, delta) {
+            const flowerId = (window.__cardFlowerIds || [])[idx];
+            if (!flowerId) return;
+            const entry = state.cart.find(c => c.flowerId === flowerId);
+            const cur = entry ? entry.qty : 0;
+            const v = Math.min(999, Math.max(0, cur + delta));
+            if (v === 0) {
+                state.cart = state.cart.filter(c => c.flowerId !== flowerId);
+            } else if (entry) {
+                entry.qty = v;
+            } else {
+                state.cart.push({ flowerId: flowerId, qty: v, showPoints: false });
+            }
+            saveCartState();
+            updateCartUI();
             const elH = document.getElementById('card-qty-h-' + idx);
-            const el = document.getElementById('card-qty-' + idx);
-            const src = el || elH;
-            if (!src) return;
-            let v = parseInt(src.textContent, 10) || 1;
-            v = Math.min(999, Math.max(1, v + delta));
             if (elH) elH.textContent = v;
-            if (el) el.textContent = v;
         };
 
         window.removeFlowerFromCart = function(flowerId) {
@@ -3278,30 +3219,20 @@
                 }
             });
 
-            document.getElementById('btn-open-advanced-filter')?.addEventListener('click', () => {
-                openModal('advanced-filter-modal');
+            document.querySelectorAll('.filter-price-chk, .filter-color-chk, .filter-type-chk').forEach(chk => {
+                chk.addEventListener('change', () => {
+                    state.activeFilter.priceRanges = Array.from(document.querySelectorAll('.filter-price-chk:checked')).map(c => c.value);
+                    state.activeFilter.colors = Array.from(document.querySelectorAll('.filter-color-chk:checked')).map(c => c.value);
+                    state.activeFilter.types = Array.from(document.querySelectorAll('.filter-type-chk:checked')).map(c => c.value);
+                    renderFlowerCards();
+                });
             });
 
-            document.getElementById('btn-apply-advanced-filter')?.addEventListener('click', () => {
-                const pChks = document.querySelectorAll('.filter-price-chk:checked');
-                state.activeFilter.priceRanges = Array.from(pChks).map(c => c.value);
-
-                const cChks = document.querySelectorAll('.filter-color-chk:checked');
-                state.activeFilter.colors = Array.from(cChks).map(c => c.value);
-
-                const tChks = document.querySelectorAll('.filter-type-chk:checked');
-                state.activeFilter.types = Array.from(tChks).map(c => c.value);
-
-                closeModal('advanced-filter-modal');
-                renderFlowerCards();
-            });
-
-            document.getElementById('btn-reset-advanced-filter')?.addEventListener('click', () => {
+            document.getElementById('btn-reset-inline-filter')?.addEventListener('click', () => {
                 document.querySelectorAll('.filter-price-chk, .filter-color-chk, .filter-type-chk').forEach(c => c.checked = false);
                 state.activeFilter.priceRanges = [];
                 state.activeFilter.colors = [];
                 state.activeFilter.types = [];
-                closeModal('advanced-filter-modal');
                 renderFlowerCards();
             });
 
@@ -3587,6 +3518,11 @@
                 document.getElementById('local-companies-manage-list')?.classList.remove('hidden');
                 document.getElementById('local-flowers-manage-list')?.classList.add('hidden');
             });
+            document.getElementById('btn-open-admin')?.addEventListener('click', () => {
+                closeModal('menu-modal');
+                openModal('admin-modal');
+            });
+
             document.getElementById('btn-open-updates')?.addEventListener('click', () => {
                 closeModal('menu-modal');
                 openModal('changelog-modal');
