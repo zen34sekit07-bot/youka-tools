@@ -477,6 +477,15 @@
             histContainer.innerHTML = hists.length > 0 ? hists.map(i => createItemHtml(i, false)).join('') : '<p class="text-xs text-slate-400">最近の履歴がありません。</p>';
         }
 
+        window.openHistoryModal = function(target) {
+            openModal('history-modal');
+            renderHistoryModal();
+            setTimeout(() => {
+                const el = document.getElementById(target === 'fav' ? 'hist-fav-section' : 'hist-hist-section');
+                if (el) el.scrollIntoView({ block: 'start' });
+            }, 60);
+        }
+
         window.loadFromHistory = function(id, isFav) {
             const key = isFav ? STORAGE_KEY_FAV : STORAGE_KEY_HIST;
             const list = getStorage(key);
@@ -1312,9 +1321,14 @@
             </div>
             
             <div class="w-full mx-auto relative px-2">
-                <button onclick="openModal('history-modal'); renderHistoryModal();" class="w-full bg-slate-900 border border-slate-800 text-slate-200 text-sm py-3 px-3 rounded-xl outline-none shadow-sm font-bold cursor-pointer transition hover:bg-slate-800 active:scale-[0.98] flex items-center justify-center gap-2">
-                    📄 過去の履歴・お気に入りから呼び出す
-                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="openHistoryModal('hist')" class="bg-slate-800 border-2 border-slate-500 text-slate-100 text-sm py-3 px-2 rounded-xl font-bold cursor-pointer transition hover:bg-slate-700 active:scale-[0.98] flex items-center justify-center gap-1.5 shadow">
+                        🕘 履歴を呼び出す
+                    </button>
+                    <button onclick="openHistoryModal('fav')" class="bg-[#8a6d3b] border-2 border-[#c2a054] text-white text-sm py-3 px-2 rounded-xl font-bold cursor-pointer transition hover:bg-[#a67c44] active:scale-[0.98] flex items-center justify-center gap-1.5 shadow">
+                        <span class="text-[#f4e3ac]">★</span> お気に入り
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -1448,11 +1462,11 @@
             <h3 class="text-base font-black text-white mb-4 border-b border-slate-800 pb-2">📄 履歴・お気に入り管理</h3>
             
             <div class="overflow-y-auto hide-scrollbar flex-1 space-y-4">
-                <div>
+                <div id="hist-fav-section">
                     <h4 class="text-xs font-bold text-indigo-400 mb-2">⭐ お気に入り</h4>
                     <div id="modal-fav-list" class="space-y-2"></div>
                 </div>
-                <div>
+                <div id="hist-hist-section">
                     <h4 class="text-xs font-bold text-slate-400 mb-2">🕒 最近の履歴</h4>
                     <div id="modal-hist-list" class="space-y-2"></div>
                 </div>
