@@ -202,18 +202,25 @@
                     <span class="text-[13px] font-bold text-amber-700 block mb-1.5 truncate">
                         🏢 葬儀社様のカタログを選ぶ
                     </span>
-                    <div class="space-y-1 relative">
-                        <button id="btn-toggle-comp-accordion" type="button" class="w-full h-11 px-2 bg-slate-950 hover:bg-slate-850 border border-slate-700/80 rounded-lg flex items-center justify-between text-sm font-bold text-slate-200 transition active:scale-95" title="お気に入り・履歴から葬儀社を選択">
-                            <span id="current-selected-company-display" class="truncate pr-1 text-sm text-slate-300">⭐ お気に入り・履歴</span>
-                            <span id="comp-accordion-arrow" class="text-[13px] text-slate-400 font-bold shrink-0">▼</span>
-                        </button>
-                        <div id="company-accordion-menu" class="hidden absolute left-0 right-0 top-[48px] bg-slate-950 border border-slate-700 rounded-xl p-1.5 z-50 shadow-2xl max-h-48 overflow-y-auto hide-scrollbar space-y-1">
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none">🔍</span>
+                        <input type="text" id="sogisha-search-input" placeholder="葬儀社名を入力すると候補が出ます" autocomplete="off" class="w-full h-11 bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg pl-9 pr-8 text-sm font-bold text-white outline-none placeholder:text-slate-500 placeholder:font-normal">
+                        <button id="btn-clear-sogisha-search" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white font-bold text-sm">✕</button>
+                        <div id="sogisha-suggest-list" class="hidden absolute left-0 right-0 top-[48px] bg-slate-950 border border-slate-700 rounded-xl p-1.5 z-50 shadow-2xl max-h-56 overflow-y-auto hide-scrollbar space-y-1">
                             <!-- JSで動的レンダリング -->
                         </div>
-                        <button id="btn-open-company-modal" type="button" class="w-full h-11 bg-[#2563eb] hover:bg-[#1e40af] border border-[#2563eb] text-[#ffffff] text-sm font-bold rounded-lg transition flex items-center justify-center gap-1 active:scale-95 shadow">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <span>検索する</span>
-                        </button>
+                    </div>
+                    <div id="sogisha-selected-row" class="hidden mt-2 flex items-center justify-between bg-indigo-950/50 border border-indigo-500/40 rounded-lg px-2.5 py-2">
+                        <span id="sogisha-selected-name" class="text-[13px] font-bold text-indigo-200 truncate"></span>
+                        <button id="btn-clear-sogisha-selection" type="button" class="text-[12px] font-bold text-rose-300 shrink-0 ml-2 active:scale-95 transition">解除</button>
+                    </div>
+                    <div id="panel-sogisha-cats" class="hidden mt-2">
+                        <div class="grid grid-cols-4 gap-1">
+                            <button type="button" class="sogisha-cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-indigo-600 text-[#ffffff] shadow-sm" data-cat="general">一般供花</button>
+                            <button type="button" class="sogisha-cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="family">家族花</button>
+                            <button type="button" class="sogisha-cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="chief">喪主花</button>
+                            <button type="button" class="sogisha-cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors bg-slate-800 hover:bg-slate-700 text-slate-300" data-cat="other">その他</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1242,7 +1249,74 @@
                 }
             }
             syncCatalogSourceUI(isYoukaen);
+            syncSogishaPanelUI(isYoukaen, compId);
             renderFlowerCards();
+        }
+
+        function normalizeCompanySearchText(s) {
+            return String(s || '')
+                .replace(/様+$/, '')
+                .replace(/株式会社|有限会社|合資会社|合同会社|（株）|\(株\)/g, '')
+                .replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60))
+                .replace(/\s+/g, '')
+                .toLowerCase();
+        }
+
+        function renderSogishaSuggestions() {
+            const input = document.getElementById('sogisha-search-input');
+            const list = document.getElementById('sogisha-suggest-list');
+            const clearBtn = document.getElementById('btn-clear-sogisha-search');
+            if (!input || !list) return;
+            if (clearBtn) clearBtn.classList.toggle('hidden', !input.value);
+            const kw = normalizeCompanySearchText(input.value);
+            if (!kw) {
+                list.classList.add('hidden');
+                list.innerHTML = '';
+                return;
+            }
+            const comps = getAllCompanies(false).filter(c => normalizeCompanySearchText(c.name).includes(kw));
+            if (comps.length === 0) {
+                list.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-2">該当する葬儀社がありません</p>';
+            } else {
+                list.innerHTML = comps.slice(0, 30).map(c => {
+                    const isFav = state.favCompanies.includes(c.id);
+                    const cName = c.name.replace(/様+$/, '') + ' 様';
+                    return `
+                    <div class="flex items-center justify-between p-2 rounded-lg text-[13px] cursor-pointer bg-slate-900 hover:bg-slate-850 text-slate-200 transition select-none" onclick="selectCompany('${c.id}')">
+                        <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                            <button type="button" onclick="toggleCompanyFav('${c.id}', event)" class="text-sm shrink-0 ${isFav ? 'text-amber-600' : 'text-slate-600 hover:text-slate-400'}" title="お気に入り登録/解除">
+                                ${isFav ? '★' : '☆'}
+                            </button>
+                            <span class="truncate">${cName}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            list.classList.remove('hidden');
+        }
+
+        function syncSogishaPanelUI(isYoukaen, compId) {
+            const row = document.getElementById('sogisha-selected-row');
+            const nameEl = document.getElementById('sogisha-selected-name');
+            const cats = document.getElementById('panel-sogisha-cats');
+            const input = document.getElementById('sogisha-search-input');
+            const sug = document.getElementById('sogisha-suggest-list');
+            if (sug) sug.classList.add('hidden');
+            if (isYoukaen) {
+                row?.classList.add('hidden');
+                cats?.classList.add('hidden');
+                if (input) input.value = '';
+                return;
+            }
+            const c = getAllCompanies(true).find(x => x.id === compId);
+            if (nameEl) nameEl.textContent = c ? formatCompanyName(c.name) : `${compId} 様`;
+            if (input) input.value = c ? c.name.replace(/様+$/, '') : compId;
+            row?.classList.remove('hidden');
+            cats?.classList.remove('hidden');
+            document.querySelectorAll('.sogisha-cat-btn').forEach(b => {
+                const active = b.getAttribute('data-cat') === 'general';
+                b.className = 'sogisha-cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors ' + (active ? 'bg-indigo-600 text-[#ffffff] shadow-sm' : 'bg-slate-800 text-slate-300 hover:bg-slate-700');
+            });
         }
 
         window.toggleCompanyFav = function(compId, event) {
@@ -1857,12 +1931,21 @@
                             <div class="mt-2.5">
                                 <span class="text-[12px] font-bold text-slate-400 block mb-1">数量をまとめて増減:</span>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, -10)" class="py-2 rounded-lg bg-slate-800 border border-slate-600 text-rose-300 font-black text-[13px] active:scale-95 transition">−10</button>
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, -50)" class="py-2 rounded-lg bg-slate-800 border border-slate-600 text-rose-300 font-black text-[13px] active:scale-95 transition">−50</button>
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, -100)" class="py-2 rounded-lg bg-slate-800 border border-slate-600 text-rose-300 font-black text-[13px] active:scale-95 transition">−100</button>
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, 10)" class="py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 font-black text-[13px] active:scale-95 transition">+10</button>
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, 50)" class="py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 font-black text-[13px] active:scale-95 transition">+50</button>
-                                    <button type="button" onclick="cardQtyStep(${fIdx}, 100)" class="py-2 rounded-lg bg-slate-800 border border-slate-600 text-slate-100 font-black text-[13px] active:scale-95 transition">+100</button>
+                                    <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden bg-slate-800">
+                                        <button type="button" onclick="cardQtyStep(${fIdx}, -10)" class="flex-1 h-10 text-base font-black text-rose-300 active:bg-slate-700">−</button>
+                                        <span class="w-7 text-center font-black text-slate-100 text-[13px]">10</span>
+                                        <button type="button" onclick="cardQtyStep(${fIdx}, 10)" class="flex-1 h-10 text-base font-black text-slate-100 active:bg-slate-700">＋</button>
+                                    </div>
+                                    <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden bg-slate-800">
+                                        <button type="button" onclick="cardQtyStep(${fIdx}, -50)" class="flex-1 h-10 text-base font-black text-rose-300 active:bg-slate-700">−</button>
+                                        <span class="w-7 text-center font-black text-slate-100 text-[13px]">50</span>
+                                        <button type="button" onclick="cardQtyStep(${fIdx}, 50)" class="flex-1 h-10 text-base font-black text-slate-100 active:bg-slate-700">＋</button>
+                                    </div>
+                                    <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden bg-slate-800">
+                                        <button type="button" onclick="cardQtyStep(${fIdx}, -100)" class="flex-1 h-10 text-base font-black text-rose-300 active:bg-slate-700">−</button>
+                                        <span class="w-7 text-center font-black text-slate-100 text-[13px]">100</span>
+                                        <button type="button" onclick="cardQtyStep(${fIdx}, 100)" class="flex-1 h-10 text-base font-black text-slate-100 active:bg-slate-700">＋</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2 mt-2.5">
@@ -3040,6 +3123,38 @@
 
             document.getElementById('btn-select-sogisha')?.addEventListener('click', () => {
                 syncCatalogSourceUI(false);
+            });
+
+            const sogishaInput = document.getElementById('sogisha-search-input');
+            sogishaInput?.addEventListener('input', () => renderSogishaSuggestions());
+            sogishaInput?.addEventListener('focus', () => renderSogishaSuggestions());
+
+            document.getElementById('btn-clear-sogisha-search')?.addEventListener('click', () => {
+                const input = document.getElementById('sogisha-search-input');
+                if (input) input.value = '';
+                renderSogishaSuggestions();
+                input?.focus();
+            });
+
+            document.getElementById('btn-clear-sogisha-selection')?.addEventListener('click', () => {
+                state.activeFilter.company = '__none__';
+                document.getElementById('sogisha-selected-row')?.classList.add('hidden');
+                document.getElementById('panel-sogisha-cats')?.classList.add('hidden');
+                const input = document.getElementById('sogisha-search-input');
+                if (input) input.value = '';
+                renderSogishaSuggestions();
+                renderFlowerCards();
+            });
+
+            document.querySelectorAll('.sogisha-cat-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.activeFilter.category = btn.getAttribute('data-cat');
+                    document.querySelectorAll('.sogisha-cat-btn').forEach(b => {
+                        const active = b === btn;
+                        b.className = 'sogisha-cat-btn h-11 rounded-lg text-sm font-bold flex items-center justify-center transition-colors ' + (active ? 'bg-indigo-600 text-[#ffffff] shadow-sm' : 'bg-slate-800 text-slate-300 hover:bg-slate-700');
+                    });
+                    renderFlowerCards();
+                });
             });
 
             document.getElementById('keyword-search-input')?.addEventListener('input', (e) => {
