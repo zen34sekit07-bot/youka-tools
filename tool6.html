@@ -2069,21 +2069,15 @@ AIアシスタント: Gemini (Google)
             });
         }
 
-        // スマホの戻るボタン＆モーダル連動制御 (履歴ガード2段補充版)
+        // スマホの戻るボタン＆モーダル連動制御 (履歴ガード1段版)
         history.replaceState({ page: 'root' }, '');
-        history.pushState({ page: 'guard1' }, '');
-        history.pushState({ page: 'guard2' }, '');
+        history.pushState({ page: 'guard' }, '');
         function ensureHistoryGuards() {
             if (!history.state || history.state.page === 'root') {
-                history.pushState({ page: 'guard1' }, '');
-                history.pushState({ page: 'guard2' }, '');
-            } else if (history.state.page === 'guard1') {
-                history.pushState({ page: 'guard2' }, '');
+                history.pushState({ page: 'guard' }, '');
             }
         }
-        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
-        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
-
+                
         function hasOpenModal() {
             const hasSlide = document.querySelector('#modal-flower.active, #modal-picker.active, #modal-order.active');
             const hasSave = !document.getElementById('modal-save').classList.contains('hidden-safe');

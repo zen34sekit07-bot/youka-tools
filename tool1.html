@@ -4300,23 +4300,17 @@
             });
         }
 
-        // --- スマホ「戻る」ボタン連動 (履歴ガード2段補充版) ---
+        // --- スマホ「戻る」ボタン連動 (履歴ガード1段版) ---
         let isExitConfirmOpen = false;
         history.replaceState({ page: 'root' }, '');
-        history.pushState({ page: 'guard1' }, '');
-        history.pushState({ page: 'guard2' }, '');
+        history.pushState({ page: 'guard' }, '');
 
         function ensureHistoryGuards() {
             if (!history.state || history.state.page === 'root') {
-                history.pushState({ page: 'guard1' }, '');
-                history.pushState({ page: 'guard2' }, '');
-            } else if (history.state.page === 'guard1') {
-                history.pushState({ page: 'guard2' }, '');
+                history.pushState({ page: 'guard' }, '');
             }
         }
-        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
-        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
-
+                
         function hasAnyOpenOverlay() {
             const hasModal = document.querySelector('.modal.active') !== null;
             const hasSheet = document.querySelector('.bottom-sheet.active') !== null;

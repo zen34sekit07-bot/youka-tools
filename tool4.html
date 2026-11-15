@@ -1753,21 +1753,15 @@
  }
  });  
   
- // --- ウィンドウ開閉とスマホ戻るボタン連動 (履歴ガード2段補充版) ---
+ // --- ウィンドウ開閉とスマホ戻るボタン連動 (履歴ガード1段版) ---
  history.replaceState({ appBase: true }, '');
  history.pushState({ appGuard: 1 }, '');
- history.pushState({ appGuard: 2 }, '');
  const ensureHistoryGuards = () => {
    if (!history.state || history.state.appBase) {
-     history.pushState({ appGuard: 1 }, '');
-     history.pushState({ appGuard: 2 }, '');
-   } else if (history.state.appGuard === 1) {
-     history.pushState({ appGuard: 2 }, '');
-   }
+                history.pushState({ appGuard: 1 }, '');
+            }
  };
- window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
- window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
- window.addEventListener('DOMContentLoaded', ensureHistoryGuards);
+   window.addEventListener('DOMContentLoaded', ensureHistoryGuards);
 
  function pushWindowHistory() {
    ensureHistoryGuards();

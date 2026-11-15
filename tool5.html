@@ -3987,19 +3987,13 @@
         }
 
         history.replaceState({ page: 'root' }, '');
-        history.pushState({ page: 'guard1' }, '');
-        history.pushState({ page: 'guard2' }, '');
+        history.pushState({ page: 'guard' }, '');
         function ensureHistoryGuards() {
             if (!history.state || history.state.page === 'root') {
-                history.pushState({ page: 'guard1' }, '');
-                history.pushState({ page: 'guard2' }, '');
-            } else if (history.state.page === 'guard1') {
-                history.pushState({ page: 'guard2' }, '');
+                history.pushState({ page: 'guard' }, '');
             }
         }
-        window.addEventListener('pointerdown', ensureHistoryGuards, { capture: true, passive: true });
-        window.addEventListener('keydown', ensureHistoryGuards, { capture: true, passive: true });
-
+                
         let isExitConfirmOpen = false;
         let alertModalResolve = null;
         let confirmModalResolve = null;
