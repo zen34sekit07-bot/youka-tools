@@ -96,7 +96,7 @@
  .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.3s; }  
  .sheet-overlay.active { opacity: 1; pointer-events: auto; }  
   
- .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6f6f6f; font-size: 10px; font-weight: bold; gap: 4px; width: 64px; border-radius: 12px; padding: 8px 0; transition: all 0.2s; }  
+ .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6f6f6f; font-size: 12.5px; font-weight: bold; gap: 4px; flex: 1; min-height: 60px; border-radius: 12px; padding: 9px 0 8px; transition: all 0.2s; }  
  .toolbar-btn.active { color: #2563eb; background: rgba(37, 99, 235, 0.1); }  
  .toolbar-btn svg { width: 24px; height: 24px; margin: 0 auto; }  
  .toolbar-btn.disabled-btn { opacity: 0.25; pointer-events: none; }
@@ -412,7 +412,9 @@
  </div>  
  </div>  
  </div>  
- </div>  
+ 
+ <div class="px-4 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0"> <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeAllActiveWindows(true)">閉じる</button> </div>
+</div>  
   
  <!-- 2. テキスト Sheet (フォーカス時コンパクト化対策) -->  
  <div class="bottom-sheet" id="sheet-text">  
@@ -480,7 +482,9 @@
  </div>  
  </div>  
  </div>  
- </div>  
+ 
+ <div class="px-4 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0"> <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeAllActiveWindows(true)">閉じる</button> </div>
+</div>  
   
  <!-- 3. グリッド Sheet -->
  <div class="bottom-sheet" id="sheet-grid">
@@ -544,7 +548,9 @@
        </div>
      </div>
    </div>
- </div>
+ 
+ <div class="px-4 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0"> <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeAllActiveWindows(true)">閉じる</button> </div>
+</div>
 
  <!-- 4. ペン Sheet -->  
  <div class="bottom-sheet" id="sheet-pen">  
@@ -587,7 +593,9 @@
  </div>  
  <p class="text-[12px] text-gray-400 leading-relaxed px-1">※ペン入力中は画像の移動や拡大ができません。書き終わったらオフにしてください。</p>  
  </div>  
- </div>  
+ 
+ <div class="px-4 pt-3 pb-1 border-t border-[#d9d9d7] shrink-0"> <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3.5 rounded-xl text-sm transition active:scale-[0.98]" onclick="closeAllActiveWindows(true)">閉じる</button> </div>
+</div>  
   
  <!-- History / Images Modal -->  
  <div id="history-modal" class="modal">  
