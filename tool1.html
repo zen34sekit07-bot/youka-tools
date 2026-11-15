@@ -311,7 +311,7 @@
             <button id="btn-quick-grid" class="flex items-center gap-1.5 px-2.5 py-1 text-[13px] text-cyan-300 font-bold hover:text-white transition active:scale-95">  
                 <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>  
                 <span>グリッド</span>  
-                <span id="quick-grid-status" class="text-[13px] px-1.5 py-0.5 rounded bg-gray-800 text-white font-mono">OFF</span>  
+                <span id="quick-grid-status" class="text-sm px-2.5 py-1 rounded-lg bg-gray-100 text-[#ffffff] font-bold">OFF</span>  
             </button>  
             <button id="btn-quick-grid-gear" class="p-1 text-white hover:text-cyan-300 border-l border-gray-700 pl-1.5 transition active:scale-95" title="グリッド詳細設定">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -395,16 +395,16 @@
                 </button>
                 <div>
                     <h2 class="text-lg font-bold text-white tracking-wide">施工シミュレーター</h2>
-                    <p class="text-[13px] text-white mt-1">作業スタイルに合わせて動作モードを選択してください</p>
+                    <p class="text-sm text-white mt-1">作業スタイルに合わせて動作モードを選択してください</p>
                 </div>
 
                 <div class="space-y-3 text-left">
                     <button type="button" onclick="window.handleModeSelect && window.handleModeSelect('easy')" class="w-full bg-gray-800/80 hover:bg-gray-800 border-2 border-gray-700 hover:border-blue-500 rounded-xl p-4 transition group mode-select-btn active:scale-98" data-mode="easy">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-sm font-bold text-white group-hover:text-blue-400 flex items-center gap-2">
+                            <span class="text-base font-bold text-white group-hover:text-blue-400 flex items-center gap-2">
                                 ⚡ かんたんモード
                             </span>
-                            <span class="text-[13px] bg-gray-700 text-white px-2 py-0.5 rounded font-bold">手軽・標準</span>
+                            <span class="text-[13px] bg-gray-100 text-[#ffffff] px-2 py-1 rounded-lg font-bold whitespace-nowrap shrink-0">手軽・標準</span>
                         </div>
                         <p class="text-sm text-white leading-relaxed mt-1">
                             奥行き（パース）の複雑な設定を行わず、直感的にサクサク配置できるモードです。<br>
@@ -414,10 +414,10 @@
 
                     <button type="button" onclick="window.handleModeSelect && window.handleModeSelect('precision')" class="w-full bg-gray-800/80 hover:bg-gray-800 border-2 border-gray-700 hover:border-cyan-500 rounded-xl p-4 transition group mode-select-btn active:scale-98" data-mode="precision">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-sm font-bold text-white group-hover:text-cyan-400 flex items-center gap-2">
+                            <span class="text-base font-bold text-white group-hover:text-cyan-400 flex items-center gap-2">
                                 📐 精密モード（パース対応）
                             </span>
-                            <span class="text-[13px] bg-blue-600 text-[#ffffff] px-2 py-0.5 rounded font-bold">推奨</span>
+                            <span class="text-[13px] bg-blue-600 text-[#ffffff] px-2 py-1 rounded-lg font-bold whitespace-nowrap shrink-0">推奨</span>
                         </div>
                         <p class="text-sm text-white leading-relaxed mt-1">
                             床と壁のラインから奥行き比率を算出し、手前と奥の遠近感を考慮した正確な縮尺シミュレーションが可能です。<br>
@@ -426,10 +426,10 @@
                     </button>
                 </div>
 
-                <div class="bg-gray-950/80 p-3 rounded-xl border border-gray-800 text-[13px] text-white text-left leading-relaxed">
+                <div class="bg-gray-950/80 p-3 rounded-xl border border-gray-800 text-sm text-white text-left leading-relaxed">
                     💡 選択したモードは自動保存され、次回からは直接作業画面が開きます。モードはいつでも右上の<strong>「メニュー」＞「動作モードの変更」</strong>から切り替え可能です。
                 </div>
-                <button id="mode-select-cancel-btn" class="hidden w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-[13px] transition">
+                <button id="mode-select-cancel-btn" class="hidden w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl border border-gray-700 text-sm transition">
                     キャンセルして作業に戻る
                 </button>
             </div>
@@ -472,6 +472,12 @@
             <span id="bg-status-label" class="text-sm text-white font-mono">未読み込み</span>
         </div>
         <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-3">
+            
+            <div class="flex bg-[#e4e4e2] rounded-xl p-1 gap-1">
+                <button type="button" id="tab-bg-library" class="flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition">保存した式場</button>
+                <button type="button" id="tab-bg-setup" class="flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition">式場を設定</button>
+            </div>
+            <div id="bg-panel-library">
             <div class="border-2 border-[#d9d9d7] rounded-2xl p-3 space-y-2.5">
                 <div class="flex items-center justify-between">
                     <span class="text-lg font-bold text-white">保存した式場</span>
@@ -540,7 +546,11 @@
                 <div id="saved-venues-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
                     <p class="text-sm text-white text-center py-2">保存された式場はありません</p>
                 </div>
+            
+                <p class="text-sm text-white">新しい式場は「式場を設定」タブから写真を読み込んでください。</p>
             </div>
+            </div>
+            <div id="bg-panel-setup" class="hidden space-y-3">
             <div class="border-2 border-blue-200 rounded-2xl p-3 space-y-2">
                 <div class="flex items-center gap-2">
                     <span class="step-num">1</span>
@@ -580,9 +590,9 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     この式場を保存する
                 </button>
-                <p class="text-[13px] text-white">保存した式場は、上の「保存した式場」からいつでも呼び出せます。</p>
+                <p class="text-[13px] text-white">保存した式場は、「保存した式場」タブからいつでも呼び出せます。</p>
             </div>
-
+            </div>
             <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3 rounded-xl text-base transition active:scale-[0.98]" onclick="closeSheet('sheet-bg')">閉じる</button>
         </div>
     </div>
@@ -922,9 +932,9 @@
     <!-- 共通通知モーダル（ダークモード） -->  
     <div id="alert-modal" class="modal" style="z-index: 210;">  
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center space-y-3">  
-            <h3 id="alert-modal-title" class="text-sm font-bold text-white">通知</h3>  
-            <p id="alert-modal-desc" class="text-[13px] text-white leading-relaxed"></p>  
-            <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-xl text-[13px] transition shadow mt-2">OK</button>  
+            <h3 id="alert-modal-title" class="text-base font-bold text-white">通知</h3>  
+            <p id="alert-modal-desc" class="text-sm text-white leading-relaxed"></p>  
+            <button id="alert-modal-ok-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-3 rounded-xl text-base transition shadow mt-2">OK</button>  
         </div>  
     </div>
 
@@ -954,7 +964,7 @@
     <div id="library-help-modal" class="modal" style="z-index: 215;">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
-                <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     端末内保存・オンライン共有の使い方
                 </h3>
@@ -995,11 +1005,11 @@
   
     <div id="custom-confirm-modal" class="modal" style="z-index: 200;">
         <div class="bg-slate-900/95 border border-slate-700/80 rounded-2xl w-full max-w-xs p-6 shadow-2xl text-center">
-            <h3 id="custom-confirm-title" class="text-base font-bold text-white mb-2">確認</h3>
-            <p id="custom-confirm-desc" class="text-[13px] text-slate-400 mb-6 leading-relaxed whitespace-pre-line"></p>
+            <h3 id="custom-confirm-title" class="text-lg font-bold text-white mb-2">確認</h3>
+            <p id="custom-confirm-desc" class="text-sm text-white mb-6 leading-relaxed whitespace-pre-line"></p>
             <div class="grid grid-cols-2 gap-2.5">
                 <button id="custom-confirm-cancel" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-[13px] font-bold border border-slate-700 transition">キャンセル</button>
-                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] py-2.5 rounded-xl text-[13px] font-bold shadow transition">OK</button>
+                <button id="custom-confirm-ok" class="bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] py-3 rounded-xl text-base font-bold shadow transition">OK</button>
             </div>
         </div>
     </div>
@@ -1013,9 +1023,9 @@
                 </h3>
                 <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3.5 text-[13px] text-white">
+            <div class="overflow-y-auto pr-1 hide-scrollbar space-y-3.5 text-sm text-white">
                 <div class="bg-blue-900/25 border border-blue-500/40 p-3.5 rounded-xl space-y-2">
-                    <p class="font-bold text-blue-300 text-[13px]">【ツールの目的】</p>
+                    <p class="font-bold text-blue-600 text-base">【ツールの目的】</p>
                     <p class="text-gray-200 leading-relaxed text-sm">
                         式場やセレモニー現場の写真に基準寸法を設定し、花祭壇や供花などの生花装飾を現実と同じ縮尺で合成・配置することで、施工後の仕上がりイメージを素早く可視化・共有できるシミュレーターです。
                     </p>
@@ -1038,7 +1048,7 @@
                     </ul>
                 </div>
             </div>
-            <button class="close-modal-btn w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl transition border border-gray-700 text-[13px] shrink-0">閉じる</button>
+            <button class="close-modal-btn w-full mt-4 bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3 rounded-xl transition text-base shrink-0">閉じる</button>
         </div>
     </div>
 
@@ -1113,45 +1123,45 @@
     <div id="settings-menu-modal" class="modal">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button class="close-modal-btn absolute top-4 right-4 text-white hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            <h3 class="text-base font-bold text-white mb-4">メニュー</h3>
+            <h3 class="text-lg font-bold text-white mb-4">メニュー</h3>
             
             <div class="space-y-2 mb-4">
-                <button id="menu-switch-mode-btn" class="w-full bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/40 text-left px-4 py-3 rounded-xl text-[13px] font-bold text-cyan-300 transition flex items-center justify-between">
+                <button id="menu-switch-mode-btn" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center justify-between">
                     <span class="flex items-center gap-2.5">
-                        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                         動作モードの変更
                     </span>
-                    <span id="menu-current-mode-text" class="text-[13px] bg-cyan-900 text-cyan-200 px-2 py-0.5 rounded font-bold">精密</span>
+                    <span id="menu-current-mode-text" class="text-sm bg-blue-600 text-[#ffffff] px-2.5 py-1 rounded-lg font-bold">精密</span>
                 </button>
-                <button id="menu-grid-settings-btn" class="w-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 text-left px-4 py-3 rounded-xl text-[13px] font-bold text-cyan-300 transition flex items-center justify-between">
+                <button id="menu-grid-settings-btn" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center justify-between">
                     <span class="flex items-center gap-2.5">
-                        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>
                         📐 実寸方眼グリッド設定
                     </span>
-                    <span id="menu-grid-status-badge" class="text-[13px] bg-gray-800 text-white px-2 py-0.5 rounded font-bold">OFF</span>
+                    <span id="menu-grid-status-badge" class="text-sm bg-gray-100 text-[#ffffff] px-2.5 py-1 rounded-lg font-bold">OFF</span>
                 </button>
-                <button id="menu-new-project-btn" class="w-full bg-blue-900/40 hover:bg-blue-900/60 border border-blue-500/40 text-left px-4 py-3 rounded-xl text-[13px] font-bold text-blue-300 transition flex items-center gap-3">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <button id="menu-new-project-btn" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center gap-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     ＋ 新規プロジェクト（リセット）
                 </button>
-                <button id="open-projects-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-[13px] font-medium transition flex items-center gap-3">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                <button id="open-projects-btn" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center gap-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
                     保存したプロジェクトを開く
                 </button>
-                <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-[13px] font-medium transition flex items-center gap-3" data-target="updates-modal">
-                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <button class="open-modal-btn w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center gap-3" data-target="updates-modal">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                     更新履歴
                 </button>
-                <button class="open-modal-btn w-full bg-gray-800 hover:bg-gray-700 text-left px-4 py-3 rounded-xl text-[13px] font-medium transition flex items-center gap-3" data-target="credit-modal">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <button class="open-modal-btn w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center gap-3" data-target="credit-modal">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     クレジット・バージョン情報
                 </button>
             </div>
 
             <div class="border-t border-gray-800 pt-3">
-                <label class="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-gray-950/60 border border-gray-800">
-                    <span class="text-[13px] font-bold text-white">目マークボタン（パーツ非表示）</span>
-                    <input type="checkbox" id="setting-toggle-eyebtn" class="accent-blue-500 w-4 h-4 rounded">
+                <label class="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-[#ffffff] border-2 border-[#d9d9d7]">
+                    <span class="text-base font-bold text-white">目マークボタン（パーツ非表示）</span>
+                    <input type="checkbox" id="setting-toggle-eyebtn" class="accent-blue-500 w-6 h-6 rounded">
                 </label>
             </div>
         </div>
@@ -5045,11 +5055,11 @@
             const isEn = state.grid.enabled;
             if (qBadge) {
                 qBadge.textContent = isEn ? 'ON' : 'OFF';
-                qBadge.className = isEn ? 'text-[13px] px-1.5 py-0.2 rounded bg-cyan-900 text-cyan-300 font-bold' : 'text-[13px] px-1.5 py-0.2 rounded bg-gray-800 text-white';
+                qBadge.className = isEn ? 'text-sm px-2.5 py-1 rounded-lg bg-blue-600 text-[#ffffff] font-bold' : 'text-sm px-2.5 py-1 rounded-lg bg-gray-100 text-[#ffffff] font-bold';
             }
             if (mBadge) {
                 mBadge.textContent = isEn ? 'ON' : 'OFF';
-                mBadge.className = isEn ? 'text-[13px] bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded font-bold' : 'text-[13px] bg-gray-800 text-white px-2 py-0.5 rounded font-bold';
+                mBadge.className = isEn ? 'text-sm bg-blue-600 text-[#ffffff] px-2.5 py-1 rounded-lg font-bold' : 'text-sm bg-gray-100 text-[#ffffff] px-2.5 py-1 rounded-lg font-bold';
             }
             if (toggle) toggle.checked = isEn;
         }
@@ -6072,6 +6082,17 @@
         });
 
         // 式場タブ切り替え（端末内保存 / オンライン共有）
+        const BG_TAB_ON = "flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition";
+        const BG_TAB_OFF = "flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition";
+        function switchBgTab(which) {
+            const lib = which === 'library';
+            document.getElementById('bg-panel-library').classList.toggle('hidden', !lib);
+            document.getElementById('bg-panel-setup').classList.toggle('hidden', lib);
+            document.getElementById('tab-bg-library').className = lib ? BG_TAB_ON : BG_TAB_OFF;
+            document.getElementById('tab-bg-setup').className = lib ? BG_TAB_OFF : BG_TAB_ON;
+        }
+        document.getElementById('tab-bg-library').addEventListener('click', () => switchBgTab('library'));
+        document.getElementById('tab-bg-setup').addEventListener('click', () => switchBgTab('setup'));
         const LIB_TAB_ON_LOCAL = "flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition lib-local-on";
         const LIB_TAB_ON_SHARED = "flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition lib-shared-on";
         const LIB_TAB_OFF = "flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition";

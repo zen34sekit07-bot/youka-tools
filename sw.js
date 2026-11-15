@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'youkaen-tools-v30';
+const CACHE_NAME = 'youkaen-tools-v31';
 
 const ASSETS_TO_CACHE = [
   './',
