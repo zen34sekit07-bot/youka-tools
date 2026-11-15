@@ -157,7 +157,7 @@
         .toolbar-btn svg { width: 29px; height: 29px; margin: 0 auto; flex-shrink: 0; }
         @keyframes tabGlowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.55); background: rgba(37,99,235,0.12); } 50% { box-shadow: 0 0 0 7px rgba(37,99,235,0); background: rgba(37,99,235,0.28); } }
         .toolbar-btn.attention { color: #1d4ed8; animation: tabGlowPulse 1.6s ease-in-out infinite; }
-        .toolbar-btn.attention::after { content: '▼'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); color: #2563eb; font-size: 16px; animation: tabArrowBounce 0.9s ease-in-out infinite; }
+        
         @keyframes tabArrowBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(4px); } }
         #bg-hint-balloon { position: fixed; left: 10px; bottom: calc(96px + max(env(safe-area-inset-bottom, 0px), 10px)); z-index: 45; background: #ffffff; color: #1c1c1c; border: 2px solid #2563eb; border-radius: 14px; padding: 10px 14px; font-size: 15px; font-weight: bold; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,0.35); max-width: 78vw; cursor: pointer; animation: balloonFloat 1.8s ease-in-out infinite; }
         #bg-hint-balloon::after { content: ''; position: absolute; left: 34px; bottom: -9px; width: 16px; height: 16px; background: #ffffff; border-right: 2px solid #2563eb; border-bottom: 2px solid #2563eb; transform: rotate(45deg); }
@@ -282,7 +282,8 @@
             ← ツール一覧へ
         </a>
         <!-- メニューボタン真上に配置したプロジェクト名 -->
-        <div id="current-project-badge" class="flex items-center gap-1.5 text-[13px] text-white font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[180px] sm:max-w-[240px]">
+        <button id="btn-start-over" type="button" class="text-[13px] font-bold text-red-600 shrink-0 px-1 py-1">最初から始める</button>
+        <div id="current-project-badge" class="flex items-center gap-1.5 text-[13px] text-white font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[150px] sm:max-w-[240px]">
             <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
             <span id="current-project-name-text" class="truncate text-[13px]">新規プロジェクト</span>
         </div>
@@ -318,6 +319,13 @@
             </button>
         </div>
         
+        <div id="bg-empty-overlay" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-6">
+            <div class="bg-black/60 rounded-2xl px-5 py-4 text-center">
+                <p class="text-[#ffffff] font-bold text-lg leading-snug"><span class="text-red-500 text-2xl font-bold align-middle mr-1">✕</span>式場の写真が読み込まれていません</p>
+                <p class="text-[#bfdbfe] font-bold text-base mt-1.5">下の「式場（背景）」から写真を読み込んでください</p>
+            </div>
+        </div>
+
         <button id="toggle-ui-btn" title="押している間パーツを非表示">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
         </button>
@@ -441,7 +449,7 @@
 
     <div id="bg-hint-balloon" class="hidden">
         まずは式場の写真を読み込んでください
-        <span class="balloon-sub">下の「式場（背景）」をタップ ↓</span>
+        <span class="balloon-sub">下の「式場（背景）」をタップ</span>
     </div>
 
     <footer id="bottom-toolbar">
@@ -474,10 +482,10 @@
         <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-3">
             
             <div class="flex bg-[#e4e4e2] rounded-xl p-1 gap-1">
-                <button type="button" id="tab-bg-library" class="flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition">保存した式場</button>
-                <button type="button" id="tab-bg-setup" class="flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition">式場を設定</button>
+                <button type="button" id="tab-bg-setup" class="flex-1 py-2 rounded-lg bg-blue-600 text-[#ffffff] font-bold text-base shadow transition">式場を設定</button>
+                <button type="button" id="tab-bg-library" class="flex-1 py-2 rounded-lg bg-transparent text-white font-bold text-base transition">保存した式場</button>
             </div>
-            <div id="bg-panel-library">
+            <div id="bg-panel-library" class="hidden">
             <div class="border-2 border-[#d9d9d7] rounded-2xl p-3 space-y-2.5">
                 <div class="flex items-center justify-between">
                     <span class="text-lg font-bold text-white">保存した式場</span>
@@ -550,7 +558,7 @@
                 <p class="text-sm text-white">新しい式場は「式場を設定」タブから写真を読み込んでください。</p>
             </div>
             </div>
-            <div id="bg-panel-setup" class="hidden space-y-3">
+            <div id="bg-panel-setup" class="space-y-3">
             <div class="border-2 border-blue-200 rounded-2xl p-3 space-y-2">
                 <div class="flex items-center gap-2">
                     <span class="step-num">1</span>
@@ -582,12 +590,12 @@
                     <span class="text-lg font-bold text-white">基準寸法</span>
                 </div>
                 <p class="text-sm text-white leading-relaxed">画像に写る実際の寸法を測ります。祭壇の幅など、分かっている長さを写真の上で2点指定してください。</p>
-                <button id="bg-remeasure-trigger" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-blue-600 text-blue-700 font-bold py-2.5 rounded-xl text-base flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
+                <button id="bg-remeasure-trigger" class="w-full bg-blue-600 hover:bg-blue-500 border-2 border-blue-600 text-[#ffffff] font-bold py-2.5 rounded-xl text-base flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                     基準寸法を設定・再設定
                 </button>
                 <button id="bg-save-library-trigger" class="w-full bg-[#ffffff] hover:bg-gray-50 border-2 border-[#d9d9d7] text-gray-100 font-bold py-2.5 rounded-xl text-base flex items-center justify-center gap-1.5 transition active:scale-[0.98]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     この式場を保存する
                 </button>
                 <p class="text-[13px] text-white">保存した式場は、「保存した式場」タブからいつでも呼び出せます。</p>
@@ -920,7 +928,7 @@
     <div id="custom-prompt-modal" class="modal" style="z-index: 200;">
         <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl text-center">
             <h3 id="custom-prompt-title" class="text-sm font-bold text-white mb-2">入力</h3>
-            <p id="custom-prompt-desc" class="text-[13px] text-white mb-4"></p>
+            <p id="custom-prompt-desc" class="text-sm text-white mb-4 whitespace-pre-line"></p>
             <input type="text" id="custom-prompt-input" class="w-full bg-gray-950 border border-gray-700 text-white rounded-lg p-2.5 text-sm font-bold outline-none mb-4 text-center focus:border-blue-500">
             <div class="grid grid-cols-2 gap-2">
                 <button id="custom-prompt-cancel" class="bg-gray-800 text-white py-2.5 rounded-xl text-[13px] font-bold border border-gray-700">キャンセル</button>
@@ -1140,10 +1148,7 @@
                     </span>
                     <span id="menu-grid-status-badge" class="text-sm bg-gray-100 text-[#ffffff] px-2.5 py-1 rounded-lg font-bold">OFF</span>
                 </button>
-                <button id="menu-new-project-btn" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center gap-3">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    ＋ 新規プロジェクト（リセット）
-                </button>
+                
                 <button id="open-projects-btn" class="w-full bg-[#ffffff] hover:bg-blue-50 border-2 border-[#d9d9d7] text-left px-4 py-3 rounded-xl text-base font-bold text-white transition flex items-center gap-3">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
                     保存したプロジェクトを開く
@@ -2074,28 +2079,6 @@
                 ctx.globalAlpha = state.bg.alpha ?? 1.0;
                 ctx.drawImage(state.bg.obj, r.x, r.y, r.w, r.h);
                 ctx.restore();
-            } else {
-                const cx = canvas.width / 2, cy = canvas.height / 2;
-                const fs1 = Math.max(17, Math.round(canvas.width * 0.019));
-                const fs2 = Math.max(14, Math.round(canvas.width * 0.0155));
-                ctx.save();
-                ctx.font = `bold ${fs1}px sans-serif`;
-                const w1 = ctx.measureText('式場の写真が読み込まれていません').width;
-                ctx.font = `bold ${fs2}px sans-serif`;
-                const w2 = ctx.measureText('下の「式場（背景）」から写真を読み込んでください').width;
-                const boxW = Math.max(w1, w2) + fs1 * 2.2;
-                const boxH = fs1 + fs2 + fs1 * 1.7;
-                ctx.fillStyle = 'rgba(0,0,0,0.62)';
-                if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(cx - boxW / 2, cy - boxH / 2, boxW, boxH, 16); ctx.fill(); }
-                else { ctx.fillRect(cx - boxW / 2, cy - boxH / 2, boxW, boxH); }
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#ffffff';
-                ctx.font = `bold ${fs1}px sans-serif`;
-                ctx.fillText('式場の写真が読み込まれていません', cx, cy - fs2 * 0.55);
-                ctx.fillStyle = '#bfdbfe';
-                ctx.font = `bold ${fs2}px sans-serif`;
-                ctx.fillText('下の「式場（背景）」から写真を読み込んでください', cx, cy + fs1 * 0.95);
-                ctx.restore();
             }
             // 背景未読込時は「式場（背景）」タブを光らせ、バルーンで案内する
             const needBgAttn = !(state.bg.loaded && state.bg.obj);
@@ -2103,6 +2086,8 @@
             if (bgTabBtn && bgTabBtn.classList.contains('attention') !== needBgAttn) bgTabBtn.classList.toggle('attention', needBgAttn);
             const bgBalloon = document.getElementById('bg-hint-balloon');
             if (bgBalloon && bgBalloon.classList.contains('hidden') === needBgAttn) bgBalloon.classList.toggle('hidden', !needBgAttn);
+            const bgEmptyOv = document.getElementById('bg-empty-overlay');
+            if (bgEmptyOv && bgEmptyOv.classList.contains('hidden') === needBgAttn) bgEmptyOv.classList.toggle('hidden', !needBgAttn);
             const bgThumb = document.getElementById('layer-bg-thumb');
             if (bgThumb) {
                 if (state.bg.obj && state.bg.obj.src && bgThumb.getAttribute('src') !== state.bg.obj.src) {
@@ -3092,11 +3077,10 @@
             };
         }
 
-        const newProjBtn = document.getElementById('menu-new-project-btn');
+        const newProjBtn = document.getElementById('btn-start-over');
         if (newProjBtn) {
             newProjBtn.addEventListener('click', async () => {
-                closeModal('settings-menu-modal');
-                const ok = await showCustomConfirm('新規プロジェクト', '現在の編集内容をクリアして、新しいプロジェクトを開始しますか？');
+                const ok = await showCustomConfirm('最初から始める', '現在の編集内容をクリアして、最初から始めますか？（保存していない内容は消えます）');
                 if (ok) {
                     resetProjectData();
                 }
@@ -5873,6 +5857,20 @@
             }
         }
 
+        // 起動後にオンライン共有リストを裏で先読みしておく（タブを開いたときすぐ表示できるように）
+        setTimeout(async () => {
+            try {
+                if (!hasLoadedSharedVenues && !isFetchingSharedVenues) {
+                    const l = await fetchSharedList('venue', () => {});
+                    cachedSharedVenues = l; hasLoadedSharedVenues = true; setPersistentSharedCache('venue', l);
+                }
+                if (!hasLoadedSharedParts && !isFetchingSharedParts) {
+                    const l2 = await fetchSharedList('part', () => {});
+                    cachedSharedParts = l2; hasLoadedSharedParts = true; setPersistentSharedCache('part', l2);
+                }
+            } catch (e) { /* 先読みに失敗した場合は通常の読み込みに任せる */ }
+        }, 2500);
+
         async function uploadVenueRecordToShared(venueData) {
             if (isLocalRecordAlreadyUploaded(venueData)) {
                 showAlertModal('この式場はすでにオンライン共有へアップロード済みです。再アップロードする場合は、オンライン共有側から一度削除してください。', 'アップロード済み');
@@ -5881,7 +5879,7 @@
             const hasPersp = !!(venueData.perspectiveLinesRaw && venueData.perspectiveLinesRaw.length >= 2);
             const name = await showCustomPrompt(
                 'オンライン共有へ式場を登録',
-                `みんなに公開する式場名を入力してください（状態: ${hasPersp ? 'パースあり' : 'パースなし'}）:`,
+                `式場の写真と基準寸法などの設定を、オンライン共有（みんなが読み込める共有置き場）へアップロードします。\nみんなに公開する式場名を入力してください（状態: ${hasPersp ? 'パースあり' : 'パースなし'}）:`,
                 venueData.name || '式場'
             );
             if (!name) return;
@@ -5916,7 +5914,7 @@
             }
             const name = await showCustomPrompt(
                 'オンライン共有へパーツを登録',
-                'みんなに公開するパーツ名を入力してください（透過PNG対応）:',
+                'パーツの画像とサイズ設定を、オンライン共有（みんなが読み込める共有置き場）へアップロードします。\nみんなに公開するパーツ名を入力してください（透過PNG対応）:',
                 partData.name || 'パーツ'
             );
             if (!name) return;
