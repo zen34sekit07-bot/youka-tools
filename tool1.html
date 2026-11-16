@@ -146,7 +146,7 @@
             transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 60; 
             padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 24px) + 16px);
-            max-height: 80vh; display: flex; flex-direction: column;
+            max-height: 94vh; display: flex; flex-direction: column;
         }
         .bottom-sheet.active { transform: translateY(0); }
         .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
@@ -475,9 +475,11 @@
 
     <div class="bottom-sheet" id="sheet-bg">
         <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
-        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
-            <h3 class="text-xl font-bold text-white border-l-[5px] border-blue-600 pl-2.5">式場（背景）の設定</h3>
-            <span id="bg-status-label" class="text-sm text-white font-mono">未読み込み</span>
+        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0">
+            <h3 class="text-xl font-bold text-white border-l-[5px] border-blue-600 pl-2.5 whitespace-nowrap">式場（背景）の設定</h3>
+            <div class="text-right mt-1">
+                <span id="bg-status-label" class="block text-sm text-white font-bold truncate">未読み込み</span>
+            </div>
         </div>
         <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1 space-y-3">
             
@@ -551,7 +553,7 @@
                         </select>
                     </div>
                 </div>
-                <div id="saved-venues-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
+                <div id="saved-venues-list" class="space-y-1.5 max-h-[42vh] overflow-y-auto hide-scrollbar">
                     <p class="text-sm text-white text-center py-2">保存された式場はありません</p>
                 </div>
             
@@ -608,7 +610,7 @@
     </div>
 
     <div id="add-item-modal" class="modal">
-        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2 border-l-[5px] border-blue-600 pl-2.5">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -698,15 +700,15 @@
                             </select>
                         </div>
                     </div>
-                    <div id="saved-parts-list" class="space-y-1.5 max-h-64 overflow-y-auto hide-scrollbar">
+                    <div id="saved-parts-list" class="space-y-1.5 max-h-[42vh] overflow-y-auto hide-scrollbar">
                         <p class="text-sm text-white text-center py-2">保存されたパーツはありません</p>
                     </div>
                 </div>
 
                 <div class="bg-gray-950 border border-gray-800 rounded-xl p-3">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[13px] font-bold text-gray-200" id="catalog-crumb">素材カテゴリ選択</span>
-                        <button id="catalog-back-btn" class="hidden text-[13px] text-blue-400 font-bold bg-gray-800 px-2 py-0.5 rounded border border-gray-700">← 戻る</button>
+                        <span class="text-base font-bold text-gray-200" id="catalog-crumb">素材カテゴリ選択</span>
+                        <button id="catalog-back-btn" class="hidden text-sm text-blue-400 font-bold bg-gray-800 px-2.5 py-1 rounded border border-gray-700">← 戻る</button>
                     </div>
                     <div id="catalog-tree-container" class="space-y-2"></div>
                 </div>
@@ -716,7 +718,7 @@
     </div>
 
     <div id="part-upload-picker-modal" class="modal" style="z-index: 130;">
-        <div class="bg-[#ffffff] border border-gray-300 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="bg-[#ffffff] border border-gray-300 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center mb-2 shrink-0 border-b border-[#d9d9d7] pb-2">
                 <h3 class="text-lg font-bold text-white border-l-[5px] border-blue-600 pl-2.5">アップロードするパーツを選ぶ</h3>
                 <button class="close-modal-btn text-white hover:text-gray-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
@@ -729,9 +731,11 @@
 
     <div class="bottom-sheet" id="sheet-layers">
         <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
-        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
-            <h3 class="text-xl font-bold text-white border-l-[5px] border-blue-600 pl-2.5">レイヤー・調整</h3>
-            <span class="text-[13px] text-white">上が手前に表示</span>
+        <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0">
+            <h3 class="text-xl font-bold text-white border-l-[5px] border-blue-600 pl-2.5 whitespace-nowrap">レイヤー・調整</h3>
+            <div class="text-right mt-1">
+                <span class="block text-sm text-white font-bold truncate">上が手前に表示</span>
+            </div>
         </div>
         <div class="overflow-y-auto px-4 py-3 hide-scrollbar flex-1">
             <p class="text-[13px] text-white mb-2">パーツの「調整」ボタンで、大きさ・位置・傾きを変えられます。</p>
@@ -759,8 +763,8 @@
     <div class="bottom-sheet" id="sheet-adjust">
         <div class="w-12 h-1 bg-gray-400 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
         <div class="px-5 pb-2 border-b border-[#d9d9d7] shrink-0 flex justify-between items-center">
-            <h3 class="text-xl font-bold text-white border-l-[5px] border-blue-600 pl-2.5">パーツの調整</h3>
-            <button id="selected-item-title-btn" class="text-sm text-blue-700 font-bold bg-blue-50 border border-blue-300 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-blue-100 transition active:scale-95" title="レイヤー一覧で切り替え">
+            <h3 class="text-xl font-bold text-white border-l-[5px] border-blue-600 pl-2.5 whitespace-nowrap">パーツの調整</h3>
+            <button id="selected-item-title-btn" class="text-sm text-blue-700 font-bold bg-blue-50 border border-blue-300 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-blue-100 transition active:scale-95 shrink-0" title="レイヤー一覧で切り替え">
                 <span id="selected-item-title">未選択</span>
                 <span class="text-[13px] text-blue-600">▼切替</span>
             </button>
@@ -972,7 +976,7 @@
 
     <!-- 端末内保存・オンライン共有機能説明モーダル -->
     <div id="library-help-modal" class="modal" style="z-index: 215;">
-        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
                 <h3 class="text-lg font-bold text-white flex items-center gap-1.5 border-l-[5px] border-blue-600 pl-2.5">
                     <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -1025,7 +1029,7 @@
     </div>
 
     <div id="guide-modal" class="modal">
-        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
                 <h3 class="text-lg font-bold text-white flex items-center gap-1.5 border-l-[5px] border-blue-600 pl-2.5">
                     <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -1279,7 +1283,7 @@
     </div>
 
     <div id="projects-modal" class="modal">
-        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center mb-3 shrink-0 border-b border-gray-800 pb-2">
                 <h3 class="text-lg font-bold text-white border-l-[5px] border-blue-600 pl-2.5">保存済みプロジェクト</h3>
                 <button class="close-modal-btn text-white hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
@@ -2990,24 +2994,27 @@
                         : `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc]">パースなし</span>`;
 
                     const row = document.createElement('div');
-                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition cursor-pointer";
+                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition cursor-pointer";
                     row.innerHTML = `
-                        <div class="flex-1 min-w-0">
+                        <div class="w-full">
                             <div class="text-base font-bold text-white truncate mb-1">${v.name}</div>
-                            <div class="flex items-center gap-1.5 flex-wrap">
+                            <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1.5 flex-wrap min-w-0">
                                 ${originBadge}
                                 ${perspBadge}
                                 <span class="text-[13px] font-bold text-white">基準 ${v.measureRealMm}mm ・ ${vDateStr}</span>
                             </div>
-                        </div>
                         <div class="flex items-center gap-1.5 shrink-0">
+                            <button type="button" class="open-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="この式場を読み込む">開く</button>
                             ${!alreadyUploaded ? `
-                            <button type="button" class="up-venue-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="オンライン共有へアップロード">
+                            <button type="button" class="up-venue-btn w-9 h-9 flex items-center justify-center bg-[#ffffff] hover:bg-gray-50 border border-[#d9d9d7] text-gray-200 rounded-lg transition shrink-0" title="オンライン共有へアップロード">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </button>` : ''}
-                            <button type="button" class="del-venue-btn del-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="端末内保存から削除">
+                            <button type="button" class="del-venue-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="端末内保存から削除">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
+                        </div>
+                            </div>
                         </div>
                     `;
                     row.onclick = async () => {
@@ -3116,6 +3123,7 @@
                     return;
                 }
                 updatePartSaveBox();
+                renderSavedParts();
                 openModal('add-item-modal');
                 renderCatalogTree(['root']);
             });
@@ -3191,8 +3199,8 @@
 
                 categories.forEach(c => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3 rounded-xl flex items-center justify-between text-[13px] font-bold text-white transition";
-                    btn.innerHTML = `<span class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${c.icon}"></path></svg>${c.label}</span><span>→</span>`;
+                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3.5 rounded-xl flex items-center justify-between text-base font-bold text-white transition";
+                    btn.innerHTML = `<span class="flex items-center gap-2"><svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${c.icon}"></path></svg>${c.label}</span><span>→</span>`;
                     btn.onclick = () => renderCatalogTree(['root', c.id]);
                     container.appendChild(btn);
                 });
@@ -3208,7 +3216,7 @@
                     ];
                     tools.forEach(t => {
                         const btn = document.createElement('button');
-                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3 rounded-xl flex items-center justify-between text-[13px] font-bold text-white transition";
+                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700/80 p-3.5 rounded-xl flex items-center justify-between text-base font-bold text-white transition";
                         btn.innerHTML = `<span>${t.label}</span><span>→</span>`;
                         btn.onclick = () => renderCatalogTree(['root', 'tools', t.id]);
                         container.appendChild(btn);
@@ -3226,13 +3234,13 @@
                     tables.forEach(t => {
                         const box = document.createElement('div');
                         box.className = "bg-gray-900 border border-gray-800 p-2.5 rounded-xl space-y-1.5";
-                        box.innerHTML = `<span class="text-[13px] font-bold text-blue-300 block">${t.name}</span>`;
+                        box.innerHTML = `<span class="text-base font-bold text-blue-300 block">${t.name}</span>`;
                         const hGrid = document.createElement('div');
                         hGrid.className = "grid grid-cols-3 gap-1.5";
 
                         t.heights.forEach(h => {
                             const hBtn = document.createElement('button');
-                            hBtn.className = "bg-gray-800 hover:bg-blue-600 text-[#ffffff] font-mono text-sm py-1.5 rounded border border-gray-700 transition";
+                            hBtn.className = "bg-gray-800 hover:bg-blue-600 text-[#ffffff] font-mono text-base py-2 rounded border border-gray-700 transition";
                             hBtn.textContent = `H${h}cm`;
                             hBtn.onclick = () => {
                                 closeModal('add-item-modal');
@@ -3253,7 +3261,7 @@
                     ];
                     kyoList.forEach(k => {
                         const btn = document.createElement('button');
-                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-[13px] font-bold text-white transition";
+                        btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3.5 rounded-xl text-left text-base font-bold text-white transition";
                         btn.textContent = k.label;
                         btn.onclick = () => {
                             closeModal('add-item-modal');
@@ -3266,7 +3274,7 @@
                     backBtn.classList.remove('hidden');
 
                     const btn = document.createElement('button');
-                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-[13px] font-bold text-white transition";
+                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3.5 rounded-xl text-left text-base font-bold text-white transition";
                     btn.textContent = '棺 (W180cm × H45cm)';
                     btn.onclick = () => {
                         closeModal('add-item-modal');
@@ -3285,8 +3293,8 @@
                 ];
                 flowers.forEach(f => {
                     const btn = document.createElement('button');
-                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3 rounded-xl text-left text-[13px] font-bold text-white transition flex items-center justify-between";
-                    btn.innerHTML = `<span>${f.name} <span class="text-white text-[13px]">(W60×H120cm・花頭H70)</span></span><span class="text-[13px] text-blue-400 font-bold">配置</span>`;
+                    btn.className = "w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 p-3.5 rounded-xl text-left text-base font-bold text-white transition flex items-center justify-between";
+                    btn.innerHTML = `<span>${f.name} <span class="text-white text-sm">(W60×H120cm・花頭H70)</span></span><span class="text-base text-blue-400 font-bold">配置</span>`;
                     btn.onclick = () => {
                         closeModal('add-item-modal');
                         createFlowerPart(f.name, f.flowerW, f.flowerH, f.bucketW, f.bucketH, f.fudaW, f.fudaH);
@@ -3302,19 +3310,19 @@
                 form.innerHTML = `
                     <div>
                         <label class="text-sm text-white block mb-1">名称 (省略可)</label>
-                        <input type="text" id="cust-name" placeholder="パーツ名" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-[13px] outline-none">
+                        <input type="text" id="cust-name" placeholder="パーツ名" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-base outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-sm text-white block mb-1">幅 (W mm)</label>
-                            <input type="number" id="cust-w" placeholder="例: 900" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-[13px] outline-none">
+                            <input type="number" id="cust-w" placeholder="例: 900" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-base outline-none">
                         </div>
                         <div>
                             <label class="text-sm text-white block mb-1">高さ (H mm)</label>
-                            <input type="number" id="cust-h" placeholder="例: 600" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-[13px] outline-none">
+                            <input type="number" id="cust-h" placeholder="例: 600" class="w-full bg-gray-950 border border-gray-700 text-white rounded p-2 text-base outline-none">
                         </div>
                     </div>
-                    <button id="cust-create-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2.5 rounded-lg text-[13px] shadow mt-2">この実寸(mm)で作成</button>
+                    <button id="cust-create-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-3 rounded-lg text-base shadow mt-2">この実寸(mm)で作成</button>
                 `;
                 container.appendChild(form);
 
@@ -4287,27 +4295,30 @@
                     const extLabel = (r.ext || (r.imgData && r.imgData.startsWith('data:image/jpeg') ? 'jpg' : 'png')).toUpperCase();
 
                     const row = document.createElement('div');
-                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition cursor-pointer";
+                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition cursor-pointer";
                     row.innerHTML = `
-                        <div class="flex-1 min-w-0">
+                        <div class="w-full">
                             <div class="text-base font-bold text-white truncate mb-1">${r.name}</div>
-                            <div class="flex items-center gap-1.5 flex-wrap">
+                            <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1.5 flex-wrap min-w-0">
                                 ${originBadge}
                                 <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc] font-mono">${extLabel}</span>
                                 <span class="text-[13px] font-bold text-white">${rDateStr}</span>
                             </div>
-                        </div>
                         <div class="flex items-center gap-1.5 shrink-0">
+                            <button type="button" class="place-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="このパーツを設置する"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>設置</button>
                             ${!alreadyUploaded ? `
-                            <button type="button" class="up-part-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="オンライン共有へアップロード">
+                            <button type="button" class="up-part-btn w-9 h-9 flex items-center justify-center bg-[#ffffff] hover:bg-gray-50 border border-[#d9d9d7] text-gray-200 rounded-lg transition shrink-0" title="オンライン共有へアップロード">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </button>` : ''}
-                            <button type="button" class="rename-part-btn w-10 h-10 flex items-center justify-center bg-[#ffffff] hover:bg-blue-50 border-2 border-blue-600 text-blue-700 rounded-lg transition shrink-0" title="名前変更">
+                            <button type="button" class="rename-part-btn w-9 h-9 flex items-center justify-center bg-[#ffffff] hover:bg-gray-50 border border-[#d9d9d7] text-gray-200 rounded-lg transition shrink-0" title="名前変更">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button type="button" class="del-part-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="端末内保存から削除">
+                            <button type="button" class="del-part-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="端末内保存から削除">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
+                        </div>
+                            </div>
                         </div>
                     `;
                     row.onclick = () => {
@@ -4372,7 +4383,7 @@
                         <div class="w-11 h-11 bg-black rounded-lg overflow-hidden border border-[#d9d9d7] flex items-center justify-center shrink-0">
                             <img src="${item.canvas.toDataURL('image/png')}" class="max-w-full max-h-full object-contain">
                         </div>
-                        <span class="text-sm font-bold text-white block truncate">${item.name}</span>
+                        <span class="text-base font-bold text-white block truncate">${item.name}</span>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
                         <button class="layer-lock-btn p-2.5 rounded-lg text-base ${item.locked ? 'bg-amber-100 text-amber-700 border border-amber-400' : 'bg-[#ffffff] text-white border border-[#d9d9d7]'}" title="${item.locked ? 'ロック解除' : 'ロック'}">
@@ -4384,6 +4395,8 @@
                         <button class="layer-delete-btn p-2.5 rounded-lg bg-red-50 text-red-600 border border-red-300 ml-0.5" title="削除">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
+                    </div>
+                        </div>
                     </div>
                 `;
                 row.querySelector('.select-item-target').onclick = () => {
@@ -4711,20 +4724,23 @@
                 if (!list) return;
                 const recs = (e.target.result || []).sort((a,b) => b.timestamp - a.timestamp);
                 if (recs.length === 0) {
-                    list.innerHTML = `<p class="text-center text-[13px] text-white py-6">保存されたプロジェクトはありません</p>`;
+                    list.innerHTML = `<p class="text-center text-sm text-white py-6">保存されたプロジェクトはありません</p>`;
                     return;
                 }
                 list.innerHTML = '';
                 recs.forEach(p => {
                     const row = document.createElement('div');
                     row.className = "bg-gray-800 p-3 rounded-xl border border-gray-700 flex items-center justify-between cursor-pointer hover:border-blue-500 transition";                const dt = new Date(p.timestamp);
-                const dtStr = `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}:${String(dt.getSeconds()).padStart(2,'0')}`;
+                const dtStr = `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
                 row.innerHTML = `
                     <div class="flex-1 overflow-hidden pr-2">
-                        <span class="text-[13px] font-bold text-white block truncate">${p.name}</span>
-                        <span class="text-[13px] text-white font-mono">${dtStr} / パーツ: ${p.items.length}件</span>
+                        <span class="text-base font-bold text-white block truncate">${p.name}</span>
+                        <span class="text-sm text-white font-bold">${dtStr} ・ パーツ ${p.items.length}件</span>
                     </div>
-                        <button class="del-proj-btn text-red-400 hover:text-red-300 p-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" class="open-proj-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95">開く</button>
+                        <button type="button" class="del-proj-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="削除"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                    </div>
                     `;
                     row.onclick = () => loadProject(p);
                     row.querySelector('.del-proj-btn').onclick = async ev => {
@@ -5986,25 +6002,27 @@
                     : '';
 
                 const row = document.createElement('div');
-                row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition";
+                row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition";
                 row.innerHTML = `
-                    <div class="flex-1 min-w-0">
+                    <div class="w-full">
                         <div class="text-base font-bold text-white truncate mb-1">${v.name}</div>
-                        <div class="flex items-center gap-1.5 flex-wrap">
+                        <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 flex-wrap min-w-0">
                             <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有</span>
                             ${mineBadge}
                             ${perspBadge}
                             <span class="text-[13px] font-bold text-white">基準 ${v.measureRealMm}mm ・ ${vDateStr}</span>
                         </div>
-                    </div>
                     <div class="flex items-center gap-1.5 shrink-0">
                         ${canDelete ? `
-                        <button type="button" class="del-shared-venue-btn del-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="自分がUPしたデータをオンライン共有から削除">
+                        <button type="button" class="del-shared-venue-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="自分がUPしたデータをオンライン共有から削除">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>` : ''}
-                        <button type="button" class="dl-venue-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="ダウンロードして端末内保存へ追加">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <button type="button" class="dl-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして端末内保存へ追加">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>取込む
                         </button>
+                    </div>
+                        </div>
                     </div>
                 `;
 
@@ -6133,7 +6151,7 @@
                     <div class="w-12 h-12 bg-black rounded-lg overflow-hidden border border-[#d9d9d7] flex items-center justify-center shrink-0">
                         <img src="${item.canvas.toDataURL('image/png')}" class="max-w-full max-h-full object-contain">
                     </div>
-                    <span class="flex-1 text-sm font-bold text-white truncate">${item.name}</span>
+                    <span class="flex-1 text-base font-bold text-white truncate">${item.name}</span>
                     <button type="button" class="picker-up-btn bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold px-3.5 py-2.5 rounded-lg text-sm shadow transition active:scale-95 shrink-0">⬆ アップロード</button>
                 `;
                 row.querySelector('.picker-up-btn').onclick = async () => {
@@ -6174,24 +6192,24 @@
                     : '';
 
                 const row = document.createElement('div');
-                row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition";
+                row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition";
                 row.innerHTML = `
-                    <div class="flex-1 min-w-0">
+                    <div class="w-full">
                         <div class="text-base font-bold text-white truncate mb-1">${p.name}</div>
-                        <div class="flex items-center gap-1.5 flex-wrap">
+                        <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 flex-wrap min-w-0">
                             <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有</span>
                             ${mineBadge}
                             <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc] font-mono">${p.ext || 'PNG'}</span>
                             <span class="text-[13px] font-bold text-white">${pDateStr}</span>
                         </div>
-                    </div>
                     <div class="flex items-center gap-1.5 shrink-0">
                         ${canDelete ? `
-                        <button type="button" class="del-shared-part-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="自分がUPしたパーツをオンライン共有から削除">
+                        <button type="button" class="del-shared-part-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="自分がUPしたパーツをオンライン共有から削除">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>` : ''}
-                        <button type="button" class="dl-part-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="ダウンロードして配置">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <button type="button" class="dl-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして配置">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>設置
                         </button>
                     </div>
                 `;
