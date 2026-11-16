@@ -282,8 +282,8 @@
             ← ツール一覧へ
         </a>
         <!-- メニューボタン真上に配置したプロジェクト名 -->
-        <button id="btn-start-over" type="button" class="text-[13px] font-bold text-red-600 bg-[#ffffff] border-2 border-red-600 rounded-full px-3 py-1 shadow transition active:scale-95 shrink-0">最初から始める</button>
-        <div id="current-project-badge" class="flex items-center gap-1.5 text-[13px] text-white font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[125px] sm:max-w-[240px]">
+        
+        <div id="current-project-badge" class="flex items-center gap-1.5 text-[13px] text-white font-bold bg-gray-800/90 px-2.5 py-0.5 rounded-full border border-gray-700 max-w-[180px] sm:max-w-[240px]">
             <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
             <span id="current-project-name-text" class="truncate text-[13px]">新規プロジェクト</span>
         </div>
@@ -507,13 +507,13 @@
                 </button>
                 <!-- 端末内保存の検索・並び替え（式場） -->
                 <div id="venue-local-controls" class="space-y-1.5">
-                    <div class="flex items-center gap-1.5">
-                        <div class="relative flex-1">
-                            <input type="text" id="venue-local-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
-                            <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <button type="button" id="venue-local-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
-                        </div>
-                        <select id="venue-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
+                    <div class="relative">
+                        <input type="text" id="venue-local-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-9 pr-8 py-2.5 text-base text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                        <svg class="w-5 h-5 text-white absolute left-2.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <button type="button" id="venue-local-search-clear" class="hidden text-white text-base absolute right-2.5 top-2.5">✕</button>
+                    </div>
+                    <div>
+                        <select id="venue-local-sort" class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2.5 text-base font-bold text-gray-100 outline-none">
                             <option value="newest">新しい順</option>
                             <option value="oldest">古い順</option>
                             <option value="kana">あいうえお昇順</option>
@@ -523,20 +523,20 @@
                 </div>
                 <!-- オンライン共有の検索・並び替え（式場） -->
                 <div id="venue-shared-controls" class="hidden space-y-1.5">
+                    <div class="relative">
+                        <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-9 pr-8 py-2.5 text-base text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                        <svg class="w-5 h-5 text-white absolute left-2.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <button type="button" id="venue-shared-search-clear" class="hidden text-white text-base absolute right-2.5 top-2.5">✕</button>
+                    </div>
                     <div class="flex items-center gap-1.5">
-                        <div class="relative flex-1">
-                            <input type="text" id="venue-shared-search" placeholder="式場名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
-                            <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <button type="button" id="venue-shared-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
-                        </div>
-                        <select id="venue-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
+                        <select id="venue-shared-sort" class="flex-1 bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2.5 text-base font-bold text-gray-100 outline-none">
                             <option value="newest">新しい順</option>
                             <option value="oldest">古い順</option>
                             <option value="kana">あいうえお昇順</option>
                             <option value="kana-desc">あいうえお降順</option>
                         </select>
-                        <select id="venue-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
-                            <option value="all">全行</option>
+                        <select id="venue-shared-kana-filter" class="flex-1 bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2.5 text-base font-bold text-gray-100 outline-none">
+                            <option value="all">すべて</option>
                             <option value="a">あ行</option>
                             <option value="ka">か行</option>
                             <option value="sa">さ行</option>
@@ -601,6 +601,8 @@
                 <p class="text-[13px] text-white">保存した式場は、「保存した式場」タブからいつでも呼び出せます。</p>
             </div>
             </div>
+        </div>
+        <div class="px-4 pt-2 shrink-0">
             <button type="button" class="w-full bg-gray-100 hover:bg-gray-200 text-[#ffffff] font-bold py-3 rounded-xl text-base transition active:scale-[0.98]" onclick="closeSheet('sheet-bg')">閉じる</button>
         </div>
     </div>
@@ -652,13 +654,13 @@
                     </button>
                     <!-- 端末内保存の検索・並び替え（パーツ） -->
                     <div id="part-local-controls" class="space-y-1.5">
-                        <div class="flex items-center gap-1.5">
-                            <div class="relative flex-1">
-                                <input type="text" id="part-local-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
-                                <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <button type="button" id="part-local-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
-                            </div>
-                            <select id="part-local-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
+                        <div class="relative">
+                            <input type="text" id="part-local-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-9 pr-8 py-2.5 text-base text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                            <svg class="w-5 h-5 text-white absolute left-2.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="part-local-search-clear" class="hidden text-white text-base absolute right-2.5 top-2.5">✕</button>
+                        </div>
+                        <div>
+                            <select id="part-local-sort" class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2.5 text-base font-bold text-gray-100 outline-none">
                                 <option value="newest">新しい順</option>
                                 <option value="oldest">古い順</option>
                                 <option value="kana">あいうえお昇順</option>
@@ -668,20 +670,20 @@
                     </div>
                     <!-- オンライン共有の検索・並び替え（パーツ） -->
                     <div id="part-shared-controls" class="hidden space-y-1.5">
+                        <div class="relative">
+                            <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-9 pr-8 py-2.5 text-base text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
+                            <svg class="w-5 h-5 text-white absolute left-2.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <button type="button" id="part-shared-search-clear" class="hidden text-white text-base absolute right-2.5 top-2.5">✕</button>
+                        </div>
                         <div class="flex items-center gap-1.5">
-                            <div class="relative flex-1">
-                                <input type="text" id="part-shared-search" placeholder="パーツ名で検索..." class="w-full bg-[#ffffff] border border-[#d9d9d7] rounded-lg pl-8 pr-7 py-2 text-sm text-gray-100 placeholder-gray-200 outline-none focus:border-blue-500">
-                                <svg class="w-5 h-5 text-white absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <button type="button" id="part-shared-search-clear" class="hidden text-white text-sm absolute right-2 top-2">✕</button>
-                            </div>
-                            <select id="part-shared-sort" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
+                            <select id="part-shared-sort" class="flex-1 bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2.5 text-base font-bold text-gray-100 outline-none">
                                 <option value="newest">新しい順</option>
                                 <option value="oldest">古い順</option>
                                 <option value="kana">あいうえお昇順</option>
                                 <option value="kana-desc">あいうえお降順</option>
                             </select>
-                            <select id="part-shared-kana-filter" class="bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-1.5 py-2 text-sm font-bold text-gray-100 outline-none shrink-0">
-                                <option value="all">全行</option>
+                            <select id="part-shared-kana-filter" class="flex-1 bg-[#ffffff] border border-[#d9d9d7] rounded-lg px-2 py-2.5 text-base font-bold text-gray-100 outline-none">
+                                <option value="all">すべて</option>
                                 <option value="a">あ行</option>
                                 <option value="ka">か行</option>
                                 <option value="sa">さ行</option>
@@ -2981,32 +2983,30 @@
                     const alreadyUploaded = isLocalRecordAlreadyUploaded(v);
 
                     const originBadge = v.isSharedCopy
-                        ? `<span class="text-[8px] leading-tight bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded shrink-0">共有DL</span>`
-                        : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
+                        ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有DL</span>`
+                        : `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-gray-100 text-[#ffffff]">自分</span>`;
                     const perspBadge = hasPersp
-                        ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-1 rounded shrink-0">パースあり</span>`
-                        : `<span class="text-[8px] leading-tight bg-gray-800 text-white border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+                        ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-violet-600 text-[#ffffff]">パースあり</span>`
+                        : `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc]">パースなし</span>`;
 
                     const row = document.createElement('div');
-                    row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2 cursor-pointer transition";
+                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition cursor-pointer";
                     row.innerHTML = `
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-1 mb-0.5">
+                            <div class="text-base font-bold text-white truncate mb-1">${v.name}</div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
                                 ${originBadge}
-                                <span class="text-[13px] font-bold text-gray-200 truncate">${v.name}</span>
-                            </div>
-                            <div class="flex items-center gap-1 overflow-hidden">
                                 ${perspBadge}
-                                <span class="text-sm leading-tight text-white font-mono truncate">${v.measureRealMm}mm設定済 ${vDateStr}</span>
+                                <span class="text-[13px] font-bold text-white">基準 ${v.measureRealMm}mm ・ ${vDateStr}</span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-1 shrink-0">
+                        <div class="flex items-center gap-1.5 shrink-0">
                             ${!alreadyUploaded ? `
-                            <button type="button" class="up-venue-btn text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-300 p-1.5 rounded-lg transition" title="オンライン共有へアップロード">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <button type="button" class="up-venue-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="オンライン共有へアップロード">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </button>` : ''}
-                            <button type="button" class="del-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="端末内保存から削除">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <button type="button" class="del-venue-btn del-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="端末内保存から削除">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
                     `;
@@ -3075,16 +3075,6 @@
                     list.appendChild(row);
                 });
             };
-        }
-
-        const newProjBtn = document.getElementById('btn-start-over');
-        if (newProjBtn) {
-            newProjBtn.addEventListener('click', async () => {
-                const ok = await showCustomConfirm('最初から始める', '現在の編集内容をクリアして、最初から始めますか？（保存していない内容は消えます）');
-                if (ok) {
-                    resetProjectData();
-                }
-            });
         }
 
         const menuNewProjBtn = document.getElementById('menu-new-project-btn');
@@ -4292,33 +4282,31 @@
                     const rDateStr = `${rd.getFullYear()}/${String(rd.getMonth()+1).padStart(2,'0')}/${String(rd.getDate()).padStart(2,'0')} ${String(rd.getHours()).padStart(2,'0')}:${String(rd.getMinutes()).padStart(2,'0')}`;
                     const alreadyUploaded = isLocalRecordAlreadyUploaded(r);
                     const originBadge = r.isSharedCopy
-                        ? `<span class="text-[8px] leading-tight bg-blue-50 text-blue-700 border border-blue-300 px-1 rounded shrink-0">共有DL</span>`
-                        : `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分</span>`;
+                        ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有DL</span>`
+                        : `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-gray-100 text-[#ffffff]">自分</span>`;
                     const extLabel = (r.ext || (r.imgData && r.imgData.startsWith('data:image/jpeg') ? 'jpg' : 'png')).toUpperCase();
 
                     const row = document.createElement('div');
-                    row.className = "bg-gray-900 border border-gray-700/80 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2 cursor-pointer transition";
+                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition cursor-pointer";
                     row.innerHTML = `
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-1 mb-0.5">
+                            <div class="text-base font-bold text-white truncate mb-1">${r.name}</div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
                                 ${originBadge}
-                                <span class="text-[13px] font-bold text-gray-200 truncate">${r.name}</span>
-                            </div>
-                            <div class="flex items-center gap-1 overflow-hidden">
-                                <span class="text-[8px] leading-tight bg-gray-800 text-white px-1 rounded font-mono shrink-0">${extLabel}</span>
-                                <span class="text-sm leading-tight text-white font-mono truncate">${rDateStr}</span>
+                                <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc] font-mono">${extLabel}</span>
+                                <span class="text-[13px] font-bold text-white">${rDateStr}</span>
                             </div>
                         </div>
-                        <div class="flex items-center gap-1 shrink-0">
+                        <div class="flex items-center gap-1.5 shrink-0">
                             ${!alreadyUploaded ? `
-                            <button type="button" class="up-part-btn text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-300 p-1.5 rounded-lg transition" title="オンライン共有へアップロード">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <button type="button" class="up-part-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="オンライン共有へアップロード">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </button>` : ''}
-                            <button type="button" class="rename-part-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="名前変更">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            <button type="button" class="rename-part-btn w-10 h-10 flex items-center justify-center bg-[#ffffff] hover:bg-blue-50 border-2 border-blue-600 text-blue-700 rounded-lg transition shrink-0" title="名前変更">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button type="button" class="del-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="端末内保存から削除">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <button type="button" class="del-part-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="端末内保存から削除">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
                     `;
@@ -5991,33 +5979,31 @@
                 const vDateStr = formatSharedDateTime(v.timestamp);
                 const canDelete = isMySharedUpload(v);
                 const perspBadge = v.hasPerspective
-                    ? `<span class="text-[8px] leading-tight bg-cyan-950 text-cyan-300 border border-cyan-500/50 px-1 rounded font-bold shrink-0">パースあり</span>`
-                    : `<span class="text-[8px] leading-tight bg-gray-800 text-white border border-gray-700 px-1 rounded shrink-0">パースなし</span>`;
+                    ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-violet-600 text-[#ffffff]">パースあり</span>`
+                    : `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc]">パースなし</span>`;
                 const mineBadge = canDelete
-                    ? `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分UP</span>`
+                    ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-green-600 text-[#ffffff]">自分UP</span>`
                     : '';
 
                 const row = document.createElement('div');
-                row.className = "bg-[#ffffff] border border-gray-300 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
+                row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition";
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1 mb-0.5">
-                            <span class="text-[8px] leading-tight bg-blue-50 text-blue-700 px-1 rounded border border-blue-300 shrink-0">共有</span>
+                        <div class="text-base font-bold text-white truncate mb-1">${v.name}</div>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有</span>
                             ${mineBadge}
-                            <span class="text-[13px] font-bold text-white truncate">${v.name}</span>
-                        </div>
-                        <div class="flex items-center gap-1 overflow-hidden">
                             ${perspBadge}
-                            <span class="text-sm leading-tight text-white font-mono truncate">基準:${v.measureRealMm}mm ${vDateStr}</span>
+                            <span class="text-[13px] font-bold text-white">基準 ${v.measureRealMm}mm ・ ${vDateStr}</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1 shrink-0">
+                    <div class="flex items-center gap-1.5 shrink-0">
                         ${canDelete ? `
-                        <button type="button" class="del-shared-venue-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたデータをオンライン共有から削除">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <button type="button" class="del-shared-venue-btn del-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="自分がUPしたデータをオンライン共有から削除">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>` : ''}
-                        <button type="button" class="dl-venue-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードして端末内保存へ追加">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <button type="button" class="dl-venue-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="ダウンロードして端末内保存へ追加">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>
                     </div>
                 `;
@@ -6184,30 +6170,28 @@
                 const pDateStr = formatSharedDateTime(p.timestamp);
                 const canDelete = isMySharedUpload(p);
                 const mineBadge = canDelete
-                    ? `<span class="text-[8px] leading-tight bg-blue-950 text-blue-300 border border-blue-700/70 px-1 rounded shrink-0">自分UP</span>`
+                    ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-green-600 text-[#ffffff]">自分UP</span>`
                     : '';
 
                 const row = document.createElement('div');
-                row.className = "bg-[#ffffff] border border-gray-300 hover:border-blue-500 px-2.5 py-2 rounded-lg flex items-center justify-between gap-2";
+                row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 transition";
                 row.innerHTML = `
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1 mb-0.5">
-                            <span class="text-[8px] leading-tight bg-blue-50 text-blue-700 px-1 rounded border border-blue-300 shrink-0">共有</span>
+                        <div class="text-base font-bold text-white truncate mb-1">${p.name}</div>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有</span>
                             ${mineBadge}
-                            <span class="text-[13px] font-bold text-white truncate">${p.name}</span>
-                        </div>
-                        <div class="flex items-center gap-1 overflow-hidden">
-                            <span class="text-[8px] leading-tight bg-gray-800 text-white px-1 rounded uppercase font-mono shrink-0">${p.ext || 'PNG'}</span>
-                            <span class="text-sm leading-tight text-white font-mono truncate">${pDateStr}</span>
+                            <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc] font-mono">${p.ext || 'PNG'}</span>
+                            <span class="text-[13px] font-bold text-white">${pDateStr}</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1 shrink-0">
+                    <div class="flex items-center gap-1.5 shrink-0">
                         ${canDelete ? `
-                        <button type="button" class="del-shared-part-btn text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-900/60 border border-red-700/50 p-1.5 rounded-lg transition" title="自分がUPしたパーツをオンライン共有から削除">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <button type="button" class="del-shared-part-btn w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 border-2 border-red-300 text-red-600 rounded-lg transition shrink-0" title="自分がUPしたパーツをオンライン共有から削除">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>` : ''}
-                        <button type="button" class="dl-part-btn text-blue-400 hover:text-blue-300 bg-blue-950/50 hover:bg-blue-900/60 border border-blue-700/50 p-1.5 rounded-lg transition" title="ダウンロードして配置">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <button type="button" class="dl-part-btn w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-[#ffffff] rounded-lg transition shrink-0" title="ダウンロードして配置">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>
                     </div>
                 `;
