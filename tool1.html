@@ -4735,7 +4735,7 @@ const doPlacePart = () => {
                 list.innerHTML = '';
                 recs.forEach(p => {
                     const row = document.createElement('div');
-                    row.className = "bg-gray-800 p-3 rounded-xl border border-gray-700 flex items-center justify-between cursor-pointer hover:border-blue-500 transition";                const dt = new Date(p.timestamp);
+                    row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition cursor-pointer";                const dt = new Date(p.timestamp);
                 const dtStr = `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
                 row.innerHTML = `
                         <div class="flex items-center gap-2">
@@ -4745,7 +4745,7 @@ const doPlacePart = () => {
                         </div>
                         <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
                             <div class="flex items-center gap-1.5 flex-wrap mb-2">
-                                <span class="text-[13px] font-bold text-white">${dateStr} ・ パーツ ${p.items ? p.items.length : 0}件</span>
+                                <span class="text-[13px] font-bold text-white">${dtStr} ・ パーツ ${p.items ? p.items.length : 0}件</span>
                             </div>
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <button type="button" class="del-proj-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-[13px] font-bold text-red-500 transition" title="このプロジェクトを削除"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>削除</button>
