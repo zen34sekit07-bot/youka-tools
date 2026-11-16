@@ -225,11 +225,11 @@
 
     <!-- 共通最上部ナビバー -->
     <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-4 pt-[max(env(safe-area-inset-top,8px),8px)] pb-2 shrink-0 z-50">
-        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">
+        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-white hover:text-white inline-flex items-center gap-1 font-bold">
             ← ツール一覧へ
         </a>
         <div class="flex items-center gap-2">
-            <button id="btn-reset-new" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white rounded-lg border border-slate-700 text-[13px] font-bold transition active:scale-95 flex items-center gap-1">
+            <button id="btn-reset-new" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-white hover:text-white rounded-lg border border-slate-700 text-[13px] font-bold transition active:scale-95 flex items-center gap-1">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 <span>新規</span>
             </button>
@@ -374,13 +374,13 @@
                     const isSingle = base.type === 'single';
                     const activeClasses = isSingle 
                         ? 'peer-checked:border-orange-500 peer-checked:bg-orange-950/80 peer-checked:text-orange-200' 
-                        : 'peer-checked:border-indigo-500 peer-checked:bg-indigo-950/80 peer-checked:text-indigo-200';
+                        : 'peer-checked:border-indigo-500 peer-checked:bg-indigo-950/80 peer-checked:text-white';
                     const badge = isSingle ? `<span class="absolute -top-1.5 -right-1.5 bg-orange-500 text-[#ffffff] text-[13px] font-bold px-1.5 py-0.5 rounded-full shadow-sm scale-90">中央</span>` : '';
 
                     basesHtml += `
                         <label class="cursor-pointer relative block">
                             <input type="checkbox" data-tier="${i}" data-key="${base.key}" class="peer hidden base-checkbox" ${isChecked}>
-                            <div class="h-full rounded-xl border-2 border-slate-700 bg-slate-900/80 p-2 text-center transition-all ${activeClasses} text-slate-400 flex flex-col justify-center items-center gap-0.5 shadow-sm hover:bg-slate-800">
+                            <div class="h-full rounded-xl border-2 border-slate-700 bg-slate-900/80 p-2 text-center transition-all ${activeClasses} text-white flex flex-col justify-center items-center gap-0.5 shadow-sm hover:bg-slate-800">
                                 ${badge}
                                 <div class="font-extrabold text-xs leading-tight text-slate-300 peer-checked:text-inherit">${base.label}</div>
                                 <div class="text-[12px] font-semibold opacity-70 flex items-center gap-1.5 mt-0.5">
@@ -395,33 +395,33 @@
                 const html = `
                     <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-sm mb-4 overflow-hidden relative transition-all">
                         <div class="bg-slate-850 px-4 py-3 flex justify-between items-center cursor-pointer select-none border-b border-slate-800/80" onclick="toggleTier(${i})">
-                            <div class="font-black text-sm text-white">${i + 1}段目 ${i === 0 ? '<span class="text-[12px] text-slate-400 font-bold ml-1">(最下段)</span>' : ''}</div>
-                            <div class="text-slate-400 text-xs font-bold transition-transform ${state.isOpen ? 'rotate-180' : ''}">▼</div>
+                            <div class="font-black text-sm text-white">${i + 1}段目 ${i === 0 ? '<span class="text-[12px] text-white font-bold ml-1">(最下段)</span>' : ''}</div>
+                            <div class="text-white text-xs font-bold transition-transform ${state.isOpen ? 'rotate-180' : ''}">▼</div>
                         </div>
                         
                         <div class="p-4 pt-2 ${state.isOpen ? '' : 'hidden'} animate-fade-in border-t border-slate-800">
                             <div class="flex gap-2 mb-4">
                                 <div class="flex-1 bg-slate-950 p-2.5 rounded-2xl border border-slate-800 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-900/40 transition-all">
-                                    <label class="block text-[13px] font-bold text-slate-400 mb-0.5 text-center">センチメートル</label>
+                                    <label class="block text-[13px] font-bold text-white mb-0.5 text-center">センチメートル</label>
                                     <div class="flex items-end justify-center gap-1">
                                         <input type="number" data-tier="${i}" data-type="cm" placeholder="0" class="w-20 bg-transparent text-2xl outline-none text-center text-white input-cm" value="${state.cm}">
-                                        <span class="text-slate-400 text-xs font-bold pb-1">cm</span>
+                                        <span class="text-white text-xs font-bold pb-1">cm</span>
                                     </div>
                                 </div>
                                 <div class="flex-[1.2] bg-slate-950 p-2.5 rounded-2xl border border-slate-800 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-900/40 transition-all flex gap-1">
                                     <div class="w-1/2 flex flex-col items-center">
-                                        <label class="block text-[13px] font-bold text-slate-400 mb-0.5">間(180)</label>
+                                        <label class="block text-[13px] font-bold text-white mb-0.5">間(180)</label>
                                         <input type="number" data-tier="${i}" data-type="ken" placeholder="0" class="w-full bg-transparent text-xl outline-none text-center text-white" value="${state.ken}">
                                     </div>
                                     <div class="w-px bg-slate-800 my-1"></div>
                                     <div class="w-1/2 flex flex-col items-center">
-                                        <label class="block text-[13px] font-bold text-slate-400 mb-0.5">尺(30)</label>
+                                        <label class="block text-[13px] font-bold text-white mb-0.5">尺(30)</label>
                                         <input type="number" data-tier="${i}" data-type="shaku" placeholder="0" class="w-full bg-transparent text-xl outline-none text-center text-white" value="${state.shaku}">
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-[12px] font-bold text-slate-400 mb-2 pl-1">使用するベース</p>
+                                <p class="text-[12px] font-bold text-white mb-2 pl-1">使用するベース</p>
                                 <div class="grid grid-cols-3 gap-2">
                                     ${basesHtml}
                                 </div>
@@ -465,18 +465,18 @@
             const createItemHtml = (item, isFav) => `
                 <div class="flex justify-between items-center bg-slate-800 border border-slate-700 p-2.5 rounded-xl">
                     <div class="flex-1 min-w-0 mr-2 cursor-pointer" onclick="loadFromHistory('${item.id}', ${isFav})">
-                        <p class="text-sm font-bold text-white truncate">${isFav ? '⭐ ' + item.name : item.date}</p>
-                        <p class="text-[12px] text-slate-400 font-medium">${item.tiers.length}段の構成</p>
+                        <p class="text-sm font-bold text-white break-all leading-snug">${isFav ? '⭐ ' + item.name : item.date}</p>
+                        <p class="text-[12px] text-white font-medium">${item.tiers.length}段の構成</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="loadFromHistory('${item.id}', ${isFav})" class="px-3 py-1.5 bg-indigo-900/60 border border-indigo-500/40 text-indigo-300 rounded-lg text-xs font-bold active:scale-95 transition">呼出</button>
+                        <button onclick="loadFromHistory('${item.id}', ${isFav})" class="px-3 py-1.5 bg-indigo-900/60 border border-indigo-500/40 text-white rounded-lg text-xs font-bold active:scale-95 transition">呼出</button>
                         <button onclick="deleteHistory('${item.id}', ${isFav})" class="w-8 h-8 bg-red-950/60 border border-red-500/40 text-red-400 rounded-lg text-lg flex justify-center items-center active:scale-95 transition">×</button>
                     </div>
                 </div>
             `;
 
-            favContainer.innerHTML = favs.length > 0 ? favs.map(i => createItemHtml(i, true)).join('') : '<p class="text-xs text-slate-400">お気に入りがありません。</p>';
-            histContainer.innerHTML = hists.length > 0 ? hists.map(i => createItemHtml(i, false)).join('') : '<p class="text-xs text-slate-400">最近の履歴がありません。</p>';
+            favContainer.innerHTML = favs.length > 0 ? favs.map(i => createItemHtml(i, true)).join('') : '<p class="text-xs text-white">お気に入りがありません。</p>';
+            histContainer.innerHTML = hists.length > 0 ? hists.map(i => createItemHtml(i, false)).join('') : '<p class="text-xs text-white">最近の履歴がありません。</p>';
         }
 
         window.openHistoryModal = function(target) {
@@ -726,7 +726,7 @@
                                 <div class="flex items-center gap-2">
                                     <span class="inline-block px-1.5 py-0.5 rounded border text-[12px] font-black shadow-sm ${baseObj.blockBg}">${baseObj.short}</span>
                                     <span class="font-bold text-slate-200 text-sm">${baseObj.label}</span>
-                                    <span class="font-semibold text-slate-400 text-xs">(${baseObj.size}cm) × ${count}</span>
+                                    <span class="font-semibold text-white text-xs">(${baseObj.size}cm) × ${count}</span>
                                 </div>
                                 <span class="font-mono font-bold text-slate-300 text-xs">合計 ${totalSize}cm</span>
                             </div>
@@ -748,21 +748,21 @@
                             <div class="flex items-center gap-3">
                                 <span class="font-black text-sm text-white bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap">${item.tierNum}段目</span>
                                 <div class="flex items-center gap-1">
-                                    <span class="text-[12px] font-bold text-slate-400">差:</span>
+                                    <span class="text-[12px] font-bold text-white">差:</span>
                                     <span class="text-sm font-black ${diffColor} whitespace-nowrap">${diffText}</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
                                 <div class="text-right leading-tight">
-                                    <span class="text-[12px] font-bold text-slate-400 block whitespace-nowrap">ターゲット ${item.targetWidth}cm</span>
-                                    <span class="text-sm font-black text-slate-200 whitespace-nowrap">実測 ${r.sum}cm <span class="text-xs text-slate-400 font-medium">(${r.count}個)</span></span>
+                                    <span class="text-[12px] font-bold text-white block whitespace-nowrap">ターゲット ${item.targetWidth}cm</span>
+                                    <span class="text-sm font-black text-slate-200 whitespace-nowrap">実測 ${r.sum}cm <span class="text-xs text-white font-medium">(${r.count}個)</span></span>
                                 </div>
-                                <div id="res-icon-${item.tierNum}" class="text-slate-400 text-xs font-bold transition-transform rotate-180 accordion-icon">▼</div>
+                                <div id="res-icon-${item.tierNum}" class="text-white text-xs font-bold transition-transform rotate-180 accordion-icon">▼</div>
                             </div>
                         </div>
                         <div id="res-tier-${item.tierNum}" class="p-4 pt-3 animate-fade-in bg-[#f4f4f2]">
                             <div class="base-items-container space-y-1.5 mb-2">${listHtml}</div>
-                            <p class="text-[12px] font-bold text-indigo-400 mb-1 mt-2 text-center">配置図</p>
+                            <p class="text-[12px] font-bold text-blue-600 mb-1 mt-2 text-center">配置図</p>
                             ${rowLayoutHtml}
                         </div>
                     </div>
@@ -772,18 +772,18 @@
             let totalListHtml = '';
             BASE_DATA.forEach(b => {
                 if(totalBases[b.label]) {
-                    totalListHtml += `<div class="total-base-badge bg-slate-900 rounded-xl px-3 py-2 border border-slate-800 shadow-sm flex items-center justify-center gap-2"><span class="inline-block px-1.5 py-0.5 rounded border text-[12px] font-black shadow-sm ${b.blockBg}">${b.short}</span><span class="font-bold text-slate-200 text-sm">${b.label} <span class="text-slate-400 ml-1">×${totalBases[b.label]}</span></span></div>`;
+                    totalListHtml += `<div class="total-base-badge bg-slate-900 rounded-xl px-3 py-2 border border-slate-800 shadow-sm flex items-center justify-center gap-2"><span class="inline-block px-1.5 py-0.5 rounded border text-[12px] font-black shadow-sm ${b.blockBg}">${b.short}</span><span class="font-bold text-slate-200 text-sm">${b.label} <span class="text-white ml-1">×${totalBases[b.label]}</span></span></div>`;
                 }
             });
 
-            let overallLayoutHtml = '<div class="mt-3"><p class="text-xs font-bold text-indigo-400 mb-2 text-center">全体のベース配置図</p><div class="bg-[#f4f4f2] border border-slate-800 rounded-2xl shadow-inner py-4 px-3 flex flex-col items-center gap-3 relative overflow-hidden">';
+            let overallLayoutHtml = '<div class="mt-3"><p class="text-xs font-bold text-blue-600 mb-2 text-center">全体のベース配置図</p><div class="bg-[#f4f4f2] border border-slate-800 rounded-2xl shadow-inner py-4 px-3 flex flex-col items-center gap-3 relative overflow-hidden">';
             overallLayoutHtml += '<div class="absolute top-0 bottom-0 w-[2px] bg-red-500 pointer-events-none z-0 left-1/2 -translate-x-1/2"></div>';
             for (let i = results.length - 1; i >= 0; i--) {
                 const item = results[i];
                 let blocksHtml = item.arrangement.map(b => `<div class="base-block-item relative z-10 inline-flex items-center justify-center rounded-md border text-[13px] font-bold shadow-sm px-0.5 shrink-0 leading-none ${b.blockBg}" style="width: ${Math.max(14, Math.round(b.size * 1.15))}px; height: 22px;" title="${b.label}(${b.size}cm)"><span class="base-block-text inline-block">${b.short}</span></div>`).join('');
                 overallLayoutHtml += `
                     <div class="flex items-center w-full justify-center relative z-10">
-                        <span class="text-xs text-slate-400 font-black w-12 text-right mr-2 shrink-0 select-none leading-none">${item.tierNum}段目</span>
+                        <span class="text-xs text-white font-black w-12 text-right mr-2 shrink-0 select-none leading-none">${item.tierNum}段目</span>
                         <div class="layout-wrapper flex-none flex justify-center items-center h-[34px] overflow-hidden max-w-[calc(100%-7rem)]">
                             <div class="layout-content flex justify-center items-center gap-1.5 whitespace-nowrap transition-transform origin-center py-2 relative">
                                 ${blocksHtml}
@@ -797,7 +797,7 @@
 
             const summaryHtml = `
                 <div class="result-summary bg-[#e3ecfd] border border-indigo-900 rounded-3xl p-4 mb-2 relative overflow-hidden page-break-inside-avoid mt-3">
-                    <p class="text-base font-black text-indigo-300 mb-3 flex items-center gap-2 justify-center"><span class="text-xl">📋</span> 祭壇 総まとめ</p>
+                    <p class="text-base font-black text-white mb-3 flex items-center gap-2 justify-center"><span class="text-xl">📋</span> 祭壇 総まとめ</p>
                     <div class="flex flex-wrap gap-2 justify-center mb-2">${totalListHtml}</div>
                     ${overallLayoutHtml}
                 </div>
@@ -1121,15 +1121,15 @@
                 const div = document.createElement('div');
                 div.id = rowId;
                 div.className = "flex items-center gap-2 mb-2 animate-fade-in";
-                let options = '<option value="0" class="bg-slate-900 text-slate-400">ベースを選択...</option>';
+                let options = '<option value="0" class="bg-slate-900 text-white">ベースを選択...</option>';
                 BASE_DATA.forEach(b => options += `<option value="${b.size}" class="bg-slate-900 text-white">${b.label} (${b.size}cm)</option>`);
                 div.innerHTML = `
                     <select class="flex-1 bg-slate-950 border border-slate-700 text-sm font-bold text-slate-200 py-2.5 px-2 rounded-xl outline-none shadow-sm focus:border-indigo-500" onchange="calcSimpleTotal()">
                         ${options}
                     </select>
                     <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 rounded-xl px-2 shadow-sm focus-within:border-indigo-500">
-                        <input type="number" placeholder="0" min="0" class="w-12 bg-transparent text-center font-black text-white py-2.5 outline-none placeholder:text-slate-500" onfocus="this.select()" onclick="this.select()" onchange="calcSimpleTotal()" oninput="calcSimpleTotal()">
-                        <span class="text-xs text-slate-400 font-bold">個</span>
+                        <input type="number" placeholder="0" min="0" class="w-12 bg-transparent text-center font-black text-white py-2.5 outline-none placeholder:text-white" onfocus="this.select()" onclick="this.select()" onchange="calcSimpleTotal()" oninput="calcSimpleTotal()">
+                        <span class="text-xs text-white font-bold">個</span>
                     </div>
                     <button onclick="document.getElementById('${rowId}').remove(); calcSimpleTotal();" class="p-2.5 bg-red-950/60 border border-red-500/40 text-red-400 rounded-xl shadow-sm hover:bg-red-900/60 active:scale-95 transition">✕</button>
                 `;
@@ -1301,10 +1301,10 @@
             const content = document.getElementById('info-modal-content');
             if(type === 'version') {
                 title.textContent = "バージョン・更新履歴";
-                content.innerHTML = "<p class='font-black text-indigo-400 text-lg'>Ver 1.4</p><p class='text-sm text-slate-300 mt-2 font-bold'>ファイル命名統一＆完全ダークモーダル対応</p><ul class='text-xs text-slate-400 mt-2 list-disc pl-4 space-y-1'><li>保存命名規則を統一（base_プロジェクト名_YYYYMMDD_通番）</li><li>Androidでのファイル名化け防止（Blob方式化）</li><li>他アプリへ共有（Web Share API）の追加</li><li>全モーダルのダークモード化とUIトーン統一</li><li>履歴呼び出し時の終了確認誤爆を解消</li></ul>";
+                content.innerHTML = "<p class='font-black text-blue-600 text-lg'>Ver 1.4</p><p class='text-sm text-slate-300 mt-2 font-bold'>ファイル命名統一＆完全ダークモーダル対応</p><ul class='text-xs text-white mt-2 list-disc pl-4 space-y-1'><li>保存命名規則を統一（base_プロジェクト名_YYYYMMDD_通番）</li><li>Androidでのファイル名化け防止（Blob方式化）</li><li>他アプリへ共有（Web Share API）の追加</li><li>全モーダルのダークモード化とUIトーン統一</li><li>履歴呼び出し時の終了確認誤爆を解消</li></ul>";
             } else {
                 title.textContent = "クレジット";
-                content.innerHTML = "<div class='space-y-3 text-sm'><p><span class='font-bold text-slate-400 text-xs block'>製作者</span><span class='font-black text-white text-base'>関貴文</span></p><p><span class='font-bold text-slate-400 text-xs block'>AIアシスタント</span><span class='font-bold text-indigo-400'>Gemini (Google)</span></p><p><span class='font-bold text-slate-400 text-xs block'>技術スタック</span><span class='text-slate-300 font-medium'>HTML5, JavaScript (ES6), Tailwind CSS<br>PWA (Web Manifest, Service Worker)<br>Local Storage API, html2canvas, jsPDF</span></p></div>";
+                content.innerHTML = "<div class='space-y-3 text-sm'><p><span class='font-bold text-white text-xs block'>製作者</span><span class='font-black text-white text-base'>関貴文</span></p><p><span class='font-bold text-white text-xs block'>AIアシスタント</span><span class='font-bold text-blue-600'>Gemini (Google)</span></p><p><span class='font-bold text-white text-xs block'>技術スタック</span><span class='text-slate-300 font-medium'>HTML5, JavaScript (ES6), Tailwind CSS<br>PWA (Web Manifest, Service Worker)<br>Local Storage API, html2canvas, jsPDF</span></p></div>";
             }
             openModal('info-modal');
         }
@@ -1315,7 +1315,7 @@
     <div class="max-w-md w-full mx-auto p-4 space-y-4 no-print relative z-10 flex-grow">
         
         <header class="text-center pt-2 mb-2">
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-400 tracking-tight whitespace-nowrap mb-4 drop-shadow-sm">ぴったりベースサーチ</h1>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight whitespace-nowrap mb-4 drop-shadow-sm border-b-4 border-blue-600 pb-2 inline-block">ぴったりベースサーチ</h1>
             
             <div class="flex justify-center gap-2 mb-4 px-2">
                 <button id="tab-auto" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all tab-active">最適組み合わせ</button>
@@ -1340,7 +1340,7 @@
             <div class="text-[13px] font-medium text-slate-300 bg-slate-900 p-3.5 rounded-2xl border border-slate-800 shadow-sm leading-relaxed text-left space-y-1">
                 <p class="font-bold text-white text-center text-xs mb-1">祭壇の最適なベース組み合わせを自動算出</p>
                 <p>・作成する段数と幅（cmまたは間・尺）、使用したいベースを選択してください。</p>
-                <p class="text-indigo-400 font-bold">※組み合わせ計算は、ターゲット幅への近似とともに【ベースの合計使用個数が最も少なくなる組み合わせ】を最優先して算出します。</p>
+                <p class="text-blue-600 font-bold">※組み合わせ計算は、ターゲット幅への近似とともに【ベースの合計使用個数が最も少なくなる組み合わせ】を最優先して算出します。</p>
             </div>
 
             <!-- 段数設定コントロール -->
@@ -1354,8 +1354,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <button id="btn-dec-tier" class="w-10 h-10 rounded-full bg-slate-800 text-slate-200 border border-slate-700 font-black text-lg shadow-inner active:scale-95 transition">-</button>
-                    <span id="tier-count-display" class="text-2xl font-black text-indigo-400 w-8 text-center">1</span>
-                    <button id="btn-inc-tier" class="w-10 h-10 rounded-full bg-indigo-950 border border-indigo-600/50 text-indigo-300 font-black text-lg shadow-inner active:scale-95 transition">+</button>
+                    <span id="tier-count-display" class="text-2xl font-black text-blue-600 w-8 text-center">1</span>
+                    <button id="btn-inc-tier" class="w-10 h-10 rounded-full bg-indigo-950 border border-indigo-600/50 text-white font-black text-lg shadow-inner active:scale-95 transition">+</button>
                 </div>
             </div>
 
@@ -1371,14 +1371,14 @@
         <!-- View: Simple (手動計算ツール) -->
         <div id="view-simple" class="hidden space-y-4">
             <div class="bg-slate-900 rounded-3xl p-5 shadow-sm border border-slate-800">
-                <p class="text-xs font-bold text-slate-400 mb-4 text-center">ベースの種類と個数を選択して、合計幅を算出します。</p>
+                <p class="text-xs font-bold text-white mb-4 text-center">ベースの種類と個数を選択して、合計幅を算出します。</p>
                 <div id="simple-rows" class="space-y-0"></div>
-                <button onclick="addSimpleRow()" class="w-full mt-3 py-3 border-2 border-dashed border-slate-700 text-slate-400 font-bold rounded-xl hover:bg-slate-800 transition text-sm">
+                <button onclick="addSimpleRow()" class="w-full mt-3 py-3 border-2 border-dashed border-slate-700 text-white font-bold rounded-xl hover:bg-slate-800 transition text-sm">
                     ＋ ベースを追加
                 </button>
                 <div class="mt-6 pt-5 border-t border-slate-800 flex justify-between items-end bg-slate-950 p-4 rounded-2xl border border-slate-800/80">
                     <span class="text-sm font-black text-slate-300">合計実測幅</span>
-                    <p class="text-4xl font-black text-indigo-400 leading-none"><span id="simple-total">0</span><span class="text-lg text-slate-400 ml-1">cm</span></p>
+                    <p class="text-4xl font-black text-blue-600 leading-none"><span id="simple-total">0</span><span class="text-lg text-white ml-1">cm</span></p>
                 </div>
             </div>
         </div>
@@ -1402,21 +1402,21 @@
         <!-- アクションエリア -->
         <div id="result-actions" class="p-4 bg-slate-900 rounded-2xl m-2 border border-slate-800 shadow-sm space-y-3 no-print">
             
-            <button id="btn-save-named" class="w-full py-3 bg-indigo-950/60 border border-indigo-500/40 text-indigo-300 font-bold text-sm rounded-xl shadow-sm transition hover:bg-indigo-900/60 active:scale-[0.98] flex items-center justify-center gap-2">
+            <button id="btn-save-named" class="w-full py-3 bg-indigo-950/60 border border-indigo-500/40 text-white font-bold text-sm rounded-xl shadow-sm transition hover:bg-indigo-900/60 active:scale-[0.98] flex items-center justify-center gap-2">
                 <span>⭐ 結果に名前をつけて保存</span>
             </button>
 
             <div class="mt-4 border-t pt-3 space-y-2.5">
                 <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl space-y-2 text-xs">
                     <div class="flex items-center justify-between">
-                        <span class="text-[13px] font-bold text-slate-400">保存対象:</span>
+                        <span class="text-[13px] font-bold text-white">保存対象:</span>
                         <div class="flex gap-3 text-slate-200 font-bold text-[13px]">
                             <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-scope" value="all" checked class="accent-indigo-500"> 全体</label>
                             <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-scope" value="summary" class="accent-indigo-500"> 総まとめのみ</label>
                         </div>
                     </div>
                     <div class="flex items-center justify-between pt-1 border-t border-slate-800">
-                        <span class="text-[13px] font-bold text-slate-400">画像テーマ:</span>
+                        <span class="text-[13px] font-bold text-white">画像テーマ:</span>
                         <div class="flex gap-3 text-slate-200 font-bold text-[13px]">
                             <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-theme" value="dark" checked class="accent-indigo-500"> ダーク</label>
                             <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-theme" value="light" class="accent-indigo-500"> ライト</label>
@@ -1438,7 +1438,7 @@
 
             <!-- テキストコピー設定パネル -->
             <div id="panel-text" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-inner space-y-3 mt-3">
-                <p class="text-[12px] font-bold text-slate-400 border-b border-slate-800 pb-1">コピーする項目</p>
+                <p class="text-[12px] font-bold text-white border-b border-slate-800 pb-1">コピーする項目</p>
                 <div class="flex flex-wrap gap-x-4 gap-y-3 text-xs font-bold text-slate-300">
                     <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-overall" checked class="accent-indigo-500 w-4 h-4"> 総配置図</label>
                     <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="chk-target" checked class="accent-indigo-500 w-4 h-4"> 目標幅</label>
@@ -1460,16 +1460,16 @@
     <!-- Modals -->
     <!-- 履歴・お気に入り モーダル（ダークモード統一） -->
     <div id="history-modal" class="hidden fixed inset-0 z-[80] flex items-center justify-center modal-overlay p-4 no-print">
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-5 w-full max-w-sm shadow-2xl animate-fade-in relative max-h-[85vh] flex flex-col">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-5 w-full max-w-sm shadow-2xl animate-fade-in relative max-h-[94vh] flex flex-col">
             <h3 class="text-base font-black text-white mb-4 border-b border-slate-800 pb-2">📄 履歴・お気に入り管理</h3>
             
             <div class="overflow-y-auto hide-scrollbar flex-1 space-y-4">
                 <div id="hist-fav-section">
-                    <h4 class="text-xs font-bold text-indigo-400 mb-2">⭐ お気に入り</h4>
+                    <h4 class="text-xs font-bold text-blue-600 mb-2">⭐ お気に入り</h4>
                     <div id="modal-fav-list" class="space-y-2"></div>
                 </div>
                 <div id="hist-hist-section">
-                    <h4 class="text-xs font-bold text-slate-400 mb-2">🕒 最近の履歴</h4>
+                    <h4 class="text-xs font-bold text-white mb-2">🕒 最近の履歴</h4>
                     <div id="modal-hist-list" class="space-y-2"></div>
                 </div>
             </div>
@@ -1491,8 +1491,8 @@
     <div id="save-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center modal-overlay p-4 no-print">
         <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">
             <h3 class="text-lg font-black text-white mb-2">⭐ 名前をつけて保存</h3>
-            <p class="text-xs text-slate-400 mb-4 font-medium">この祭壇構成をお気に入りとしてローカルに保存します。</p>
-            <input type="text" id="save-name-input" placeholder="例: 花祭壇4号" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl mb-5 font-bold text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/50 outline-none transition placeholder:text-slate-500 text-center">
+            <p class="text-xs text-white mb-4 font-medium">この祭壇構成をお気に入りとしてローカルに保存します。</p>
+            <input type="text" id="save-name-input" placeholder="例: 花祭壇4号" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-xl mb-5 font-bold text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/50 outline-none transition placeholder:text-white text-center">
             <div class="flex gap-2">
                 <button id="btn-cancel-save" class="flex-1 py-3 bg-slate-800 text-slate-300 font-bold rounded-xl hover:bg-slate-700 border border-slate-700 transition active:scale-95">キャンセル</button>
                 <button id="btn-confirm-save" class="flex-1 py-3 bg-indigo-600 text-[#ffffff] font-bold rounded-xl hover:bg-indigo-500 transition shadow-md active:scale-95">保存する</button>
@@ -1525,7 +1525,7 @@
     <div id="exit-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center modal-overlay p-4 no-print">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center animate-fade-in">
             <h3 class="text-base font-bold text-white mb-2">ツール一覧へ戻りますか？</h3>
-            <p class="text-xs text-slate-400 mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>
+            <p class="text-xs text-white mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>
             <div class="grid grid-cols-2 gap-2">
                 <button id="exit-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition active:scale-95">
                     キャンセル

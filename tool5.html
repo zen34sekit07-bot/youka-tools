@@ -119,11 +119,11 @@
 
     <!-- 最上段ナビバー（ツール一覧へ ＆ DB取得ボタン） -->
     <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-3 pt-[max(env(safe-area-inset-top,6px),6px)] pb-1.5 shrink-0 z-40">
-        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
+        <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-white hover:text-white inline-flex items-center gap-1 font-bold active:scale-95 transition">
             ← ツール一覧へ
         </a>
-        <button id="btn-sync-database" class="px-2 py-1 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 text-indigo-300 rounded-lg text-[13px] font-bold active:scale-95 transition flex items-center gap-1" title="外部スプレッドシートDBから最新マスタを取得">
-            <svg id="sync-icon" class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        <button id="btn-sync-database" class="px-2 py-1 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 text-white rounded-lg text-[13px] font-bold active:scale-95 transition flex items-center gap-1" title="外部スプレッドシートDBから最新マスタを取得">
+            <svg id="sync-icon" class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             <span>DB取得</span>
         </button>
     </div>
@@ -131,7 +131,7 @@
     <!-- 2段目：アプリヘッダー（ツール名 ＆ 説明・メニュー） -->
     <header id="app-header" class="flex justify-between items-center bg-slate-900 border-b border-slate-800 px-3 py-2 shrink-0 z-40">
         <div class="flex items-center gap-1.5 min-w-0 pr-1">
-            <h1 class="text-sm font-black text-indigo-300 flex items-center gap-1 truncate">
+            <h1 class="text-sm font-black text-white flex items-center gap-1 truncate">
                 <span>🌸</span> 供花ポイント&花材計算
             </h1>
         </div>
@@ -148,7 +148,7 @@
     <!-- サブバー（拠点＆リスト全削除） -->
     <div class="flex justify-between items-center bg-slate-950/90 border-b border-slate-800/80 px-3 py-1.5 shrink-0 z-30">
         <div class="flex items-center gap-1.5">
-            <span class="text-[13px] font-bold text-slate-400">拠点:</span>
+            <span class="text-[13px] font-bold text-white">拠点:</span>
             <select id="branch-select" class="bg-slate-900 border border-slate-700 text-cyan-300 text-xs font-bold py-0.5 px-2 rounded-lg outline-none focus:border-cyan-500">
                 <option value="all">全体 (全拠点)</option>
                 <option value="honten">本店</option>
@@ -171,7 +171,7 @@
             <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none">🔍</span>
                 <input type="text" id="keyword-search-input" placeholder="供花名・コードで探す" autocomplete="off"
-                    class="w-full bg-slate-800 border-2 border-indigo-400 rounded-2xl pl-12 pr-4 py-3.5 text-base font-bold text-slate-100 placeholder:text-slate-500 placeholder:font-normal shadow-sm outline-none focus:border-indigo-300">
+                    class="w-full bg-slate-800 border-2 border-indigo-400 rounded-2xl pl-12 pr-4 py-3.5 text-base font-bold text-slate-100 placeholder:text-white placeholder:font-normal shadow-sm outline-none focus:border-indigo-300">
             </div>
             <!-- 供花カタログ選択セクション -->
             <div class="space-y-2">
@@ -187,7 +187,7 @@
 
                 <!-- ユー花園パネル: カテゴリ -->
                 <div id="panel-youkaen-cats" class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 shadow-sm">
-                    <span id="main-catalog-title" class="text-[13px] font-bold text-indigo-300 block mb-1.5 truncate">
+                    <span id="main-catalog-title" class="text-[13px] font-bold text-white block mb-1.5 break-all">
                         🌸 ユー花園カタログ
                     </span>
                     <div class="grid grid-cols-4 gap-1">
@@ -200,19 +200,19 @@
 
                 <!-- 葬儀社様パネル -->
                 <div id="panel-sogisha" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-2.5 shadow-sm relative">
-                    <span class="text-[13px] font-bold text-amber-700 block mb-1.5 truncate">
+                    <span class="text-[13px] font-bold text-amber-700 block mb-1.5 break-all">
                         🏢 葬儀社様のカタログを選ぶ
                     </span>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm pointer-events-none">🔍</span>
-                        <input type="text" id="sogisha-search-input" placeholder="葬儀社名を入力すると候補が出ます" autocomplete="off" class="w-full h-11 bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg pl-9 pr-8 text-sm font-bold text-white outline-none placeholder:text-slate-500 placeholder:font-normal">
-                        <button id="btn-clear-sogisha-search" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white font-bold text-sm">✕</button>
+                        <input type="text" id="sogisha-search-input" placeholder="葬儀社名を入力すると候補が出ます" autocomplete="off" class="w-full h-11 bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg pl-9 pr-8 text-sm font-bold text-white outline-none placeholder:text-white placeholder:font-normal">
+                        <button id="btn-clear-sogisha-search" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-white hover:text-white font-bold text-sm">✕</button>
                     </div>
                     <div id="sogisha-suggest-list" class="hidden mt-1.5 bg-slate-950 border border-slate-700 rounded-xl p-1.5 shadow-2xl max-h-56 overflow-y-auto hide-scrollbar space-y-1">
                         <!-- JSで動的レンダリング -->
                     </div>
                     <div id="sogisha-selected-row" class="hidden mt-2 flex items-center justify-between bg-indigo-950/50 border border-indigo-500/40 rounded-lg px-2.5 py-2">
-                        <span id="sogisha-selected-name" class="text-[13px] font-bold text-indigo-200 truncate"></span>
+                        <span id="sogisha-selected-name" class="text-[13px] font-bold text-white break-all"></span>
                         <button id="btn-clear-sogisha-selection" type="button" class="text-[12px] font-bold text-rose-300 shrink-0 ml-2 active:scale-95 transition">解除</button>
                     </div>
                     <div id="panel-sogisha-cats" class="hidden mt-2">
@@ -264,7 +264,7 @@
                 </div>
                 <div class="flex items-end gap-2">
                     <div class="flex-1">
-                        <span class="text-[12px] font-bold text-indigo-300 block mb-1">■ 種類</span>
+                        <span class="text-[12px] font-bold text-white block mb-1">■ 種類</span>
                         <div class="grid grid-cols-4 gap-1 font-bold text-slate-200 text-[12px]">
                             <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 px-1 py-2 rounded-lg border border-slate-800 text-center whitespace-nowrap">
                                 <input type="checkbox" class="filter-type-chk accent-indigo-500 w-4 h-4 shrink-0" value="洋花"> 洋花
@@ -350,7 +350,7 @@
 
                     <!-- 種類 -->
                     <div>
-                        <span class="text-[12px] font-bold text-indigo-300 block mb-1">■ 種類</span>
+                        <span class="text-[12px] font-bold text-white block mb-1">■ 種類</span>
                         <div class="grid grid-cols-4 gap-1 font-bold text-slate-300 text-[13px]">
                             <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-900 py-1.5 rounded-lg border border-slate-800">
                                 <input type="checkbox" class="fav-filter-type accent-indigo-500 w-3 h-3 rounded" value="洋花"> 洋花
@@ -373,7 +373,7 @@
                 </div>
 
                 <div id="favorite-flowers-list" class="space-y-2 max-h-[50vh] overflow-y-auto hide-scrollbar">
-                    <p class="text-xs text-slate-500 text-center py-4">お気に入りはまだありません。<br>供花カードの★を押して登録できます。</p>
+                    <p class="text-xs text-white text-center py-4">お気に入りはまだありません。<br>供花カードの★を押して登録できます。</p>
                 </div>
             </div>
         </section>
@@ -399,11 +399,11 @@
                         <button type="button" id="tab-summary-points-btn" class="px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-600 text-[#ffffff] shadow transition">
                             ✨ ポイント花まとめ
                         </button>
-                        <button type="button" id="tab-summary-materials-btn" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 transition">
+                        <button type="button" id="tab-summary-materials-btn" class="px-2.5 py-1 rounded-lg text-xs font-bold text-white hover:text-slate-200 transition">
                             🌿 全花材まとめ
                         </button>
                     </div>
-                    <span id="summary-total-stands-badge" class="text-xs font-mono font-bold bg-indigo-900 text-indigo-200 px-2.5 py-0.5 rounded-full">
+                    <span id="summary-total-stands-badge" class="text-xs font-mono font-bold bg-indigo-900 text-white px-2.5 py-0.5 rounded-full">
                         合計 0 基
                     </span>
                 </div>
@@ -416,12 +416,12 @@
                 </div>
 
                 <div id="points-summary-grid" class="space-y-1.5">
-                    <p class="text-xs text-slate-400 col-span-2 text-center py-3">供花を追加すると必要本数がここに自動集計されます</p>
+                    <p class="text-xs text-white col-span-2 text-center py-3">供花を追加すると必要本数がここに自動集計されます</p>
                 </div>
 
                 <div id="materials-summary-grid" class="hidden space-y-2">
                     <div id="materials-summary-subgrid" class="space-y-1.5">
-                        <p class="text-xs text-slate-400 col-span-2 text-center py-3">供花を追加すると花材の内訳がここに自動集計されます</p>
+                        <p class="text-xs text-white col-span-2 text-center py-3">供花を追加すると花材の内訳がここに自動集計されます</p>
                     </div>
                     <button type="button" id="btn-copy-materials-summary" class="w-full py-2 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 text-emerald-300 font-bold rounded-xl text-xs active:scale-95 transition flex items-center justify-center gap-1.5 shadow-sm">
                         <span>📋 花材内訳のみをテキストコピー</span>
@@ -432,7 +432,7 @@
                     <span class="text-slate-300 font-bold">合計金額(目安):</span>
                     <div class="text-right">
                         <span id="summary-total-price-ex" class="text-base font-black text-white">¥0</span>
-                        <span class="text-[12px] text-slate-400 ml-1">（税込 <span id="summary-total-price-in">¥0</span>）</span>
+                        <span class="text-[12px] text-white ml-1">（税込 <span id="summary-total-price-in">¥0</span>）</span>
                     </div>
                 </div>
             </div>
@@ -448,7 +448,7 @@
             <div id="export-preview-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                     <h3 class="text-xs font-bold text-slate-300">出力プレビュー</h3>
-                    <input type="text" id="active-project-title" placeholder="タイトルを入力" autocomplete="off" class="bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg px-2.5 py-1.5 text-xs font-bold text-white outline-none w-[64%] text-right placeholder:text-slate-500 placeholder:font-normal">
+                    <input type="text" id="active-project-title" placeholder="タイトルを入力" autocomplete="off" class="bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-lg px-2.5 py-1.5 text-xs font-bold text-white outline-none w-[64%] text-right placeholder:text-white placeholder:font-normal">
                 </div>
                 <div id="capture-render-area" class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-3 text-xs"></div>
             </div>
@@ -457,7 +457,7 @@
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between">
                         <span class="font-bold text-slate-300">出力内容 (複数選択):</span>
-                        <label class="flex items-center gap-1 cursor-pointer text-indigo-400 font-extrabold">
+                        <label class="flex items-center gap-1 cursor-pointer text-blue-600 font-extrabold">
                             <input type="checkbox" id="chk-export-all" checked class="accent-indigo-500"> 全部
                         </label>
                     </div>
@@ -528,16 +528,16 @@
 
     <!-- 下部固定ナビゲーションバー -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-50 px-2 pt-1 pb-[max(env(safe-area-inset-bottom,4px),4px)] grid grid-cols-3 gap-1">
-        <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-indigo-400 active:scale-95 transition" data-target="tab-panel-search">
+        <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-blue-600 active:scale-95 transition" data-target="tab-panel-search">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <span class="text-[12px] font-bold mt-0.5">供花検索</span>
         </button>
-                <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 relative active:scale-95 transition" data-target="tab-panel-list">
+                <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-white hover:text-slate-200 relative active:scale-95 transition" data-target="tab-panel-list">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             <span id="nav-cart-badge" class="hidden absolute top-1 right-5 w-4 h-4 rounded-full bg-cyan-500 text-slate-950 font-black text-[13px] flex items-center justify-center">0</span>
             <span class="text-[12px] font-bold mt-0.5">選択済みリスト</span>
         </button>
-        <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 active:scale-95 transition" data-target="tab-panel-export">
+        <button class="nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-white hover:text-slate-200 active:scale-95 transition" data-target="tab-panel-export">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span class="text-[12px] font-bold mt-0.5">保存・出力</span>
         </button>
@@ -552,12 +552,12 @@
                 <h3 class="text-sm font-black text-white flex items-center gap-1.5">
                     <span>🏢</span> 提携葬儀社様を選択
                 </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1 text-sm font-bold">✕</button>
             </div>
 
             <div class="relative shrink-0">
                 <input type="text" id="modal-company-keyword" placeholder="葬儀社名であいまい検索..." class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-xl py-2 pl-3 pr-8 text-xs text-white outline-none">
-                <button id="btn-clear-modal-comp-search" type="button" class="hidden absolute right-2.5 top-2 text-slate-400 hover:text-white text-xs font-bold">✕</button>
+                <button id="btn-clear-modal-comp-search" type="button" class="hidden absolute right-2.5 top-2 text-white hover:text-white text-xs font-bold">✕</button>
             </div>
 
             <div class="bg-slate-950 p-2 rounded-xl border border-slate-800 shrink-0 space-y-1">
@@ -595,7 +595,7 @@
                     <span id="modal-flower-code" class="text-xs font-mono font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-2 py-0.5 rounded">AY2001</span>
                     <h3 id="modal-flower-name" class="text-base font-extrabold text-white mt-1">AY2001</h3>
                 </div>
-                <button id="modal-flower-fav-btn" class="p-2 text-xl text-slate-500 hover:text-amber-600 transition" title="お気に入り">
+                <button id="modal-flower-fav-btn" class="p-2 text-xl text-white hover:text-amber-600 transition" title="お気に入り">
                     ★
                 </button>
             </div>
@@ -603,17 +603,17 @@
             <div class="overflow-y-auto hide-scrollbar space-y-3 flex-1 text-xs text-slate-300">
                 <div class="grid grid-cols-2 gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                     <div>
-                        <span class="text-[12px] text-slate-400 block font-bold">金額 (税別 / 税込)</span>
+                        <span class="text-[12px] text-white block font-bold">金額 (税別 / 税込)</span>
                         <span id="modal-flower-price" class="text-xs font-black text-amber-700">¥20,000 (¥22,000)</span>
                     </div>
                     <div>
-                        <span class="text-[12px] text-slate-400 block font-bold">花の高さ</span>
+                        <span class="text-[12px] text-white block font-bold">花の高さ</span>
                         <span id="modal-flower-height" class="text-xs font-bold text-slate-200">H180cm / 頭70cm</span>
                     </div>
                 </div>
 
                 <div class="bg-indigo-950/30 border border-indigo-900/60 rounded-xl p-3 space-y-1.5">
-                    <span class="text-xs font-extrabold text-indigo-300 block">✨ 使用ポイント花（1基あたり）</span>
+                    <span class="text-xs font-extrabold text-white block">✨ 使用ポイント花（1基あたり）</span>
                     <div id="modal-flower-points" class="space-y-1"></div>
                 </div>
 
@@ -635,7 +635,7 @@
                         <button id="modal-btn-qty-minus" type="button" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-lg font-bold active:scale-95 transition">-</button>
                         <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5">
                             <input type="number" id="modal-qty-input" value="1" min="1" max="999" class="w-14 text-center text-xl font-black bg-transparent text-white outline-none">
-                            <span class="text-xs font-bold text-slate-400">基</span>
+                            <span class="text-xs font-bold text-white">基</span>
                         </div>
                         <button id="modal-btn-qty-plus" type="button" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-lg font-bold active:scale-95 transition">+</button>
 
@@ -680,11 +680,11 @@
         <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl relative space-y-3">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                 <h3 id="menu-modal-title" class="text-sm font-bold text-white select-none">メニュー＆管理</h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1">✕</button>
             </div>
 
             <div class="space-y-2 text-xs">
-                <button id="btn-open-register-flower" class="w-full bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/40 text-left p-3 rounded-xl font-bold text-indigo-300 transition flex items-center justify-between">
+                <button id="btn-open-register-flower" class="w-full bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/40 text-left p-3 rounded-xl font-bold text-white transition flex items-center justify-between">
                     <span>➕ 新規供花の追加・申請</span>
                     <span>→</span>
                 </button>
@@ -712,17 +712,17 @@
 
     <!-- 端末登録情報 管理モーダル -->
     <div id="local-data-manage-modal" class="modal">
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-4 shadow-2xl flex flex-col max-h-[85vh] space-y-3">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-4 shadow-2xl flex flex-col max-h-[94vh] space-y-3">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2 shrink-0">
                 <h3 class="text-sm font-black text-white flex items-center gap-1.5">
                     <span>📱</span> 端末に登録された情報
                 </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1 text-sm font-bold">✕</button>
             </div>
 
             <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs shrink-0">
                 <button type="button" id="btn-local-tab-flowers" class="flex-1 py-1.5 rounded-lg font-black bg-indigo-600 text-[#ffffff] transition shadow">登録供花</button>
-                <button type="button" id="btn-local-tab-companies" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-slate-200 transition">登録葬儀社</button>
+                <button type="button" id="btn-local-tab-companies" class="flex-1 py-1.5 rounded-lg font-bold text-white hover:text-slate-200 transition">登録葬儀社</button>
             </div>
 
             <div id="local-flowers-manage-list" class="overflow-y-auto hide-scrollbar space-y-2 flex-1 pr-1 text-xs"></div>
@@ -739,7 +739,7 @@
                 <h3 class="text-sm font-black text-white flex items-center gap-1.5">
                     <span>➕</span> 新規供花の追加・申請
                 </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1 text-sm font-bold">✕</button>
             </div>
 
             <div class="overflow-y-auto hide-scrollbar space-y-2.5 text-xs text-slate-300 flex-1 pr-1">
@@ -747,7 +747,7 @@
                     <div>
                         <div class="flex justify-between items-center mb-0.5">
                             <label class="font-bold text-[13px] text-amber-700">葬儀社 <span class="text-rose-400">*</span></label>
-                            <button type="button" id="btn-reg-add-new-company" class="text-[12px] text-indigo-400 hover:text-indigo-300 font-bold">＋葬儀社を追加</button>
+                            <button type="button" id="btn-reg-add-new-company" class="text-[12px] text-blue-600 hover:text-white font-bold">＋葬儀社を追加</button>
                         </div>
                         <div class="flex gap-1.5">
                             <select id="reg-company" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-bold outline-none text-xs truncate">
@@ -782,7 +782,7 @@
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-bold text-[13px] text-slate-400 mb-0.5">供花型番 <span class="text-[13px] text-slate-500">(任意)</span></label>
+                        <label class="block font-bold text-[13px] text-white mb-0.5">供花型番 <span class="text-[13px] text-white">(任意)</span></label>
                         <input type="text" id="reg-code" placeholder="例: AY-2001" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white font-mono font-bold outline-none placeholder:text-slate-600">
                     </div>
                     <div>
@@ -818,7 +818,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block font-bold text-[13px] text-slate-400 mb-0.5">幅 <span class="text-[13px] text-slate-500">(任意)</span></label>
+                        <label class="block font-bold text-[13px] text-white mb-0.5">幅 <span class="text-[13px] text-white">(任意)</span></label>
                         <div class="relative">
                             <input type="text" id="reg-width" placeholder="例: W60" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 pr-10 text-white font-bold outline-none placeholder:text-slate-600">
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] font-black text-cyan-300 pointer-events-none">cm</span>
@@ -831,7 +831,7 @@
                         <span class="text-xs font-black text-emerald-400 flex items-center gap-1">
                             <span>🌿</span> 使用花材リスト (1基あたり)
                         </span>
-                        <span class="text-[12px] text-slate-500 font-mono">使用するもののみ本数入力</span>
+                        <span class="text-[12px] text-white font-mono">使用するもののみ本数入力</span>
                     </div>
                     <div id="reg-materials-list-container" class="space-y-1 bg-slate-950/60 p-2 rounded-xl border border-slate-800"></div>
                 </div>
@@ -841,13 +841,13 @@
                         <span class="text-xs font-black text-cyan-300 flex items-center gap-1">
                             <span>✨</span> ポイント花リスト (1基あたり)
                         </span>
-                        <span class="text-[12px] text-slate-500 font-mono">実際の使用本数を入力</span>
+                        <span class="text-[12px] text-white font-mono">実際の使用本数を入力</span>
                     </div>
                     <div id="reg-points-list-container" class="space-y-1 bg-slate-950/60 p-2 rounded-xl border border-slate-800"></div>
                 </div>
 
                 <div class="pt-1">
-                    <label class="block font-bold text-[13px] text-slate-400 mb-0.5">その他花材・備考 <span class="text-[13px] text-slate-500">(任意)</span></label>
+                    <label class="block font-bold text-[13px] text-white mb-0.5">その他花材・備考 <span class="text-[13px] text-white">(任意)</span></label>
                     <textarea id="reg-materials-extra" rows="2" placeholder="季節の枝物、名札仕様、特記事項など" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white text-xs outline-none placeholder:text-slate-600"></textarea>
                 </div>
             </div>
@@ -860,7 +860,7 @@
                     <button id="btn-mail-flower-json" type="button" class="w-full py-2.5 mt-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-black rounded-xl text-xs border border-slate-700 shadow active:scale-95 transition flex items-center justify-center gap-1.5">
                         <span>📧 メールで申請する</span>
                     </button>
-                    <p class="text-[12px] text-slate-400 mt-1 leading-normal px-1">
+                    <p class="text-[12px] text-white mt-1 leading-normal px-1">
                         ※申請は短い「申請コード」に変換されます。コピーして関貴文へ送るか、メールで申請してください。型番は任意です（空欄のまま申請できます）。
                     </p>
                 </div>
@@ -868,7 +868,7 @@
                     <button id="btn-save-flower-local" type="button" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] font-black rounded-xl text-xs shadow active:scale-95 transition flex items-center justify-center gap-1.5">
                         <span>💾 端末に登録</span>
                     </button>
-                    <p class="text-[12px] text-slate-400 mt-1 leading-normal px-1">
+                    <p class="text-[12px] text-white mt-1 leading-normal px-1">
                         ※自身の端末へ登録されるため、社内共有はされません。
                     </p>
                 </div>
@@ -883,12 +883,12 @@
                 <h3 class="text-sm font-black text-white flex items-center gap-1.5">
                     <span>🏢</span> 新規葬儀社の追加
                 </h3>
-                <button type="button" class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+                <button type="button" class="close-modal-btn text-white hover:text-white p-1 text-sm font-bold">✕</button>
             </div>
             <div class="space-y-2 text-xs">
                 <label class="block font-bold text-[13px] text-amber-700">葬儀社名 <span class="text-rose-400">*</span></label>
                 <input type="text" id="new-company-name-input" placeholder="例: ○○セレモニー" class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded-xl p-2.5 text-white font-bold outline-none placeholder:text-slate-600">
-                <p class="text-[12px] text-slate-400 leading-relaxed">
+                <p class="text-[12px] text-white leading-relaxed">
                     ※末尾の「様」は自動で付与されるため社名のみ入力してください。登録後は端末に保存され、続けて供花を登録できます。
                 </p>
             </div>
@@ -906,19 +906,19 @@
                 <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
                     <span>🔐</span> 管理者マスタ同期・認可
                 </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1">✕</button>
             </div>
             
             <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5 text-left">
-                <label class="text-[13px] font-bold text-indigo-300 block">🌐 連携GAS WebApp URL</label>
+                <label class="text-[13px] font-bold text-white block">🌐 連携GAS WebApp URL</label>
                 <input type="url" id="setting-gas-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-mono text-[12px] outline-none focus:border-indigo-500">
                 <div class="flex justify-between items-center pt-1">
-                    <span class="text-[13px] text-slate-500">スプレッドシート連携用API</span>
+                    <span class="text-[13px] text-white">スプレッドシート連携用API</span>
                     <button id="btn-save-gas-url" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-[#ffffff] rounded text-[12px] font-bold active:scale-95 transition">URL保存</button>
                 </div>
             </div>
 
-            <p class="text-[13px] text-slate-400 leading-relaxed pt-1 border-t border-slate-800">
+            <p class="text-[13px] text-white leading-relaxed pt-1 border-t border-slate-800">
                 現場スタッフから共有された「供花申請JSON」の手動マージや、全データのバックアップも可能です。
             </p>
 
@@ -939,12 +939,12 @@
 
     <!-- ツール説明モーダル -->
     <div id="updates-modal" class="modal">
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-5 shadow-2xl space-y-3 flex flex-col max-h-[85vh]">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-5 shadow-2xl space-y-3 flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2 shrink-0">
                 <h3 class="text-sm font-black text-white flex items-center gap-1.5">
                     <span>💡</span> 供花ポイント＆花材計算ツールとは
                 </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1 text-sm font-bold">✕</button>
             </div>
             <div class="text-xs text-slate-300 space-y-3 overflow-y-auto hide-scrollbar pr-1 flex-1 leading-relaxed">
                 <div class="bg-indigo-950/50 border border-indigo-900/80 p-3 rounded-2xl">
@@ -955,24 +955,24 @@
                 </div>
                 <div class="space-y-2">
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                        <span class="text-indigo-400 font-bold block mb-0.5">1. カタログ・葬儀社様から素早く選定</span>
-                        <p class="text-[12px] text-slate-400">ユー花園公式カタログや各提携葬儀社様の供花を絞り込み。「+1基」「+1対（2基）」で素早く選択済みリストへ追加できます。</p>
+                        <span class="text-blue-600 font-bold block mb-0.5">1. カタログ・葬儀社様から素早く選定</span>
+                        <p class="text-[12px] text-white">ユー花園公式カタログや各提携葬儀社様の供花を絞り込み。「+1基」「+1対（2基）」で素早く選択済みリストへ追加できます。</p>
                     </div>
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span class="text-cyan-400 font-bold block mb-0.5">2. ポイント花と全花材を自動集計</span>
-                        <p class="text-[12px] text-slate-400">選択済みリスト・保存画面では、コチョウラン等の「ポイント花まとめ」と、仕分けや仕入れに必要な「全花材まとめ」をタブで瞬時に切り替え確認できます。</p>
+                        <p class="text-[12px] text-white">選択済みリスト・保存画面では、コチョウラン等の「ポイント花まとめ」と、仕分けや仕入れに必要な「全花材まとめ」をタブで瞬時に切り替え確認できます。</p>
                     </div>
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span class="text-amber-700 font-bold block mb-0.5">3. 喪主花・家族花の仕様</span>
-                        <p class="text-[12px] text-slate-400 leading-relaxed">喪主花・家族花ではランやユリなどが花材の一部であり、ポイントという概念が存在せず、すべてが花材枠に統合される為、ポイントは表示されません。</p>
+                        <p class="text-[12px] text-white leading-relaxed">喪主花・家族花ではランやユリなどが花材の一部であり、ポイントという概念が存在せず、すべてが花材枠に統合される為、ポイントは表示されません。</p>
                     </div>
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <span class="text-emerald-400 font-bold block mb-0.5">4. 画像・PDF・テキスト保存</span>
-                        <p class="text-[12px] text-slate-400">出力内容はチェックボックスで選択可能。LINE送信用テキストコピーやA4印刷用PDF・画像保存に対応しています。</p>
+                        <p class="text-[12px] text-white">出力内容はチェックボックスで選択可能。LINE送信用テキストコピーやA4印刷用PDF・画像保存に対応しています。</p>
                     </div>
                     <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                        <span class="text-indigo-300 font-bold block mb-0.5">5. 新規供花・葬儀社の追加＆申請</span>
-                        <p class="text-[12px] text-slate-400 leading-relaxed">メニューから新しい供花や提携葬儀社の登録が可能です。端末登録で即時使用できるほか、申請JSONを発行して全体マスタへ正式登録依頼ができます。</p>
+                        <span class="text-white font-bold block mb-0.5">5. 新規供花・葬儀社の追加＆申請</span>
+                        <p class="text-[12px] text-white leading-relaxed">メニューから新しい供花や提携葬儀社の登録が可能です。端末登録で即時使用できるほか、申請JSONを発行して全体マスタへ正式登録依頼ができます。</p>
                     </div>
                 </div>
             </div>
@@ -982,18 +982,18 @@
 
     <!-- 更新履歴モーダル -->
     <div id="changelog-modal" class="modal">
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-5 shadow-2xl space-y-3 flex flex-col max-h-[85vh]">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-5 shadow-2xl space-y-3 flex flex-col max-h-[94vh]">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2 shrink-0">
                 <h3 class="text-sm font-black text-white flex items-center gap-1.5">
                     <span>📜</span> バージョン更新履歴
                 </h3>
-                <button class="close-modal-btn text-slate-400 hover:text-white p-1 text-sm font-bold">✕</button>
+                <button class="close-modal-btn text-white hover:text-white p-1 text-sm font-bold">✕</button>
             </div>
             <div class="text-xs text-slate-300 space-y-3 overflow-y-auto hide-scrollbar pr-1 flex-1 leading-relaxed">
                 <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-1">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-black text-cyan-300">v9.9 (最新)</span>
-                        <span class="text-[12px] text-slate-500 font-mono">2026/11</span>
+                        <span class="text-[12px] text-white font-mono">2026/11</span>
                     </div>
                     <ul class="text-[13px] text-slate-300 space-y-1 list-disc list-inside">
                         <li>一般供花→家族花→喪主花→その他の順序＆金額昇順ソート統一</li>
@@ -1017,9 +1017,9 @@
             <h3 class="text-base font-extrabold text-white">供花ポイント＆花材計算ツール</h3>
             <p class="text-[13px] text-cyan-400 font-mono">v1.0.0</p>
             <div class="text-xs text-slate-300 space-y-1.5 text-left bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                <p><span class="text-slate-500 font-bold">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
-                <p><span class="text-slate-500 font-bold">AIアシスタント:</span> <span class="font-bold text-indigo-400">Gemini (Google)</span></p>
-                <p><span class="text-slate-500 font-bold">技術構成:</span> <span class="text-slate-300">HTML5 / Vanilla JS / Tailwind CSS / html2canvas / jsPDF</span></p>
+                <p><span class="text-white font-bold">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
+                <p><span class="text-white font-bold">AIアシスタント:</span> <span class="font-bold text-blue-600">Gemini (Google)</span></p>
+                <p><span class="text-white font-bold">技術構成:</span> <span class="text-slate-300">HTML5 / Vanilla JS / Tailwind CSS / html2canvas / jsPDF</span></p>
             </div>
             <button class="close-modal-btn w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs border border-slate-700">閉じる</button>
         </div>
@@ -1241,7 +1241,7 @@
                 }
                 if (displayEl) {
                     displayEl.textContent = '⭐ お気に入り・履歴';
-                    displayEl.className = 'truncate pr-1 text-[12px] font-bold text-slate-300';
+                    displayEl.className = 'break-all pr-1 text-[12px] font-bold text-white';
                 }
             } else {
                 const c = getAllCompanies(true).find(x => x.id === compId);
@@ -1249,11 +1249,11 @@
                 if (titleEl) titleEl.textContent = `🏢 ${cName}`;
                 if (badgeEl) {
                     badgeEl.textContent = '選択';
-                    badgeEl.className = 'text-[12px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full font-bold';
+                    badgeEl.className = 'text-[12px] bg-slate-800 text-white border border-slate-700 px-2 py-0.5 rounded-full font-bold';
                 }
                 if (displayEl) {
                     displayEl.textContent = cName;
-                    displayEl.className = 'truncate pr-1 text-[12px] font-bold text-amber-700';
+                    displayEl.className = 'break-all pr-1 text-[12px] font-bold text-amber-700';
                 }
             }
             syncCatalogSourceUI(isYoukaen);
@@ -1284,13 +1284,13 @@
             }
             const comps = getAllCompanies(false).filter(c => normalizeCompanySearchText(c.name).includes(kw));
             if (comps.length === 0) {
-                list.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-2">該当する葬儀社がありません</p>';
+                list.innerHTML = '<p class="text-[12px] text-white text-center py-2">該当する葬儀社がありません</p>';
             } else {
                 list.innerHTML = comps.slice(0, 30).map(c => {
                     const cName = c.name.replace(/様+$/, '') + ' 様';
                     return `
                     <div class="p-2.5 rounded-lg text-[13px] cursor-pointer bg-slate-900 hover:bg-slate-850 text-slate-200 transition select-none" onclick="selectCompany('${c.id}')">
-                        <span class="truncate block">${cName}</span>
+                        <span class="break-all block">${cName}</span>
                     </div>`;
                 }).join('');
             }
@@ -1362,7 +1362,7 @@
             if (!container) return;
             let comps = getAllCompanies(false);
             if (comps.length === 0) {
-                container.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-2">登録された葬儀社はありません</p>';
+                container.innerHTML = '<p class="text-[12px] text-white text-center py-2">登録された葬儀社はありません</p>';
                 return;
             }
             container.innerHTML = comps.map(c => {
@@ -1370,12 +1370,12 @@
                 const isSel = state.activeFilter.company === c.id;
                 const cName = c.name.replace(/様+$/, '') + ' 様';
                 return `
-                    <div class="flex items-center justify-between p-2 rounded-lg text-[12px] cursor-pointer transition select-none ${isSel ? 'bg-indigo-950 text-indigo-200 font-bold border border-indigo-500/50' : 'bg-slate-900 hover:bg-slate-850 text-slate-200'}" onclick="selectCompany('${c.id}');">
+                    <div class="flex items-center justify-between p-2 rounded-lg text-[12px] cursor-pointer transition select-none ${isSel ? 'bg-indigo-950 text-white font-bold border border-indigo-500/50' : 'bg-slate-900 hover:bg-slate-850 text-slate-200'}" onclick="selectCompany('${c.id}');">
                         <div class="flex items-center gap-1.5 min-w-0 pr-1">
-                            <button type="button" onclick="toggleCompanyFav('${c.id}', event)" class="text-sm shrink-0 ${isFav ? 'text-amber-600' : 'text-slate-600 hover:text-slate-400'}" title="お気に入り登録/解除">
+                            <button type="button" onclick="toggleCompanyFav('${c.id}', event)" class="text-sm shrink-0 ${isFav ? 'text-amber-600' : 'text-slate-600 hover:text-white'}" title="お気に入り登録/解除">
                                 ${isFav ? '★' : '☆'}
                             </button>
-                            <span class="truncate">${cName}</span>
+                            <span class="break-all">${cName}</span>
                         </div>
                         ${isSel ? '<span class="text-[13px] text-cyan-400 font-bold shrink-0">選択中</span>' : ''}
                     </div>
@@ -1427,7 +1427,7 @@
             }
 
             if (comps.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">該当する葬儀社様が見つかりませんでした</p>';
+                container.innerHTML = '<p class="text-xs text-white text-center py-6">該当する葬儀社様が見つかりませんでした</p>';
                 return;
             }
 
@@ -1438,7 +1438,7 @@
                 return `
                     <div class="flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition select-none ${isSel ? 'bg-indigo-950/70 border-indigo-500 text-white' : 'bg-slate-950 border-slate-800 text-slate-200 hover:border-slate-700'}" onclick="selectCompany('${c.id}'); closeModal('company-search-modal');">
                         <div class="flex items-center gap-2 min-w-0 pr-2">
-                            <span class="text-xs font-black truncate">${cName}</span>
+                            <span class="text-xs font-black break-all">${cName}</span>
                             ${isSel ? '<span class="text-[13px] bg-indigo-500 text-[#ffffff] font-black px-1.5 py-0.2 rounded shrink-0">選択中</span>' : ''}
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
@@ -1863,7 +1863,7 @@
             });
 
             if (filtered.length === 0) {
-                list.innerHTML = `<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-6 text-center text-xs text-slate-500">条件に一致する供花が見つかりませんでした</div>`;
+                list.innerHTML = `<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-6 text-center text-xs text-white">条件に一致する供花が見つかりませんでした</div>`;
                 return;
             }
 
@@ -1912,8 +1912,8 @@
                         <div class="px-3 py-3">
                             <div class="flex items-center gap-2">
                                 <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="flex-1 min-w-0 text-left active:opacity-70 transition">
-                                    <h4 class="text-sm font-black text-white truncate flex items-center min-w-0">
-                                        <span class="truncate">${displayFlowerName(item.name)}</span>
+                                    <h4 class="text-sm font-black text-white break-all flex items-center min-w-0">
+                                        <span class="break-all">${displayFlowerName(item.name)}</span>
                                         ${colorBadge}
                                     </h4>
                                 </button>
@@ -1922,18 +1922,18 @@
                                     <span id="card-qty-h-${fIdx}" class="w-9 text-center font-black text-white text-lg">${cartQty}</span>
                                     <button type="button" onclick="cardQtyStep(${fIdx}, 1)" class="w-11 h-11 text-xl font-black text-slate-100 active:bg-slate-700">＋</button>
                                 </div>
-                                <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="text-slate-400 font-black shrink-0 px-1 text-lg active:opacity-70 transition">▼</button>
+                                <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="text-white font-black shrink-0 px-1 text-lg active:opacity-70 transition">▼</button>
                             </div>
                             <button type="button" onclick="toggleCardAccordion('exp-${fIdx}')" class="w-full flex items-center gap-2 mt-1.5 text-left active:opacity-70 transition">
                                 ${item.code ? `<span class="text-[12px] font-mono font-bold text-slate-200 bg-slate-800 border border-slate-600 px-1.5 py-0.5 rounded shrink-0">${item.code}</span>` : ''}
-                                <span class="font-black text-white text-[13px]">¥${priceEx} <span class="text-[12px] text-slate-400 font-normal">(込 ¥${priceIn})</span></span>
-                                <span class="text-[12px] text-slate-400 font-bold font-mono ml-auto shrink-0">${item.height || ''}</span>
+                                <span class="font-black text-white text-[13px]">¥${priceEx} <span class="text-[12px] text-white font-normal">(込 ¥${priceIn})</span></span>
+                                <span class="text-[12px] text-white font-bold font-mono ml-auto shrink-0">${item.height || ''}</span>
                             </button>
                         </div>
 
                         <div id="card-acc-exp-${fIdx}" class="hidden px-3 pb-3">
                             <div class="mt-2.5">
-                                <span class="text-[12px] font-bold text-slate-400 block mb-1">数量をまとめて増減:</span>
+                                <span class="text-[12px] font-bold text-white block mb-1">数量をまとめて増減:</span>
                                 <div class="grid grid-cols-3 gap-2">
                                     <div class="flex items-center border border-slate-600 rounded-xl overflow-hidden bg-slate-800">
                                         <button type="button" onclick="cardQtyStep(${fIdx}, -10)" class="flex-1 h-10 text-base font-black text-rose-300 active:bg-slate-700">−</button>
@@ -1993,7 +1993,7 @@
             const favBtn = document.getElementById('modal-flower-fav-btn');
             favBtn.className = state.favorites.includes(item.id) 
                 ? 'p-2 text-xl text-amber-600 transition' 
-                : 'p-2 text-xl text-slate-500 hover:text-amber-600 transition';
+                : 'p-2 text-xl text-white hover:text-amber-600 transition';
 
             const ptsContainer = document.getElementById('modal-flower-points');
             const isFamilyOrChiefFlower = isFamilyOrChief(item);
@@ -2013,7 +2013,7 @@
                         </div>
                     `).join('');
                 } else {
-                    ptsContainer.innerHTML = `<span class="text-slate-400 text-[13px]">個別ポイント花指定なし（標準仕立）</span>`;
+                    ptsContainer.innerHTML = `<span class="text-white text-[13px]">個別ポイント花指定なし（標準仕立）</span>`;
                 }
             }
 
@@ -2039,7 +2039,7 @@
             renderFavorites();
             if (state.selectedFlower && state.selectedFlower.id === flowerId) {
                 const favBtn = document.getElementById('modal-flower-fav-btn');
-                favBtn.className = state.favorites.includes(flowerId) ? 'p-2 text-xl text-amber-600 transition' : 'p-2 text-xl text-slate-500 transition';
+                favBtn.className = state.favorites.includes(flowerId) ? 'p-2 text-xl text-amber-600 transition' : 'p-2 text-xl text-white transition';
             }
         };
 
@@ -2126,7 +2126,7 @@
             if (badge) badge.textContent = `${favFlowers.length}件`;
 
             if (favFlowers.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">該当するお気に入り供花がありません。</p>`;
+                container.innerHTML = `<p class="text-xs text-white text-center py-4">該当するお気に入り供花がありません。</p>`;
                 return;
             }
 
@@ -2137,8 +2137,8 @@
                     <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-xl cursor-pointer hover:border-indigo-500/50" onclick="openFlowerDetail('${f.id}')">
                         <div class="flex-1 min-w-0 pr-2">
                             <span class="text-[12px] font-mono font-bold text-cyan-400">${f.code}</span>
-                            <div class="flex items-center gap-1 truncate">
-                                <span class="text-xs font-bold text-white truncate">${displayFlowerName(f.name)}</span>
+                            <div class="flex items-center gap-1">
+                                <span class="text-xs font-bold text-white break-all">${displayFlowerName(f.name)}</span>
                                 ${colorBadge}
                             </div>
                         </div>
@@ -2197,7 +2197,7 @@
             if (countBadge) countBadge.textContent = `${state.favoriteProjects.length}件`;
 
             if (state.favoriteProjects.length === 0) {
-                list.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-4">お気に入りなし</p>';
+                list.innerHTML = '<p class="text-[12px] text-white text-center py-4">お気に入りなし</p>';
                 return;
             }
             list.innerHTML = state.favoriteProjects.map((p, idx) => {
@@ -2205,10 +2205,10 @@
                 return `
                     <div class="bg-slate-950/90 border border-slate-800 hover:border-amber-500/50 p-1.5 rounded-lg flex items-center justify-between gap-1 transition cursor-pointer select-none active:scale-[0.98]" onclick="loadFavoriteProjectItem(${idx})">
                         <div class="flex-1 min-w-0 pr-1">
-                            <span class="text-[12px] font-bold text-white block truncate">${p.title}</span>
-                            <span class="text-[13px] text-slate-400 font-mono block truncate">${p.date} (${totalStands}基)</span>
+                            <span class="text-[12px] font-bold text-white block break-all">${p.title}</span>
+                            <span class="text-[13px] text-white font-mono block truncate">${p.date} (${totalStands}基)</span>
                         </div>
-                        <button type="button" onclick="event.stopPropagation(); deleteFavoriteProjectItem(${idx})" class="p-1 text-slate-500 hover:text-rose-400 shrink-0 text-xs font-bold">✕</button>
+                        <button type="button" onclick="event.stopPropagation(); deleteFavoriteProjectItem(${idx})" class="p-1 text-white hover:text-rose-400 shrink-0 text-xs font-bold">✕</button>
                     </div>
                 `;
             }).join('');
@@ -2247,7 +2247,7 @@
             const list = document.getElementById('quick-history-projects-list');
             if (!list) return;
             if (state.history.length === 0) {
-                list.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-4">履歴なし</p>';
+                list.innerHTML = '<p class="text-[12px] text-white text-center py-4">履歴なし</p>';
                 return;
             }
             list.innerHTML = state.history.map((h, idx) => {
@@ -2255,10 +2255,10 @@
                 return `
                     <div class="bg-slate-950/90 border border-slate-800 hover:border-cyan-500/50 p-1.5 rounded-lg flex items-center justify-between gap-1 transition cursor-pointer select-none active:scale-[0.98]" onclick="loadHistoryItem(${idx})">
                         <div class="flex-1 min-w-0 pr-1">
-                            <span class="text-[12px] font-bold text-slate-200 block truncate">${h.title || '無題の施工'}</span>
-                            <span class="text-[13px] text-slate-400 font-mono block truncate">${h.date} (${totalStands}基)</span>
+                            <span class="text-[12px] font-bold text-white block break-all">${h.title || '無題の施工'}</span>
+                            <span class="text-[13px] text-white font-mono block truncate">${h.date} (${totalStands}基)</span>
                         </div>
-                        <button type="button" onclick="event.stopPropagation(); deleteHistoryItem(${idx})" class="p-1 text-slate-500 hover:text-rose-400 shrink-0 text-xs font-bold">✕</button>
+                        <button type="button" onclick="event.stopPropagation(); deleteHistoryItem(${idx})" class="p-1 text-white hover:text-rose-400 shrink-0 text-xs font-bold">✕</button>
                     </div>
                 `;
             }).join('');
@@ -2453,9 +2453,9 @@
             if (!container) return;
 
             if (state.cart.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">リストは空です。「供花検索」から供花を追加してください。</p>`;
+                container.innerHTML = `<p class="text-xs text-white text-center py-6">リストは空です。「供花検索」から供花を追加してください。</p>`;
                 if (summaryGrid) {
-                    summaryGrid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-3">供花を追加すると必要本数がここに自動集計されます</p>`;
+                    summaryGrid.innerHTML = `<p class="text-xs text-white col-span-2 text-center py-3">供花を追加すると必要本数がここに自動集計されます</p>`;
                 }
                 if (totalExEl) totalExEl.textContent = '¥0';
                 if (totalInEl) totalInEl.textContent = '¥0';
@@ -2492,7 +2492,7 @@
 
                 const ptDetailList = Object.entries(flower.points || {}).map(([pName, count]) => {
                     return `<div class="flex justify-between items-center text-[13px] text-slate-300 py-0.5"><span>・${renderMaterialCodeBadgeHtml(pName)} (1基あたり${count}本)</span><span class="font-mono text-cyan-300 font-bold">計 ${count * cartItem.qty} 本</span></div>`;
-                }).join('') || '<span class="text-[12px] text-slate-400">ポイント花指定なし</span>';
+                }).join('') || '<span class="text-[12px] text-white">ポイント花指定なし</span>';
 
                 let fullMatText = formatMaterialsText(flower.materials);
                 if (isSpecialCat && flower.points && Object.keys(flower.points).length > 0) {
@@ -2505,7 +2505,7 @@
                         <div class="flex justify-between items-start gap-2">
                             <div class="flex-1 min-w-0">
                                 <span class="text-[12px] font-mono font-bold text-slate-300">${flower.code}</span>
-                                <h4 class="text-xs sm:text-sm font-extrabold text-white truncate flex items-center">
+                                <h4 class="text-xs sm:text-sm font-extrabold text-white break-all flex items-center">
                                     <span>${displayFlowerName(flower.name)}</span>
                                     ${colorBadge}
                                 </h4>
@@ -2515,7 +2515,7 @@
                                 <span class="w-6 text-center text-xs font-black text-white">${cartItem.qty}</span>
                                 <button onclick="updateCartQty(${idx}, 1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold active:scale-95 transition">+</button>
 
-                                <button onclick="removeCartItem(${idx})" class="p-1 text-slate-500 hover:text-rose-400 ml-0.5">✕</button>
+                                <button onclick="removeCartItem(${idx})" class="p-1 text-white hover:text-rose-400 ml-0.5">✕</button>
                             </div>
                         </div>
 
@@ -2525,7 +2525,7 @@
                                     <span>${cartItem.showDetail ? '▲ 内訳を閉じる' : '▼ 内訳を見る（金額・花材・ポイント）'}</span>
                                 </button>
                             </div>
-                            <span class="text-slate-400 font-bold font-mono">${flower.height || ''}</span>
+                            <span class="text-white font-bold font-mono">${flower.height || ''}</span>
                         </div>
 
                         <div class="${cartItem.showDetail ? '' : 'hidden'} bg-slate-900/90 border border-slate-800 rounded-lg p-2 text-[13px] text-slate-300">
@@ -2594,11 +2594,11 @@
                     summaryGrid.innerHTML = pointKeys.map(pName => `
                         <div class="bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner">
                             <span class="text-[13px] font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(pName)}</span>
-                            <span class="text-base font-black text-cyan-300 font-mono shrink-0 ml-1">${pointsSummary[pName]} <span class="text-[12px] text-slate-400">本</span></span>
+                            <span class="text-base font-black text-cyan-300 font-mono shrink-0 ml-1">${pointsSummary[pName]} <span class="text-[12px] text-white">本</span></span>
                         </div>
                     `).join('');
                 } else {
-                    summaryGrid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-3">ポイント花は指定されていません</p>`;
+                    summaryGrid.innerHTML = `<p class="text-xs text-white col-span-2 text-center py-3">ポイント花は指定されていません</p>`;
                 }
             }
 
@@ -2616,11 +2616,11 @@
                     matSummaryGrid.innerHTML = matKeys.map(mName => `
                         <div class="bg-slate-950 border border-slate-800 px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 shadow-inner" title="${mName}">
                             <span class="text-[13px] font-extrabold text-slate-200 pr-1 flex items-center min-w-0 overflow-hidden [&>span]:shrink-0">${renderMaterialCodeBadgeHtml(formatDisplayName(mName))}</span>
-                            <span class="text-base font-black text-cyan-300 font-mono shrink-0">${materialsSummary[mName]} <span class="text-[12px] text-slate-400">本</span></span>
+                            <span class="text-base font-black text-cyan-300 font-mono shrink-0">${materialsSummary[mName]} <span class="text-[12px] text-white">本</span></span>
                         </div>
                     `).join('');
                 } else {
-                    matSummaryGrid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-3">詳細花材は指定されていません</p>`;
+                    matSummaryGrid.innerHTML = `<p class="text-xs text-white col-span-2 text-center py-3">詳細花材は指定されていません</p>`;
                 }
             }
 
@@ -2653,7 +2653,7 @@
 
             const canvas = await prepareCaptureCanvas();
             if (!canvas) {
-                previewCard.innerHTML = '<p class="text-xs text-slate-500 text-center py-4">選択済みリストがありません</p>';
+                previewCard.innerHTML = '<p class="text-xs text-white text-center py-4">選択済みリストがありません</p>';
                 return;
             }
             canvas.style.width = '100%';
@@ -2738,10 +2738,10 @@
                     return `
                         <div class="cap-card flex justify-between items-center py-3 px-3 bg-slate-950 border-b border-slate-800/80">
                             <div class="min-w-0 pr-2">
-                                <span class="font-black text-white flex items-center text-base truncate">[${flower.code}] ${flower.name} ${colorBadge}</span>
-                                <span class="text-xs cap-text-sub text-slate-400 font-mono mt-0.5 block">¥${flower.price.toLocaleString()} × ${c.qty}基</span>
+                                <span class="font-black text-white flex items-center text-base break-all">[${flower.code}] ${flower.name} ${colorBadge}</span>
+                                <span class="text-xs cap-text-sub text-white font-mono mt-0.5 block">¥${flower.price.toLocaleString()} × ${c.qty}基</span>
                             </div>
-                            <span class="font-mono font-black text-2xl text-cyan-300 shrink-0">${c.qty} <span class="text-xs text-slate-400 font-normal">基</span></span>
+                            <span class="font-mono font-black text-2xl text-cyan-300 shrink-0">${c.qty} <span class="text-xs text-white font-normal">基</span></span>
                         </div>
                     `;
                 }).join('');
@@ -2753,7 +2753,7 @@
                             <span class="text-cyan-300 font-mono text-sm font-black">計 ${totalStands} 基</span>
                         </div>
                         <div class="rounded-2xl border border-slate-800 overflow-hidden divide-y divide-slate-800/60 bg-slate-950 shadow-sm">
-                            ${itemsHtml || '<p class="text-slate-500 text-center py-4 text-xs">選択済みリストがありません</p>'}
+                            ${itemsHtml || '<p class="text-white text-center py-4 text-xs">選択済みリストがありません</p>'}
                         </div>
                     </div>
                 `;
@@ -2772,8 +2772,8 @@
                 // スマホ実寸・極太文字の伝票レイアウト
                 const matRows = matEntries.map(([name, count]) => `
                     <div class="cap-card py-2.5 px-3 flex items-center justify-between bg-slate-950 border-b border-slate-800/80" title="${name}">
-                        <span class="font-black text-white truncate pr-2 flex items-center text-[15px]">${renderMaterialCodeBadgeHtml(formatDisplayName(name))}</span>
-                        <span class="font-mono font-black text-cyan-300 text-xl text-right shrink-0 tracking-tight">${count} <span class="text-xs text-slate-400 font-normal">本</span></span>
+                        <span class="font-black text-white break-all pr-2 flex items-center text-[15px]">${renderMaterialCodeBadgeHtml(formatDisplayName(name))}</span>
+                        <span class="font-mono font-black text-cyan-300 text-xl text-right shrink-0 tracking-tight">${count} <span class="text-xs text-white font-normal">本</span></span>
                     </div>
                 `).join('');
 
@@ -2781,7 +2781,7 @@
                     <div class="space-y-1 pt-3">
                         <div class="text-xs font-black text-emerald-400 px-1 flex items-center gap-1">🌿 【総花材内訳まとめ】</div>
                         <div class="rounded-2xl border border-slate-800 overflow-hidden divide-y divide-slate-800/60 bg-slate-950 shadow-sm">
-                            ${matRows || '<p class="text-slate-500 text-center py-4 text-xs">花材内訳はありません</p>'}
+                            ${matRows || '<p class="text-white text-center py-4 text-xs">花材内訳はありません</p>'}
                         </div>
                     </div>
                 `;
@@ -2800,16 +2800,16 @@
                 // スマホ実寸・極太文字の伝票レイアウト
                 const ptRows = ptEntries.map(([name, count]) => `
                     <div class="cap-card py-2.5 px-3 flex items-center justify-between bg-slate-950 border-b border-slate-800/80">
-                        <span class="font-black text-white truncate pr-2 flex items-center text-[15px]">${renderMaterialCodeBadgeHtml(name)}</span>
-                        <span class="font-mono font-black text-cyan-300 text-xl text-right shrink-0 tracking-tight">${count} <span class="text-xs text-slate-400 font-normal">本</span></span>
+                        <span class="font-black text-white break-all pr-2 flex items-center text-[15px]">${renderMaterialCodeBadgeHtml(name)}</span>
+                        <span class="font-mono font-black text-cyan-300 text-xl text-right shrink-0 tracking-tight">${count} <span class="text-xs text-white font-normal">本</span></span>
                     </div>
                 `).join('');
 
                 pointsHtml = `
                     <div class="space-y-1 pt-3">
-                        <div class="text-xs font-black text-indigo-400 px-1 flex items-center gap-1">✨ 【総ポイント花まとめ】</div>
+                        <div class="text-xs font-black text-blue-600 px-1 flex items-center gap-1">✨ 【総ポイント花まとめ】</div>
                         <div class="rounded-2xl border border-slate-800 overflow-hidden divide-y divide-slate-800/60 bg-slate-950 shadow-sm">
-                            ${ptRows || '<p class="text-slate-500 text-center py-4 text-xs">ポイント花はありません</p>'}
+                            ${ptRows || '<p class="text-white text-center py-4 text-xs">ポイント花はありません</p>'}
                         </div>
                     </div>
                 `;
@@ -3384,13 +3384,13 @@
             tabPtBtn?.addEventListener('click', () => {
                 state.summaryTab = 'points';
                 tabPtBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-600 text-[#ffffff] shadow transition';
-                tabMatBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 transition';
+                tabMatBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-white hover:text-slate-200 transition';
                 updateCartUI();
             });
             tabMatBtn?.addEventListener('click', () => {
                 state.summaryTab = 'materials';
                 tabMatBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-600 text-[#ffffff] shadow transition';
-                tabPtBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 transition';
+                tabPtBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-white hover:text-slate-200 transition';
                 updateCartUI();
             });
 
@@ -3655,13 +3655,13 @@
             const btnTabCo = document.getElementById('btn-local-tab-companies');
             btnTabFl?.addEventListener('click', () => {
                 btnTabFl.className = 'flex-1 py-1.5 rounded-lg font-black bg-indigo-600 text-[#ffffff] transition shadow';
-                btnTabCo.className = 'flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-slate-200 transition';
+                btnTabCo.className = 'flex-1 py-1.5 rounded-lg font-bold text-white hover:text-slate-200 transition';
                 document.getElementById('local-flowers-manage-list')?.classList.remove('hidden');
                 document.getElementById('local-companies-manage-list')?.classList.add('hidden');
             });
             btnTabCo?.addEventListener('click', () => {
                 btnTabCo.className = 'flex-1 py-1.5 rounded-lg font-black bg-indigo-600 text-[#ffffff] transition shadow';
-                btnTabFl.className = 'flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-slate-200 transition';
+                btnTabFl.className = 'flex-1 py-1.5 rounded-lg font-bold text-white hover:text-slate-200 transition';
                 document.getElementById('local-companies-manage-list')?.classList.remove('hidden');
                 document.getElementById('local-flowers-manage-list')?.classList.add('hidden');
             });
@@ -3827,7 +3827,7 @@
                     : `<span class="text-[12px] text-slate-600 font-mono w-[52px] shrink-0 text-center">-</span>`);
 
             const noteHtml = item.note
-                ? `<span class="text-[12px] text-slate-400 font-bold shrink-0">${item.note}</span>`
+                ? `<span class="text-[12px] text-white font-bold shrink-0">${item.note}</span>`
                 : '';
 
             const canDuplicate = !NO_DUPLICATE_MATERIAL_NAMES.includes(item.name);
@@ -3838,7 +3838,7 @@
             return `
                 <div class="${typeClass}-row flex items-center justify-between py-1.5 border-b border-slate-800/80 last:border-none text-xs gap-1.5">
                     <div class="flex items-center gap-1.5 flex-1 min-w-0">
-                        <span class="font-bold text-slate-200 truncate">${item.name}</span>
+                        <span class="font-bold text-white break-all">${item.name}</span>
                         ${noteHtml}
                         ${actionBtn}
                     </div>
@@ -3846,7 +3846,7 @@
                         ${colorSelect}
                         <div class="flex items-center gap-0.5">
                             <input type="number" min="0" placeholder="0" data-name="${item.name}" class="${typeClass}-qty w-11 text-center bg-slate-900 border border-slate-700 text-cyan-300 font-bold rounded py-1 text-xs outline-none focus:border-cyan-500">
-                            <span class="text-[12px] text-slate-400 font-mono">本</span>
+                            <span class="text-[12px] text-white font-mono">本</span>
                         </div>
                     </div>
                 </div>
@@ -3901,7 +3901,7 @@
                     <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50">
                         <button type="button" onclick="toggleRegAccordion('reg-acc-flowers', this)" class="w-full flex items-center justify-between px-3 py-2 bg-slate-800/90 hover:bg-slate-800 text-xs font-black text-pink-300 transition">
                             <span>🌸 花 (${flowerMats.length}種)</span>
-                            <span class="reg-acc-arrow text-[12px] text-slate-400">▲</span>
+                            <span class="reg-acc-arrow text-[12px] text-white">▲</span>
                         </button>
                         <div id="reg-acc-flowers" class="px-2 py-1 divide-y divide-slate-800/60">
                             ${flowerMats.map(m => createRegisterRowHtml(m, 'reg-mat', false)).join('')}
@@ -3910,7 +3910,7 @@
                     <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/50 mt-2">
                         <button type="button" onclick="toggleRegAccordion('reg-acc-leaves', this)" class="w-full flex items-center justify-between px-3 py-2 bg-slate-800/90 hover:bg-slate-800 text-xs font-black text-emerald-300 transition">
                             <span>🌿 葉物・グリーン (${leafMats.length}種)</span>
-                            <span class="reg-acc-arrow text-[12px] text-slate-400">▼</span>
+                            <span class="reg-acc-arrow text-[12px] text-white">▼</span>
                         </button>
                         <div id="reg-acc-leaves" class="hidden px-2 py-1 divide-y divide-slate-800/60">
                             ${leafMats.map(m => createRegisterRowHtml(m, 'reg-mat', false)).join('')}
@@ -4060,14 +4060,14 @@
 
             const localFlowers = state.flowers.filter(f => f.isCustom === true || f.id.startsWith('CUSTOM_'));
             if (localFlowers.length === 0) {
-                flContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">端末に個別登録された供花はありません</p>';
+                flContainer.innerHTML = '<p class="text-xs text-white text-center py-6">端末に個別登録された供花はありません</p>';
             } else {
                 flContainer.innerHTML = localFlowers.map(f => `
                     <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between gap-2">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5">
                                 <span class="text-[12px] font-mono text-cyan-400 font-bold bg-cyan-950 px-1.5 py-0.2 rounded">${f.code}</span>
-                                <span class="text-xs font-bold text-white truncate flex items-center">
+                                <span class="text-xs font-bold text-white break-all flex items-center">
                                     <span>${displayFlowerName(f.name)}</span>
                                     ${renderColorChipsHtml(detectFlowerColors(f))}
                                 </span>
@@ -4081,19 +4081,19 @@
 
             const localComps = (window.__syncedCompanies || []).filter(c => c.isCustom === true || String(c.id).startsWith('comp_') || String(c.id).startsWith('LOCAL_'));
             if (localComps.length === 0) {
-                coContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">端末に個別登録された葬儀社はありません</p>';
+                coContainer.innerHTML = '<p class="text-xs text-white text-center py-6">端末に個別登録された葬儀社はありません</p>';
             } else {
                 coContainer.innerHTML = localComps.map(c => `
                     <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-2">
                         <div class="flex items-center justify-between gap-2">
-                            <span class="text-xs font-black text-amber-700 truncate">${c.name.replace(/様+$/, '')} 様</span>
+                            <span class="text-xs font-black text-amber-700 break-all">${c.name.replace(/様+$/, '')} 様</span>
                             <button type="button" onclick="deleteLocalCompany('${c.id}')" class="px-2 py-0.5 bg-[#450a0a] hover:bg-[#5c0f0f] border border-[#ef4444] text-[#fca5a5] font-bold text-[12px] rounded-lg active:scale-95 transition">削除</button>
                         </div>
                         <div class="border-t border-slate-850 pt-2">
-                            <button type="button" onclick="exportCompanyPackageJson('${c.id}')" class="w-full py-1.5 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/60 text-indigo-200 text-[12px] font-black rounded-lg active:scale-95 transition flex items-center justify-center gap-1">
+                            <button type="button" onclick="exportCompanyPackageJson('${c.id}')" class="w-full py-1.5 bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/60 text-white text-[12px] font-black rounded-lg active:scale-95 transition flex items-center justify-center gap-1">
                                 <span>📦 この葬儀社と供花を一括JSON書出</span>
                             </button>
-                            <p class="text-[13px] text-slate-500 mt-1 leading-normal text-center">
+                            <p class="text-[13px] text-white mt-1 leading-normal text-center">
                                 ※コピーした内容を所沢支店施工課の関貴文へ送付してください。
                             </p>
                         </div>
@@ -4153,9 +4153,9 @@
             document.querySelectorAll('.nav-tab-btn').forEach(btn => {
                 const target = btn.getAttribute('data-target');
                 if (target === panelId) {
-                    btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-indigo-400 active:scale-95 transition';
+                    btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-blue-600 active:scale-95 transition';
                 } else {
-                    btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-200 active:scale-95 transition';
+                    btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1 rounded-xl text-white hover:text-slate-200 active:scale-95 transition';
                 }
             });
 

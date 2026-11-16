@@ -138,7 +138,7 @@
 <body class="bg-slate-950 text-slate-100 flex flex-col h-[100dvh] overflow-hidden font-sans">  
   
  <div id="top-nav-bar" class="flex justify-between items-center bg-slate-900 px-4 pt-[max(env(safe-area-inset-top,8px),8px)] pb-1.5 shrink-0">  
- <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-slate-400 hover:text-white inline-flex items-center gap-1 font-bold">  
+ <a href="index.html" onclick="exitToPortal(); return false;" class="text-xs text-white hover:text-white inline-flex items-center gap-1 font-bold">  
  ← ツール一覧へ  
  </a>  
  <div id="current-project-badge" class="flex items-center gap-1.5 text-xs text-slate-300 font-bold bg-slate-800/90 px-2.5 py-0.5 rounded-full border border-slate-700 max-w-[190px] sm:max-w-[260px]">  
@@ -154,7 +154,7 @@
  </button>  
  <div class="min-w-0">  
  <h1 id="app-title" class="text-sm sm:text-base font-bold text-white tracking-tight truncate">グリッドメーカー</h1>  
- <p id="step-desc" class="text-[12px] text-slate-400 truncate">写真の選択または履歴</p>  
+ <p id="step-desc" class="text-[13px] text-white">写真の選択または履歴</p>  
  </div>  
  </div>  
  <div class="flex items-center gap-1.5 shrink-0">  
@@ -179,18 +179,18 @@
  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>  
  </svg>  
  <p class="text-lg font-bold text-white mb-1">新しい写真を読み込む</p>  
- <p class="text-sm text-slate-400">タップしてギャラリーから選択</p>  
+ <p class="text-sm text-white">タップしてギャラリーから選択</p>  
  </div>  
  <input type="file" id="file-input" accept="image/*" class="hidden">  
  </div>  
   
  <div class="px-6 pb-6 max-w-xl mx-auto w-full">  
  <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">  
- <h2 class="text-sm font-bold text-slate-300">最近のプロジェクト (履歴)</h2>  
- <span class="text-[12px] text-slate-500">タップして再開</span>  
+ <h2 class="text-base font-bold text-white border-l-[5px] border-blue-600 pl-2.5">最近のプロジェクト (履歴)</h2>  
+ <span class="text-[12px] text-white">タップして再開</span>  
  </div>  
  <div id="history-list" class="grid grid-cols-2 sm:grid-cols-3 gap-3">  
- <p id="history-empty" class="col-span-full text-center text-xs text-slate-500 py-6">保存された履歴はありません。</p>  
+ <p id="history-empty" class="col-span-full text-center text-xs text-white py-6">保存された履歴はありません。</p>  
  </div>  
  </div>  
  </div>  
@@ -223,7 +223,7 @@
  <button id="crop-exec-btn" class="flex-[1.5] bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-3.5 rounded-xl shadow-lg text-sm transition">切り抜いて次へ</button>  
  </div>  
  <div class="flex justify-center mt-2">  
- <button id="crop-reset-btn" class="text-[12px] text-slate-400 hover:text-white px-4 py-1">位置をリセット</button>  
+ <button id="crop-reset-btn" class="text-[12px] text-white hover:text-white px-4 py-1">位置をリセット</button>  
  </div>  
  </div>  
  </div>  
@@ -243,7 +243,7 @@
  <span class="text-[13px] font-bold text-slate-300">枠の実寸</span>  
  <div class="flex items-center gap-1">  
  <input type="number" id="base-size-input" value="30" step="any" min="1" inputmode="decimal" class="w-16 bg-slate-950 border border-slate-700 text-white rounded px-1.5 py-0.5 text-center text-xs font-bold focus:border-blue-500 outline-none">  
- <span class="text-[12px] text-slate-400 font-mono">cm</span>  
+ <span class="text-[12px] text-white font-mono">cm</span>  
  </div>  
  </div>  
  <div class="grid grid-cols-3 gap-1">  
@@ -256,7 +256,7 @@
  <!-- 基準枠の設定（色・太さ・パターン） -->  
  <div class="grid grid-cols-3 gap-1.5 bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 text-[13px]">  
  <div>  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">枠の色</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">枠の色</label>  
  <select id="base-color-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
  <option value="#22c55e" selected>緑</option>  
  <option value="#ef4444">赤</option>  
@@ -267,7 +267,7 @@
  </select>  
  </div>  
  <div>  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">線の太さ</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">線の太さ</label>  
  <select id="base-width-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
  <option value="normal" selected>標準</option>  
  <option value="thin">細線</option>  
@@ -275,7 +275,7 @@
  </select>  
  </div>  
  <div>  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">パターン</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">パターン</label>  
  <select id="base-pattern-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
  <option value="dashed" selected>点線</option>  
  <option value="solid">実線</option>  
@@ -323,7 +323,7 @@
  <span class="text-[13px] font-bold text-slate-300">1マスのサイズ</span>  
  <div class="flex items-center gap-1">  
  <input type="number" id="grid-size-input" value="30" step="any" min="1" inputmode="decimal" class="w-16 bg-slate-950 border border-slate-700 text-white rounded px-1.5 py-0.5 text-center text-xs font-bold focus:border-blue-500 outline-none">  
- <span class="text-[12px] text-slate-400 font-mono">cm</span>  
+ <span class="text-[12px] text-white font-mono">cm</span>  
  </div>  
  </div>  
  <div class="grid grid-cols-3 gap-1">  
@@ -336,7 +336,7 @@
  <!-- グリッド外観設定（色・太さ・補助線） -->  
  <div class="grid grid-cols-3 gap-1.5 bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 text-[13px]">  
  <div>  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">線の色</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">線の色</label>  
  <select id="grid-color-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
  <option value="#ef4444" selected>赤</option>  
  <option value="#22c55e">緑</option>  
@@ -347,7 +347,7 @@
  </select>  
  </div>  
  <div>  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">線の太さ</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">線の太さ</label>  
  <select id="grid-width-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
  <option value="normal" selected>標準</option>  
  <option value="thin">細線</option>  
@@ -355,7 +355,7 @@
  </select>  
  </div>  
  <div>  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">分割補助線</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">分割補助線</label>  
  <select id="grid-subdiv-select" class="w-full bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs outline-none">  
  <option value="0" selected>なし</option>  
  <option value="2">2等分</option>  
@@ -393,7 +393,7 @@
  <div id="tab-adjust" class="tab-content">  
  <div class="bg-slate-900/80 rounded-xl p-4 mb-3 border border-slate-800">  
  <div class="flex justify-between items-center mb-4">  
- <label class="text-[13px] text-slate-400">画像の回転 (水平出し)</label>  
+ <label class="text-[13px] text-white">画像の回転 (水平出し)</label>  
  <span id="rot-value" class="text-sm font-bold font-mono text-blue-400">0.0°</span>  
  </div>  
  <div class="flex items-center gap-4">  
@@ -416,11 +416,11 @@
    
  <div id="text-list-box" class="mb-3">  
  <div class="flex items-center justify-between mb-1 px-1">  
- <span class="text-[12px] text-slate-400 font-bold">配置済みテキスト一覧</span>  
+ <span class="text-[12px] text-white font-bold">配置済みテキスト一覧</span>  
  <button id="text-deselect-btn" class="text-[13px] text-blue-400 hover:text-white">選択解除</button>  
  </div>  
  <div id="text-layer-list" class="flex flex-col gap-1 max-h-24 overflow-y-auto hide-scrollbar p-1 bg-slate-900/90 rounded-lg border border-slate-800">  
- <p id="text-layer-empty" class="text-[12px] text-slate-500 text-center py-2">テキストはありません</p>  
+ <p id="text-layer-empty" class="text-[12px] text-white text-center py-2">テキストはありません</p>  
  </div>  
  </div>  
    
@@ -430,7 +430,7 @@
  </div>  
    
  <div class="flex items-center gap-2">  
- <label class="text-[12px] text-slate-400 w-12">フォント</label>  
+ <label class="text-[12px] text-white w-12">フォント</label>  
  <select id="text-font" class="flex-1 bg-slate-950 border border-slate-700 text-white rounded px-2 py-1 text-xs outline-none">  
  <option value="'Noto Sans JP', sans-serif">角ゴシック体 (標準)</option>  
  <option value="'Noto Serif JP', serif">明朝体 (格式)</option>  
@@ -440,24 +440,24 @@
  </div>  
   
  <div class="flex items-center gap-2">  
- <label class="text-[12px] text-slate-400 w-12">サイズ</label>  
+ <label class="text-[12px] text-white w-12">サイズ</label>  
  <input type="range" id="text-size" min="10" max="500" step="1" class="flex-1">  
  <span id="text-size-val" class="text-xs font-mono text-blue-400 w-9 text-right">40</span>  
  </div>  
   
  <div class="flex items-center gap-2">  
- <label class="text-[12px] text-slate-400 w-12">縁取り幅</label>  
+ <label class="text-[12px] text-white w-12">縁取り幅</label>  
  <input type="range" id="text-stroke-width" min="0" max="100" step="1" value="4" class="flex-1">  
  <span id="text-stroke-val" class="text-xs font-mono text-blue-400 w-9 text-right">4</span>  
  </div>  
   
  <div class="flex justify-between items-center pt-1">  
  <div class="flex items-center gap-2">  
- <label class="text-[12px] text-slate-400">文字色</label>  
+ <label class="text-[12px] text-white">文字色</label>  
  <input type="color" id="text-color" value="#ffffff" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
  </div>  
  <div class="flex items-center gap-2">  
- <label class="text-[12px] text-slate-400">縁取り色</label>  
+ <label class="text-[12px] text-white">縁取り色</label>  
  <input type="color" id="text-stroke" value="#000000" class="w-6 h-6 rounded cursor-pointer bg-transparent border-0 p-0">  
  </div>  
  <button id="text-delete-btn" class="bg-[#450a0a] text-[#fca5a5] hover:bg-[#5c0f0f] px-2.5 py-1 rounded-lg text-xs font-bold border border-[#ef4444] transition">削除</button>  
@@ -467,7 +467,7 @@
  </div>  
   
  <!-- 最下段: タブ切替＆保存ボタン群 -->  
- <div class="border-t border-slate-800 bg-slate-900/95 p-1.5 flex gap-1.5 text-xs font-bold text-slate-400 shrink-0">  
+ <div class="border-t border-slate-800 bg-slate-900/95 p-1.5 flex gap-1.5 text-xs font-bold text-white shrink-0">  
  <button class="tab-btn active flex-1 py-2.5 rounded-xl border border-transparent text-center transition flex items-center justify-center gap-1.5" data-target="tab-grid">  
  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16M8 4v16M12 4v16M16 4v16"></path></svg>  
  <span>グリッド</span>  
@@ -491,13 +491,13 @@
   
  <!-- ガイド・説明モーダル -->  
  <div id="guide-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4">  
- <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[85vh]">  
+ <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl flex flex-col max-h-[94vh]">  
  <div class="flex justify-between items-center mb-3 shrink-0 border-b border-slate-800 pb-2">  
  <h3 class="text-sm font-bold text-white flex items-center gap-1.5">  
  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>  
  <span id="guide-modal-title">操作ガイド</span>  
  </h3>  
- <button id="close-guide-btn" class="text-slate-400 hover:text-white p-1">  
+ <button id="close-guide-btn" class="text-white hover:text-white p-1">  
  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
  </button>  
  </div>  
@@ -510,7 +510,7 @@
  <!-- メニュー モーダル -->  
  <div id="main-menu-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4">  
  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">  
- <button id="close-menu-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2">  
+ <button id="close-menu-btn" class="absolute top-4 right-4 text-white hover:text-white p-2">  
  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
  </button>  
  <h3 class="text-lg font-bold text-white mb-6">メニュー</h3>  
@@ -565,20 +565,20 @@
    
  <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-3 mb-6 text-xs text-slate-300">  
  <div class="flex justify-between items-center py-1 border-b border-slate-800/50">  
- <span class="text-slate-400">製作者</span>  
+ <span class="text-white">製作者</span>  
  <span class="font-bold text-slate-100">関貴文</span>  
  </div>  
  <div class="flex justify-between items-center py-1 border-b border-slate-800/50">  
- <span class="text-slate-400">AIアシスタント</span>  
+ <span class="text-white">AIアシスタント</span>  
  <span class="font-bold text-slate-100">Gemini (Google)</span>  
  </div>  
  <div class="flex flex-col py-1 gap-1">  
- <span class="text-slate-400">技術スタック</span>  
+ <span class="text-white">技術スタック</span>  
  <span class="font-medium text-slate-200">HTML5 Canvas / Vanilla JavaScript / Tailwind CSS / IndexedDB / jsPDF</span>  
  </div>  
  </div>  
   
- <p class="text-[13px] text-slate-400 text-center mb-6 leading-relaxed">  
+ <p class="text-[13px] text-white text-center mb-6 leading-relaxed">  
  現場施工における生花装飾・グリッド割出しの効率化と<br>精度向上のために開発された施工支援ツールです。  
  </p>  
   
@@ -592,7 +592,7 @@
  <h3 class="text-base font-bold text-white mb-2 text-center shrink-0">画像を保存</h3>  
   
  <div class="mb-2 shrink-0">  
- <label class="block text-[12px] font-bold text-slate-400 mb-1">プロジェクト名（ファイル名）</label>  
+ <label class="block text-[12px] font-bold text-white mb-1">プロジェクト名（ファイル名）</label>  
  <input type="text" id="export-project-name" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:border-blue-500 outline-none" placeholder="プロジェクト名を入力">  
  </div>  
   
@@ -692,7 +692,7 @@
  <div id="exit-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[120] hidden flex-col items-center justify-center p-4">  
  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xs p-5 shadow-2xl text-center">  
  <h3 class="text-base font-bold text-white mb-2">ツール一覧へ戻りますか？</h3>  
- <p class="text-xs text-slate-400 mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>  
+ <p class="text-xs text-white mb-5 leading-relaxed">保存されていないデータは破棄されます。</p>  
  <div class="grid grid-cols-2 gap-2">  
  <button id="exit-cancel-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl border border-slate-700 text-xs transition">  
  キャンセル  
@@ -994,7 +994,7 @@
  req.onsuccess = e => {  
  const records = (e.target.result || []).sort((a,b) => b.timestamp - a.timestamp);  
  if(records.length === 0) {  
- list.innerHTML = `<p id="history-empty" class="col-span-full text-center text-xs text-slate-500 py-6">保存された履歴はありません。</p>`;  
+ list.innerHTML = `<p id="history-empty" class="col-span-full text-center text-xs text-white py-6">保存された履歴はありません。</p>`;  
  return;  
  }  
  records.forEach(r => {  
@@ -1016,8 +1016,8 @@
  </div>  
  </div>  
  <div class="p-2">  
- <p class="text-[12px] font-bold text-white truncate" title="${r.fileName}">${r.fileName}</p>  
- <p class="text-[13px] text-slate-400">${dateStr}</p>  
+ <p class="text-[13px] font-bold text-white break-all leading-snug" title="${r.fileName}">${r.fileName}</p>  
+ <p class="text-[13px] text-white">${dateStr}</p>  
  <p class="text-[13px] text-blue-400 font-medium mt-1 bg-blue-900/30 px-1 py-0.5 rounded inline-block">${r.stage}</p>  
  </div>  
  `;  
@@ -1774,7 +1774,7 @@
  if (!list) return;  
  list.innerHTML = '';  
  if (!appState.texts || appState.texts.length === 0) {  
- list.innerHTML = '<p class="text-[12px] text-slate-500 text-center py-2">テキストはありません</p>';  
+ list.innerHTML = '<p class="text-[12px] text-white text-center py-2">テキストはありません</p>';  
  return;  
  }  
  appState.texts.forEach((t, idx) => {  
@@ -1783,8 +1783,8 @@
  item.className = `flex items-center justify-between px-2 py-1.5 rounded text-xs transition cursor-pointer ${isSel ? 'bg-blue-600/30 border border-blue-500 text-[#ffffff] font-bold' : 'bg-slate-800/60 border border-slate-700/60 text-slate-300 hover:bg-slate-800'}`;  
  item.onclick = () => { appState.selectedTextId = t.id; updateTextPanel(); render(); };  
  item.innerHTML = `  
- <span class="truncate max-w-[170px]">T${idx + 1}: ${t.text || '(空)'}</span>  
- <button class="del-single-text text-slate-400 hover:text-red-400 p-1" data-id="${t.id}">  
+ <span class="break-all">T${idx + 1}: ${t.text || '(空)'}</span>  
+ <button class="del-single-text text-white hover:text-red-400 p-1" data-id="${t.id}">  
  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>  
  </button>  
  `;  
