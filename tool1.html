@@ -2962,6 +2962,15 @@
             });
         }
 
+        function toggleCardDetails(row) {
+            const det = row.querySelector('.card-details');
+            if (!det) return;
+            const opening = det.classList.contains('hidden');
+            det.classList.toggle('hidden', !opening);
+            const ch = row.querySelector('.detail-chevron');
+            if (ch) ch.style.transform = opening ? 'rotate(180deg)' : '';
+        }
+
         function renderSavedVenues() {
             if (document.getElementById('tab-venue-shared')?.classList.contains('lib-shared-on')) return;
             if (!db) return;
@@ -2996,28 +3005,24 @@
                     const row = document.createElement('div');
                     row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition cursor-pointer";
                     row.innerHTML = `
-                        <div class="w-full">
-                            <div class="text-base font-bold text-white truncate mb-1">${v.name}</div>
-                            <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="flex-1 min-w-0 text-base font-bold text-white truncate">${v.name}</span>
+                            <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
+                            <button type="button" class="open-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="この式場を読み込む">開く</button>
+                        </div>
+                        <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
+                            <div class="flex items-center gap-1.5 flex-wrap mb-2">
                                 ${originBadge}
                                 ${perspBadge}
                                 <span class="text-[13px] font-bold text-white">基準 ${v.measureRealMm}mm ・ ${vDateStr}</span>
                             </div>
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <button type="button" class="open-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="この式場を読み込む">開く</button>
-                            ${!alreadyUploaded ? `
-                            <button type="button" class="up-venue-btn w-9 h-9 flex items-center justify-center bg-[#ffffff] hover:bg-gray-50 border border-[#d9d9d7] text-gray-200 rounded-lg transition shrink-0" title="オンライン共有へアップロード">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            </button>` : ''}
-                            <button type="button" class="del-venue-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="端末内保存から削除">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${!alreadyUploaded ? `<button type="button" class="up-venue-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#d9d9d7] bg-[#ffffff] text-[13px] font-bold text-gray-200 transition" title="オンライン共有へアップロード"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>アップロード</button>` : ''}
+                                <button type="button" class="del-venue-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-[13px] font-bold text-red-500 transition" title="端末内保存から削除"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>削除</button>
                             </div>
                         </div>
                     `;
-                    row.onclick = async () => {
+const doOpenVenue = async () => {
                         if (state.items.length > 0) {
                             const removeParts = await showCustomConfirm('パーツの確認', '式場を変更します。配置済みのパーツを削除してリセットしますか？\n（「キャンセル」を選ぶとパーツを残したまま式場のみ切り替えます）');
                             if (removeParts) {
@@ -3065,6 +3070,9 @@
                         };
                         img.src = v.imgData;
                     };
+                    row.querySelector('.open-venue-btn').onclick = ev => { ev.stopPropagation(); doOpenVenue(); };
+                    row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
+                    row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
                     const upBtn = row.querySelector('.up-venue-btn');
                     if (upBtn) {
                         upBtn.onclick = async ev => {
@@ -4297,31 +4305,25 @@
                     const row = document.createElement('div');
                     row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition cursor-pointer";
                     row.innerHTML = `
-                        <div class="w-full">
-                            <div class="text-base font-bold text-white truncate mb-1">${r.name}</div>
-                            <div class="flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="flex-1 min-w-0 text-base font-bold text-white truncate">${r.name}</span>
+                            <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
+                            <button type="button" class="place-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="このパーツを設置する"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>設置</button>
+                        </div>
+                        <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
+                            <div class="flex items-center gap-1.5 flex-wrap mb-2">
                                 ${originBadge}
                                 <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc] font-mono">${extLabel}</span>
                                 <span class="text-[13px] font-bold text-white">${rDateStr}</span>
                             </div>
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <button type="button" class="place-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="このパーツを設置する"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>設置</button>
-                            ${!alreadyUploaded ? `
-                            <button type="button" class="up-part-btn w-9 h-9 flex items-center justify-center bg-[#ffffff] hover:bg-gray-50 border border-[#d9d9d7] text-gray-200 rounded-lg transition shrink-0" title="オンライン共有へアップロード">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            </button>` : ''}
-                            <button type="button" class="rename-part-btn w-9 h-9 flex items-center justify-center bg-[#ffffff] hover:bg-gray-50 border border-[#d9d9d7] text-gray-200 rounded-lg transition shrink-0" title="名前変更">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                            </button>
-                            <button type="button" class="del-part-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="端末内保存から削除">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${!alreadyUploaded ? `<button type="button" class="up-part-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#d9d9d7] bg-[#ffffff] text-[13px] font-bold text-gray-200 transition" title="オンライン共有へアップロード"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>アップロード</button>` : ''}
+                                <button type="button" class="rename-part-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#d9d9d7] bg-[#ffffff] text-[13px] font-bold text-gray-200 transition" title="名前変更"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>名前変更</button>
+                                <button type="button" class="del-part-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-[13px] font-bold text-red-500 transition" title="端末内保存から削除"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>削除</button>
                             </div>
                         </div>
                     `;
-                    row.onclick = () => {
+const doPlacePart = () => {
                         const img = new Image();
                         img.onload = () => {
                             const cvs = document.createElement('canvas');
@@ -4338,6 +4340,9 @@
                         };
                         img.src = r.imgData;
                     };
+                    row.querySelector('.place-part-btn').onclick = ev => { ev.stopPropagation(); doPlacePart(); };
+                    row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
+                    row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
                     const upBtn = row.querySelector('.up-part-btn');
                     if (upBtn) {
                         upBtn.onclick = async ev => {
@@ -4733,16 +4738,23 @@
                     row.className = "bg-gray-800 p-3 rounded-xl border border-gray-700 flex items-center justify-between cursor-pointer hover:border-blue-500 transition";                const dt = new Date(p.timestamp);
                 const dtStr = `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
                 row.innerHTML = `
-                    <div class="flex-1 overflow-hidden pr-2">
-                        <span class="text-base font-bold text-white block truncate">${p.name}</span>
-                        <span class="text-sm text-white font-bold">${dtStr} ・ パーツ ${p.items.length}件</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" class="open-proj-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95">開く</button>
-                        <button type="button" class="del-proj-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="削除"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                    </div>
+                        <div class="flex items-center gap-2">
+                            <span class="flex-1 min-w-0 text-base font-bold text-white truncate">${p.name}</span>
+                            <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
+                            <button type="button" class="open-proj-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95">開く</button>
+                        </div>
+                        <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
+                            <div class="flex items-center gap-1.5 flex-wrap mb-2">
+                                <span class="text-[13px] font-bold text-white">${dateStr} ・ パーツ ${p.items ? p.items.length : 0}件</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <button type="button" class="del-proj-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-[13px] font-bold text-red-500 transition" title="このプロジェクトを削除"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>削除</button>
+                            </div>
+                        </div>
                     `;
-                    row.onclick = () => loadProject(p);
+                    row.querySelector('.open-proj-btn').onclick = ev => { ev.stopPropagation(); loadProject(p); };
+                    row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
+                    row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
                     row.querySelector('.del-proj-btn').onclick = async ev => {
                         ev.stopPropagation();
                         const ok = await showCustomConfirm('プロジェクト削除', `「${p.name}」を削除しますか？`);
@@ -6004,25 +6016,19 @@
                 const row = document.createElement('div');
                 row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition";
                 row.innerHTML = `
-                    <div class="w-full">
-                        <div class="text-base font-bold text-white truncate mb-1">${v.name}</div>
-                        <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="flex-1 min-w-0 text-base font-bold text-white truncate">${v.name}</span>
+                        <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <button type="button" class="dl-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして開く"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>取込む</button>
+                    </div>
+                    <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
+                        <div class="flex items-center gap-1.5 flex-wrap ${canDelete ? 'mb-2' : ''}">
                             <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有</span>
                             ${mineBadge}
                             ${perspBadge}
                             <span class="text-[13px] font-bold text-white">基準 ${v.measureRealMm}mm ・ ${vDateStr}</span>
                         </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        ${canDelete ? `
-                        <button type="button" class="del-shared-venue-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="自分がUPしたデータをオンライン共有から削除">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>` : ''}
-                        <button type="button" class="dl-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして端末内保存へ追加">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>取込む
-                        </button>
-                    </div>
-                        </div>
+                        ${canDelete ? `<div class="flex items-center gap-1.5 flex-wrap"><button type="button" class="del-shared-venue-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-[13px] font-bold text-red-500 transition" title="自分がUPした式場をオンライン共有から削除"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>削除</button></div>` : ''}
                     </div>
                 `;
 
@@ -6047,7 +6053,10 @@
                     };
                 }
 
-                row.querySelector('.dl-venue-btn').onclick = async () => {
+                row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
+                row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
+                row.querySelector('.dl-venue-btn').onclick = async ev => {
+                    ev.stopPropagation();
                     showLoadingModal(`「${v.name}」の式場データを読み込み中...`, '読み込み中');
                     try {
                         const localHit = await findLocalRecordBySharedFileId('venues', v.fileId);
@@ -6194,23 +6203,19 @@
                 const row = document.createElement('div');
                 row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition";
                 row.innerHTML = `
-                    <div class="w-full">
-                        <div class="text-base font-bold text-white truncate mb-1">${p.name}</div>
-                        <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="flex-1 min-w-0 text-base font-bold text-white truncate">${p.name}</span>
+                        <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <button type="button" class="dl-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして配置"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>設置</button>
+                    </div>
+                    <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
+                        <div class="flex items-center gap-1.5 flex-wrap ${canDelete ? 'mb-2' : ''}">
                             <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-blue-600 text-[#ffffff]">共有</span>
                             ${mineBadge}
                             <span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc] font-mono">${p.ext || 'PNG'}</span>
                             <span class="text-[13px] font-bold text-white">${pDateStr}</span>
                         </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        ${canDelete ? `
-                        <button type="button" class="del-shared-part-btn w-9 h-9 flex items-center justify-center bg-red-50 hover:bg-red-100 border border-red-200 text-red-500 rounded-lg transition shrink-0" title="自分がUPしたパーツをオンライン共有から削除">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>` : ''}
-                        <button type="button" class="dl-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして配置">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>設置
-                        </button>
+                        ${canDelete ? `<div class="flex items-center gap-1.5 flex-wrap"><button type="button" class="del-shared-part-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-[13px] font-bold text-red-500 transition" title="自分がUPしたパーツをオンライン共有から削除"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>削除</button></div>` : ''}
                     </div>
                 `;
 
@@ -6235,7 +6240,10 @@
                     };
                 }
 
-                row.querySelector('.dl-part-btn').onclick = async () => {
+                row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
+                row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
+                row.querySelector('.dl-part-btn').onclick = async ev => {
+                    ev.stopPropagation();
                     showLoadingModal(`「${p.name}」のパーツデータを読み込み中...`, '読み込み中');
                     try {
                         const localHit = await findLocalRecordBySharedFileId('parts', p.fileId);
