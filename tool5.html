@@ -3408,10 +3408,6 @@
                 });
             });
 
-            document.querySelectorAll('input[name="export-theme"]')?.forEach(radio => {
-                radio.addEventListener('change', renderExportPreview);
-            });
-
             document.querySelectorAll('.btn-file-export').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const fmt = e.currentTarget.getAttribute('data-fmt');

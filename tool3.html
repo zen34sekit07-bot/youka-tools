@@ -714,7 +714,7 @@
                 });
 
                 const diffText = r.diff === 0 ? `±0cm (ぴったり！)` : `-${r.diff}cm (不足)`;
-                const diffColor = r.diff === 0 ? 'text-emerald-400' : 'text-cyan-400';
+                const diffColor = r.diff === 0 ? 'text-emerald-600' : 'text-blue-600';
 
                 let listHtml = '';
                 BASE_DATA.forEach(baseObj => {
@@ -722,13 +722,13 @@
                     if(count) {
                         const totalSize = count * baseObj.size;
                         listHtml += `
-                            <div class="base-item-row flex justify-between items-center py-2 px-3 rounded-xl bg-slate-950 mb-1 border border-slate-800/80">
-                                <div class="flex items-center gap-2">
+                            <div class="base-item-row flex flex-wrap justify-between items-center gap-x-3 gap-y-1 py-2 px-3 rounded-xl bg-slate-950 mb-1 border border-slate-800/80">
+                                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                                     <span class="inline-block px-1.5 py-0.5 rounded border text-[12px] font-black shadow-sm ${baseObj.blockBg}">${baseObj.short}</span>
-                                    <span class="font-bold text-slate-200 text-sm">${baseObj.label}</span>
-                                    <span class="font-semibold text-white text-xs">(${baseObj.size}cm) × ${count}</span>
+                                    <span class="font-bold text-slate-200 text-sm whitespace-nowrap">${baseObj.label}</span>
+                                    <span class="font-semibold text-white text-xs whitespace-nowrap">(${baseObj.size}cm) × ${count}</span>
                                 </div>
-                                <span class="font-mono font-bold text-slate-300 text-xs">合計 ${totalSize}cm</span>
+                                <span class="font-mono font-bold text-slate-300 text-xs whitespace-nowrap">合計 ${totalSize}cm</span>
                             </div>
                         `;
                     }
@@ -744,20 +744,20 @@
 
                 html += `
                     <div class="result-card mb-3 bg-[#f4f4f2] border border-slate-800 rounded-2xl overflow-hidden shadow-sm page-break-inside-avoid">
-                        <div class="bg-[#ffffff] px-4 py-3 border-b border-slate-800 flex justify-between items-center cursor-pointer select-none" onclick="toggleResultTier(${item.tierNum})">
-                            <div class="flex items-center gap-3">
+                        <div class="bg-[#ffffff] px-4 py-3 border-b border-slate-800 cursor-pointer select-none" onclick="toggleResultTier(${item.tierNum})">
+                            <div class="flex items-center justify-between gap-2">
                                 <span class="font-black text-sm text-white bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap">${item.tierNum}段目</span>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-[12px] font-bold text-white">差:</span>
-                                    <span class="text-sm font-black ${diffColor} whitespace-nowrap">${diffText}</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="text-right leading-tight">
-                                    <span class="text-[12px] font-bold text-white block whitespace-nowrap">ターゲット ${item.targetWidth}cm</span>
-                                    <span class="text-sm font-black text-slate-200 whitespace-nowrap">実測 ${r.sum}cm <span class="text-xs text-white font-medium">(${r.count}個)</span></span>
-                                </div>
                                 <div id="res-icon-${item.tierNum}" class="text-white text-xs font-bold transition-transform rotate-180 accordion-icon">▼</div>
+                            </div>
+                            <div class="flex items-end justify-between gap-x-3 gap-y-1 mt-2 flex-wrap">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[13px] font-bold text-white">差:</span>
+                                    <span class="text-[15px] font-black ${diffColor}">${diffText}</span>
+                                </div>
+                                <div class="text-right leading-snug">
+                                    <span class="text-[13px] font-bold text-white block">ターゲット ${item.targetWidth}cm</span>
+                                    <span class="text-[15px] font-black text-slate-200 block">実測 ${r.sum}cm <span class="text-[13px] text-white font-bold">(${r.count}個)</span></span>
+                                </div>
                             </div>
                         </div>
                         <div id="res-tier-${item.tierNum}" class="p-4 pt-3 animate-fade-in bg-[#f4f4f2]">
@@ -831,13 +831,23 @@
             }, 100);
         }
 
+        function measureLayoutContentWidth(inner) {
+            let w = 0, n = 0;
+            [...inner.children].forEach(el => {
+                if (el.classList.contains('absolute')) return;
+                w += el.offsetWidth; n++;
+            });
+            if (n > 1) w += (n - 1) * 6;
+            return w;
+        }
+
         function fitLayoutScales() {
             document.querySelectorAll('.layout-wrapper').forEach(wrap => {
                 const inner = wrap.querySelector('.layout-content');
                 if(!inner) return;
                 inner.style.transform = 'none';
                 const wWidth = wrap.clientWidth;
-                const iWidth = inner.scrollWidth;
+                const iWidth = measureLayoutContentWidth(inner);
                 if (iWidth > wWidth && wWidth > 0) {
                     const scale = (wWidth - 10) / iWidth;
                     inner.style.transform = `scale(${scale})`;
@@ -966,7 +976,7 @@
                 document.body.removeChild(textarea);
             });            async function prepareCaptureCanvas() {
                 const scope = document.querySelector('input[name="export-scope"]:checked')?.value || 'all';
-                const theme = document.querySelector('input[name="export-theme"]:checked')?.value || 'dark';
+                const theme = 'dark';
                 const isDark = theme === 'dark';
                 const origTarget = document.getElementById('capture-area');
 
@@ -1006,7 +1016,7 @@
                     if (!inner) return;
                     inner.style.transform = 'none';
                     const wWidth = wrap.clientWidth;
-                    const iWidth = inner.scrollWidth;
+                    const iWidth = measureLayoutContentWidth(inner);
                     if (iWidth > wWidth && wWidth > 0) {
                         const scale = (wWidth - 10) / iWidth;
                         inner.style.transform = `scale(${scale})`;
@@ -1413,13 +1423,6 @@
                         <div class="flex gap-3 text-slate-200 font-bold text-[13px]">
                             <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-scope" value="all" checked class="accent-indigo-500"> 全体</label>
                             <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-scope" value="summary" class="accent-indigo-500"> 総まとめのみ</label>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between pt-1 border-t border-slate-800">
-                        <span class="text-[13px] font-bold text-white">画像テーマ:</span>
-                        <div class="flex gap-3 text-slate-200 font-bold text-[13px]">
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-theme" value="dark" checked class="accent-indigo-500"> ダーク</label>
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="export-theme" value="light" class="accent-indigo-500"> ライト</label>
                         </div>
                     </div>
                 </div>
