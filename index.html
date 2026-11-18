@@ -339,20 +339,6 @@
         <span>説明</span>
       </button>
     </div>
-
-    <div class="tool-row">
-      <a href="tool7.html" class="card">
-        <div class="card-body">
-          <h2>07. 積み込みチェック＆式場カルテ</h2>
-          <p>葬儀社×式場ごとの持参物チェックと式場メモ・写真</p>
-        </div>
-        <span class="card-arrow">›</span>
-      </a>
-      <button type="button" class="btn-desc" data-tool="tool7">
-        <svg style="width: 19px; height: 19px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        <span>説明</span>
-      </button>
-    </div>
   </div>
 
   <!-- ツール説明モーダル -->
@@ -455,16 +441,6 @@
           '発注用プレビュー画像（JPG／PNG保存・LINE等への画像共有）および発注テキストの出力・案件保存',
           '役割別・季節別・色別・五十音順・キーワード検索で花材の特徴や仕入単価を確認できる「花材図鑑」機能'
         ]
-      },
-      tool7: {
-        title: '07. 積み込みチェック＆式場カルテ',
-        href: 'tool7.html',
-        purpose: '葬儀社や式場によって変わる持参物を、出発前に漏れなく積み込むためのチェックと、式場ごとの注意点や写真を残すカルテを1つにまとめたツールです。',
-        features: [
-          '持参物は「共通＋葬儀社ごとの追加＋式場ごとの追加＋組合せ専用」が自動で合体して表示され、タップでチェック（日ごとに記録）',
-          'マスターは使いながら育てる方式：現場で気づいたアイテムをその場で追加すれば、次回から自動で出ます',
-          '式場カルテに搬入口・駐車・鍵・控室などのメモと写真を保存でき、初めて行く人の予習にも使えます'
-        ]
       }
     };
 
@@ -553,8 +529,7 @@
         { file: 'tool3.html', name: '03. ぴったりベースサーチ' },
         { file: 'tool4.html', name: '04. 写真重ねてチェッカー' },
         { file: 'tool5.html', name: '05. 供花ポイント＆花材計算' },
-        { file: 'tool6.html', name: '06. 花材提案ツール' },
-        { file: 'tool7.html', name: '07. 積み込みチェック＆式場カルテ' }
+        { file: 'tool6.html', name: '06. 花材提案ツール' }
       ];
       const toolEl = document.getElementById('latest-update-tool');
       const dateEl = document.getElementById('latest-update-date');
