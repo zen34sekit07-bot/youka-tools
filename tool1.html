@@ -377,23 +377,25 @@
             </div>
         </div>
 
-        <div id="perspective-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-sm p-3.5 rounded-xl shadow-2xl border border-cyan-500 z-40 backdrop-blur-md flex flex-col gap-2.5">
-            <div class="flex justify-between items-center text-white">
-                <span class="font-bold text-cyan-300">【奥行き基準】左右の「床と壁の境目」に2本の線を合わせます</span>
-                <button id="perspective-cancel-btn" class="text-white hover:text-white text-base px-2 py-0.5">✕</button>
+        <div id="perspective-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-sm p-3 rounded-xl shadow-2xl border border-cyan-500 z-40 backdrop-blur-md flex flex-col gap-2">
+            <div class="flex justify-between items-center text-white gap-2">
+                <span class="font-bold text-cyan-300">【奥行き基準】床と壁の境目に2本の線を合わせます</span>
+                <div class="flex items-center shrink-0">
+                    <button id="perspective-min-btn" class="text-white hover:text-white text-base font-bold px-2 py-0.5">▽隠す</button>
+                    <button id="perspective-cancel-btn" class="text-white hover:text-white text-base px-2 py-0.5">✕</button>
+                </div>
             </div>
+            <p id="perspective-auto-status" class="hidden text-sm text-white leading-snug"></p>
             <div class="flex items-center gap-2">
                 <button id="perspective-auto-btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2 rounded-lg text-base shadow transition active:scale-95">
-                    🤖 写真から自動で仮置き
+                    🤖 自動で仮置き
                 </button>
-            </div>
-            <p id="perspective-auto-status" class="text-sm text-white leading-relaxed"></p>
-            <div class="flex items-center gap-2">
-                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2.5 rounded-lg text-base shadow transition active:scale-95">
-                    この奥行きラインで設定完了
+                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-lg text-base shadow transition active:scale-95">
+                    ✓ 設定完了
                 </button>
             </div>
         </div>
+        <button id="perspective-banner-mini" class="hidden absolute top-3 right-3 z-50 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2 px-4 rounded-full text-base shadow-2xl transition active:scale-95">📐 パース設定中…タップで開く</button>
 
         <!-- モード選択全画面オーバーレイ（下部メニューを完全に覆い、上部にツール一覧戻るを配置） -->
         <div id="start-screen-overlay" class="fixed inset-0 bg-gray-950 z-[150] flex flex-col items-center justify-center p-5 text-center overflow-y-auto">
@@ -1306,6 +1308,13 @@
             <h3 class="text-lg font-bold text-white mb-4 border-l-[5px] border-blue-600 pl-2.5">更新履歴</h3>
             <div class="space-y-4 max-h-[50vh] overflow-y-auto text-[13px] text-white pr-2 hide-scrollbar">
                 <div>
+                    <p class="font-bold text-blue-400">v3.5.1</p>
+                    <p class="text-sm mt-1 text-white leading-relaxed">
+                        ・パース設定の窓を小さくし、「▽隠す」で右上の小さいボタンに畳めるようにしました（手動で線を合わせる時に写真が見やすくなります）<br>
+                        ・写真からの自動仮置きの感度を上げました（明るくて境目が薄い写真でも拾いやすく、真横・真縦の線を境目と間違えないよう改善）
+                    </p>
+                </div>
+                <div>
                     <p class="font-bold text-blue-400">v3.5.0</p>
                     <p class="text-sm mt-1 text-white leading-relaxed">
                         ・パース設定に「写真から自動で仮置き」を追加：写真を読み込むと床と壁の境目らしい2本の線を自動で検出して仮置きします（ずれたらドラッグで修正。見つからない場合は今まで通り手動で設定できます）
@@ -1333,7 +1342,7 @@
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-white mb-1 border-l-[5px] border-blue-600 pl-2.5">施工シミュレーター</h3>
-            <p class="text-sm text-blue-400 font-mono mb-4">v3.5.0</p>
+            <p class="text-sm text-blue-400 font-mono mb-4">v3.5.1</p>
             <div class="text-[13px] text-white space-y-2 mb-6 border-t border-gray-700/50 pt-4 text-left bg-gray-950/60 p-4 rounded-xl">
                 <p><span class="text-white">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
                 <p><span class="text-white">AIアシスタント:</span> <span class="font-bold text-blue-400">Gemini (Google)</span></p>
@@ -1871,6 +1880,7 @@
             if (mBanner) mBanner.classList.add('hidden');
             const pBanner = document.getElementById('perspective-banner');
             if (pBanner) pBanner.classList.add('hidden');
+            document.getElementById('perspective-banner-mini')?.classList.add('hidden');
             if (typeof updateZoomBadge === 'function') updateZoomBadge();
             if (typeof updateFloatingDepthSlider === 'function') updateFloatingDepthSlider();
             if (typeof updateLayersUI === 'function') updateLayersUI();
@@ -2808,6 +2818,16 @@
                 for (let i = 0; i < W * H; i++) {
                     gray[i] = data[i * 4] * 0.299 + data[i * 4 + 1] * 0.587 + data[i * 4 + 2] * 0.114;
                 }
+                // コントラストを伸ばして、薄い境目も拾えるようにする
+                let gMin = 255, gMax = 0;
+                for (let i = 0; i < W * H; i++) {
+                    if (gray[i] < gMin) gMin = gray[i];
+                    if (gray[i] > gMax) gMax = gray[i];
+                }
+                if (gMax - gMin > 10) {
+                    const gs = 255 / (gMax - gMin);
+                    for (let i = 0; i < W * H; i++) gray[i] = (gray[i] - gMin) * gs;
+                }
                 const blur = new Float32Array(W * H);
                 for (let y = 0; y < H; y++) {
                     for (let x = 0; x < W; x++) {
@@ -2835,7 +2855,7 @@
                     }
                 }
                 if (maxMag <= 0) return null;
-                const thr = maxMag * 0.22;
+                const thr = maxMag * 0.13;
                 const diag = Math.ceil(Math.hypot(W, H));
                 const rhoBins = diag * 2 + 1;
                 const acc = new Float32Array(180 * rhoBins);
@@ -2855,12 +2875,12 @@
                 }
                 const peaks = [];
                 const accCopy = Float32Array.from(acc);
-                for (let k = 0; k < 40; k++) {
+                for (let k = 0; k < 60; k++) {
                     let best = 0, bi = -1;
                     for (let i = 0; i < accCopy.length; i++) {
                         if (accCopy[i] > best) { best = accCopy[i]; bi = i; }
                     }
-                    if (bi < 0 || best < H * 0.30) break;
+                    if (bi < 0 || best < H * 0.22) break;
                     const t = Math.floor(bi / rhoBins), rho = (bi % rhoBins) - diag;
                     peaks.push({ theta: t, rho, votes: best });
                     for (let dt = -6; dt <= 6; dt++) {
@@ -2873,33 +2893,49 @@
                 }
                 const xAtY = (p, yy) => {
                     const rad = p.theta * Math.PI / 180;
-                    const s = Math.sin(rad);
-                    if (Math.abs(s) < 0.05) return null;
-                    return (p.rho - yy * s) / Math.cos(rad);
+                    const s = Math.sin(rad), c = Math.cos(rad);
+                    // 斜めの線だけが対象。真横・真縦に近い線は割り算が暴れるので除外
+                    if (Math.abs(s) < 0.34 || Math.abs(c) < 0.34) return null;
+                    return (p.rho - yy * s) / c;
                 };
                 const yFront = H * 0.88, yBack = H * 0.40;
-                let bestLeft = null, bestRight = null;
+                const leftCands = [], rightCands = [];
                 for (const p of peaks) {
+                    // 斜めの線だけを対象にする（真横・真縦の線は境目ではない）
+                    const prad = p.theta * Math.PI / 180;
+                    if (Math.abs(Math.sin(prad)) < 0.34 || Math.abs(Math.cos(prad)) < 0.34) continue;
                     const xf = xAtY(p, yFront), xb = xAtY(p, yBack);
                     if (xf === null || xb === null) continue;
-                    if (xf < W * 0.52 && xb > xf + W * 0.03 && xb < W * 0.70) {
-                        if (!bestLeft || p.votes > bestLeft.votes) bestLeft = { theta: p.theta, rho: p.rho, votes: p.votes, xf, xb };
+                    if (xf < W * 0.55 && xb > xf + W * 0.05 && xb < W * 0.72) {
+                        leftCands.push({ theta: p.theta, rho: p.rho, votes: p.votes, xf, xb });
                     }
-                    if (xf > W * 0.48 && xb < xf - W * 0.03 && xb > W * 0.30) {
-                        if (!bestRight || p.votes > bestRight.votes) bestRight = { theta: p.theta, rho: p.rho, votes: p.votes, xf, xb };
+                    if (xf > W * 0.45 && xb < xf - W * 0.05 && xb > W * 0.28) {
+                        rightCands.push({ theta: p.theta, rho: p.rho, votes: p.votes, xf, xb });
                     }
                 }
-                if (!bestLeft || !bestRight) return null;
+                if (!leftCands.length || !rightCands.length) return null;
+                leftCands.sort((a, b) => b.votes - a.votes);
+                rightCands.sort((a, b) => b.votes - a.votes);
                 const lineEq = p => {
                     const rad = p.theta * Math.PI / 180;
                     return { a: Math.cos(rad), b: Math.sin(rad), c: p.rho };
                 };
-                const L1 = lineEq(bestLeft), L2 = lineEq(bestRight);
-                const det = L1.a * L2.b - L2.a * L1.b;
-                if (Math.abs(det) < 1e-6) return null;
-                const vpx = (L1.c * L2.b - L2.c * L1.b) / det;
-                const vpy = (L1.a * L2.c - L2.a * L1.c) / det;
-                if (vpx < W * 0.15 || vpx > W * 0.85 || vpy < -H * 0.2 || vpy > H * 0.75) return null;
+                // 左右の候補ペアを総当たりし、消失点が中央付近に来る組み合わせを優先する
+                let bestPair = null;
+                for (const L of leftCands.slice(0, 5)) {
+                    for (const R of rightCands.slice(0, 5)) {
+                        const L1 = lineEq(L), L2 = lineEq(R);
+                        const det = L1.a * L2.b - L2.a * L1.b;
+                        if (Math.abs(det) < 1e-6) continue;
+                        const vpx = (L1.c * L2.b - L2.c * L1.b) / det;
+                        const vpy = (L1.a * L2.c - L2.a * L1.c) / det;
+                        if (vpx < W * 0.18 || vpx > W * 0.82 || vpy < -H * 0.15 || vpy > H * 0.72) continue;
+                        const score = (L.votes + R.votes) - Math.abs(vpx - W * 0.5) * 0.6 - Math.max(0, vpy - H * 0.55) * 0.4;
+                        if (!bestPair || score > bestPair.score) bestPair = { L, R, score };
+                    }
+                }
+                if (!bestPair) return null;
+                const bestLeft = bestPair.L, bestRight = bestPair.R;
                 const clampX = v => Math.max(W * 0.02, Math.min(W * 0.98, v));
                 const toRaw = (x, y) => ({ x: Math.round(x / scale), y: Math.round(y / scale) });
                 return [
@@ -2911,25 +2947,33 @@
             }
         }
 
+        function setPerspectiveAutoStatus(text) {
+            const el = document.getElementById('perspective-auto-status');
+            if (!el) return;
+            el.textContent = text || '';
+            el.classList.toggle('hidden', !text);
+        }
+
         function startPerspectiveSetting() {
             state.bgMeasuring = false;
             document.getElementById('measure-banner')?.classList.add('hidden');
             state.perspectiveSetting = true;
-            const autoStatus = document.getElementById('perspective-auto-status');
             if (!state.bg.perspectiveLinesRaw) {
                 const detected = detectPerspectiveLinesFromPhoto();
                 if (detected) {
                     state.bg.perspectiveLinesRaw = detected;
-                    if (autoStatus) autoStatus.textContent = '写真から自動で仮置きしました。ずれている所は○をドラッグして直してください。';
+                    setPerspectiveAutoStatus('写真から自動で仮置きしました。ずれている所は○をドラッグして直してください。邪魔な時は「▽隠す」で小さくできます。');
                 } else {
                     state.bg.perspectiveLinesRaw = getEffectivePerspectiveLinesRaw();
-                    if (autoStatus) autoStatus.textContent = '自動では境目を見つけられませんでした。○をドラッグして手動で合わせてください。';
+                    setPerspectiveAutoStatus('自動では境目を見つけられませんでした。○をドラッグして手動で合わせてください。邪魔な時は「▽隠す」で小さくできます。');
                 }
-            } else if (autoStatus) {
-                autoStatus.textContent = '前回のラインが入っています。直したい所は○をドラッグ、やり直す場合は「自動で仮置き」を押してください。';
+            } else {
+                setPerspectiveAutoStatus('前回のラインが入っています。直したい所は○をドラッグ、やり直す場合は「自動で仮置き」を押してください。');
             }
             const pBanner = document.getElementById('perspective-banner');
             if (pBanner) pBanner.classList.remove('hidden');
+            const pMini = document.getElementById('perspective-banner-mini');
+            if (pMini) pMini.classList.add('hidden');
             requestRender();
         }
 
@@ -2939,6 +2983,7 @@
                 state.perspectiveSetting = false;
                 const pBanner = document.getElementById('perspective-banner');
                 if (pBanner) pBanner.classList.add('hidden');
+                document.getElementById('perspective-banner-mini')?.classList.add('hidden');
                 const pStatus = document.getElementById('bg-perspective-status');
                 if (pStatus) pStatus.textContent = '設定完了（有効）';
                 updateFloatingDepthSlider();
@@ -2955,6 +3000,7 @@
                 state.perspectiveSetting = false;
                 const pBanner = document.getElementById('perspective-banner');
                 if (pBanner) pBanner.classList.add('hidden');
+                document.getElementById('perspective-banner-mini')?.classList.add('hidden');
                 requestRender();
             });
         }
@@ -2963,14 +3009,32 @@
         if (pAutoBtn) {
             pAutoBtn.addEventListener('click', () => {
                 const detected = detectPerspectiveLinesFromPhoto();
-                const autoStatus = document.getElementById('perspective-auto-status');
                 if (detected) {
                     state.bg.perspectiveLinesRaw = detected;
-                    if (autoStatus) autoStatus.textContent = '写真から自動で仮置きしました。ずれている所は○をドラッグして直してください。';
-                } else if (autoStatus) {
-                    autoStatus.textContent = '自動では境目を見つけられませんでした。○をドラッグして手動で合わせてください。';
+                    setPerspectiveAutoStatus('写真から自動で仮置きしました。ずれている所は○をドラッグして直してください。邪魔な時は「▽隠す」で小さくできます。');
+                } else {
+                    setPerspectiveAutoStatus('自動では境目を見つけられませんでした。○をドラッグして手動で合わせてください。邪魔な時は「▽隠す」で小さくできます。');
                 }
                 requestRender();
+            });
+        }
+
+        const pMinBtn = document.getElementById('perspective-min-btn');
+        if (pMinBtn) {
+            pMinBtn.addEventListener('click', () => {
+                const pBanner = document.getElementById('perspective-banner');
+                if (pBanner) pBanner.classList.add('hidden');
+                const pMini = document.getElementById('perspective-banner-mini');
+                if (pMini) pMini.classList.remove('hidden');
+            });
+        }
+
+        const pMiniBtn = document.getElementById('perspective-banner-mini');
+        if (pMiniBtn) {
+            pMiniBtn.addEventListener('click', () => {
+                const pBanner = document.getElementById('perspective-banner');
+                if (pBanner) pBanner.classList.remove('hidden');
+                pMiniBtn.classList.add('hidden');
             });
         }
 
@@ -2996,6 +3060,7 @@
         function startBgMeasuring() {
             state.perspectiveSetting = false;
             document.getElementById('perspective-banner')?.classList.add('hidden');
+            document.getElementById('perspective-banner-mini')?.classList.add('hidden');
             state.bgMeasuring = true;
             if (!state.bg.measureHandlesRaw) {
                 const bw = state.bg.obj ? state.bg.obj.width : 1200;
