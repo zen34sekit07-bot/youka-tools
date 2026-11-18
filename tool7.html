@@ -1,0 +1,864 @@
+<!--
+==================================================
+積み込みチェック＆式場カルテ v1.0.0（試作）
+---
+製作者: 関貴文
+技術スタック: HTML5, CSS3 (Tailwind CSS), JavaScript (Vanilla JS, localStorage, IndexedDB)
+概要: 葬儀社×式場で変わる持参物を「共通＋葬儀社差分＋式場差分＋組合せ差分」で管理する
+      積み込みチェックと、式場ごとのメモ・写真を残す式場カルテを1つにまとめたツール。
+      マスターは使いながら育てる前提（最初は共通リストの叩き台のみ）。
+==================================================
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>積み込みチェック＆式場カルテ</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="積み込み＆カルテ">
+    <meta name="theme-color" content="#f4f4f2">
+    <meta name="color-scheme" content="dark">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: {
+            white: '#1c1c1c', slate: { 50: '#171717', 100: '#262626', 200: '#333333', 300: '#454545', 400: '#6f6f6f', 500: '#8f8f8f', 600: '#bcbcbc', 700: '#d9d9d7', 800: '#ffffff', 850: '#f7f7f5', 900: '#f4f4f2', 950: '#fbfbfa' },
+            sky: { 100: '#1e3a8a', 200: '#1e40af', 300: '#1d4ed8', 400: '#2563eb', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af', 800: '#93c5fd', 900: '#dbeafe', 950: '#eff6ff' }
+        } } } };
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        :root { --app-height: 100dvh; color-scheme: light; }
+        body {
+            margin: 0;
+            background-color: #eeeeec; color: #262626; height: var(--app-height); width: 100vw;
+            overflow: hidden; -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+            font-size: 15px;
+        }
+        select, input, textarea { color-scheme: light; }
+        select option { background-color: #ffffff; color: #262626; }
+        button { touch-action: manipulation; }
+        .card { background-color: #ffffff; border: 2px solid #d9d9d7; border-radius: 14px; }
+        .inp {
+            background-color: #f4f4f2; border: 2px solid #c6c6c4; color: #262626;
+            border-radius: 10px; padding: 10px 12px; font-size: 16px; width: 100%; min-width: 0;
+        }
+        .inp:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.3); }
+        .btn-primary {
+            background-color: #2563eb; color: #ffffff; font-weight: bold; font-size: 16px;
+            padding: 12px 14px; border-radius: 12px; border: 2px solid #2563eb;
+        }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-sub {
+            background-color: #ffffff; color: #262626; font-weight: bold; font-size: 15px;
+            padding: 10px 14px; border-radius: 12px; border: 2px solid #c6c6c4; white-space: nowrap;
+        }
+        .btn-sub:active { transform: scale(0.98); }
+        .btn-danger {
+            background-color: #ffffff; color: #b91c1c; font-weight: bold; font-size: 15px;
+            padding: 10px 14px; border-radius: 12px; border: 2px solid #e5a3a3; white-space: nowrap;
+        }
+        .lbl { font-size: 14px; font-weight: bold; color: #262626; display: block; margin-bottom: 4px; }
+        .cat-title {
+            font-size: 16px; font-weight: bold; color: #262626;
+            border-left: 5px solid #2563eb; padding-left: 8px; margin-bottom: 6px;
+        }
+        .scope-badge {
+            font-size: 12px; font-weight: bold; color: #1d4ed8; background-color: #dbeafe;
+            border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+        }
+        .check-row {
+            display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+            background-color: #ffffff; border: 2px solid #d9d9d7; border-radius: 12px; padding: 12px;
+        }
+        .check-row:active { transform: scale(0.99); }
+        .check-box {
+            width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px;
+            border: 3px solid #8f8f8f; display: flex; align-items: center; justify-content: center;
+            font-size: 19px; color: #ffffff; font-weight: bold;
+        }
+        .check-row.done .check-box { background-color: #2563eb; border-color: #2563eb; }
+        .check-row.done .item-name { color: #8f8f8f; text-decoration: line-through; }
+        .item-name { font-size: 17px; font-weight: 600; color: #262626; line-height: 1.35; word-break: break-all; }
+        .tab-btn { flex: 1; padding: 10px 4px 12px; font-size: 15px; font-weight: bold; color: #6f6f6f; background: none; border: none; }
+        .tab-btn.active { color: #2563eb; box-shadow: inset 0 3px 0 #2563eb; }
+        .modal-wrap {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 80;
+            display: flex; align-items: flex-end; justify-content: center;
+        }
+        @media (min-width: 640px) { .modal-wrap { align-items: center; } }
+        .modal-box {
+            background-color: #ffffff; border-radius: 18px 18px 0 0; width: 100%; max-width: 480px;
+            max-height: 92dvh; overflow-y: auto; padding: 18px;
+        }
+        @media (min-width: 640px) { .modal-box { border-radius: 18px; } }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { scrollbar-width: none; }
+        /* CDNが読めない環境でも表示切替が効くようにする保険 */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="flex flex-col" style="height: var(--app-height);">
+        <!-- 最上段ナビバー -->
+        <div class="flex items-center gap-3 bg-[#f4f4f2] px-3 pt-[max(env(safe-area-inset-top,8px),8px)] pb-2 shrink-0 z-40 border-b-2 border-[#d9d9d7]">
+            <a href="index.html" class="text-sm font-bold shrink-0 active:scale-95 transition" style="color:#2563eb;">← ツール一覧へ</a>
+            <h1 class="text-lg font-bold truncate" style="color:#262626;">積み込みチェック＆式場カルテ</h1>
+        </div>
+
+        <main id="main-scroll" class="flex-1 overflow-y-auto hide-scrollbar">
+            <!-- ===== タブ：チェック ===== -->
+            <section id="tab-check">
+                <div class="p-3 flex flex-col gap-3 max-w-xl mx-auto w-full pb-6">
+                    <div class="card p-3 flex flex-col gap-3">
+                        <div>
+                            <label class="lbl" for="sel-company">葬儀社</label>
+                            <div class="flex gap-2">
+                                <select id="sel-company" class="inp flex-1"></select>
+                                <button id="btn-add-company" class="btn-sub" type="button">＋追加</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="lbl" for="sel-venue">式場</label>
+                            <div class="flex gap-2">
+                                <select id="sel-venue" class="inp flex-1"></select>
+                                <button id="btn-add-venue" class="btn-sub" type="button">＋追加</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="lbl" for="inp-date">日付（チェックは日ごとに記録されます）</label>
+                            <input type="date" id="inp-date" class="inp">
+                        </div>
+                        <div>
+                            <div class="flex items-end justify-between">
+                                <span id="check-progress-text" class="text-base font-bold" style="color:#262626;">積み込み 0/0</span>
+                                <span id="check-progress-pct" class="text-sm font-bold" style="color:#2563eb;"></span>
+                            </div>
+                            <div class="w-full rounded-full mt-1.5" style="background:#e4e4e2; height:12px;">
+                                <div id="check-progress-bar" class="rounded-full" style="background:#2563eb; height:12px; width:0%; transition: width .25s;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="check-guide" class="card p-4 hidden">
+                        <p class="text-base leading-relaxed" style="color:#262626;">まず「＋追加」で葬儀社と式場を登録してください。リストは使いながら育てる前提なので、最初は共通アイテムだけでも始められます。</p>
+                    </div>
+
+                    <div id="check-list" class="flex flex-col gap-4"></div>
+
+                    <div class="flex gap-2">
+                        <button id="btn-add-item" class="btn-primary flex-1" type="button">＋ アイテム追加</button>
+                        <button id="btn-edit-mode" class="btn-sub" type="button">編集</button>
+                    </div>
+                    <button id="btn-reset-checks" class="btn-sub w-full" type="button">この日のチェックを全部外す</button>
+
+                    <div id="edit-tools" class="card p-3 hidden flex-col gap-3">
+                        <p class="text-sm font-bold" style="color:#262626;">編集モード：各アイテムの右ボタンで「この条件では出さない（除外）」か「削除」ができます。組合せ専用アイテムは削除、それ以外は除外になります。</p>
+                        <div>
+                            <label class="lbl" for="sel-copy-source">組合せ専用アイテムのコピー元</label>
+                            <div class="flex gap-2">
+                                <select id="sel-copy-source" class="inp flex-1"></select>
+                                <button id="btn-copy-combo" class="btn-sub" type="button">コピー</button>
+                            </div>
+                        </div>
+                        <div id="hidden-restore-box"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== タブ：式場カルテ ===== -->
+            <section id="tab-karte" class="hidden">
+                <div class="p-3 flex flex-col gap-3 max-w-xl mx-auto w-full pb-6">
+                    <div class="card p-3">
+                        <label class="lbl" for="sel-karte-venue">式場</label>
+                        <select id="sel-karte-venue" class="inp"></select>
+                    </div>
+                    <div id="karte-guide" class="card p-4 hidden">
+                        <p class="text-base leading-relaxed" style="color:#262626;">式場を登録すると、その式場のカルテ（メモと写真）がここに作れます。</p>
+                    </div>
+                    <div id="karte-body" class="flex flex-col gap-3">
+                        <div class="card p-3 flex flex-col gap-3">
+                            <div>
+                                <label class="lbl" for="memo-access">搬入口・動線</label>
+                                <textarea id="memo-access" class="inp" rows="2" placeholder="例：裏口から搬入。台車は施設のものが使える"></textarea>
+                            </div>
+                            <div>
+                                <label class="lbl" for="memo-parking">駐車</label>
+                                <textarea id="memo-parking" class="inp" rows="2" placeholder="例：第2駐車場の奥。搬入後は一般駐車場へ移動"></textarea>
+                            </div>
+                            <div>
+                                <label class="lbl" for="memo-key">鍵・受付・連絡</label>
+                                <textarea id="memo-key" class="inp" rows="2" placeholder="例：到着したら事務所に声かけ。鍵は最後に返却"></textarea>
+                            </div>
+                            <div>
+                                <label class="lbl" for="memo-room">控室・設備</label>
+                                <textarea id="memo-room" class="inp" rows="2" placeholder="例：脚立なし（持参必須）。水道は裏口横"></textarea>
+                            </div>
+                            <div>
+                                <label class="lbl" for="memo-note">自由メモ</label>
+                                <textarea id="memo-note" class="inp" rows="3" placeholder="気づいたことを何でも"></textarea>
+                            </div>
+                            <p id="memo-saved" class="text-sm font-bold" style="color:#2563eb; min-height:20px;"></p>
+                        </div>
+                        <div class="card p-3">
+                            <p class="cat-title">写真</p>
+                            <div id="photo-grid" class="grid grid-cols-3 gap-2 mb-3"></div>
+                            <button id="btn-add-photo" class="btn-primary w-full" type="button">📷 写真を追加</button>
+                            <p class="text-sm mt-2" style="color:#6f6f6f;">搬入口や式場内の様子を撮っておくと、次に行く人の予習になります。写真はこの端末の中にだけ保存されます。</p>
+                        </div>
+                        <div class="card p-3">
+                            <p class="cat-title">この式場の専用アイテム</p>
+                            <p id="karte-venue-items" class="text-base leading-relaxed" style="color:#262626;"></p>
+                            <button id="btn-goto-check" class="btn-sub w-full mt-2" type="button">この式場でチェックを開く</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== タブ：設定 ===== -->
+            <section id="tab-settings" class="hidden">
+                <div class="p-3 flex flex-col gap-3 max-w-xl mx-auto w-full pb-6">
+                    <div class="card p-3">
+                        <p class="cat-title">葬儀社</p>
+                        <div id="settings-companies" class="flex flex-col gap-2"></div>
+                        <button id="btn-add-company2" class="btn-sub w-full mt-3" type="button">＋ 葬儀社を追加</button>
+                    </div>
+                    <div class="card p-3">
+                        <p class="cat-title">式場</p>
+                        <div id="settings-venues" class="flex flex-col gap-2"></div>
+                        <button id="btn-add-venue2" class="btn-sub w-full mt-3" type="button">＋ 式場を追加</button>
+                    </div>
+                    <div class="card p-3">
+                        <p class="cat-title">共通アイテム（全ての組合せに出ます）</p>
+                        <div id="settings-common-items" class="flex flex-col gap-2"></div>
+                        <button id="btn-add-common-item" class="btn-sub w-full mt-3" type="button">＋ 共通アイテムを追加</button>
+                    </div>
+                    <div class="card p-3">
+                        <p class="cat-title">データ</p>
+                        <div class="flex flex-col gap-2">
+                            <button id="btn-export" class="btn-sub w-full" type="button">⬇ バックアップを書き出す（JSON）</button>
+                            <button id="btn-import" class="btn-sub w-full" type="button">⬆ バックアップを読み込む</button>
+                            <button id="btn-wipe" class="btn-danger w-full" type="button">全データを削除</button>
+                        </div>
+                        <p class="text-sm mt-2" style="color:#6f6f6f;">データはこの端末の中に保存されます。バックアップには写真は含まれません。</p>
+                    </div>
+                    <div class="card p-3">
+                        <p class="cat-title">このツールについて</p>
+                        <p class="text-base leading-relaxed" style="color:#262626;">積み込みチェック＆式場カルテ v1.0.0（試作）<br>持参物は「共通＋葬儀社ごとの追加＋式場ごとの追加＋組合せ専用」で自動的に合体します。最初から全部を登録しなくても、現場で気づいた時に1行ずつ足していけば育ちます。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 下部タブ -->
+        <nav class="flex shrink-0 z-40" style="background:#ffffff; border-top:2px solid #d9d9d7; padding-bottom: env(safe-area-inset-bottom, 0px);">
+            <button class="tab-btn active" data-tab="check" type="button">☑ チェック</button>
+            <button class="tab-btn" data-tab="karte" type="button">🏢 式場カルテ</button>
+            <button class="tab-btn" data-tab="settings" type="button">⚙ 設定</button>
+        </nav>
+    </div>
+
+    <!-- 名前入力モーダル（葬儀社・式場の追加/変更） -->
+    <div id="modal-name" class="modal-wrap hidden">
+        <div class="modal-box">
+            <h3 id="name-modal-title" class="text-lg font-bold mb-3" style="color:#262626;">追加</h3>
+            <input id="name-modal-input" class="inp" type="text" placeholder="名前を入力">
+            <div class="flex gap-2 mt-4">
+                <button id="name-modal-cancel" class="btn-sub flex-1" type="button">キャンセル</button>
+                <button id="name-modal-ok" class="btn-primary flex-1" type="button">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- アイテム追加モーダル -->
+    <div id="modal-item" class="modal-wrap hidden">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold mb-3" style="color:#262626;">アイテム追加</h3>
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="lbl" for="item-name-input">アイテム名</label>
+                    <input id="item-name-input" class="inp" type="text" placeholder="例：脚立（大）">
+                </div>
+                <div>
+                    <label class="lbl" for="item-cat-select">カテゴリ</label>
+                    <select id="item-cat-select" class="inp"></select>
+                </div>
+                <div>
+                    <label class="lbl" for="item-scope-select">出す条件</label>
+                    <select id="item-scope-select" class="inp"></select>
+                    <p class="text-sm mt-1" style="color:#6f6f6f;">狭い条件で登録したものほど、その場面だけで出ます。</p>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="item-modal-cancel" class="btn-sub flex-1" type="button">キャンセル</button>
+                <button id="item-modal-ok" class="btn-primary flex-1" type="button">追加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 確認モーダル -->
+    <div id="modal-confirm" class="modal-wrap hidden">
+        <div class="modal-box">
+            <h3 id="confirm-title" class="text-lg font-bold mb-2" style="color:#262626;">確認</h3>
+            <p id="confirm-text" class="text-base leading-relaxed" style="color:#262626;"></p>
+            <div class="flex gap-2 mt-4">
+                <button id="confirm-cancel" class="btn-sub flex-1" type="button">キャンセル</button>
+                <button id="confirm-ok" class="btn-primary flex-1" type="button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 写真拡大モーダル -->
+    <div id="modal-photo" class="modal-wrap hidden">
+        <div class="modal-box">
+            <img id="photo-view-img" class="w-full rounded-xl" alt="式場写真">
+            <div class="flex gap-2 mt-4">
+                <button id="photo-close" class="btn-sub flex-1" type="button">閉じる</button>
+                <button id="photo-delete" class="btn-danger flex-1" type="button">この写真を削除</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="photo-input" accept="image/*" class="hidden">
+    <input type="file" id="import-input" accept=".json,application/json" class="hidden">
+
+<script>
+'use strict';
+/* ================= データ層 ================= */
+const LS_KEY = 'tool7_loadcheck_v1';
+const CATS = ['祭壇まわり', '供花', '什器・工具', '消耗品', '立会・撤去', 'その他'];
+const STARTER_ITEMS = [
+    ['祭壇パーツ（段・天板）', '祭壇まわり'], ['白布・幕', '祭壇まわり'], ['花器・剣山', '祭壇まわり'],
+    ['オアシス（給水フォーム）', '祭壇まわり'], ['生花（祭壇分）', '祭壇まわり'],
+    ['供花スタンド', '供花'], ['名札・札立て', '供花'], ['生花（供花分）', '供花'],
+    ['脚立', '什器・工具'], ['台車', '什器・工具'], ['養生シート・毛布', '什器・工具'],
+    ['工具箱（ハサミ・針金・テープ・結束バンド）', '什器・工具'], ['延長コード・ドラム', '什器・工具'],
+    ['ゴミ袋（大）', '消耗品'], ['軍手', '消耗品'], ['タオル・ウエス', '消耗品'],
+    ['花切りハサミ', '立会・撤去'], ['バケツ', '立会・撤去'], ['ほうき・ちりとり', '立会・撤去']
+];
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function seedDB() {
+    return {
+        companies: [], venues: [],
+        items: STARTER_ITEMS.map(([name, cat]) => ({ id: uid() + Math.random().toString(36).slice(2, 6), name, cat, scope: 'common' })),
+        hidden: {}, memos: {}, checks: {},
+        ui: { cid: '', vid: '', karteVid: '', date: '' }
+    };
+}
+function loadDB() {
+    try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return null;
+        const d = JSON.parse(raw);
+        if (!d || !Array.isArray(d.items) || !Array.isArray(d.companies) || !Array.isArray(d.venues)) return null;
+        d.hidden = d.hidden || {}; d.memos = d.memos || {}; d.checks = d.checks || {};
+        d.ui = Object.assign({ cid: '', vid: '', karteVid: '', date: '' }, d.ui || {});
+        return d;
+    } catch (e) { return null; }
+}
+let DB = loadDB() || seedDB();
+function saveDB() { try { localStorage.setItem(LS_KEY, JSON.stringify(DB)); } catch (e) { /* 容量超過時は黙って継続 */ } }
+saveDB();
+
+const companyName = id => (DB.companies.find(c => c.id === id) || {}).name || '';
+const venueName = id => (DB.venues.find(v => v.id === id) || {}).name || '';
+const scopeLabel = scope => {
+    if (scope === 'common') return '';
+    if (scope.startsWith('co:')) return '葬儀社追加';
+    if (scope.startsWith('ve:')) return '式場追加';
+    if (scope.startsWith('cb:')) return 'この組合せ専用';
+    return '';
+};
+function hiddenIdsFor(cid, vid) {
+    const set = new Set();
+    const keys = ['co:' + cid, 've:' + vid, 'cb:' + cid + ':' + vid];
+    for (const k of keys) (DB.hidden[k] || []).forEach(id => set.add(id));
+    return set;
+}
+function mergedItems(cid, vid) {
+    if (!cid || !vid) return [];
+    const scopes = ['common', 'co:' + cid, 've:' + vid, 'cb:' + cid + ':' + vid];
+    const hidden = hiddenIdsFor(cid, vid);
+    return DB.items.filter(it => scopes.includes(it.scope) && !hidden.has(it.id));
+}
+const checkKey = () => (DB.ui.date || '') + '|' + DB.ui.cid + '|' + DB.ui.vid;
+
+/* ================= 汎用モーダル ================= */
+let confirmResolve = null;
+function showConfirm(title, text) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-text').textContent = text;
+    document.getElementById('modal-confirm').classList.remove('hidden');
+    return new Promise(res => { confirmResolve = res; });
+}
+document.getElementById('confirm-ok').addEventListener('click', () => {
+    document.getElementById('modal-confirm').classList.add('hidden');
+    if (confirmResolve) confirmResolve(true); confirmResolve = null;
+});
+document.getElementById('confirm-cancel').addEventListener('click', () => {
+    document.getElementById('modal-confirm').classList.add('hidden');
+    if (confirmResolve) confirmResolve(false); confirmResolve = null;
+});
+
+let nameModalCtx = null;
+function openNameModal(title, initial, ctx) {
+    nameModalCtx = ctx;
+    document.getElementById('name-modal-title').textContent = title;
+    const inp = document.getElementById('name-modal-input');
+    inp.value = initial || '';
+    document.getElementById('modal-name').classList.remove('hidden');
+    setTimeout(() => inp.focus(), 50);
+}
+document.getElementById('name-modal-cancel').addEventListener('click', () => document.getElementById('modal-name').classList.add('hidden'));
+document.getElementById('name-modal-ok').addEventListener('click', () => {
+    const name = document.getElementById('name-modal-input').value.trim();
+    if (!name || !nameModalCtx) { document.getElementById('modal-name').classList.add('hidden'); return; }
+    const ctx = nameModalCtx;
+    if (ctx.kind === 'company-add') { const c = { id: uid(), name }; DB.companies.push(c); DB.ui.cid = c.id; }
+    if (ctx.kind === 'venue-add') { const v = { id: uid(), name }; DB.venues.push(v); DB.ui.vid = v.id; if (!DB.ui.karteVid) DB.ui.karteVid = v.id; }
+    if (ctx.kind === 'company-rename') { const c = DB.companies.find(x => x.id === ctx.id); if (c) c.name = name; }
+    if (ctx.kind === 'venue-rename') { const v = DB.venues.find(x => x.id === ctx.id); if (v) v.name = name; }
+    document.getElementById('modal-name').classList.add('hidden');
+    saveDB(); renderAll();
+});
+
+/* ================= タブ切替 ================= */
+let editMode = false;
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.getElementById('tab-check').classList.toggle('hidden', tab !== 'check');
+    document.getElementById('tab-karte').classList.toggle('hidden', tab !== 'karte');
+    document.getElementById('tab-settings').classList.toggle('hidden', tab !== 'settings');
+    document.getElementById('main-scroll').scrollTop = 0;
+}
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+/* ================= チェックタブ ================= */
+function fillSelect(sel, list, value, emptyLabel) {
+    sel.innerHTML = '';
+    if (!list.length) {
+        const o = document.createElement('option'); o.value = ''; o.textContent = emptyLabel; sel.appendChild(o);
+        return;
+    }
+    for (const e of list) {
+        const o = document.createElement('option'); o.value = e.id; o.textContent = e.name; sel.appendChild(o);
+    }
+    sel.value = list.some(e => e.id === value) ? value : list[0].id;
+}
+function renderSelectors() {
+    const sc = document.getElementById('sel-company');
+    const sv = document.getElementById('sel-venue');
+    fillSelect(sc, DB.companies, DB.ui.cid, '（未登録）');
+    fillSelect(sv, DB.venues, DB.ui.vid, '（未登録）');
+    DB.ui.cid = sc.value; DB.ui.vid = sv.value;
+    const dateInp = document.getElementById('inp-date');
+    if (!DB.ui.date) { DB.ui.date = new Date().toLocaleDateString('sv-SE'); }
+    dateInp.value = DB.ui.date;
+    const ready = DB.companies.length > 0 && DB.venues.length > 0;
+    document.getElementById('check-guide').classList.toggle('hidden', ready);
+}
+function renderCheck() {
+    renderSelectors();
+    const list = mergedItems(DB.ui.cid, DB.ui.vid);
+    const checks = DB.checks[checkKey()] || {};
+    const doneCount = list.filter(it => checks[it.id]).length;
+    document.getElementById('check-progress-text').textContent = '積み込み ' + doneCount + '/' + list.length;
+    document.getElementById('check-progress-pct').textContent = list.length ? Math.round(doneCount / list.length * 100) + '%' : '';
+    document.getElementById('check-progress-bar').style.width = (list.length ? (doneCount / list.length * 100) : 0) + '%';
+    const box = document.getElementById('check-list');
+    box.innerHTML = '';
+    if (!DB.companies.length || !DB.venues.length) { renderEditTools(list); return; }
+    if (!list.length) {
+        box.innerHTML = '<div class="card p-4"><p class="text-base" style="color:#262626;">この組合せのアイテムはまだありません。「＋ アイテム追加」から足してください。</p></div>';
+    }
+    for (const cat of CATS) {
+        const inCat = list.filter(it => it.cat === cat);
+        if (!inCat.length) continue;
+        const sec = document.createElement('div');
+        const h = document.createElement('p'); h.className = 'cat-title'; h.textContent = cat; sec.appendChild(h);
+        const wrap = document.createElement('div'); wrap.className = 'flex flex-col gap-2';
+        for (const it of inCat) {
+            const row = document.createElement('div');
+            row.className = 'check-row' + (checks[it.id] ? ' done' : '');
+            const badge = scopeLabel(it.scope);
+            row.innerHTML = '<span class="check-box">' + (checks[it.id] ? '✓' : '') + '</span>' +
+                '<span class="item-name flex-1">' + esc(it.name) + '</span>' +
+                (badge ? '<span class="scope-badge">' + badge + '</span>' : '') +
+                (editMode ? '<button type="button" class="btn-danger" style="padding:8px 10px; font-size:14px;">' + (it.scope === 'cb:' + DB.ui.cid + ':' + DB.ui.vid ? '削除' : '除外') + '</button>' : '');
+            row.addEventListener('click', async (e) => {
+                if (editMode) {
+                    if (e.target.tagName !== 'BUTTON') return;
+                    await editItemAction(it);
+                    return;
+                }
+                const key = checkKey();
+                DB.checks[key] = DB.checks[key] || {};
+                if (DB.checks[key][it.id]) delete DB.checks[key][it.id]; else DB.checks[key][it.id] = true;
+                saveDB(); renderCheck();
+            });
+            wrap.appendChild(row);
+        }
+        sec.appendChild(wrap);
+        box.appendChild(sec);
+    }
+    renderEditTools(list);
+}
+async function editItemAction(it) {
+    const comboScope = 'cb:' + DB.ui.cid + ':' + DB.ui.vid;
+    if (it.scope === comboScope) {
+        if (await showConfirm('削除の確認', '「' + it.name + '」をこの組合せ専用アイテムから削除します。')) {
+            DB.items = DB.items.filter(x => x.id !== it.id);
+            saveDB(); renderCheck();
+        }
+        return;
+    }
+    if (await showConfirm('除外の確認', '「' + it.name + '」を ' + companyName(DB.ui.cid) + ' × ' + venueName(DB.ui.vid) + ' では出さないようにします。（他の組合せには出ます）')) {
+        const k = comboScope;
+        DB.hidden[k] = DB.hidden[k] || [];
+        if (!DB.hidden[k].includes(it.id)) DB.hidden[k].push(it.id);
+        saveDB(); renderCheck();
+    }
+}
+function renderEditTools(list) {
+    const tools = document.getElementById('edit-tools');
+    tools.classList.toggle('hidden', !editMode);
+    tools.classList.toggle('flex', editMode);
+    document.getElementById('btn-edit-mode').textContent = editMode ? '編集を終わる' : '編集';
+    if (!editMode) return;
+    // コピー元（組合せ専用を持つ他の組合せ）
+    const srcSel = document.getElementById('sel-copy-source');
+    srcSel.innerHTML = '';
+    const combos = new Map();
+    for (const it of DB.items) {
+        if (!it.scope.startsWith('cb:')) continue;
+        const [, cid, vid] = it.scope.split(':');
+        if (cid === DB.ui.cid && vid === DB.ui.vid) continue;
+        combos.set(it.scope, companyName(cid) + ' × ' + venueName(vid));
+    }
+    if (!combos.size) {
+        const o = document.createElement('option'); o.value = ''; o.textContent = '（コピー元なし）'; srcSel.appendChild(o);
+    } else {
+        for (const [scope, label] of combos) {
+            const o = document.createElement('option'); o.value = scope; o.textContent = label; srcSel.appendChild(o);
+        }
+    }
+    // 除外中の復帰リスト
+    const rbox = document.getElementById('hidden-restore-box');
+    const hidden = hiddenIdsFor(DB.ui.cid, DB.ui.vid);
+    const hiddenItems = DB.items.filter(it => hidden.has(it.id));
+    if (!hiddenItems.length) { rbox.innerHTML = ''; return; }
+    rbox.innerHTML = '<p class="lbl">この組合せで除外中のアイテム</p>';
+    const wrap = document.createElement('div'); wrap.className = 'flex flex-col gap-2';
+    for (const it of hiddenItems) {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2';
+        row.innerHTML = '<span class="item-name flex-1" style="font-size:15px;">' + esc(it.name) + '</span>';
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'btn-sub'; btn.style.padding = '8px 10px'; btn.style.fontSize = '14px'; btn.textContent = '戻す';
+        btn.addEventListener('click', () => {
+            for (const k of Object.keys(DB.hidden)) DB.hidden[k] = (DB.hidden[k] || []).filter(id => id !== it.id);
+            saveDB(); renderCheck();
+        });
+        row.appendChild(btn); wrap.appendChild(row);
+    }
+    rbox.appendChild(wrap);
+}
+document.getElementById('sel-company').addEventListener('change', e => { DB.ui.cid = e.target.value; saveDB(); renderCheck(); });
+document.getElementById('sel-venue').addEventListener('change', e => { DB.ui.vid = e.target.value; saveDB(); renderCheck(); });
+document.getElementById('inp-date').addEventListener('change', e => { DB.ui.date = e.target.value; saveDB(); renderCheck(); });
+document.getElementById('btn-add-company').addEventListener('click', () => openNameModal('葬儀社を追加', '', { kind: 'company-add' }));
+document.getElementById('btn-add-venue').addEventListener('click', () => openNameModal('式場を追加', '', { kind: 'venue-add' }));
+document.getElementById('btn-edit-mode').addEventListener('click', () => { editMode = !editMode; renderCheck(); });
+document.getElementById('btn-reset-checks').addEventListener('click', async () => {
+    if (await showConfirm('チェックのリセット', 'この日のチェックを全部外します。')) {
+        delete DB.checks[checkKey()]; saveDB(); renderCheck();
+    }
+});
+document.getElementById('btn-copy-combo').addEventListener('click', async () => {
+    const src = document.getElementById('sel-copy-source').value;
+    if (!src) return;
+    const target = 'cb:' + DB.ui.cid + ':' + DB.ui.vid;
+    const srcItems = DB.items.filter(it => it.scope === src);
+    if (!srcItems.length) return;
+    if (await showConfirm('コピーの確認', srcItems.length + '件の組合せ専用アイテムを、今の組合せにコピーします。')) {
+        for (const it of srcItems) DB.items.push({ id: uid(), name: it.name, cat: it.cat, scope: target });
+        saveDB(); renderCheck();
+    }
+});
+
+/* アイテム追加モーダル */
+function openItemModal(presetScope) {
+    const catSel = document.getElementById('item-cat-select');
+    catSel.innerHTML = '';
+    for (const c of CATS) { const o = document.createElement('option'); o.value = c; o.textContent = c; catSel.appendChild(o); }
+    const scopeSel = document.getElementById('item-scope-select');
+    scopeSel.innerHTML = '';
+    const opts = [['common', '全体共通（いつも持つ）']];
+    if (DB.ui.cid) opts.push(['co:' + DB.ui.cid, 'この葬儀社の時だけ：' + companyName(DB.ui.cid)]);
+    if (DB.ui.vid) opts.push(['ve:' + DB.ui.vid, 'この式場の時だけ：' + venueName(DB.ui.vid)]);
+    if (DB.ui.cid && DB.ui.vid) opts.push(['cb:' + DB.ui.cid + ':' + DB.ui.vid, 'この組合せ専用']);
+    for (const [v, label] of opts) { const o = document.createElement('option'); o.value = v; o.textContent = label; scopeSel.appendChild(o); }
+    if (presetScope) scopeSel.value = presetScope;
+    document.getElementById('item-name-input').value = '';
+    document.getElementById('modal-item').classList.remove('hidden');
+    setTimeout(() => document.getElementById('item-name-input').focus(), 50);
+}
+document.getElementById('btn-add-item').addEventListener('click', () => openItemModal());
+document.getElementById('item-modal-cancel').addEventListener('click', () => document.getElementById('modal-item').classList.add('hidden'));
+document.getElementById('item-modal-ok').addEventListener('click', () => {
+    const name = document.getElementById('item-name-input').value.trim();
+    if (!name) return;
+    DB.items.push({ id: uid(), name, cat: document.getElementById('item-cat-select').value, scope: document.getElementById('item-scope-select').value });
+    document.getElementById('modal-item').classList.add('hidden');
+    saveDB(); renderAll();
+});
+
+/* ================= 式場カルテ ================= */
+const MEMO_FIELDS = [['access', 'memo-access'], ['parking', 'memo-parking'], ['key', 'memo-key'], ['room', 'memo-room'], ['note', 'memo-note']];
+let memoSaveTimer = null;
+function renderKarte() {
+    const sel = document.getElementById('sel-karte-venue');
+    fillSelect(sel, DB.venues, DB.ui.karteVid, '（未登録）');
+    DB.ui.karteVid = sel.value;
+    const has = DB.venues.length > 0;
+    document.getElementById('karte-guide').classList.toggle('hidden', has);
+    document.getElementById('karte-body').classList.toggle('hidden', !has);
+    if (!has) return;
+    const memo = DB.memos[DB.ui.karteVid] || {};
+    for (const [key, elId] of MEMO_FIELDS) {
+        const el = document.getElementById(elId);
+        if (document.activeElement !== el) el.value = memo[key] || '';
+    }
+    const vItems = DB.items.filter(it => it.scope === 've:' + DB.ui.karteVid);
+    document.getElementById('karte-venue-items').textContent = vItems.length
+        ? vItems.map(it => it.name).join('、')
+        : 'まだありません。チェック画面の「＋ アイテム追加」で「この式場の時だけ」を選ぶと登録できます。';
+    renderPhotos();
+}
+for (const [key, elId] of MEMO_FIELDS) {
+    document.getElementById(elId).addEventListener('input', e => {
+        if (!DB.ui.karteVid) return;
+        DB.memos[DB.ui.karteVid] = DB.memos[DB.ui.karteVid] || {};
+        DB.memos[DB.ui.karteVid][key] = e.target.value;
+        saveDB();
+        const ind = document.getElementById('memo-saved');
+        ind.textContent = '保存中…';
+        clearTimeout(memoSaveTimer);
+        memoSaveTimer = setTimeout(() => { ind.textContent = '✓ 保存しました'; setTimeout(() => { ind.textContent = ''; }, 2000); }, 400);
+    });
+}
+document.getElementById('sel-karte-venue').addEventListener('change', e => { DB.ui.karteVid = e.target.value; saveDB(); renderKarte(); });
+document.getElementById('btn-goto-check').addEventListener('click', () => {
+    if (DB.ui.karteVid) { DB.ui.vid = DB.ui.karteVid; saveDB(); }
+    switchTab('check'); renderCheck();
+});
+
+/* 写真（IndexedDB） */
+function idbOpen() {
+    return new Promise((res, rej) => {
+        const req = indexedDB.open('tool7_db', 1);
+        req.onupgradeneeded = () => { req.result.createObjectStore('photos', { keyPath: 'id' }); };
+        req.onsuccess = () => res(req.result);
+        req.onerror = () => rej(req.error);
+    });
+}
+async function idbPhotos(venueId) {
+    try {
+        const db = await idbOpen();
+        return await new Promise(res => {
+            const out = [];
+            const cur = db.transaction('photos', 'readonly').objectStore('photos').openCursor();
+            cur.onsuccess = () => {
+                const c = cur.result;
+                if (c) { if (c.value.venueId === venueId) out.push(c.value); c.continue(); }
+                else res(out);
+            };
+            cur.onerror = () => res(out);
+        });
+    } catch (e) { return []; }
+}
+async function idbPut(photo) {
+    const db = await idbOpen();
+    return new Promise(res => {
+        const tx = db.transaction('photos', 'readwrite');
+        tx.objectStore('photos').put(photo);
+        tx.oncomplete = () => res(true); tx.onerror = () => res(false);
+    });
+}
+async function idbDelete(id) {
+    const db = await idbOpen();
+    return new Promise(res => {
+        const tx = db.transaction('photos', 'readwrite');
+        tx.objectStore('photos').delete(id);
+        tx.oncomplete = () => res(true); tx.onerror = () => res(false);
+    });
+}
+let currentPhotoId = null;
+async function renderPhotos() {
+    const grid = document.getElementById('photo-grid');
+    grid.innerHTML = '';
+    if (!DB.ui.karteVid) return;
+    const photos = await idbPhotos(DB.ui.karteVid);
+    if (!photos.length) {
+        grid.innerHTML = '<p class="text-base col-span-3" style="color:#6f6f6f;">まだ写真がありません</p>';
+        return;
+    }
+    for (const p of photos) {
+        const img = document.createElement('img');
+        img.src = p.dataUrl; img.alt = '式場写真';
+        img.className = 'w-full rounded-lg';
+        img.style.cssText = 'aspect-ratio:1; object-fit:cover; border:2px solid #d9d9d7;';
+        img.addEventListener('click', () => {
+            currentPhotoId = p.id;
+            document.getElementById('photo-view-img').src = p.dataUrl;
+            document.getElementById('modal-photo').classList.remove('hidden');
+        });
+        grid.appendChild(img);
+    }
+}
+document.getElementById('btn-add-photo').addEventListener('click', () => document.getElementById('photo-input').click());
+document.getElementById('photo-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file || !DB.ui.karteVid) return;
+    const img = new Image();
+    img.onload = () => {
+        const maxSide = 1024;
+        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(img.width * scale); cv.height = Math.round(img.height * scale);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(img.src);
+        idbPut({ id: uid(), venueId: DB.ui.karteVid, dataUrl: cv.toDataURL('image/jpeg', 0.78) }).then(() => renderPhotos());
+    };
+    img.src = URL.createObjectURL(file);
+});
+document.getElementById('photo-close').addEventListener('click', () => document.getElementById('modal-photo').classList.add('hidden'));
+document.getElementById('photo-delete').addEventListener('click', async () => {
+    if (currentPhotoId && await showConfirm('写真の削除', 'この写真を削除します。')) {
+        await idbDelete(currentPhotoId);
+        document.getElementById('modal-photo').classList.add('hidden');
+        renderPhotos();
+    }
+});
+
+/* ================= 設定タブ ================= */
+function settingsRow(name, onRename, onDelete) {
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-2';
+    row.innerHTML = '<span class="item-name flex-1" style="font-size:16px;">' + esc(name) + '</span>';
+    const rb = document.createElement('button');
+    rb.type = 'button'; rb.className = 'btn-sub'; rb.style.padding = '8px 10px'; rb.style.fontSize = '14px'; rb.textContent = '名前変更';
+    rb.addEventListener('click', onRename);
+    const db = document.createElement('button');
+    db.type = 'button'; db.className = 'btn-danger'; db.style.padding = '8px 10px'; db.style.fontSize = '14px'; db.textContent = '削除';
+    db.addEventListener('click', onDelete);
+    row.appendChild(rb); row.appendChild(db);
+    return row;
+}
+function renderSettings() {
+    const cbox = document.getElementById('settings-companies');
+    cbox.innerHTML = DB.companies.length ? '' : '<p class="text-base" style="color:#6f6f6f;">まだ登録がありません</p>';
+    for (const c of DB.companies) {
+        cbox.appendChild(settingsRow(c.name,
+            () => openNameModal('葬儀社の名前変更', c.name, { kind: 'company-rename', id: c.id }),
+            async () => {
+                if (await showConfirm('削除の確認', '葬儀社「' + c.name + '」と、その葬儀社だけのアイテム・組合せデータを削除します。')) {
+                    DB.companies = DB.companies.filter(x => x.id !== c.id);
+                    DB.items = DB.items.filter(it => it.scope !== 'co:' + c.id && !it.scope.startsWith('cb:' + c.id + ':'));
+                    delete DB.hidden['co:' + c.id];
+                    for (const k of Object.keys(DB.hidden)) if (k.startsWith('cb:' + c.id + ':')) delete DB.hidden[k];
+                    if (DB.ui.cid === c.id) DB.ui.cid = '';
+                    saveDB(); renderAll();
+                }
+            }));
+    }
+    const vbox = document.getElementById('settings-venues');
+    vbox.innerHTML = DB.venues.length ? '' : '<p class="text-base" style="color:#6f6f6f;">まだ登録がありません</p>';
+    for (const v of DB.venues) {
+        vbox.appendChild(settingsRow(v.name,
+            () => openNameModal('式場の名前変更', v.name, { kind: 'venue-rename', id: v.id }),
+            async () => {
+                if (await showConfirm('削除の確認', '式場「' + v.name + '」と、その式場だけのアイテム・カルテのメモを削除します。（写真は残ります）')) {
+                    DB.venues = DB.venues.filter(x => x.id !== v.id);
+                    DB.items = DB.items.filter(it => it.scope !== 've:' + v.id && !it.scope.endsWith(':' + v.id));
+                    delete DB.hidden['ve:' + v.id];
+                    for (const k of Object.keys(DB.hidden)) if (k.startsWith('cb:') && k.endsWith(':' + v.id)) delete DB.hidden[k];
+                    delete DB.memos[v.id];
+                    if (DB.ui.vid === v.id) DB.ui.vid = '';
+                    if (DB.ui.karteVid === v.id) DB.ui.karteVid = '';
+                    saveDB(); renderAll();
+                }
+            }));
+    }
+    const ibox = document.getElementById('settings-common-items');
+    ibox.innerHTML = '';
+    const commons = DB.items.filter(it => it.scope === 'common');
+    if (!commons.length) ibox.innerHTML = '<p class="text-base" style="color:#6f6f6f;">共通アイテムがありません</p>';
+    for (const cat of CATS) {
+        for (const it of commons.filter(x => x.cat === cat)) {
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-2';
+            row.innerHTML = '<span class="scope-badge">' + esc(it.cat) + '</span><span class="item-name flex-1" style="font-size:16px;">' + esc(it.name) + '</span>';
+            const db = document.createElement('button');
+            db.type = 'button'; db.className = 'btn-danger'; db.style.padding = '8px 10px'; db.style.fontSize = '14px'; db.textContent = '削除';
+            db.addEventListener('click', async () => {
+                if (await showConfirm('削除の確認', '共通アイテム「' + it.name + '」を削除します。全ての組合せから消えます。')) {
+                    DB.items = DB.items.filter(x => x.id !== it.id);
+                    saveDB(); renderAll();
+                }
+            });
+            row.appendChild(db); ibox.appendChild(row);
+        }
+    }
+}
+document.getElementById('btn-add-company2').addEventListener('click', () => openNameModal('葬儀社を追加', '', { kind: 'company-add' }));
+document.getElementById('btn-add-venue2').addEventListener('click', () => openNameModal('式場を追加', '', { kind: 'venue-add' }));
+document.getElementById('btn-add-common-item').addEventListener('click', () => openItemModal('common'));
+document.getElementById('btn-export').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'tool7-backup-' + new Date().toLocaleDateString('sv-SE') + '.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+});
+document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-input').click());
+document.getElementById('import-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+        try {
+            const d = JSON.parse(reader.result);
+            if (!d || !Array.isArray(d.items) || !Array.isArray(d.companies) || !Array.isArray(d.venues)) throw new Error('bad');
+            if (await showConfirm('読み込みの確認', '今のデータをバックアップの内容で置き換えます。よろしいですか。')) {
+                DB = d;
+                DB.hidden = DB.hidden || {}; DB.memos = DB.memos || {}; DB.checks = DB.checks || {};
+                DB.ui = Object.assign({ cid: '', vid: '', karteVid: '', date: '' }, DB.ui || {});
+                saveDB(); renderAll();
+            }
+        } catch (err) { showConfirm('読み込みエラー', 'バックアップファイルの形式が違うため、読み込めませんでした。'); }
+    };
+    reader.readAsText(file);
+});
+document.getElementById('btn-wipe').addEventListener('click', async () => {
+    if (await showConfirm('全データ削除', '葬儀社・式場・アイテム・メモ・チェックを全て削除します。写真は残ります。本当に削除しますか。')) {
+        DB = seedDB(); DB.items = []; saveDB(); renderAll();
+    }
+});
+
+/* ================= 初期化 ================= */
+function renderAll() { renderCheck(); renderKarte(); renderSettings(); }
+DB.ui.date = new Date().toLocaleDateString('sv-SE');
+saveDB();
+renderAll();
+</script>
+</body>
+</html>
