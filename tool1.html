@@ -377,25 +377,17 @@
             </div>
         </div>
 
-        <div id="perspective-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-sm p-3 rounded-xl shadow-2xl border border-cyan-500 z-40 backdrop-blur-md flex flex-col gap-2">
-            <div class="flex justify-between items-center text-white gap-2">
-                <span class="font-bold text-cyan-300">【奥行き基準】床と壁の境目に2本の線を合わせます</span>
-                <div class="flex items-center shrink-0">
-                    <button id="perspective-min-btn" class="text-white hover:text-white text-base font-bold px-2 py-0.5">▽隠す</button>
-                    <button id="perspective-cancel-btn" class="text-white hover:text-white text-base px-2 py-0.5">✕</button>
-                </div>
+        <div id="perspective-banner" class="hidden absolute top-3 left-3 right-3 bg-gray-900/95 text-white text-sm p-3.5 rounded-xl shadow-2xl border border-cyan-500 z-40 backdrop-blur-md flex flex-col gap-2.5">
+            <div class="flex justify-between items-center text-white">
+                <span class="font-bold text-cyan-300">【奥行き基準】左右の「床と壁の境目」に2本の線を合わせます</span>
+                <button id="perspective-cancel-btn" class="text-white hover:text-white text-base px-2 py-0.5">✕</button>
             </div>
-            <p id="perspective-auto-status" class="hidden text-sm text-white leading-snug"></p>
             <div class="flex items-center gap-2">
-                <button id="perspective-auto-btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2 rounded-lg text-base shadow transition active:scale-95">
-                    🤖 自動で仮置き
-                </button>
-                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2 rounded-lg text-base shadow transition active:scale-95">
-                    ✓ 設定完了
+                <button id="perspective-confirm-btn" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-[#ffffff] font-bold py-2.5 rounded-lg text-base shadow transition active:scale-95">
+                    この奥行きラインで設定完了
                 </button>
             </div>
         </div>
-        <button id="perspective-banner-mini" class="hidden absolute top-3 right-3 z-50 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2 px-4 rounded-full text-base shadow-2xl transition active:scale-95">📐 パース設定中…タップで開く</button>
 
         <!-- モード選択全画面オーバーレイ（下部メニューを完全に覆い、上部にツール一覧戻るを配置） -->
         <div id="start-screen-overlay" class="fixed inset-0 bg-gray-950 z-[150] flex flex-col items-center justify-center p-5 text-center overflow-y-auto">
@@ -585,7 +577,7 @@
                     <span class="step-num">2</span>
                     <span class="text-lg font-bold text-white">パース設定（奥行き）</span>
                 </div>
-                <p class="text-sm text-white leading-relaxed">式場の奥行きを設定します。床と壁の境目にラインを合わせると、手前と奥でパーツの大きさが正確に変わります。「設定・再調整」を開くと写真から境目を自動で仮置きできます（ずれたらドラッグで修正）。</p>
+                <p class="text-sm text-white leading-relaxed">式場の奥行きを設定します。床と壁の境目にラインを合わせると、手前と奥でパーツの大きさが正確に変わります。</p>
                 <div class="flex items-center justify-between gap-2">
                     <span id="bg-perspective-status" class="text-sm text-white">未設定（標準遠近）</span>
                     <button id="bg-perspective-setup-trigger" class="bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold py-2 px-4 rounded-xl text-base transition active:scale-95 shrink-0">
@@ -1308,16 +1300,9 @@
             <h3 class="text-lg font-bold text-white mb-4 border-l-[5px] border-blue-600 pl-2.5">更新履歴</h3>
             <div class="space-y-4 max-h-[50vh] overflow-y-auto text-[13px] text-white pr-2 hide-scrollbar">
                 <div>
-                    <p class="font-bold text-blue-400">v3.5.1</p>
+                    <p class="font-bold text-blue-400">v3.5.2</p>
                     <p class="text-sm mt-1 text-white leading-relaxed">
-                        ・パース設定の窓を小さくし、「▽隠す」で右上の小さいボタンに畳めるようにしました（手動で線を合わせる時に写真が見やすくなります）<br>
-                        ・写真からの自動仮置きの感度を上げました（明るくて境目が薄い写真でも拾いやすく、真横・真縦の線を境目と間違えないよう改善）
-                    </p>
-                </div>
-                <div>
-                    <p class="font-bold text-blue-400">v3.5.0</p>
-                    <p class="text-sm mt-1 text-white leading-relaxed">
-                        ・パース設定に「写真から自動で仮置き」を追加：写真を読み込むと床と壁の境目らしい2本の線を自動で検出して仮置きします（ずれたらドラッグで修正。見つからない場合は今まで通り手動で設定できます）
+                        ・写真を読み込んだ時、床と壁の境目らしい線が取れればパース線の初期位置に使うようにしました（取れない場合は今まで通りの初期位置です）
                     </p>
                 </div>
                 <div>
@@ -1342,7 +1327,7 @@
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-white mb-1 border-l-[5px] border-blue-600 pl-2.5">施工シミュレーター</h3>
-            <p class="text-sm text-blue-400 font-mono mb-4">v3.5.1</p>
+            <p class="text-sm text-blue-400 font-mono mb-4">v3.5.2</p>
             <div class="text-[13px] text-white space-y-2 mb-6 border-t border-gray-700/50 pt-4 text-left bg-gray-950/60 p-4 rounded-xl">
                 <p><span class="text-white">製作者:</span> <span class="font-bold text-white">関貴文</span></p>
                 <p><span class="text-white">AIアシスタント:</span> <span class="font-bold text-blue-400">Gemini (Google)</span></p>
@@ -1880,7 +1865,6 @@
             if (mBanner) mBanner.classList.add('hidden');
             const pBanner = document.getElementById('perspective-banner');
             if (pBanner) pBanner.classList.add('hidden');
-            document.getElementById('perspective-banner-mini')?.classList.add('hidden');
             if (typeof updateZoomBadge === 'function') updateZoomBadge();
             if (typeof updateFloatingDepthSlider === 'function') updateFloatingDepthSlider();
             if (typeof updateLayersUI === 'function') updateLayersUI();
@@ -2947,33 +2931,16 @@
             }
         }
 
-        function setPerspectiveAutoStatus(text) {
-            const el = document.getElementById('perspective-auto-status');
-            if (!el) return;
-            el.textContent = text || '';
-            el.classList.toggle('hidden', !text);
-        }
-
         function startPerspectiveSetting() {
             state.bgMeasuring = false;
             document.getElementById('measure-banner')?.classList.add('hidden');
             state.perspectiveSetting = true;
             if (!state.bg.perspectiveLinesRaw) {
-                const detected = detectPerspectiveLinesFromPhoto();
-                if (detected) {
-                    state.bg.perspectiveLinesRaw = detected;
-                    setPerspectiveAutoStatus('写真から自動で仮置きしました。ずれている所は○をドラッグして直してください。邪魔な時は「▽隠す」で小さくできます。');
-                } else {
-                    state.bg.perspectiveLinesRaw = getEffectivePerspectiveLinesRaw();
-                    setPerspectiveAutoStatus('自動では境目を見つけられませんでした。○をドラッグして手動で合わせてください。邪魔な時は「▽隠す」で小さくできます。');
-                }
-            } else {
-                setPerspectiveAutoStatus('前回のラインが入っています。直したい所は○をドラッグ、やり直す場合は「自動で仮置き」を押してください。');
+                // 写真から境目らしい線が取れたら初期位置として使う（取れなければ標準位置）
+                state.bg.perspectiveLinesRaw = detectPerspectiveLinesFromPhoto() || getEffectivePerspectiveLinesRaw();
             }
             const pBanner = document.getElementById('perspective-banner');
             if (pBanner) pBanner.classList.remove('hidden');
-            const pMini = document.getElementById('perspective-banner-mini');
-            if (pMini) pMini.classList.add('hidden');
             requestRender();
         }
 
@@ -2983,7 +2950,6 @@
                 state.perspectiveSetting = false;
                 const pBanner = document.getElementById('perspective-banner');
                 if (pBanner) pBanner.classList.add('hidden');
-                document.getElementById('perspective-banner-mini')?.classList.add('hidden');
                 const pStatus = document.getElementById('bg-perspective-status');
                 if (pStatus) pStatus.textContent = '設定完了（有効）';
                 updateFloatingDepthSlider();
@@ -3000,41 +2966,7 @@
                 state.perspectiveSetting = false;
                 const pBanner = document.getElementById('perspective-banner');
                 if (pBanner) pBanner.classList.add('hidden');
-                document.getElementById('perspective-banner-mini')?.classList.add('hidden');
                 requestRender();
-            });
-        }
-
-        const pAutoBtn = document.getElementById('perspective-auto-btn');
-        if (pAutoBtn) {
-            pAutoBtn.addEventListener('click', () => {
-                const detected = detectPerspectiveLinesFromPhoto();
-                if (detected) {
-                    state.bg.perspectiveLinesRaw = detected;
-                    setPerspectiveAutoStatus('写真から自動で仮置きしました。ずれている所は○をドラッグして直してください。邪魔な時は「▽隠す」で小さくできます。');
-                } else {
-                    setPerspectiveAutoStatus('自動では境目を見つけられませんでした。○をドラッグして手動で合わせてください。邪魔な時は「▽隠す」で小さくできます。');
-                }
-                requestRender();
-            });
-        }
-
-        const pMinBtn = document.getElementById('perspective-min-btn');
-        if (pMinBtn) {
-            pMinBtn.addEventListener('click', () => {
-                const pBanner = document.getElementById('perspective-banner');
-                if (pBanner) pBanner.classList.add('hidden');
-                const pMini = document.getElementById('perspective-banner-mini');
-                if (pMini) pMini.classList.remove('hidden');
-            });
-        }
-
-        const pMiniBtn = document.getElementById('perspective-banner-mini');
-        if (pMiniBtn) {
-            pMiniBtn.addEventListener('click', () => {
-                const pBanner = document.getElementById('perspective-banner');
-                if (pBanner) pBanner.classList.remove('hidden');
-                pMiniBtn.classList.add('hidden');
             });
         }
 
@@ -3060,7 +2992,6 @@
         function startBgMeasuring() {
             state.perspectiveSetting = false;
             document.getElementById('perspective-banner')?.classList.add('hidden');
-            document.getElementById('perspective-banner-mini')?.classList.add('hidden');
             state.bgMeasuring = true;
             if (!state.bg.measureHandlesRaw) {
                 const bw = state.bg.obj ? state.bg.obj.width : 1200;
