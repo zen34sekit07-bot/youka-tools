@@ -92,6 +92,48 @@
       display: flex;
       flex-direction: column;
       gap: 3px;
+      cursor: pointer;
+    }
+    .latest-update-hint {
+      font-size: 12px;
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .history-list {
+      max-height: 50vh;
+      overflow-y: auto;
+      text-align: left;
+      border-top: 1px solid #d9d9d7;
+      margin-bottom: 14px;
+    }
+    .history-item {
+      padding: 10px 2px;
+      border-bottom: 1px solid #e3e3e1;
+    }
+    .history-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .history-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #171717;
+    }
+    .history-item-date {
+      font-size: 12px;
+      color: #6f6f6f;
+      font-family: monospace;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .history-item-msg {
+      font-size: 13px;
+      color: #3d3d3d;
+      line-height: 1.5;
+      white-space: pre-line;
     }
     .latest-update-top {
       display: flex;
@@ -255,6 +297,7 @@
       <span id="latest-update-date" class="latest-update-date"></span>
     </div>
     <div id="latest-update-msg" class="latest-update-msg" style="display: none;"></div>
+    <div class="latest-update-hint">タップで過去の更新履歴を表示 ›</div>
   </div>
 
   <div class="grid">
@@ -379,6 +422,16 @@
         <p style="margin: 0;"><span style="color: #6f6f6f;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
       </div>
       <button id="btn-close-credit" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 更新履歴モーダル -->
+  <div id="history-modal" class="credit-modal">
+    <div style="background: #f4f4f2; border: 1px solid #d9d9d7; border-radius: 16px; width: 100%; max-width: 340px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); text-align: center; position: relative; box-sizing: border-box;">
+      <button id="btn-close-history-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #171717; cursor: pointer; padding: 4px; font-size: 18px;">✕</button>
+      <h3 style="font-size: 18px; font-weight: bold; color: #171717; margin: 0 0 14px 0;">更新履歴</h3>
+      <div id="history-list" class="history-list"></div>
+      <button id="btn-close-history" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
     </div>
   </div>
 
@@ -546,11 +599,11 @@
         const res = await fetch('./updates.json', { cache: 'no-cache' });
         if (res.ok) {
           const data = await res.json();
-          const list = Array.isArray(data && data.tools) ? data.tools : [];
+          const list = Array.isArray(data && data.history) ? data.history : (Array.isArray(data && data.tools) ? data.tools : []);
           results = list.map((e) => {
             const ts = Date.parse(e.date || '');
             if (isNaN(ts)) return null;
-            return { file: e.file, name: e.name || e.file, ts, message: (e.message || '').split('\n')[0].trim() };
+            return { file: e.file, name: e.name || e.file, ts, message: (e.message || '').trim() };
           }).filter(Boolean);
         }
       } catch (_) {}
@@ -573,8 +626,31 @@
       toolEl.innerHTML = `${isNew ? '<span class="badge-new">NEW</span>' : '<span style="color:#2563eb;margin-right:4px;">最新</span>'}${latest.name}`;
       if (dateEl) dateEl.textContent = dateStr;
       if (msgEl && latest.message) {
-        msgEl.textContent = `内容: ${latest.message}`;
+        msgEl.textContent = `内容: ${latest.message.split('\n')[0].trim()}`;
         msgEl.style.display = 'block';
+      }
+
+      // 更新履歴モーダル: バーをタップすると全履歴を一覧表示
+      const bar = document.getElementById('latest-update-bar');
+      const hModal = document.getElementById('history-modal');
+      const hList = document.getElementById('history-list');
+      if (bar && hModal && hList) {
+        const fmt = (ts) => {
+          const d = new Date(ts);
+          return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        };
+        bar.addEventListener('click', () => {
+          hList.innerHTML = valid.map((e) => `
+            <div class="history-item">
+              <div class="history-item-top"><span class="history-item-name">${e.name}</span><span class="history-item-date">${fmt(e.ts)}</span></div>
+              <div class="history-item-msg">${e.message}</div>
+            </div>`).join('');
+          hModal.classList.add('active');
+        });
+        const closeH = () => hModal.classList.remove('active');
+        document.getElementById('btn-close-history').addEventListener('click', closeH);
+        document.getElementById('btn-close-history-x').addEventListener('click', closeH);
+        hModal.addEventListener('click', (ev) => { if (ev.target === hModal) closeH(); });
       }
     })();
   </script>
