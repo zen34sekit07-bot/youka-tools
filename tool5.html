@@ -258,7 +258,7 @@
                             <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="紫"> 紫
                         </label>
                         <label class="flex items-center justify-center gap-1 cursor-pointer bg-slate-950 py-2 rounded-lg border border-slate-800">
-                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="黄"> 黄色
+                            <input type="checkbox" class="filter-color-chk accent-indigo-500 w-4 h-4" value="黄色"> 黄色
                         </label>
                     </div>
                 </div>
@@ -1781,7 +1781,7 @@
 
                 if (fColors.length > 0) {
                     const itemColors = detectFlowerColors(item);
-                    const matchColor = fColors.some(col => itemColors.includes(col));
+                    const matchColor = fColors.some(col => itemColors.includes(col) || (col === '黄色' && itemColors.includes('黄')) || (col === '黄' && itemColors.includes('黄色')));
                     if (!matchColor) return false;
                 }
 
