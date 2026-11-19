@@ -16,6 +16,7 @@
 
     <!-- PWA App Icon (SVG Data URI) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%232563eb'/%3E%3Cpath d='M120 340 L256 160 L392 340 Z' fill='%23f59e0b'/%3E%3Crect x='160' y='320' width='192' height='40' rx='8' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%232563eb'/%3E%3Cpath d='M120 340 L256 160 L392 340 Z' fill='%23f59e0b'/%3E%3Crect x='160' y='320' width='192' height='40' rx='8' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
 
     <!-- PWA Manifest (Data URI) -->
@@ -1314,7 +1315,7 @@
                 content.innerHTML = "<p class='font-black text-blue-600 text-lg'>Ver 1.4</p><p class='text-sm text-slate-300 mt-2 font-bold'>ファイル命名統一＆完全ダークモーダル対応</p><ul class='text-xs text-white mt-2 list-disc pl-4 space-y-1'><li>保存命名規則を統一（base_プロジェクト名_YYYYMMDD_通番）</li><li>Androidでのファイル名化け防止（Blob方式化）</li><li>他アプリへ共有（Web Share API）の追加</li><li>全モーダルのダークモード化とUIトーン統一</li><li>履歴呼び出し時の終了確認誤爆を解消</li></ul>";
             } else {
                 title.textContent = "クレジット";
-                content.innerHTML = "<div class='space-y-3 text-sm'><p><span class='font-bold text-white text-xs block'>製作者</span><span class='font-black text-white text-base'>関貴文</span></p><p><span class='font-bold text-white text-xs block'>AIアシスタント</span><span class='font-bold text-blue-600'>Gemini (Google)</span></p><p><span class='font-bold text-white text-xs block'>技術スタック</span><span class='text-slate-300 font-medium'>HTML5, JavaScript (ES6), Tailwind CSS<br>PWA (Web Manifest, Service Worker)<br>Local Storage API, html2canvas, jsPDF</span></p></div>";
+                content.innerHTML = "<div class='space-y-3 text-sm'><p><span class='font-bold text-white text-xs block'>製作者</span><span class='font-black text-white text-base'>関貴文</span></p><p><span class='font-bold text-white text-xs block'>所属</span><span class='font-bold text-white'>所沢支店 施工課</span></p><p><span class='font-bold text-white text-xs block'>AIアシスタント</span><span class='font-bold text-blue-600'>Gemini (Google) / Muse (Meta)</span></p><p><span class='font-bold text-white text-xs block'>技術スタック</span><span class='text-slate-300 font-medium'>HTML5, JavaScript (ES6), Tailwind CSS<br>PWA (Web Manifest, Service Worker)<br>Local Storage API, html2canvas, jsPDF</span></p></div>";
             }
             openModal('info-modal');
         }

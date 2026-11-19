@@ -57,10 +57,12 @@
     .btn-credit {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 7px 12px;
-      font-size: 14px;
+      gap: 3px;
+      padding: 4px 9px;
+      font-size: 12px;
       font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
       background: linear-gradient(180deg, #ebebe9 0%, #fcfcfb 100%);
       color: #3d3d3d;
       border: 1px solid #c6c6c4;
@@ -241,7 +243,7 @@
   <div class="header-wrap">
     <h1>ユー花園社内業務支援ツール</h1>
     <button id="btn-index-credit" class="btn-credit" type="button">
-      <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <svg style="width: 13px; height: 13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       <span>クレジット</span>
     </button>
   </div>
@@ -372,7 +374,8 @@
       <p style="font-size: 13px; color: #2563eb; font-family: monospace; margin: 0 0 14px 0;">ポータル</p>
       <div style="font-size: 15px; color: #3d3d3d; border-top: 1px solid #d9d9d7; padding-top: 10px; margin-bottom: 14px; text-align: left; background: #eeeeec; padding: 10px; border-radius: 10px;">
         <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">製作者:</span> <b style="color: #171717;">関貴文</b></p>
-        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">AIアシスタント:</span> <b style="color: #1d4ed8;">Gemini (Google)</b></p>
+        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">所属:</span> <b style="color: #171717;">所沢支店 施工課</b></p>
+        <p style="margin: 0 0 4px 0;"><span style="color: #6f6f6f;">AIアシスタント:</span> <b style="color: #1d4ed8;">Gemini (Google) / Muse (Meta)</b></p>
         <p style="margin: 0;"><span style="color: #6f6f6f;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
       </div>
       <button id="btn-close-credit" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
