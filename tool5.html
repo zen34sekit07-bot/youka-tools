@@ -1781,7 +1781,7 @@
 
                 if (fColors.length > 0) {
                     const itemColors = detectFlowerColors(item);
-                    const matchColor = fColors.some(col => itemColors.includes(col) || (col === '黄色' && itemColors.includes('黄')) || (col === '黄' && itemColors.includes('黄色')));
+                    const matchColor = fColors.some(col => itemColors.includes(col) || (col === '黄色' && itemColors.includes('黄')) || (col === '黄' && itemColors.includes('黄色')) || (col === '紫' && itemColors.includes('濃紫')));
                     if (!matchColor) return false;
                 }
 
@@ -2091,7 +2091,7 @@
             if (checkedColors.length > 0) {
                 favFlowers = favFlowers.filter(f => {
                     const fColors = detectFlowerColors(f);
-                    return checkedColors.some(col => fColors.includes(col) || (col === '黄色' && fColors.includes('黄')) || (col === '黄' && fColors.includes('黄色')));
+                    return checkedColors.some(col => fColors.includes(col) || (col === '黄色' && fColors.includes('黄')) || (col === '黄' && fColors.includes('黄色')) || (col === '紫' && fColors.includes('濃紫')));
                 });
             }
 
