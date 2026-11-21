@@ -383,6 +383,25 @@
         <span>説明</span>
       </button>
     </div>
+
+    <div class="tool-row">
+      <a href="stepup.html" class="card">
+        <div class="card-body">
+          <h2>07. ステップアップ診断</h2>
+          <p>役職別の自己診断・レーダーチャートで今の状態を確認</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </a>
+      <button type="button" class="btn-desc" data-tool="stepup">
+        <svg style="width: 19px; height: 19px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span>説明</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 出典・根拠ボタン（ページ最下部・小さく） -->
+  <div style="width: 100%; max-width: 420px; text-align: center; margin-top: 22px;">
+    <button id="btn-open-sources" type="button" style="background: transparent; border: 1px solid #c6c6c4; border-radius: 8px; color: #6f6f6f; font-size: 12px; font-weight: 600; padding: 6px 14px; cursor: pointer; touch-action: manipulation;">出典・根拠</button>
   </div>
 
   <!-- ツール説明モーダル -->
@@ -421,6 +440,23 @@
         <p style="margin: 0;"><span style="color: #6f6f6f;">技術スタック:</span> HTML5 / CSS3 / Vanilla JS / PWA</p>
       </div>
       <button id="btn-close-credit" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 出典・根拠モーダル -->
+  <div id="sources-modal" class="credit-modal">
+    <div style="background: #f4f4f2; border: 1px solid #d9d9d7; border-radius: 16px; width: 100%; max-width: 370px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); position: relative; box-sizing: border-box;">
+      <button id="btn-close-sources-x" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #171717; cursor: pointer; padding: 4px; font-size: 18px;" type="button">✕</button>
+      <h3 style="font-size: 18px; font-weight: bold; color: #171717; margin: 0 0 10px 0;">出典・根拠</h3>
+      <p style="font-size: 14px; color: #3d3d3d; line-height: 1.6; margin: 0 0 12px 0; text-align: left;">配布資料「キャリアステップ・ガイド」と「ステップアップ診断」のアンケートは、次の資料をもとに作成しています。</p>
+      <ul style="font-size: 14px; color: #262626; line-height: 1.6; margin: 0 0 16px 0; padding-left: 18px; text-align: left; display: flex; flex-direction: column; gap: 8px;">
+        <li>経済産業省「人生100年時代の社会人基礎力について」（2018年）― 3つの能力（前に踏み出す力・考え抜く力・チームで働く力）と12の能力要素</li>
+        <li>厚生労働省「職業能力評価基準」― 階層ごとに定義された能力水準</li>
+        <li>Katz, R. L. (1955) “Skills of an Effective Administrator,” Harvard Business Review, 33(1) ― 管理階層と3つのスキル</li>
+        <li>P. F. ドラッカー『マネジメント――課題、責任、実践』（ダイヤモンド社）― マネジャーの5つの仕事</li>
+        <li>パーソル総合研究所「中間管理職の就業負担に関する定量調査」― 管理職の部下育成の実態</li>
+      </ul>
+      <button id="btn-close-sources" style="width: 100%; background: #262626; color: #ffffff; font-weight: bold; padding: 12px 0; border-radius: 10px; border: none; font-size: 15px; cursor: pointer; touch-action: manipulation;" type="button">閉じる</button>
     </div>
   </div>
 
@@ -496,6 +532,17 @@
           '発注用プレビュー画像（JPG／PNG保存・LINE等への画像共有）および発注テキストの出力・案件保存',
           '役割別・季節別・色別・五十音順・キーワード検索で花材の特徴や仕入単価を確認できる「花材図鑑」機能'
         ]
+      },
+      stepup: {
+        title: '07. ステップアップ診断',
+        href: 'stepup.html',
+        purpose: '現在の役職（新入社員・一般社員・主任・係長）を選んで15の質問に1〜5で自己評価し、今の自分の状態を客観的に確認するための自己診断ツールです。配布資料「キャリアステップ・ガイド」の目標項目をもとにしています。',
+        features: [
+          '役職ごとの5つの軸（各3問・計15問）への1〜5の自己評価アンケート',
+          'レーダーチャートと達成度（全体・軸ごと）による現在の状態の見える化',
+          '数値の組み合わせから決まる「現在の状態」と「今後へのアドバイス」の表示',
+          '診断結果の保存（設定した保存先への送信、またはファイルのダウンロード）'
+        ]
       }
     };
 
@@ -533,6 +580,10 @@
       }
       if (cModal && cModal.classList.contains('active')) {
         closePortalModal(cModal, false);
+      }
+      const smOnPop = document.getElementById('sources-modal');
+      if (smOnPop && smOnPop.classList.contains('active')) {
+        closePortalModal(smOnPop, false);
       }
     });
 
@@ -574,6 +625,23 @@
     if (cModal) {
       cModal.addEventListener('click', (e) => {
         if (e.target === cModal) closePortalModal(cModal, true);
+      });
+    }
+
+    const sModal = document.getElementById('sources-modal');
+    const bOpenSources = document.getElementById('btn-open-sources');
+    if (bOpenSources && sModal) {
+      bOpenSources.addEventListener('click', () => openPortalModal(sModal));
+    }
+    ['btn-close-sources', 'btn-close-sources-x'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && sModal) {
+        el.addEventListener('click', () => closePortalModal(sModal, true));
+      }
+    });
+    if (sModal) {
+      sModal.addEventListener('click', (e) => {
+        if (e.target === sModal) closePortalModal(sModal, true);
       });
     }
 

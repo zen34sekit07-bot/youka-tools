@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'youkaen-tools-v51';
+const CACHE_NAME = 'youkaen-tools-v52';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -13,7 +13,8 @@ const ASSETS_TO_CACHE = [
   './tool3.html',
   './tool4.html',
   './tool5.html',
-  './tool6.html'
+  './tool6.html',
+  './stepup.html'
 ];
 
 self.addEventListener('install', (event) => {
