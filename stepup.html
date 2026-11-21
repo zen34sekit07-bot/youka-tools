@@ -306,7 +306,7 @@ AIアシスタント: Gemini (Google) / Muse (Meta)
 
   <script>
     // ===== 設定：結果保存先 GAS URL（定数。localStorage の値があればそちらを優先） =====
-    const DEFAULT_GAS_URL = '';
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbwgPguLhrEfdQ3yYxXHmmk7UK_6yryF3xqi3qWhg3PFWkBiE7p4ZEUO-_aIzDs8yXE0dA/exec';
     const GAS_URL_KEY = 'stepup_gas_url';
 
     // ===== アンケート定義（固定） =====
@@ -743,21 +743,26 @@ AIアシスタント: Gemini (Google) / Muse (Meta)
       const band = bandFor(totalPct);
       const maxI = axisPcts.indexOf(Math.max.apply(null, axisPcts));
       const minI = axisPcts.indexOf(Math.min.apply(null, axisPcts));
-      $('state-title').textContent = band.title;
-      $('state-text').textContent = band.text +
+      const stateTextFull = band.text +
         ' 特に「' + role.axes[maxI].name + '」（' + axisPcts[maxI] + '%）が強みです。一方、「' + role.axes[minI].name + '」（' + axisPcts[minI] + '%）はこれからの伸びしろです。';
+      $('state-title').textContent = band.title;
+      $('state-text').textContent = stateTextFull;
 
       // 今後へのアドバイス：最も低い2軸 ＋ 組み合わせルール
       const order = axisPcts.map((p, i) => i).sort((a, b) => axisPcts[a] - axisPcts[b]);
       const adv = $('advice-list');
       adv.innerHTML = '';
+      const adviceItems = [];
       [order[0], order[1]].forEach((ai) => {
+        const axisLabel = '「' + role.axes[ai].name + '」（' + axisPcts[ai] + '%）を伸ばす';
+        adviceItems.push({ axis: axisLabel, text: role.axes[ai].advice });
         const d = document.createElement('div');
         d.className = 'advice-item';
-        d.innerHTML = '<p class="advice-axis">「' + role.axes[ai].name + '」（' + axisPcts[ai] + '%）を伸ばす</p><p class="advice-text">' + role.axes[ai].advice + '</p>';
+        d.innerHTML = '<p class="advice-axis">' + axisLabel + '</p><p class="advice-text">' + role.axes[ai].advice + '</p>';
         adv.appendChild(d);
       });
       combinationAdvice(role, axisPcts).forEach((txt) => {
+        adviceItems.push({ axis: '組み合わせから見えること', text: txt });
         const d = document.createElement('div');
         d.className = 'advice-item';
         d.innerHTML = '<p class="advice-axis">組み合わせから見えること</p><p class="advice-text">' + txt + '</p>';
@@ -771,13 +776,55 @@ AIアシスタント: Gemini (Google) / Muse (Meta)
         name: name,
         totalPct: totalPct,
         axes: role.axes.map((a, ai) => ({ name: a.name, pct: axisPcts[ai] })),
-        answers: state.answers.slice()
+        answers: state.answers.slice(),
+        stateTitle: band.title,
+        stateText: stateTextFull,
+        advice: adviceItems
       };
       state.result = payload;
       window.__lastResult = payload;
 
       showScreen('result');
       saveResult(payload);
+    }
+
+    // レーダーチャートをPNG（data URL）化する。取得できない場合は null を返し、送信自体は失敗させない
+    function captureChartImage() {
+      return new Promise((resolve) => {
+        try {
+          const src = $('radar-chart');
+          if (!state.chart || !src || !src.width || !src.height) return resolve(null);
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            try {
+              const maxSide = 800;
+              const scale = Math.min(1, maxSide / Math.max(src.width, src.height));
+              const w = Math.max(1, Math.round(src.width * scale));
+              const h = Math.max(1, Math.round(src.height * scale));
+              const cvs = document.createElement('canvas');
+              cvs.width = w; cvs.height = h;
+              const cx = cvs.getContext('2d');
+              cx.fillStyle = '#ffffff';
+              cx.fillRect(0, 0, w, h);
+              cx.drawImage(src, 0, 0, w, h);
+              resolve(cvs.toDataURL('image/png'));
+            } catch (e) { resolve(null); }
+          };
+          // 描画アニメーションが終わってから取り込む（完了コールバック＋保険のタイマー）
+          const anim = state.chart.options && state.chart.options.animation;
+          if (anim) {
+            const prev = anim.onComplete;
+            anim.onComplete = (args) => {
+              if (prev) { try { prev(args); } catch (e) {} }
+              anim.onComplete = prev;
+              finish();
+            };
+          }
+          setTimeout(finish, 2600);
+        } catch (e) { resolve(null); }
+      });
     }
 
     async function saveResult(payload) {
@@ -789,11 +836,14 @@ AIアシスタント: Gemini (Google) / Muse (Meta)
       }
       el.textContent = '結果を保存しています…';
       try {
+        const sendPayload = { ...payload };
+        const chartImage = await captureChartImage();
+        if (chartImage) sendPayload.chartImage = chartImage;
         await fetch(url, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(sendPayload)
         });
         el.textContent = '結果を保存先へ送信しました。念のため、手元にも残したい場合は「結果をダウンロード」をご利用ください。';
       } catch (e) {

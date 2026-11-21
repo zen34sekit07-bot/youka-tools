@@ -388,6 +388,10 @@
                     この奥行きラインで設定完了
                 </button>
             </div>
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="perspective-bold-lines-check" class="w-5 h-5 shrink-0 accent-cyan-400 cursor-pointer">
+                <span class="text-base font-bold text-white">水平線・垂直線を濃くする</span>
+            </label>
         </div>
 
         <!-- モード選択全画面オーバーレイ（下部メニューを完全に覆い、上部にツール一覧戻るを配置） -->
@@ -1457,6 +1461,8 @@
                 alpha: 1.0,
                 baselineDepth: 0.9, 
                 perspectiveLinesRaw: null, // 背景画像の原寸ピクセル座標 [{p1:{x,y}, p2:{x,y}}, ...]
+                sourceRecordId: null,      // ライブラリから開いた式場レコードのID（直接読込・プロジェクト読込時は null）
+                sourceSharedFileId: null,  // その式場がオンライン共有由来の場合の共有fileId
                 renderRect: { x: 0, y: 0, w: 0, h: 0, scale: 1.0 }
             },
             items: [],
@@ -1469,6 +1475,7 @@
             perspectiveSetting: false,
             perspectiveActiveHandle: null,
             perspectiveDragOffset: { x: 0, y: 0 },
+            perspectiveBoldLines: false,
 
             view: { zoom: 1.0, panX: 0, panY: 0 },
             
@@ -1657,6 +1664,21 @@
             return null;
         }
 
+        // パーツの奥行きの初期値：前回パーツに設定した奥行きを端末内に保持し、次の追加時に引き継ぐ
+        function getLastPartDepth() {
+            try {
+                const v = parseFloat(localStorage.getItem('sekou_sim_last_part_depth'));
+                if (Number.isFinite(v)) return Math.max(0, Math.min(1, v));
+            } catch (_) {}
+            return 0.9;
+        }
+
+        function saveLastPartDepth(v) {
+            const n = parseFloat(v);
+            if (!Number.isFinite(n)) return;
+            try { localStorage.setItem('sekou_sim_last_part_depth', String(Math.max(0, Math.min(1, n)))); } catch (_) {}
+        }
+
         function addItemToScene(scale, realMm, rawPxPerMm) {
             if (!state.pendingItemCanvas) return;
             const bgCenter = state.bg.loaded && state.bg.obj 
@@ -1680,7 +1702,7 @@
                 locked: false,
                 realMm: realMm || null,
                 rawPxPerMm: rawPxPerMm || null,
-                depthPosition: 0.9
+                depthPosition: getLastPartDepth()
             };
             state.items.push(item);
             state.selectedItemId = item.id;
@@ -1714,7 +1736,7 @@
                 locked: false,
                 realMm: realMm,
                 rawPxPerMm: rawPxPerMm || null,
-                depthPosition: 0.9
+                depthPosition: getLastPartDepth()
             };
             state.items.push(item);
             state.selectedItemId = item.id;
@@ -1844,6 +1866,7 @@
                 obj: null, loaded: false, name: '', rawPxPerMm: null, 
                 measureHandlesRaw: null, measureRealMm: null, alpha: 1.0,
                 baselineDepth: 0.9, perspectiveLinesRaw: null,
+                sourceRecordId: null, sourceSharedFileId: null,
                 renderRect: { x: 0, y: 0, w: 0, h: 0, scale: 1.0 }
             };
             state.items = [];
@@ -2399,8 +2422,8 @@
 
                 // 水平合わせ用の横向き点線（手前・奥の各ハンドル高さ）
                 ctx.save();
-                ctx.strokeStyle = 'rgba(253, 224, 71, 0.65)';
-                ctx.lineWidth = 1.2 / state.view.zoom;
+                ctx.strokeStyle = state.perspectiveBoldLines ? 'rgba(253, 224, 71, 1.0)' : 'rgba(253, 224, 71, 0.65)';
+                ctx.lineWidth = (state.perspectiveBoldLines ? 3.2 : 1.2) / state.view.zoom;
                 ctx.setLineDash([5 / state.view.zoom, 5 / state.view.zoom]);
                 state.bg.perspectiveLinesRaw.forEach(l => {
                     const wp1 = bgRawToWorld(l.p1);
@@ -2424,8 +2447,8 @@
                         const iy = ((a1.x * a2.y - a1.y * a2.x) * (b1.y - b2.y) - (a1.y - a2.y) * (b1.x * b2.y - b1.y * b2.x)) / denom;
                         if (ix >= guideLeftX - canvas.width && ix <= guideRightX + canvas.width) {
                             ctx.save();
-                            ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
-                            ctx.lineWidth = 1.5 / state.view.zoom;
+                            ctx.strokeStyle = state.perspectiveBoldLines ? 'rgba(239, 68, 68, 1.0)' : 'rgba(239, 68, 68, 0.85)';
+                            ctx.lineWidth = (state.perspectiveBoldLines ? 3.2 : 1.5) / state.view.zoom;
                             ctx.setLineDash([5 / state.view.zoom, 5 / state.view.zoom]);
                             ctx.beginPath();
                             ctx.moveTo(ix, guideTopY);
@@ -2434,7 +2457,7 @@
                             ctx.setLineDash([]);
                             ctx.fillStyle = '#ef4444';
                             ctx.beginPath();
-                            ctx.arc(ix, iy, 3.5 / state.view.zoom, 0, Math.PI * 2);
+                            ctx.arc(ix, iy, (state.perspectiveBoldLines ? 5.5 : 3.5) / state.view.zoom, 0, Math.PI * 2);
                             ctx.fill();
                             ctx.restore();
                         }
@@ -2720,6 +2743,7 @@
             const item = state.items.find(i => i.id === state.selectedItemId);
             if (!item) return;
             item.depthPosition = depthVal;
+            saveLastPartDepth(depthVal);
             depthThumb.style.top = `${ratio * 100}%`;
 
             const itemDepthSlider = document.getElementById('item-depth-slider');
@@ -2756,6 +2780,7 @@
                 const item = state.items.find(i => i.id === state.selectedItemId);
                 if (!item) return;
                 item.depthPosition = parseFloat(e.target.value);
+                saveLastPartDepth(item.depthPosition);
                 updateFloatingDepthSlider();
                 const valDepthLabel = document.getElementById('val-item-depth');
                 if (valDepthLabel) {
@@ -2943,6 +2968,8 @@
             }
             const pBanner = document.getElementById('perspective-banner');
             if (pBanner) pBanner.classList.remove('hidden');
+            const boldCheckOnStart = document.getElementById('perspective-bold-lines-check');
+            if (boldCheckOnStart) boldCheckOnStart.checked = state.perspectiveBoldLines;
             requestRender();
         }
 
@@ -2968,6 +2995,18 @@
                 state.perspectiveSetting = false;
                 const pBanner = document.getElementById('perspective-banner');
                 if (pBanner) pBanner.classList.add('hidden');
+                requestRender();
+            });
+        }
+
+        // パース設定：水平線・垂直線を濃くするチェック（端末内に保持）
+        try { state.perspectiveBoldLines = localStorage.getItem('sekou_sim_persp_bold_lines') === '1'; } catch (_) {}
+        const perspBoldCheck = document.getElementById('perspective-bold-lines-check');
+        if (perspBoldCheck) {
+            perspBoldCheck.checked = state.perspectiveBoldLines;
+            perspBoldCheck.addEventListener('change', e => {
+                state.perspectiveBoldLines = !!e.target.checked;
+                try { localStorage.setItem('sekou_sim_persp_bold_lines', state.perspectiveBoldLines ? '1' : '0'); } catch (_) {}
                 requestRender();
             });
         }
@@ -3032,6 +3071,8 @@
                     state.bg.obj = optImg;
                     state.bg.loaded = true;
                     state.bg.name = file.name;
+                    state.bg.sourceRecordId = null;
+                    state.bg.sourceSharedFileId = null;
                     state.bg.measureHandlesRaw = null;
                     state.bg.perspectiveLinesRaw = null;
                     state.bg.renderRect = getBgRenderRect();
@@ -3110,7 +3151,9 @@
                     measureHandlesRaw: state.bg.measureHandlesRaw,
                     baselineDepth: state.bg.baselineDepth,
                     perspectiveLinesRaw: state.bg.perspectiveLinesRaw
-                };                db.transaction('venues', 'readwrite').objectStore('venues').put(record).onsuccess = () => {  
+                };
+                markSharedVenueSourceIfEdited(record);
+                db.transaction('venues', 'readwrite').objectStore('venues').put(record).onsuccess = () => {  
                     showAlertModal(`式場「${name}」をライブラリに保存しました`, '式場保存完了');  
                     renderSavedVenues();  
                 };
@@ -3194,6 +3237,8 @@ const doOpenVenue = async () => {
                             state.bg.obj = img;
                             state.bg.loaded = true;
                             state.bg.name = v.name;
+                            state.bg.sourceRecordId = v.id;
+                            state.bg.sourceSharedFileId = v.sharedFileId || null;
                             state.bg.measureRealMm = v.measureRealMm;
                             state.bg.rawPxPerMm = v.rawPxPerMm;
                             state.bg.measureHandlesRaw = v.measureHandlesRaw;
@@ -4932,6 +4977,8 @@ const doPlacePart = () => {
                 state.bg.obj = bgImg;
                 state.bg.loaded = true;
                 state.bg.name = p.name;
+                state.bg.sourceRecordId = null;
+                state.bg.sourceSharedFileId = null;
                 state.bg.measureRealMm = p.bgMeasureRealMm;
                 state.bg.rawPxPerMm = p.bgRawPxPerMm;
                 state.bg.alpha = p.bgAlpha ?? 1.0;
@@ -5582,7 +5629,7 @@ const doPlacePart = () => {
             }
         }
 
-        function markLocalItemAsUploaded(record, fileId) {
+        function markLocalItemAsUploaded(record, fileId, contentHash) {
             if (!fileId) return;
             const map = getUploadedKeyToFileIdMap();
             if (record && record.id) map['id_' + record.id] = fileId;
@@ -5602,6 +5649,7 @@ const doPlacePart = () => {
                             const found = ev.target.result;
                             if (found) {
                                 found.sharedFileId = fileId;
+                                if (contentHash) found.importedHash = contentHash;
                                 store.put(found);
                             }
                         };
@@ -5629,6 +5677,7 @@ const doPlacePart = () => {
                             all.forEach(rec => {
                                 if (rec.sharedFileId === fileId) {
                                     delete rec.sharedFileId;
+                                    delete rec.importedHash;
                                     rec.isSharedCopy = false;
                                     store.put(rec);
                                 }
@@ -5650,6 +5699,95 @@ const doPlacePart = () => {
                 if (fp && map[fp]) return true;
             }
             return false;
+        }
+
+        // 共有コンテンツの同一性判定用ハッシュ（キー順を安定化した文字列から計算し、無関係な差分で誤判定しない）
+        function stableStringifyForHash(value) {
+            if (value === null || value === undefined) return 'null';
+            if (typeof value === 'number') {
+                if (!Number.isFinite(value)) return 'null';
+                return String(Math.round(value * 1e6) / 1e6);
+            }
+            if (typeof value === 'string') return JSON.stringify(value);
+            if (typeof value === 'boolean') return value ? 'true' : 'false';
+            if (Array.isArray(value)) return '[' + value.map(stableStringifyForHash).join(',') + ']';
+            if (typeof value === 'object') {
+                const keys = Object.keys(value).sort();
+                return '{' + keys.map(k => JSON.stringify(k) + ':' + stableStringifyForHash(value[k])).join(',') + '}';
+            }
+            return 'null';
+        }
+
+        function fnv1aHash(str) {
+            let h = 0x811c9dc5;
+            for (let i = 0; i < str.length; i++) {
+                h ^= str.charCodeAt(i);
+                h = Math.imul(h, 0x01000193);
+            }
+            return ('0000000' + (h >>> 0).toString(16)).slice(-8);
+        }
+
+        const contentHashCache = new Map();
+        function computeRecordContentHash(kind, data) {
+            if (!data) return '';
+            const img = data.imgData || '';
+            const rest = kind === 'venue'
+                ? {
+                    name: data.name || '',
+                    measureRealMm: data.measureRealMm ?? null,
+                    rawPxPerMm: data.rawPxPerMm ?? null,
+                    measureHandlesRaw: data.measureHandlesRaw ?? null,
+                    baselineDepth: data.baselineDepth ?? null,
+                    perspectiveLinesRaw: data.perspectiveLinesRaw ?? null
+                }
+                : {
+                    name: data.name || '',
+                    realMm: data.realMm ?? null,
+                    rawPxPerMm: data.rawPxPerMm ?? null
+                };
+            const cacheKey = kind + '|' + (data.id || '') + '|' + computeImageFingerprint(img) + '|' + stableStringifyForHash(rest);
+            if (contentHashCache.has(cacheKey)) return contentHashCache.get(cacheKey);
+            const hash = fnv1aHash(stableStringifyForHash({ ...rest, imgData: img }));
+            if (contentHashCache.size > 200) contentHashCache.clear();
+            contentHashCache.set(cacheKey, hash);
+            return hash;
+        }
+
+        function getAllLocalRecords(storeName) {
+            return new Promise(resolve => {
+                if (!db) return resolve([]);
+                try {
+                    db.transaction(storeName, 'readonly').objectStore(storeName).getAll().onsuccess = e => resolve(e.target.result || []);
+                } catch (_) {
+                    resolve([]);
+                }
+            });
+        }
+
+        // 共有項目に対する端末側の状態： 'imported'=同じ内容を取り込み済み / 'modified'=取り込んだが内容が変わっている / 'none'=未取り込み
+        function getSharedImportState(localRecs, kind, fileId) {
+            const copies = (localRecs || []).filter(r => r && r.sharedFileId === fileId);
+            if (copies.length === 0) return 'none';
+            const matched = copies.some(r => r.importedHash && computeRecordContentHash(kind, r) === r.importedHash);
+            return matched ? 'imported' : 'modified';
+        }
+
+        // 共有から取り込んだ式場を開いて編集し、別レコードとして保存した場合に、元の取り込み記録のハッシュを外して「変更あり」にする
+        function markSharedVenueSourceIfEdited(savedRecord) {
+            if (!db || !savedRecord) return;
+            const srcId = state.bg.sourceRecordId;
+            const srcFileId = state.bg.sourceSharedFileId;
+            if (!srcId || !srcFileId) return;
+            try {
+                const store = db.transaction('venues', 'readwrite').objectStore('venues');
+                store.get(srcId).onsuccess = ev => {
+                    const src = ev.target.result;
+                    if (src && src.sharedFileId === srcFileId && src.importedHash && computeRecordContentHash('venue', savedRecord) !== src.importedHash) {
+                        delete src.importedHash;
+                        try { store.put(src); } catch (_) {}
+                    }
+                };
+            } catch (_) {}
         }
 
         // 視覚的な読み込み中モーダル（回転スピナー＋アニメーションプログレスバー）
@@ -6070,7 +6208,7 @@ const doPlacePart = () => {
             if (!name) return;
 
             showLoadingModal('オンライン共有へ式場データをアップロードしています...', 'アップロード中');
-            const res = await uploadToSharedDrive({
+            const uploadPayload = {
                 type: 'venue',
                 timestamp: Date.now(),
                 name: name,
@@ -6081,10 +6219,11 @@ const doPlacePart = () => {
                 measureHandlesRaw: venueData.measureHandlesRaw,
                 baselineDepth: venueData.baselineDepth,
                 perspectiveLinesRaw: venueData.perspectiveLinesRaw
-            });
+            };
+            const res = await uploadToSharedDrive(uploadPayload);
             hideLoadingModal();
             if (res) {
-                markLocalItemAsUploaded(venueData, res.fileId);
+                markLocalItemAsUploaded(venueData, res.fileId, computeRecordContentHash('venue', uploadPayload));
                 hasLoadedSharedVenues = false; // 次回またはタブ切替時に最新を取得
                 renderSavedVenues();
                 showAlertModal(`式場「${name}」をオンライン共有に登録しました！`, '共有完了');
@@ -6105,7 +6244,7 @@ const doPlacePart = () => {
             if (!name) return;
 
             showLoadingModal('オンライン共有へパーツデータをアップロードしています...', 'アップロード中');
-            const res = await uploadToSharedDrive({
+            const uploadPayload = {
                 type: 'part',
                 timestamp: Date.now(),
                 name: name,
@@ -6113,10 +6252,11 @@ const doPlacePart = () => {
                 imgData: partData.imgData,
                 realMm: partData.realMm,
                 rawPxPerMm: partData.rawPxPerMm
-            });
+            };
+            const res = await uploadToSharedDrive(uploadPayload);
             hideLoadingModal();
             if (res) {
-                markLocalItemAsUploaded(partData, res.fileId);
+                markLocalItemAsUploaded(partData, res.fileId, computeRecordContentHash('part', uploadPayload));
                 hasLoadedSharedParts = false; // 次回またはタブ切替時に最新を取得
                 renderSavedParts();
                 showAlertModal(`パーツ「${name}」をオンライン共有に登録しました！`, '共有完了');
@@ -6141,7 +6281,7 @@ const doPlacePart = () => {
             });
         });
 
-        function renderSharedVenuesListUI() {
+        async function renderSharedVenuesListUI() {
             const list = document.getElementById('saved-venues-list');
             if (!list) return;
             const searchWord = document.getElementById('venue-shared-search')?.value || '';
@@ -6157,16 +6297,24 @@ const doPlacePart = () => {
                 return;
             }
 
+            const localVenueRecs = await getAllLocalRecords('venues');
+            const importStateMap = {};
+            items.forEach(v => { importStateMap[v.fileId] = getSharedImportState(localVenueRecs, 'venue', v.fileId); });
+
             list.innerHTML = '';
             items.forEach(v => {
                 const vDateStr = formatSharedDateTime(v.timestamp);
                 const canDelete = isMySharedUpload(v);
+                const isImported = importStateMap[v.fileId] === 'imported';
                 const perspBadge = v.hasPerspective
                     ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-violet-600 text-[#ffffff]">パースあり</span>`
                     : `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-[#e4e4e2] text-white border border-[#bcbcbc]">パースなし</span>`;
                 const mineBadge = canDelete
                     ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-green-600 text-[#ffffff]">自分UP</span>`
                     : '';
+                const dlBtnHtml = isImported
+                    ? `<button type="button" disabled class="dl-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-[#e4e4e2] text-white border border-[#bcbcbc] font-bold text-sm rounded-lg shrink-0 cursor-not-allowed" title="端末内に同じ内容が保存されています"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>取込み済</button>`
+                    : `<button type="button" class="dl-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして取り込む"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>取込む</button>`;
 
                 const row = document.createElement('div');
                 row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition";
@@ -6174,7 +6322,7 @@ const doPlacePart = () => {
                     <div class="flex items-center gap-2">
                         <span class="flex-1 min-w-0 text-base font-bold text-white break-all leading-snug">${v.name}</span>
                         <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
-                        <button type="button" class="dl-venue-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして開く"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>取込む</button>
+                        ${dlBtnHtml}
                     </div>
                     <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
                         <div class="flex items-center gap-1.5 flex-wrap ${canDelete ? 'mb-2' : ''}">
@@ -6210,12 +6358,19 @@ const doPlacePart = () => {
 
                 row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
                 row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
-                row.querySelector('.dl-venue-btn').onclick = async ev => {
+                const dlVenueBtnEl = row.querySelector('.dl-venue-btn');
+                if (dlVenueBtnEl && !isImported) dlVenueBtnEl.onclick = async ev => {
                     ev.stopPropagation();
                     showLoadingModal(`「${v.name}」の式場データを読み込み中...`, '読み込み中');
                     try {
-                        const localHit = await findLocalRecordBySharedFileId('venues', v.fileId);
-                        const fullData = localHit || await downloadSharedItem(v.fileId, (retryNum, maxNum) => {
+                        const freshVenueRecs = await getAllLocalRecords('venues');
+                        if (getSharedImportState(freshVenueRecs, 'venue', v.fileId) === 'imported') {
+                            hideLoadingModal();
+                            document.getElementById('tab-venue-local')?.click();
+                            showAlertModal(`「${v.name}」はすでに端末内に取り込み済みです。一覧からタップして読み込めます。`, '取り込み済み');
+                            return;
+                        }
+                        const fullData = await downloadSharedItem(v.fileId, (retryNum, maxNum) => {
                             const dEl = document.getElementById('loading-modal-desc');
                             if (dEl) dEl.textContent = `アクセス集中ため自動再試行中 (${retryNum}/${maxNum})...`;
                         });
@@ -6231,7 +6386,8 @@ const doPlacePart = () => {
                                 rawPxPerMm: fullData.rawPxPerMm,
                                 measureHandlesRaw: fullData.measureHandlesRaw,
                                 baselineDepth: fullData.baselineDepth,
-                                perspectiveLinesRaw: fullData.perspectiveLinesRaw
+                                perspectiveLinesRaw: fullData.perspectiveLinesRaw,
+                                importedHash: computeRecordContentHash('venue', fullData)
                             });
                         }
                         hideLoadingModal();
@@ -6331,7 +6487,7 @@ const doPlacePart = () => {
             });
         }
 
-        function renderSharedPartsListUI() {
+        async function renderSharedPartsListUI() {
             const list = document.getElementById('saved-parts-list');
             if (!list) return;
             const searchWord = document.getElementById('part-shared-search')?.value || '';
@@ -6347,13 +6503,21 @@ const doPlacePart = () => {
                 return;
             }
 
+            const localPartRecs = await getAllLocalRecords('parts');
+            const importStateMap = {};
+            items.forEach(p => { importStateMap[p.fileId] = getSharedImportState(localPartRecs, 'part', p.fileId); });
+
             list.innerHTML = '';
             items.forEach(p => {
                 const pDateStr = formatSharedDateTime(p.timestamp);
                 const canDelete = isMySharedUpload(p);
+                const isImported = importStateMap[p.fileId] === 'imported';
                 const mineBadge = canDelete
                     ? `<span class="text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0 leading-snug bg-green-600 text-[#ffffff]">自分UP</span>`
                     : '';
+                const dlBtnHtml = isImported
+                    ? `<button type="button" disabled class="dl-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-[#e4e4e2] text-white border border-[#bcbcbc] font-bold text-sm rounded-lg shrink-0 cursor-not-allowed" title="端末内に同じ内容が保存されています"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>取込み済</button>`
+                    : `<button type="button" class="dl-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして取り込む（そのまま配置します）"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>取込む</button>`;
 
                 const row = document.createElement('div');
                 row.className = "bg-[#ffffff] border-2 border-[#d9d9d7] hover:border-blue-500 px-3 py-2.5 rounded-xl transition";
@@ -6361,7 +6525,7 @@ const doPlacePart = () => {
                     <div class="flex items-center gap-2">
                         <span class="flex-1 min-w-0 text-base font-bold text-white break-all leading-snug">${p.name}</span>
                         <button type="button" class="detail-toggle-btn w-8 h-8 flex items-center justify-center rounded-lg text-gray-200 shrink-0" title="詳細の表示・非表示"><svg class="detail-chevron w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
-                        <button type="button" class="dl-part-btn h-10 px-3.5 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-500 text-[#ffffff] font-bold text-sm rounded-lg shadow transition shrink-0 active:scale-95" title="ダウンロードして配置"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>設置</button>
+                        ${dlBtnHtml}
                     </div>
                     <div class="card-details hidden mt-2 pt-2 border-t border-[#e4e4e2]">
                         <div class="flex items-center gap-1.5 flex-wrap ${canDelete ? 'mb-2' : ''}">
@@ -6397,12 +6561,18 @@ const doPlacePart = () => {
 
                 row.querySelector('.detail-toggle-btn').onclick = ev => { ev.stopPropagation(); toggleCardDetails(row); };
                 row.onclick = e => { if (e.target.closest('button')) return; toggleCardDetails(row); };
-                row.querySelector('.dl-part-btn').onclick = async ev => {
+                const dlPartBtnEl = row.querySelector('.dl-part-btn');
+                if (dlPartBtnEl && !isImported) dlPartBtnEl.onclick = async ev => {
                     ev.stopPropagation();
                     showLoadingModal(`「${p.name}」のパーツデータを読み込み中...`, '読み込み中');
                     try {
-                        const localHit = await findLocalRecordBySharedFileId('parts', p.fileId);
-                        const fullData = localHit || await downloadSharedItem(p.fileId, (retryNum, maxNum) => {
+                        const freshPartRecs = await getAllLocalRecords('parts');
+                        if (getSharedImportState(freshPartRecs, 'part', p.fileId) === 'imported') {
+                            hideLoadingModal();
+                            showAlertModal(`「${p.name}」はすでに端末内に取り込み済みです。「端末内保存」タブから設置できます。`, '取り込み済み');
+                            return;
+                        }
+                        const fullData = await downloadSharedItem(p.fileId, (retryNum, maxNum) => {
                             const dEl = document.getElementById('loading-modal-desc');
                             if (dEl) dEl.textContent = `アクセス集中ため自動再試行中 (${retryNum}/${maxNum})...`;
                         });
@@ -6416,7 +6586,8 @@ const doPlacePart = () => {
                                 ext: fullData.ext || 'png',
                                 imgData: fullData.imgData,
                                 realMm: fullData.realMm,
-                                rawPxPerMm: fullData.rawPxPerMm
+                                rawPxPerMm: fullData.rawPxPerMm,
+                                importedHash: computeRecordContentHash('part', fullData)
                             });
                         }
                         const img = new Image();
